@@ -37,17 +37,6 @@ const NavBar: React.FC<Props> = (props) => {
           </Link>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-lg-0">
-              {/* <li className="nav-item">
-                <Link
-                  className={
-                    currentPage === "/swap" ? "nav-link active" : "nav-link"
-                  }
-                  aria-current="page"
-                  to="/swap"
-                >
-                  Swap
-                </Link>
-              </li> */}
               <li className="nav-item">
                 <Link
                   className={
@@ -56,7 +45,7 @@ const NavBar: React.FC<Props> = (props) => {
                   aria-current="page"
                   to="/borrow"
                 >
-                  Borrow
+                  Deposit
                 </Link>
               </li>
 
@@ -68,7 +57,7 @@ const NavBar: React.FC<Props> = (props) => {
                   aria-current="page"
                   to="/lend"
                 >
-                  Lend
+                  Redeem
                 </Link>
               </li>
 
@@ -80,7 +69,7 @@ const NavBar: React.FC<Props> = (props) => {
                   aria-current="page"
                   to="/redeem"
                 >
-                  Redeem
+                  Donate
                 </Link>
               </li>
 
@@ -92,42 +81,9 @@ const NavBar: React.FC<Props> = (props) => {
                   aria-current="page"
                   to="/repay"
                 >
-                  Repay
+                  Airdrop
                 </Link>
               </li>
-              {/* <li className="nav-item">
-                <Link
-                  className={
-                    currentPage === "/migrate" ? "nav-link active" : "nav-link"
-                  }
-                  aria-current="page"
-                  to="/migrate"
-                >
-                  Migrate
-                </Link>
-              </li> */}
-              {/* <li className="nav-item">
-                <Link
-                  className={
-                    currentPage === "/mining" ? "nav-link active" : "nav-link"
-                  }
-                  aria-current="page"
-                  to="/mining"
-                >
-                  Mining
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={
-                    currentPage === "/info" ? "nav-link active" : "nav-link"
-                  }
-                  aria-current="page"
-                  to="/info"
-                >
-                  Info
-                </Link>
-              </li> */}
             </ul>
           </div>
           <button

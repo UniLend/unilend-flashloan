@@ -3,8 +3,9 @@ import "./theme.scss";
 import "./App.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import LoadingPage from "components/View/UI/LoadingPage/LoadingPage";
-import { Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Layout from "components/Layout/Layout";
+import Deposit from "components/View/Deposit";
 
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
@@ -21,7 +22,10 @@ function App() {
                 className="pt-6"
                 style={{ height: "100%", overflow: "auto", paddingTop: "60px" }}
               >
-                <Switch></Switch>
+                <Switch>
+                  <Route path="/deposit" exact component={Deposit} />
+                  <Redirect from="/" to="/deposit" />
+                </Switch>
               </div>
             </div>
           </div>

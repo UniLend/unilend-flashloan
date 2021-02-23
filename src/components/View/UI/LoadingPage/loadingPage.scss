@@ -1,0 +1,34 @@
+.loading-app{
+    height: 100vh;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    animation: ease-in-out;
+  animation-name: run;
+  animation-duration: 2s;
+}
+
+.loading-name {
+    padding-left: 20px;
+    color: white;
+    text-shadow: 1px 1px 4px #333;
+    font-weight: 900;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.fw-bold {
+    font-weight: 600;
+}
+
+@keyframes run {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }

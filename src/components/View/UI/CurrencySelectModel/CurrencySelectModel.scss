@@ -1,0 +1,146 @@
+.list-group-item {
+  border: none;
+}
+
+.modal-content {
+  border-radius: 1rem;
+
+  // background-color: var(--theme-modal-bg);
+}
+
+.dark {
+  .modal-content {
+    background-color: rgb(33, 36, 41);
+  }
+  .model-search-input {
+    border: 1px solid rgb(64, 68, 79);
+    color: white;
+    &:focus {
+      background-color: rgb(33, 36, 41);
+    }
+  }
+  .list-group-item {
+    background-color: rgb(33, 36, 41);
+    color: white;
+    &:hover {
+      background-color: rgb(44, 47, 54);
+    }
+  }
+  .curr-list {
+    .list-icon {
+      background-color: transparent;
+    }
+  }
+  .modal-header {
+    border-bottom: 1px solid #2d2f36;
+    .close {
+      color: white;
+    }
+  }
+  // .modal-body {
+  //   border-bottom: 1px solid #2d2f36;
+  // }
+}
+
+.modal-header {
+  border-bottom: 1px solid #edeef28a;
+}
+
+.modal-body {
+  border-bottom: none;
+  padding: 0;
+}
+.modal-footer {
+  border-top: none;
+}
+
+.modal-dialog {
+  margin: 5.5rem auto;
+}
+
+.model-title-custom {
+  width: 100%;
+}
+
+.modal-label-search {
+  font-size: 15px;
+  transform: translate(5px, -5px);
+}
+
+.modal-content {
+  //   background-color: var(--theme-modal-bg);
+}
+
+@media (min-width: 576px) {
+  .modal-sm {
+    max-width: 410px;
+  }
+}
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    width: 80%;
+  }
+}
+
+.modal-header .close {
+  position: absolute;
+  right: 16px;
+}
+.model-search-input {
+  height: auto;
+  padding: 0.75rem;
+  align-items: center;
+  width: 100%;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  color: #000000;
+  border-style: solid;
+  border: 1px solid #edeef2;
+  -webkit-appearance: none;
+  font-size: 18px;
+  -webkit-transition: border 100ms;
+  transition: border 100ms;
+  &:focus {
+    border: 1px solid rgb(255, 0, 122);
+    box-shadow: none;
+  }
+}
+.curr-list {
+  margin: auto;
+  text-align: center;
+
+  .list-icon {
+    border-radius: 24px;
+    box-shadow: rgba(0, 0, 0, 0.075) 0px 6px 10px;
+    background-color: rgb(255, 255, 255);
+  }
+}
+.curr-list-group {
+  max-height: 420px;
+  overflow: auto;
+}
+.list-desc {
+  font-size: smaller;
+  color: rgb(136, 141, 155);
+}
+
+.footer-btn {
+  background: transparent;
+  color: rgb(33, 114, 229);
+  border: none;
+  img {
+    stroke: rgb(33, 114, 229);
+    width: 19px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+  }
+  &:hover {
+    background: transparent;
+    color: rgb(33, 114, 229);
+    opacity: 0.7;
+  }
+}

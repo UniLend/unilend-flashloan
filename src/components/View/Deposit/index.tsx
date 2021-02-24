@@ -1,3 +1,4 @@
+import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
@@ -10,9 +11,14 @@ const Deposit: FC<Props> = (props) => {
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
+  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
+
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
     setShowModel(true);
+  };
+  const handleConnectWallet = async () => {
+    handleWalletConnect();
   };
   const handleModelClose = () => {
     setShowModel(false);
@@ -28,17 +34,29 @@ const Deposit: FC<Props> = (props) => {
     setShowModel(false);
   };
   function handleDepositAmount() {}
+
   const handleMainButton = () => {
-    return (
-      <button
-        disabled={depositAmount === ""}
-        className="btn btn-lg btn-custom-primary"
-        onClick={handleDepositAmount}
-        type="button"
-      >
-        Deposit
-      </button>
-    );
+    if (accounts && accounts.length && walletConnected) {
+      return (
+        <button
+          disabled={depositAmount === ""}
+          className="btn btn-lg btn-custom-primary"
+          onClick={handleDepositAmount}
+          type="button"
+        >
+          Deposit
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className="btn btn-lg btn-custom-primary"
+          onClick={handleConnectWallet}
+        >
+          Connect Wallet
+        </button>
+      );
+    }
   };
   let curencySelectModel = (
     <CurrencySelectModel

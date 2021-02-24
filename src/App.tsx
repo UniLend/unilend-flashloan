@@ -6,6 +6,8 @@ import LoadingPage from "components/View/UI/LoadingPage/LoadingPage";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Layout from "components/Layout/Layout";
 import Deposit from "components/View/Deposit";
+import Redeem from "components/View/Redeem";
+import Airdrop from "components/View/Airdrop";
 
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
@@ -24,7 +26,10 @@ function App() {
               >
                 <Switch>
                   <Route path="/deposit" exact component={Deposit} />
+                  <Route path="/redeem" exact component={Redeem} />
+                  <Route path="/airdrop" exact component={Airdrop} />
                   <Redirect from="/" to="/deposit" />
+                  <Redirect from="*" to="/deposit" />
                 </Switch>
               </div>
             </div>

@@ -14,9 +14,9 @@ const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { themeChange } = useActions();
-  // useEffect(() => {
-  //   setCurrentPage(props.location.pathname);
-  // }, [props.location.pathname]);
+  useEffect(() => {
+    setCurrentPage(props.location.pathname);
+  }, [props.location.pathname]);
 
   const handleUpdate = () => {
     themeChange(theme);
@@ -40,24 +40,12 @@ const NavBar: React.FC<Props> = (props) => {
               <li className="nav-item">
                 <Link
                   className={
-                    currentPage === "/borrow" ? "nav-link active" : "nav-link"
+                    currentPage === "/deposit" ? "nav-link active" : "nav-link"
                   }
                   aria-current="page"
-                  to="/borrow"
+                  to="/deposit"
                 >
                   Deposit
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link
-                  className={
-                    currentPage === "/lend" ? "nav-link active" : "nav-link"
-                  }
-                  aria-current="page"
-                  to="/lend"
-                >
-                  Redeem
                 </Link>
               </li>
 
@@ -69,6 +57,18 @@ const NavBar: React.FC<Props> = (props) => {
                   aria-current="page"
                   to="/redeem"
                 >
+                  Redeem
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link
+                  className={
+                    currentPage === "/donate" ? "nav-link active" : "nav-link"
+                  }
+                  aria-current="page"
+                  to="/donate"
+                >
                   Donate
                 </Link>
               </li>
@@ -76,10 +76,10 @@ const NavBar: React.FC<Props> = (props) => {
               <li className="nav-item">
                 <Link
                   className={
-                    currentPage === "/repay" ? "nav-link active" : "nav-link"
+                    currentPage === "/airdrop" ? "nav-link active" : "nav-link"
                   }
                   aria-current="page"
-                  to="/repay"
+                  to="/airdrop"
                 >
                   Airdrop
                 </Link>

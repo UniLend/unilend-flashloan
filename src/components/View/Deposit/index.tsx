@@ -6,7 +6,7 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 interface Props {}
 
 const Deposit: FC<Props> = (props) => {
-  const [lbAmount1, setLbAmount1] = useState<string>("ht");
+  const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
@@ -54,11 +54,11 @@ const Deposit: FC<Props> = (props) => {
         <FieldCard
           onF1Change={(e: any) => {}}
           handleModelOpen={() => handleModelOpen("depositAmount")}
-          fieldLabel="Your Collateral"
+          fieldLabel="Amount"
           fieldValue={depositAmount}
           fieldType="number"
           selectLabel={``}
-          selectValue={lbAmount1}
+          selectValue={tokenType}
         />
         <div className="d-grid py-3">{handleMainButton()}</div>
         <div className="price_head">

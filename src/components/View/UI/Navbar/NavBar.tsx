@@ -8,12 +8,15 @@ import sun from "../../../../assets/sun.svg";
 import moon from "../../../../assets/moon.svg";
 import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelector";
+import useWalletConnect from "hooks/useWalletConnect";
 interface Props extends RouteComponentProps<any> {}
 
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { themeChange } = useActions();
+  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
+
   useEffect(() => {
     setCurrentPage(props.location.pathname);
   }, [props.location.pathname]);
@@ -21,7 +24,9 @@ const NavBar: React.FC<Props> = (props) => {
   const handleUpdate = () => {
     themeChange(theme);
   };
-
+  const connectWallet = async () => {
+    handleWalletConnect();
+  };
   return (
     <>
       <nav className={`navbar navbar-expand-sm navbar-${theme} bg-${theme}`}>
@@ -90,6 +95,7 @@ const NavBar: React.FC<Props> = (props) => {
             className={`d-flex btn ${
               theme === "dark" && "btn-dark"
             } btn-custom-secondary`}
+            onClick={connectWallet}
           >
             <span>
               <img

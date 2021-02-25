@@ -27,8 +27,8 @@ const Airdrop: FC<Props> = (props) => {
 
   const handleCurrChange = (selectedField: any) => {
     switch (currFieldName) {
-      case "depositAmount":
-        setAirDropAmount(selectedField.name);
+      case "airDropAmount":
+        setTokenType(selectedField.name);
         break;
       default:
         break;

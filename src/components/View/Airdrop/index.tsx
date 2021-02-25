@@ -9,7 +9,7 @@ interface Props {}
 const Airdrop: FC<Props> = (props) => {
   const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
-  const [airDropAmount, setAirDropAmount] = useState<string>("");
+  const [airDropAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
   const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 

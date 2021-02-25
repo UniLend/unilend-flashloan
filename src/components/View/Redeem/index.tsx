@@ -7,7 +7,7 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 interface Props {}
 
 const Redeem: FC<Props> = (props) => {
-  const [redeemAmount, setRedeemAmount] = useState<string>("");
+  const [redeemAmount] = useState<string>("");
   const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);

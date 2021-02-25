@@ -7,7 +7,7 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 interface Props {}
 
 const Deposit: FC<Props> = (props) => {
-  const [tokenType, setTokenType] = useState<string>("ht");
+  const [tokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);

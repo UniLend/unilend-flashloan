@@ -15,7 +15,7 @@ const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { themeChange } = useActions();
-  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
+  const { handleWalletConnect } = useWalletConnect();
 
   useEffect(() => {
     setCurrentPage(props.location.pathname);

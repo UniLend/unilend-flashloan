@@ -1,5 +1,5 @@
-import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
+import MainButton from "../MainButton";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -11,15 +11,12 @@ const Airdrop: FC<Props> = (props) => {
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [airDropAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
-  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
     setShowModel(true);
   };
-  const handleConnectWallet = async () => {
-    handleWalletConnect();
-  };
+
   const handleModelClose = () => {
     setShowModel(false);
   };
@@ -35,29 +32,7 @@ const Airdrop: FC<Props> = (props) => {
     }
     setShowModel(false);
   };
-  const handleMainButton = () => {
-    if (accounts && accounts.length && walletConnected) {
-      return (
-        <button
-          disabled={airDropAmount === ""}
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleAirdropAmount}
-          type="button"
-        >
-          Airdrop
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleConnectWallet}
-        >
-          Connect Wallet
-        </button>
-      );
-    }
-  };
+
   let curencySelectModel = (
     <CurrencySelectModel
       currFieldName={currFieldName}
@@ -79,7 +54,11 @@ const Airdrop: FC<Props> = (props) => {
             selectLabel={``}
             selectValue={tokenType}
           />
-          <div className="d-grid py-3">{handleMainButton()}</div>
+          <MainButton
+            amount={airDropAmount}
+            actionName="Airdrop"
+            handleAmount={() => handleAirdropAmount}
+          />
         </div>
         {curencySelectModel}
       </ContentCard>

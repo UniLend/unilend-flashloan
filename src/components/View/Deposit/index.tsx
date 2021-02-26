@@ -1,5 +1,5 @@
-import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
+import MainButton from "../MainButton";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -7,18 +7,14 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 interface Props {}
 
 const Deposit: FC<Props> = (props) => {
-  const [tokenType] = useState<string>("ht");
+  const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
-  const [depositAmount, setDepositAmount] = useState<string>("");
+  const [depositAmount] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
-  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
     setShowModel(true);
-  };
-  const handleConnectWallet = async () => {
-    handleWalletConnect();
   };
   const handleModelClose = () => {
     setShowModel(false);
@@ -26,7 +22,7 @@ const Deposit: FC<Props> = (props) => {
   const handleCurrChange = (selectedField: any) => {
     switch (currFieldName) {
       case "depositAmount":
-        setDepositAmount(selectedField.name);
+        setTokenType(selectedField.name);
         break;
       default:
         break;
@@ -35,29 +31,6 @@ const Deposit: FC<Props> = (props) => {
   };
   function handleDepositAmount() {}
 
-  const handleMainButton = () => {
-    if (accounts && accounts.length && walletConnected) {
-      return (
-        <button
-          disabled={depositAmount === ""}
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleDepositAmount}
-          type="button"
-        >
-          Deposit
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleConnectWallet}
-        >
-          Connect Wallet
-        </button>
-      );
-    }
-  };
   let curencySelectModel = (
     <CurrencySelectModel
       currFieldName={currFieldName}
@@ -66,6 +39,7 @@ const Deposit: FC<Props> = (props) => {
       handleClose={handleModelClose}
     />
   );
+
   return (
     <ContentCard title="Deposit">
       <div className="swap-root">
@@ -78,7 +52,11 @@ const Deposit: FC<Props> = (props) => {
           selectLabel={``}
           selectValue={tokenType}
         />
-        <div className="d-grid py-3">{handleMainButton()}</div>
+        <MainButton
+          amount={depositAmount}
+          actionName="Airdrop"
+          handleAmount={() => handleDepositAmount}
+        />
         <div className="price_head">
           <div className="price_aa">
             <div className="price-list">

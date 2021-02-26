@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./theme.scss";
 import "./App.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
@@ -8,11 +8,30 @@ import Layout from "components/Layout/Layout";
 import Deposit from "components/View/Deposit";
 import Redeem from "components/View/Redeem";
 import Airdrop from "components/View/Airdrop";
-
+import dotEnv from "dotenv";
+import useWalletConnect from "hooks/useWalletConnect";
+declare const window: any;
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
   const { theme } = useTypedSelector((state) => state.settings);
+  const { handleWalletConnect } = useWalletConnect();
 
+  useEffect(() => {
+    dotEnv.config();
+    if (window && window.ethereum !== undefined && window !== undefined) {
+      window.ethereum.on("disconnect", () => {});
+      window.ethereum.on("accountsChanged", (accounts: any) => {
+        handleWalletConnect();
+      });
+      window.ethereum.on("chainChanged", (chainId: any) => {
+        window.location.reload();
+      });
+    }
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className={`App ${theme}`}>
       {loading ? (

@@ -3,7 +3,7 @@ import { useActions } from "./useActions";
 import { useTypedSelector } from "./useTypedSelector";
 
 export default function useWalletConnect() {
-  const { walletConnected, accounts } = useTypedSelector(
+  const { walletConnected, accounts, loading } = useTypedSelector(
     (state) => state.connectWallet
   );
 
@@ -14,5 +14,5 @@ export default function useWalletConnect() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { walletConnected, accounts, handleWalletConnect };
+  return { walletConnected, accounts, loading, handleWalletConnect };
 }

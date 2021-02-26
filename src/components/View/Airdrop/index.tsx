@@ -79,8 +79,8 @@ const Airdrop: FC<Props> = (props) => {
             selectLabel={``}
             selectValue={tokenType}
           />
+          <div className="d-grid py-3">{handleMainButton()}</div>
         </div>
-        <div className="d-grid py-3">{handleMainButton()}</div>
         {curencySelectModel}
       </ContentCard>
     </>

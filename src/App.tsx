@@ -12,6 +12,7 @@ import Airdrop from "components/View/Airdrop";
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
   const { theme } = useTypedSelector((state) => state.settings);
+
   return (
     <div className={`App ${theme}`}>
       {loading ? (

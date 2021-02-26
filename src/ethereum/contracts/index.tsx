@@ -14,7 +14,7 @@ export const currencyList: {
     {
       id: 2,
       name: "eth",
-      desc: "Ether",
+      desc: "ether",
     },
     {
       id: 3,

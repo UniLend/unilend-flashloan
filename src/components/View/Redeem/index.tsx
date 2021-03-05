@@ -1,3 +1,5 @@
+import { useActions } from "hooks/useActions";
+import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
 import MainButton from "../MainButton";
 import ContentCard from "../UI/ContentCard/ContentCard";
@@ -7,11 +9,12 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 interface Props {}
 
 const Redeem: FC<Props> = (props) => {
-  const [redeemAmount] = useState<string>("");
+  const [redeemAmount, setRedeemAmount] = useState<string>("");
   const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
-
+  const { accounts } = useWalletConnect();
+  const { handleRedeem } = useActions();
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
     setShowModel(true);
@@ -21,16 +24,18 @@ const Redeem: FC<Props> = (props) => {
     setShowModel(false);
   };
 
-  const handleRedeemAmount = () => {};
+  const handleRedeemAmount = () => {
+    handleRedeem(redeemAmount, accounts[0]);
+    // donate contract
+
+    //  const address = FlashloanLBCore.methods.getDonationContract().call()
+    //    UnilendFDonation.methods.donate(address, fullAmount).send({
+    //    from: accounts[0]
+    //  })
+  };
 
   const handleCurrChange = (selectedField: any) => {
-    switch (currFieldName) {
-      case "redeemAmount":
-        setTokenType(selectedField.name);
-        break;
-      default:
-        break;
-    }
+    setTokenType(selectedField.name);
     setShowModel(false);
   };
   let curencySelectModel = (
@@ -46,7 +51,9 @@ const Redeem: FC<Props> = (props) => {
       <ContentCard title="Redeem">
         <div className="swap-root">
           <FieldCard
-            onF1Change={(e: any) => {}}
+            onF1Change={(e: any) => {
+              setRedeemAmount(e.target.value);
+            }}
             handleModelOpen={() => handleModelOpen("redeemAmount")}
             fieldLabel="Amount"
             fieldValue={redeemAmount}
@@ -58,7 +65,7 @@ const Redeem: FC<Props> = (props) => {
         <MainButton
           amount={redeemAmount}
           actionName="Redeem"
-          handleAmount={() => handleRedeemAmount}
+          handleAmount={() => handleRedeemAmount()}
         />
         {curencySelectModel}
       </ContentCard>

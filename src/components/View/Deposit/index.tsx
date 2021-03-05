@@ -1,3 +1,8 @@
+import { Reciepent } from "ethereum/contracts";
+import { FlashloanLBCore } from "ethereum/contracts/FlashloanLB";
+import web3 from "ethereum/web3";
+import { useActions } from "hooks/useActions";
+import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
 import MainButton from "../MainButton";
 import ContentCard from "../UI/ContentCard/ContentCard";
@@ -9,8 +14,10 @@ interface Props {}
 const Deposit: FC<Props> = (props) => {
   const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
-  const [depositAmount] = useState<string>("");
+  const [depositAmount, setDepositAmount] = useState<any>("");
   const [showModel, setShowModel] = useState<boolean>(false);
+  const {handleDeposit} = useActions();
+  const { accounts } = useWalletConnect();
 
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
@@ -19,17 +26,15 @@ const Deposit: FC<Props> = (props) => {
   const handleModelClose = () => {
     setShowModel(false);
   };
-  const handleCurrChange = (selectedField: any) => {
-    switch (currFieldName) {
-      case "depositAmount":
-        setTokenType(selectedField.name);
-        break;
-      default:
-        break;
-    }
+  function handleCurrChange(selectedField: any) {
+    setTokenType(selectedField.name);
     setShowModel(false);
-  };
-  function handleDepositAmount() {}
+  }
+
+  function handleDepositAmount() {
+    console.log("STARTING");
+    handleDeposit(depositAmount, accounts[0]);
+  }
 
   let curencySelectModel = (
     <CurrencySelectModel
@@ -44,18 +49,20 @@ const Deposit: FC<Props> = (props) => {
     <ContentCard title="Deposit">
       <div className="swap-root">
         <FieldCard
-          onF1Change={(e: any) => {}}
+          onF1Change={(e: any) => {
+            setDepositAmount(e.target.value);
+          }}
           handleModelOpen={() => handleModelOpen("depositAmount")}
           fieldLabel="Amount"
           fieldValue={depositAmount}
-          fieldType="number"
+          fieldType="text"
           selectLabel={``}
           selectValue={tokenType}
         />
         <MainButton
           amount={depositAmount}
-          actionName="Airdrop"
-          handleAmount={() => handleDepositAmount}
+          actionName="Deposit"
+          handleAmount={() => handleDepositAmount()}
         />
         <div className="price_head">
           <div className="price_aa">

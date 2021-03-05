@@ -4,7 +4,7 @@ import { FC } from "react";
 interface Props {
   amount: string;
   actionName: string;
-  handleAmount: () => {};
+  handleAmount: Function;
 }
 
 const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
@@ -16,7 +16,7 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
         <button
           disabled={amount === ""}
           className="btn btn-lg btn-custom-primary"
-          onClick={handleAmount}
+          onClick={() => handleAmount()}
           type="button"
         >
           {actionName}

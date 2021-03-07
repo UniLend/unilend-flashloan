@@ -8,6 +8,7 @@ import Layout from "components/Layout/Layout";
 import Deposit from "components/View/Deposit";
 import Redeem from "components/View/Redeem";
 import Airdrop from "components/View/Airdrop";
+import Donate from "components/View/Donate";
 import dotEnv from "dotenv";
 import useWalletConnect from "hooks/useWalletConnect";
 declare const window: any;
@@ -47,6 +48,7 @@ function App() {
                 <Switch>
                   <Route path="/deposit" exact component={Deposit} />
                   <Route path="/redeem" exact component={Redeem} />
+                  <Route path="/donate" exact component={Donate} />
                   <Route path="/airdrop" exact component={Airdrop} />
                   <Redirect from="/" to="/deposit" />
                   <Redirect from="*" to="/deposit" />

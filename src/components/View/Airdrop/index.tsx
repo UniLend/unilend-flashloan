@@ -40,7 +40,6 @@ const Airdrop: FC<Props> = (props) => {
     <CurrencySelectModel
       currFieldName={currFieldName}
       handleCurrChange={(selectedField) => handleCurrChange(selectedField)}
-      show={showModel}
       handleClose={handleModelClose}
     />
   );

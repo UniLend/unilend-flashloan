@@ -16,7 +16,7 @@ const Deposit: FC<Props> = (props) => {
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [depositAmount, setDepositAmount] = useState<any>("");
   const [showModel, setShowModel] = useState<boolean>(false);
-  const {handleDeposit} = useActions();
+  const { handleDeposit } = useActions();
   const { accounts } = useWalletConnect();
 
   const handleModelOpen = (fieldName: string) => {
@@ -40,7 +40,6 @@ const Deposit: FC<Props> = (props) => {
     <CurrencySelectModel
       currFieldName={currFieldName}
       handleCurrChange={(selectedField) => handleCurrChange(selectedField)}
-      show={showModel}
       handleClose={handleModelClose}
     />
   );

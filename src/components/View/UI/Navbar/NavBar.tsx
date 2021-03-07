@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Dispatch } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import logo from "../../../../assets/logo.svg";
 import walletlight from "../../../../assets/wallet-light.svg";
@@ -9,19 +10,15 @@ import moon from "../../../../assets/moon.svg";
 import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
-import { shortenAddress } from "utils";
+import { SettingAction } from "state/actions/settingsA";
 interface Props extends RouteComponentProps<any> {}
 
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
-  const { themeChange } = useActions();
-  const {
-    walletConnected,
-    accounts,
-    loading,
-    handleWalletConnect,
-  } = useWalletConnect();
+  const { themeChange, setActiveTab } = useActions();
+  const { handleWalletConnect } = useWalletConnect();
+  const dispatch = useDispatch<Dispatch<SettingAction>>();
 
   useEffect(() => {
     setCurrentPage(props.location.pathname);
@@ -55,6 +52,7 @@ const NavBar: React.FC<Props> = (props) => {
                   }
                   aria-current="page"
                   to="/deposit"
+                  onClick={() => dispatch(setActiveTab("deposit"))}
                 >
                   Deposit
                 </Link>
@@ -67,6 +65,7 @@ const NavBar: React.FC<Props> = (props) => {
                   }
                   aria-current="page"
                   to="/redeem"
+                  onClick={() => dispatch(setActiveTab("redeem"))}
                 >
                   Redeem
                 </Link>
@@ -79,6 +78,7 @@ const NavBar: React.FC<Props> = (props) => {
                   }
                   aria-current="page"
                   to="/donate"
+                  onClick={() => dispatch(setActiveTab("donate"))}
                 >
                   Donate
                 </Link>
@@ -91,45 +91,29 @@ const NavBar: React.FC<Props> = (props) => {
                   }
                   aria-current="page"
                   to="/airdrop"
+                  onClick={() => dispatch(setActiveTab("airdrop"))}
                 >
                   Airdrop
                 </Link>
               </li>
             </ul>
           </div>
-          {(accounts && accounts.length) || walletConnected ? (
-            <button
-              className={`d-flex btn ${
-                theme === "dark" && "btn-dark"
-              } btn-custom-secondary`}
-              onClick={connectWallet}
-            >
-              {shortenAddress(accounts[0])}
-            </button>
-          ) : (
-            <button
-              className={`d-flex btn ${
-                theme === "dark" && "btn-dark"
-              } btn-custom-secondary`}
-              onClick={connectWallet}
-            >
-              {!loading ? (
-                <span>
-                  <img
-                    src={theme === "light" ? walletlight : walletdark}
-                    width="26"
-                    alt="Wallet"
-                    className="d-inline-block px-1"
-                  />
-                  Connect wallet
-                </span>
-              ) : (
-                <div className="spinner-border" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
-              )}
-            </button>
-          )}
+          <button
+            className={`d-flex btn ${
+              theme === "dark" && "btn-dark"
+            } btn-custom-secondary`}
+            onClick={connectWallet}
+          >
+            <span>
+              <img
+                src={theme === "light" ? walletlight : walletdark}
+                width="26"
+                alt="Wallet"
+                className="d-inline-block px-1"
+              />
+              Connect wallet
+            </span>
+          </button>
           <button
             onClick={() => handleUpdate()}
             className={`d-flex ml-3 btn ${

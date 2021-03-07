@@ -7,7 +7,7 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 
 interface Props {}
 
-const Denote: FC<Props> = (props) => {
+const Donate: FC<Props> = (props) => {
   const [tokenType, setTokenType] = useState<string>("ht");
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [donateAmount, setDonateAmount] = useState<string>("");
@@ -73,4 +73,4 @@ const Denote: FC<Props> = (props) => {
   );
 };
 
-export default Denote;
+export default Donate;

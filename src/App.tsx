@@ -11,10 +11,11 @@ import Airdrop from "components/View/Airdrop";
 import Donate from "components/View/Donate";
 import dotEnv from "dotenv";
 import useWalletConnect from "hooks/useWalletConnect";
+import CommonCard from "components/View/CommonCard";
 declare const window: any;
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
-  const { theme } = useTypedSelector((state) => state.settings);
+  const { theme, activeTab } = useTypedSelector((state) => state.settings);
   const { handleWalletConnect } = useWalletConnect();
 
   useEffect(() => {
@@ -46,10 +47,12 @@ function App() {
                 style={{ height: "100%", overflow: "auto", paddingTop: "60px" }}
               >
                 <Switch>
-                  <Route path="/deposit" exact component={Deposit} />
-                  <Route path="/redeem" exact component={Redeem} />
-                  <Route path="/donate" exact component={Donate} />
-                  <Route path="/airdrop" exact component={Airdrop} />
+                  <Route
+                    key={activeTab}
+                    path={`/${activeTab}`}
+                    exact
+                    render={() => <CommonCard activeTab={activeTab} />}
+                  />
                   <Redirect from="/" to="/deposit" />
                   <Redirect from="*" to="/deposit" />
                 </Switch>

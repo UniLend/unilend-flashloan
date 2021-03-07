@@ -23,3 +23,8 @@ export const themeChange = (currTheme: string) => {
     }
   };
 };
+
+export const setActiveTab = (activeTab: string) => ({
+  type: ActionType.SET_ACTIVE_TAB,
+  payload: activeTab,
+});

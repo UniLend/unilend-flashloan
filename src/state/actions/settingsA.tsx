@@ -5,4 +5,8 @@ interface Theme {
   payload: string;
 }
 
-export type SettingAction = Theme;
+interface ActiveTab {
+  type: string;
+  payload: string;
+}
+export type SettingAction = Theme | ActiveTab;

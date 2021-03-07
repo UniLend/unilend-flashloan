@@ -25,7 +25,7 @@ const CommonCard = (props: props) => {
     show: false,
     currency: "ht",
   });
-  const { handleDeposit, handleRedeem } = useActions();
+  const { handleDeposit, handleRedeem, handleDonate } = useActions();
   const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 
   const handleAmount = () => {
@@ -38,22 +38,7 @@ const CommonCard = (props: props) => {
         handleRedeem(amount, accounts[0]);
         break;
       case "donate":
-        // const fullAmount = web3.utils.toWei(redeemAmount, "ether");
-
-        // let address;
-        // FlashloanLBCore.methods
-        //   .getDonationContract()
-        //   .call((error: any, result: any) => {
-        //     if (!error && result) {
-        //       console.log(result);
-        //       address = result;
-        //     } else {
-        //       console.log(error);
-        //     }
-        //   });
-        // UnilendFDonation.methods.donate(address, fullAmount).send({
-        //   from: accounts[0],
-        // });
+        handleDonate(amount, accounts[0]);
         break;
       case "airdrop":
         break;

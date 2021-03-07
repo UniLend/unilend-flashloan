@@ -11,15 +11,20 @@ import { useActions } from "../../../../hooks/useActions";
 import { useTypedSelector } from "../../../../hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
+import { shortenAddress } from "components/Helpers";
 interface Props extends RouteComponentProps<any> {}
 
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { themeChange, setActiveTab } = useActions();
-  const { handleWalletConnect } = useWalletConnect();
   const dispatch = useDispatch<Dispatch<SettingAction>>();
-
+  const {
+    walletConnected,
+    accounts,
+    loading,
+    handleWalletConnect,
+  } = useWalletConnect();
   useEffect(() => {
     setCurrentPage(props.location.pathname);
   }, [props.location.pathname]);
@@ -98,22 +103,39 @@ const NavBar: React.FC<Props> = (props) => {
               </li>
             </ul>
           </div>
-          <button
-            className={`d-flex btn ${
-              theme === "dark" && "btn-dark"
-            } btn-custom-secondary`}
-            onClick={connectWallet}
-          >
-            <span>
-              <img
-                src={theme === "light" ? walletlight : walletdark}
-                width="26"
-                alt="Wallet"
-                className="d-inline-block px-1"
-              />
-              Connect wallet
-            </span>
-          </button>
+          {(accounts && accounts.length) || walletConnected ? (
+            <button
+              className={`d-flex btn ${
+                theme === "dark" && "btn-dark"
+              } btn-custom-secondary`}
+              onClick={connectWallet}
+            >
+              {shortenAddress(accounts[0])}
+            </button>
+          ) : (
+            <button
+              className={`d-flex btn ${
+                theme === "dark" && "btn-dark"
+              } btn-custom-secondary`}
+              onClick={connectWallet}
+            >
+              {!loading ? (
+                <span>
+                  <img
+                    src={theme === "light" ? walletlight : walletdark}
+                    width="26"
+                    alt="Wallet"
+                    className="d-inline-block px-1"
+                  />
+                  Connect wallet
+                </span>
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+          )}
           <button
             onClick={() => handleUpdate()}
             className={`d-flex ml-3 btn ${

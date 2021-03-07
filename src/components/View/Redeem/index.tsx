@@ -19,7 +19,7 @@ const Redeem: FC<Props> = (props) => {
   const [currFieldName, setCurrFieldName] = useState<string>("");
   const [showModel, setShowModel] = useState<boolean>(false);
   const { accounts } = useWalletConnect();
-  // const { handleRedeem } = useActions();
+  const { handleRedeem } = useActions();
   const handleModelOpen = (fieldName: string) => {
     setCurrFieldName(fieldName);
     setShowModel(true);
@@ -30,24 +30,24 @@ const Redeem: FC<Props> = (props) => {
   };
 
   const handleRedeemAmount = () => {
-    // handleRedeem(redeemAmount, accounts[0]);
+    handleRedeem(redeemAmount, accounts[0]);
     // donate contract
-    const fullAmount = web3.utils.toWei(redeemAmount, "ether");
+    // const fullAmount = web3.utils.toWei(redeemAmount, "ether");
 
-    let address;
-    FlashloanLBCore.methods
-      .getDonationContract()
-      .call((error: any, result: any) => {
-        if (!error && result) {
-          console.log(result);
-          address = result;
-        } else {
-          console.log(error);
-        }
-      });
-    UnilendFDonation.methods.donate(address, fullAmount).send({
-      from: accounts[0],
-    });
+    // let address;
+    // FlashloanLBCore.methods
+    //   .getDonationContract()
+    //   .call((error: any, result: any) => {
+    //     if (!error && result) {
+    //       console.log(result);
+    //       address = result;
+    //     } else {
+    //       console.log(error);
+    //     }
+    //   });
+    // UnilendFDonation.methods.donate(address, fullAmount).send({
+    //   from: accounts[0],
+    // });
   };
 
   const handleCurrChange = (selectedField: any) => {

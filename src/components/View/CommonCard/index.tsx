@@ -4,6 +4,7 @@ import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
+import { useActions } from "hooks/useActions";
 
 interface props {
   activeTab: string;
@@ -18,15 +19,48 @@ interface ModalType {
 const CommonCard = (props: props) => {
   const { activeTab } = props;
 
-  const [amount, setAmount] = useState<number | null>(null);
+  const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
     fieldName: "",
     show: false,
     currency: "ht",
   });
+  const { handleDeposit, handleRedeem } = useActions();
   const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 
-  const handleAmount = () => {};
+  const handleAmount = () => {
+    console.log(amount);
+    switch (activeTab) {
+      case "deposit":
+        handleDeposit(amount, accounts[0]);
+        break;
+      case "redeem":
+        handleRedeem(amount, accounts[0]);
+        break;
+      case "donate":
+        // const fullAmount = web3.utils.toWei(redeemAmount, "ether");
+
+        // let address;
+        // FlashloanLBCore.methods
+        //   .getDonationContract()
+        //   .call((error: any, result: any) => {
+        //     if (!error && result) {
+        //       console.log(result);
+        //       address = result;
+        //     } else {
+        //       console.log(error);
+        //     }
+        //   });
+        // UnilendFDonation.methods.donate(address, fullAmount).send({
+        //   from: accounts[0],
+        // });
+        break;
+      case "airdrop":
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleModal = (field: string, show: boolean, currency?: string) => {
     setModalInfo({
@@ -65,11 +99,11 @@ const CommonCard = (props: props) => {
       <ContentCard title={`${capitalize(activeTab)}`}>
         <div className="swap-root">
           <FieldCard
-            onF1Change={(e) => setAmount(parseInt(e.target.value))}
+            onF1Change={(e) => setAmount(e.target.value)}
             handleModelOpen={() => handleModal(activeTab, true)}
             fieldLabel="Amount"
             fieldValue={amount}
-            fieldType="number"
+            fieldType="text"
             selectLabel={``}
             selectValue={modalInfo.currency ? modalInfo.currency : ""}
           />

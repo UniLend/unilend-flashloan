@@ -1,5 +1,9 @@
 import { ActionType } from "../action-types";
 
+interface AccountBalance {
+  type: ActionType.ACCOUNT_BALANCE;
+  payload: string;
+}
 interface ConnectWalletAction {
   type: ActionType.CONNECT_WALLET;
 }
@@ -17,4 +21,5 @@ interface ConnectWalletErrorAction {
 export type Action =
   | ConnectWalletAction
   | ConnectWalletSuccessAction
-  | ConnectWalletErrorAction;
+  | ConnectWalletErrorAction
+  | AccountBalance;

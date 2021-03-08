@@ -7,7 +7,7 @@ import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import { useActions } from "hooks/useActions";
 
 interface props {
-  activeTab: string;
+  activeTab: string | null;
 }
 
 interface ModalType {
@@ -56,7 +56,7 @@ const CommonCard = (props: props) => {
   };
 
   const handleMainButton = () => {
-    if (accounts && accounts.length && walletConnected) {
+    if (accounts && accounts.length && walletConnected && activeTab) {
       return (
         <button
           disabled={!amount}
@@ -81,30 +81,32 @@ const CommonCard = (props: props) => {
 
   return (
     <>
-      <ContentCard title={`${capitalize(activeTab)}`}>
-        <div className="swap-root">
-          <FieldCard
-            onF1Change={(e) => setAmount(e.target.value)}
-            handleModelOpen={() => handleModal(activeTab, true)}
-            fieldLabel="Amount"
-            fieldValue={amount}
-            fieldType="text"
-            selectLabel={``}
-            selectValue={modalInfo.currency ? modalInfo.currency : ""}
-          />
-          <div className="d-grid py-3">{handleMainButton()}</div>
-          {activeTab === "deposit" && (
-            <div className="price_head">
-              <div className="price_aa">
-                <div className="price-list">
-                  Pool percentage <span className="price">-</span>
+      {activeTab && (
+        <ContentCard title={`${capitalize(activeTab)}`}>
+          <div className="swap-root">
+            <FieldCard
+              onF1Change={(e) => setAmount(e.target.value)}
+              handleModelOpen={() => handleModal(activeTab, true)}
+              fieldLabel="Amount"
+              fieldValue={amount}
+              fieldType="text"
+              selectLabel={``}
+              selectValue={modalInfo.currency ? modalInfo.currency : ""}
+            />
+            <div className="d-grid py-3">{handleMainButton()}</div>
+            {activeTab === "deposit" && (
+              <div className="price_head">
+                <div className="price_aa">
+                  <div className="price-list">
+                    Pool percentage <span className="price">-</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </ContentCard>
-      {modalInfo.show && (
+            )}
+          </div>
+        </ContentCard>
+      )}
+      {modalInfo.show && activeTab && (
         <CurrencySelectModel
           currFieldName={modalInfo.fieldName}
           handleCurrChange={(selectedcrr) =>

@@ -5,6 +5,7 @@ import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import { useActions } from "hooks/useActions";
+import MainButton from "../MainButton";
 
 interface props {
   activeTab: string | null;
@@ -29,7 +30,6 @@ const CommonCard = (props: props) => {
   const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
 
   const handleAmount = () => {
-    console.log(amount);
     switch (activeTab) {
       case "deposit":
         handleDeposit(amount, accounts[0]);
@@ -45,6 +45,7 @@ const CommonCard = (props: props) => {
       default:
         break;
     }
+    setAmount("");
   };
 
   const handleModal = (field: string, show: boolean, currency?: string) => {
@@ -53,30 +54,6 @@ const CommonCard = (props: props) => {
       show,
       currency: currency ? currency : modalInfo.currency,
     });
-  };
-
-  const handleMainButton = () => {
-    if (accounts && accounts.length && walletConnected && activeTab) {
-      return (
-        <button
-          disabled={!amount}
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleAmount}
-          type="button"
-        >
-          {capitalize(activeTab)}
-        </button>
-      );
-    } else {
-      return (
-        <button
-          className="btn btn-lg btn-custom-primary"
-          onClick={handleWalletConnect}
-        >
-          Connect Wallet
-        </button>
-      );
-    }
   };
 
   return (
@@ -93,7 +70,11 @@ const CommonCard = (props: props) => {
               selectLabel={``}
               selectValue={modalInfo.currency ? modalInfo.currency : ""}
             />
-            <div className="d-grid py-3">{handleMainButton()}</div>
+            <MainButton
+              amount={amount}
+              actionName={`${capitalize(activeTab)}`}
+              handleAmount={() => handleAmount()}
+            />
             {activeTab === "deposit" && (
               <div className="price_head">
                 <div className="price_aa">

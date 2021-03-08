@@ -9,6 +9,10 @@ import dotEnv from "dotenv";
 import useWalletConnect from "hooks/useWalletConnect";
 import CommonCard from "components/View/CommonCard";
 declare const window: any;
+interface ProviderMessage {
+  type: string;
+  data: unknown;
+}
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
@@ -23,6 +27,9 @@ function App() {
       });
       window.ethereum.on("chainChanged", (chainId: any) => {
         window.location.reload();
+      });
+      window.ethereum.on("message", (message: ProviderMessage) => {
+        console.log(message);
       });
     }
     setTimeout(() => {

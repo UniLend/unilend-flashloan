@@ -3,12 +3,14 @@ import { SettingAction } from "../actions/settingsA";
 
 interface SettingsState {
   theme: string;
-  activeTab: string;
+  activeTab: string | null;
 }
 
 const initialState = {
   theme: localStorage.getItem("theme") || "light",
-  activeTab: "deposit",
+  activeTab: localStorage.getItem("activeTab")
+    ? localStorage.getItem("activeTab")
+    : "deposit",
 };
 
 const settingsReducer = (
@@ -19,6 +21,10 @@ const settingsReducer = (
     case ActionType.CURRENT_THEME:
       return { ...state, theme: action.payload };
     case ActionType.SET_ACTIVE_TAB:
+      localStorage.setItem(
+        "activeTab",
+        action.payload ? action.payload : "deposit"
+      );
       return {
         ...state,
         activeTab: action.payload ? action.payload : "deposit",

@@ -1,5 +1,7 @@
+import { approveTokenMaximumValue, AssetAddress } from "ethereum/contracts";
 import {
   FlashloanLBCore,
+  IERC20,
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
 import web3 from "ethereum/web3";
@@ -12,16 +14,37 @@ export const handleDonate = (donateAmount: any, address: string) => {
     try {
       const fullAmount = web3.utils.toWei(donateAmount, "ether");
 
-      let address;
       FlashloanLBCore.methods
         .getDonationContract()
         .call((error: any, result: any) => {
           if (!error && result) {
             console.log(result);
-            address = result;
-            UnilendFDonation.methods.donate(address, fullAmount).send({
-              from: address,
-            });
+            let contractAddress = result;
+            let allowance;
+            IERC20.methods
+              .allowance(address, contractAddress)
+              .call((error: any, result: any) => {
+                if (!error && result) {
+                  console.log("allowance", result);
+                  allowance = result;
+                  if (allowance === "0") {
+                    IERC20.methods
+                      .approve(contractAddress, approveTokenMaximumValue)
+                      .send({
+                        from: address,
+                      });
+                  }
+                  let donationContract = UnilendFDonation(contractAddress);
+                  console.log(donationContract);
+                  donationContract.methods
+                    .donate(AssetAddress, fullAmount)
+                    .send({
+                      from: address,
+                    });
+                } else {
+                  console.log(error);
+                }
+              });
           } else {
             dispatch({
               type: ActionType.DONATE_FAILED,

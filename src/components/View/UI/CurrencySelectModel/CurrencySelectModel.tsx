@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
 import Logo from "../../../../assets/htLogo.svg";
@@ -35,6 +35,7 @@ const CurrencySelectModel: FC<Props> = ({
         (e) => searchWord(e.name, searchText) || searchWord(e.desc, searchText)
       );
     setFilteredList(filteredList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyList.currency, searchText]);
 
   return (

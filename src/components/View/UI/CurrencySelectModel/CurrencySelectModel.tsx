@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, Children } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
 import Logo from "../../../../assets/htLogo.svg";
@@ -66,37 +66,44 @@ const CurrencySelectModel: FC<Props> = ({
         <Modal.Body>
           <div className="curr-list-group">
             <ListGroup>
-              {filteredList.map((item: any) => (
-                <ListGroup.Item
-                  key={item.id}
-                  action
-                  onClick={() => handleCurrChange(item.name)}
-                >
-                  <div className="row">
-                    <div className="col-2 px-0 curr-list">
-                      <img width="24" className="list-icon" src={Logo} alt="" />
-                    </div>
-                    <div className="col-10">
-                      <div className="row">
-                        <h6
-                          className="mb-0"
-                          style={{ textTransform: "uppercase" }}
-                        >
-                          {item.name}
-                        </h6>
+              {Children.toArray(
+                filteredList.map((item: any) => (
+                  <ListGroup.Item
+                    key={item.id}
+                    action
+                    onClick={() => handleCurrChange(item.name)}
+                  >
+                    <div className="row">
+                      <div className="col-2 px-0 curr-list">
+                        <img
+                          width="24"
+                          className="list-icon"
+                          src={Logo}
+                          alt=""
+                        />
                       </div>
-                      <div className="row">
-                        <p
-                          className="mb-0 list-desc"
-                          style={{ textTransform: "capitalize" }}
-                        >
-                          {item.desc}
-                        </p>
+                      <div className="col-10">
+                        <div className="row">
+                          <h6
+                            className="mb-0"
+                            style={{ textTransform: "uppercase" }}
+                          >
+                            {item.name}
+                          </h6>
+                        </div>
+                        <div className="row">
+                          <p
+                            className="mb-0 list-desc"
+                            style={{ textTransform: "capitalize" }}
+                          >
+                            {item.desc}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </ListGroup.Item>
-              ))}
+                  </ListGroup.Item>
+                ))
+              )}
             </ListGroup>
           </div>
         </Modal.Body>

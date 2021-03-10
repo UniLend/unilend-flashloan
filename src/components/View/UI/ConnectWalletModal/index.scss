@@ -1,0 +1,54 @@
+.btn-wallet-list {
+  background: transparent;
+  border: 1px solid #333;
+  color: var(--theme-page-text);
+  border-radius: 10px;
+  height: 40px;
+  &:hover {
+    border: 1px solid rgb(33, 114, 229);
+    background-color: transparent;
+    color: var(--theme-page-text);
+  }
+  &:active {
+    border: 1px solid rgb(33, 114, 229);
+    background-color: transparent !important;
+    color: var(--theme-page-text);
+  }
+  &:focus {
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--theme-page-text);
+  }
+  .text {
+    position: absolute;
+    left: 30px;
+    top: 10px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 30px;
+    top: 8px;
+  }
+
+  &:after {
+    content: "";
+    background: url(../../../../assets/metamask.023762b6.png) no-repeat 0 0;
+  }
+  //   &-icon {
+  //     @extend .btn;
+  //   }
+}
+
+.modal-theme {
+  color: var(--theme-page-text);
+}
+.modal-footer {
+  justify-content: center;
+}
+
+.wallet-footer {
+  font-size: 12px;
+}

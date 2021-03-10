@@ -38,7 +38,7 @@ const CommonCard = (props: props) => {
       case "redeem":
         handleRedeem(amount, accounts[0]);
         break;
-      case "donate":
+      case "reward":
         handleDonate(amount, accounts[0]);
         break;
       case "airdrop":

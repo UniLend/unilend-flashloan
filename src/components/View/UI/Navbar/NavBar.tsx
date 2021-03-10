@@ -2,22 +2,38 @@ import React, { useEffect, useState, Dispatch } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import logo from "../../../../assets/logo.svg";
-import walletlight from "../../../../assets/wallet-light.svg";
-import walletdark from "../../../../assets/wallet-dark.svg";
-import sun from "../../../../assets/sun.svg";
-import moon from "../../../../assets/moon.svg";
-import { useActions } from "../../../../hooks/useActions";
-import { useTypedSelector } from "../../../../hooks/useTypedSelector";
+import logo from "assets/logo.svg";
+import walletlight from "assets/wallet-light.svg";
+import walletdark from "assets/wallet-dark.svg";
+import sun from "assets/sun.svg";
+import moon from "assets/moon.svg";
+import { useActions } from "hooks/useActions";
+import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
 import { shortenAddress } from "components/Helpers";
+import ConnectWalletModal from "../ConnectWalletModal";
+import WalletStateModal from "../WalletStatusModal";
 interface Props extends RouteComponentProps<any> {}
+interface WalletConnectModal {
+  show: boolean;
+}
+interface WalletInfo {
+  show: boolean;
+  address: string;
+}
 
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { themeChange, setActiveTab } = useActions();
+  const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
+    show: false,
+  });
+  const [walletStatusInfo, setWalletStatusInfo] = useState<WalletInfo>({
+    show: false,
+    address: "",
+  });
   const dispatch = useDispatch<Dispatch<SettingAction>>();
   const {
     walletConnected,
@@ -79,13 +95,13 @@ const NavBar: React.FC<Props> = (props) => {
               <li className="nav-item">
                 <Link
                   className={
-                    currentPage === "/donate" ? "nav-link active" : "nav-link"
+                    currentPage === "/reward" ? "nav-link active" : "nav-link"
                   }
                   aria-current="page"
-                  to="/donate"
-                  onClick={() => dispatch(setActiveTab("donate"))}
+                  to="/reward"
+                  onClick={() => dispatch(setActiveTab("reward"))}
                 >
-                  Donate
+                  Reward
                 </Link>
               </li>
 
@@ -108,7 +124,12 @@ const NavBar: React.FC<Props> = (props) => {
               className={`d-flex btn ${
                 theme === "dark" && "btn-dark"
               } btn-custom-secondary`}
-              onClick={connectWallet}
+              onClick={() =>
+                setWalletStatusInfo({
+                  show: true,
+                  address: shortenAddress(accounts[0]),
+                })
+              }
             >
               {shortenAddress(accounts[0])}
             </button>
@@ -117,7 +138,7 @@ const NavBar: React.FC<Props> = (props) => {
               className={`d-flex btn ${
                 theme === "dark" && "btn-dark"
               } btn-custom-secondary`}
-              onClick={connectWallet}
+              onClick={() => setWalletModalInfo({ show: true })}
             >
               {!loading ? (
                 <span>
@@ -135,6 +156,23 @@ const NavBar: React.FC<Props> = (props) => {
                 </div>
               )}
             </button>
+          )}
+          {walletModalInfo.show && !walletConnected && (
+            <ConnectWalletModal
+              handleClose={() => setWalletModalInfo({ show: false })}
+              handleWalletConnect={() => handleWalletConnect()}
+            />
+          )}
+          {walletStatusInfo.show && walletConnected && (
+            <WalletStateModal
+              handleClose={() => {
+                setWalletStatusInfo({
+                  show: false,
+                  address: "",
+                });
+              }}
+              address={walletStatusInfo.address}
+            />
           )}
           <button
             onClick={() => handleUpdate()}

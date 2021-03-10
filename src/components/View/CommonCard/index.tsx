@@ -6,6 +6,7 @@ import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
+import ConnectWalletModal from "../UI/ConnectWalletModal";
 
 interface props {
   activeTab: string | null;
@@ -27,7 +28,7 @@ const CommonCard = (props: props) => {
     currency: "ht",
   });
   const { handleDeposit, handleRedeem, handleDonate } = useActions();
-  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
+  const { accounts, handleWalletConnect } = useWalletConnect();
 
   const handleAmount = () => {
     switch (activeTab) {
@@ -55,7 +56,9 @@ const CommonCard = (props: props) => {
       currency: currency ? currency : modalInfo.currency,
     });
   };
-
+  const walletConnect = () => {
+    handleWalletConnect();
+  };
   return (
     <>
       {activeTab && (

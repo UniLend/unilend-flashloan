@@ -1,5 +1,6 @@
 import useWalletConnect from "hooks/useWalletConnect";
-import { FC } from "react";
+import { FC, useState } from "react";
+import ConnectWalletModal from "../UI/ConnectWalletModal";
 
 interface Props {
   amount: string;
@@ -7,11 +8,21 @@ interface Props {
   handleAmount: Function;
 }
 
-const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
-  const { walletConnected, accounts, handleWalletConnect } = useWalletConnect();
+interface WalletConnectModal {
+  show: boolean;
+}
 
+const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
+  const {
+    walletConnected,
+    accounts: address,
+    handleWalletConnect,
+  } = useWalletConnect();
+  const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
+    show: false,
+  });
   function handleMainButton() {
-    if (accounts && accounts.length && walletConnected) {
+    if (address && address.length && walletConnected) {
       return (
         <button
           disabled={amount === ""}
@@ -26,17 +37,26 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
       return (
         <button
           className="btn btn-lg btn-custom-primary"
-          onClick={handleWalletConnect}
+          onClick={walletConnect}
         >
           Connect Wallet
         </button>
       );
     }
   }
-
+  function walletConnect() {
+    setWalletModalInfo({ show: true });
+  }
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
+
+      {walletModalInfo.show && !walletConnected && (
+        <ConnectWalletModal
+          handleClose={() => setWalletModalInfo({ show: false })}
+          handleWalletConnect={() => handleWalletConnect()}
+        />
+      )}
     </>
   );
 };

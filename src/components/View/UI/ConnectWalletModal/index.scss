@@ -1,9 +1,9 @@
 .btn-wallet-list {
   background: transparent;
-  border: 1px solid #333;
+  border: 1px solid var(--theme-wallet-list-border);
   color: var(--theme-page-text);
   border-radius: 10px;
-  height: 40px;
+  height: 50px;
   &:hover {
     border: 1px solid rgb(33, 114, 229);
     background-color: transparent;
@@ -22,7 +22,7 @@
   .text {
     position: absolute;
     left: 30px;
-    top: 10px;
+    top: 15px;
   }
 
   .icon {
@@ -30,12 +30,12 @@
     height: 24px;
     position: absolute;
     right: 30px;
-    top: 8px;
+    top: 13px;
   }
 
   &:after {
     content: "";
-    background: url(../../../../assets/metamask.023762b6.png) no-repeat 0 0;
+    background: url(../../../../assets/metamask.png) no-repeat 0 0;
   }
   //   &-icon {
   //     @extend .btn;
@@ -51,4 +51,7 @@
 
 .wallet-footer {
   font-size: 12px;
+}
+.model-title-custom {
+  font-size: 1rem;
 }

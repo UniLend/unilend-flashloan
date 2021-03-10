@@ -18,9 +18,11 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
     accounts: address,
     handleWalletConnect,
   } = useWalletConnect();
+
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
+
   function handleMainButton() {
     if (address && address.length && walletConnected) {
       return (
@@ -44,9 +46,13 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
       );
     }
   }
+
   function walletConnect() {
-    setWalletModalInfo({ show: true });
+    setWalletModalInfo({
+      show: true,
+    });
   }
+
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>

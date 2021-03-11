@@ -14,6 +14,7 @@ import { SettingAction } from "state/actions/settingsA";
 import { shortenAddress } from "components/Helpers";
 import ConnectWalletModal from "../ConnectWalletModal";
 import WalletStateModal from "../WalletStatusModal";
+import { Wallet } from "components/Helpers/Types";
 interface Props extends RouteComponentProps<any> {}
 interface WalletConnectModal {
   show: boolean;
@@ -160,7 +161,9 @@ const NavBar: React.FC<Props> = (props) => {
           {walletModalInfo.show && !walletConnected && (
             <ConnectWalletModal
               handleClose={() => setWalletModalInfo({ show: false })}
-              handleWalletConnect={() => handleWalletConnect()}
+              handleWalletConnect={(wallet: Wallet) => {
+                handleWalletConnect(wallet);
+              }}
             />
           )}
           {walletStatusInfo.show && walletConnected && (

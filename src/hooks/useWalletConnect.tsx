@@ -1,3 +1,4 @@
+import { Wallet } from "components/Helpers/Types";
 import { useCallback } from "react";
 import { useActions } from "./useActions";
 import { useTypedSelector } from "./useTypedSelector";
@@ -8,9 +9,13 @@ export default function useWalletConnect() {
   );
 
   const { connectWalletAction } = useActions();
-  const handleWalletConnect = useCallback(() => {
+  const handleWalletConnect = useCallback((wallet?: Wallet) => {
     console.log("CONNECTING WALLET");
-    connectWalletAction();
+    if (wallet) {
+      connectWalletAction(wallet);
+    } else {
+      connectWalletAction();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

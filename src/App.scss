@@ -162,6 +162,13 @@ input[type="number"] {
   float: right;
 }
 
+.walletconnect-qrcode__base {
+  background: #25292e47 !important;
+}
+// .modal-wrapper {
+// background: transparent !important;
+// }
+
 @keyframes run {
   0% {
     opacity: 0;

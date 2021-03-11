@@ -1,5 +1,5 @@
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { Children, FC } from "react";
+import { Children, FC, useEffect } from "react";
 import { Button, Col, Container, Modal, Row } from "react-bootstrap";
 import Metamask from "assets/metamask.png";
 import WalletConnectIcon from "assets/walletConnectIcon.svg";
@@ -16,13 +16,15 @@ interface Wallet {
   id: number;
   name: string;
   icon: string;
+  link?: string;
 }
 
 const wallets: Wallet[] = [
   {
     id: 1,
-    name: "metamask",
+    name: (window as any).ethereum ? "metamask" : "Install metamask",
     icon: Metamask,
+    link: (window as any).ethereum ? "" : "https://metamask.io/",
   },
   {
     id: 2,
@@ -31,7 +33,7 @@ const wallets: Wallet[] = [
   },
   {
     id: 3,
-    name: "Coinbase Wallet",
+    name: "CoinbaseWallet",
     icon: CoinbaseWalletIcon,
   },
   {
@@ -52,7 +54,9 @@ const ConnectWalletModal: FC<Props> = ({
   handleWalletConnect,
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
-
+  useEffect(() => {
+    console.log((window as any).ethereum);
+  });
   return (
     <>
       <Modal
@@ -76,11 +80,23 @@ const ConnectWalletModal: FC<Props> = ({
                     <Button
                       className="btn-wallet-list"
                       onClick={() => {
-                        handleWalletConnect();
+                        handleWalletConnect(wallet);
                       }}
                       block
                     >
-                      <span className="text">{capitalize(wallet.name)}</span>
+                      <span className="text">
+                        {wallet.link && wallet.link !== "" ? (
+                          <a
+                            href={wallet.link}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {capitalize(wallet.name)}
+                          </a>
+                        ) : (
+                          capitalize(wallet.name)
+                        )}
+                      </span>
                       <img className="icon" src={wallet.icon} alt="metamask" />
                     </Button>
                   </Col>
@@ -91,7 +107,7 @@ const ConnectWalletModal: FC<Props> = ({
         </Modal.Body>
         <Modal.Footer className="wallet-footer p-2">
           New to Ethereum?{" "}
-          <a href="https://ethereum.org/en/wallets/">
+          <a href="https://ethereum.org/en/wallets/" target="_blank">
             Learn more about wallets
           </a>
         </Modal.Footer>

@@ -1,3 +1,4 @@
+import { Wallet } from "components/Helpers/Types";
 import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
@@ -60,7 +61,7 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
       {walletModalInfo.show && !walletConnected && (
         <ConnectWalletModal
           handleClose={() => setWalletModalInfo({ show: false })}
-          handleWalletConnect={() => handleWalletConnect()}
+          handleWalletConnect={(wallet: Wallet) => handleWalletConnect(wallet)}
         />
       )}
     </>

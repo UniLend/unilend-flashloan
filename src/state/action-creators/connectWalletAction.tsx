@@ -47,14 +47,21 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       break;
     case "CoinbaseWallet":
       try {
-        CoinbaseProvider.enable().then((accounts: string[]) => {
-          console.log(`User's address is ${accounts[0]}`);
-          CoinbaseWeb3.eth.defaultAccount = accounts[0];
-          dispatch({
-            type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [...accounts],
+        CoinbaseProvider.enable()
+          .then((accounts: string[]) => {
+            console.log(`User's address is ${accounts[0]}`);
+            CoinbaseWeb3.eth.defaultAccount = accounts[0];
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...accounts],
+            });
+          })
+          .catch((err) => {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_ERROR,
+              payload: err.message,
+            });
           });
-        });
       } catch (err) {
         dispatch({
           type: ActionType.CONNECT_WALLET_ERROR,
@@ -93,13 +100,21 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
     case "Portis":
       try {
         portisWeb3.eth.getAccounts((error, accounts) => {
-          let address: string[];
-          address = accounts;
-          dispatch({
-            type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [...address],
-          });
+          if (!error) {
+            let address: string[];
+            address = accounts;
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...address],
+            });
+          } else {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_ERROR,
+              payload: error.message,
+            });
+          }
         });
+        console.log(portisWeb3);
       } catch (err) {
         dispatch({
           type: ActionType.CONNECT_WALLET_ERROR,

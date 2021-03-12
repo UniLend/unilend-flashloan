@@ -4,37 +4,43 @@ import {
   IERC20,
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
-import web3 from "ethereum/web3";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DonateAction } from "state/actions/donateA";
 
-export const handleDonate = (donateAmount: any, address: string) => {
+export const handleDonate = (
+  currentProvider: any,
+  donateAmount: any,
+  address: string
+) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     try {
-      const fullAmount = web3.utils.toWei(donateAmount, "ether");
-
-      FlashloanLBCore.methods
-        .getDonationContract()
+      const fullAmount = currentProvider.utils.toWei(donateAmount, "ether");
+      let _IERC20 = IERC20(currentProvider);
+      FlashloanLBCore(currentProvider)
+        .methods.getDonationContract()
         .call((error: any, result: any) => {
           if (!error && result) {
             console.log(result);
             let contractAddress = result;
             let allowance;
-            IERC20.methods
+            _IERC20.methods
               .allowance(address, contractAddress)
               .call((error: any, result: any) => {
                 if (!error && result) {
                   console.log("allowance", result);
                   allowance = result;
                   if (allowance === "0") {
-                    IERC20.methods
+                    _IERC20.methods
                       .approve(contractAddress, approveTokenMaximumValue)
                       .send({
                         from: address,
                       });
                   }
-                  let donationContract = UnilendFDonation(contractAddress);
+                  let donationContract = UnilendFDonation(
+                    currentProvider,
+                    contractAddress
+                  );
                   console.log(donationContract);
                   donationContract.methods
                     .donate(AssetAddress, fullAmount)

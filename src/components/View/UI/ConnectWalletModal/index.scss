@@ -19,6 +19,10 @@
     box-shadow: none;
     color: var(--theme-page-text);
   }
+  &:disabled {
+    background-color: transparent;
+    border-color: none;
+  }
   .text {
     position: absolute;
     left: 30px;

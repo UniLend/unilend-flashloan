@@ -4,6 +4,11 @@ interface AccountBalance {
   type: ActionType.ACCOUNT_BALANCE;
   payload: string;
 }
+
+interface CurrentProvider {
+  type: ActionType.CURRENT_PROVIDER;
+  payload: string;
+}
 interface ConnectWalletAction {
   type: ActionType.CONNECT_WALLET;
 }
@@ -19,6 +24,7 @@ interface ConnectWalletErrorAction {
 }
 
 export type Action =
+  | CurrentProvider
   | ConnectWalletAction
   | ConnectWalletSuccessAction
   | ConnectWalletErrorAction

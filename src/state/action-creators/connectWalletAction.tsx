@@ -3,10 +3,11 @@ import { web3Service } from "ethereum/web3Service";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { Action } from "state/actions/connectWalletA";
-import web3 from "ethereum/connectWalletWeb3";
+import CWweb3 from "ethereum/connectWalletWeb3";
 import { CoinbaseProvider, CoinbaseWeb3 } from "ethereum/coinbaseWeb3";
 import { formaticWeb3 } from "ethereum/formatic";
 import { portisWeb3 } from "ethereum/portis";
+import web3 from "ethereum/web3";
 
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   let accounts: any;
@@ -30,10 +31,10 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       break;
     case "walletConnect":
       try {
-        let provider: any = web3.connectWalletProvider;
+        let provider: any = CWweb3.connectWalletProvider;
         console.log(provider);
         await provider.enable();
-        accounts = await web3.connectWalletWeb3.eth.getAcoounts();
+        accounts = await CWweb3.connectWalletWeb3.eth.getAcoounts();
         dispatch({
           type: ActionType.CONNECT_WALLET_SUCCESS,
           payload: [...accounts],
@@ -77,6 +78,8 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             .enable()
             .then((res: any) => {
               let address: string[];
+              console.log(res);
+
               address = res;
               dispatch({
                 type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -149,6 +152,28 @@ export const connectWalletAction = (wallet?: Wallet) => {
     try {
       console.log("WALLET", wallet);
       if (wallet) {
+        let currentProvider: any;
+        switch (wallet.name) {
+          case "metamask":
+            currentProvider = web3;
+            break;
+          case "walletConnect":
+            currentProvider = CWweb3.connectWalletWeb3;
+            break;
+          case "CoinbaseWallet":
+            currentProvider = CoinbaseWeb3;
+            break;
+          case "Formatic":
+            currentProvider = formaticWeb3;
+            break;
+          case "Portis":
+            currentProvider = portisWeb3;
+            break;
+        }
+        dispatch({
+          type: ActionType.CURRENT_PROVIDER,
+          payload: currentProvider,
+        });
         handleWalletConnect(wallet, dispatch);
       }
     } catch (err) {

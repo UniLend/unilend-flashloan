@@ -28,18 +28,18 @@ const CommonCard = (props: props) => {
     currency: "ht",
   });
   const { handleDeposit, handleRedeem, handleDonate } = useActions();
-  const { accounts, handleWalletConnect } = useWalletConnect();
+  const { accounts, currentProvider, handleWalletConnect } = useWalletConnect();
 
   const handleAmount = () => {
     switch (activeTab) {
       case "deposit":
-        handleDeposit(amount, accounts[0]);
+        handleDeposit(currentProvider, amount, accounts[0]);
         break;
       case "redeem":
-        handleRedeem(amount, accounts[0]);
+        handleRedeem(currentProvider, amount, accounts[0]);
         break;
       case "reward":
-        handleDonate(amount, accounts[0]);
+        handleDonate(currentProvider, amount, accounts[0]);
         break;
       case "airdrop":
         break;

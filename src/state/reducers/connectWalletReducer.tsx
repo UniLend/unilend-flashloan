@@ -8,6 +8,7 @@ interface ConnectWalletState {
   walletConnected: boolean;
   accounts: string[];
   accountBalance: string;
+  currentProvider: string;
 }
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   walletConnected: false,
   accounts: [],
   accountBalance: "0",
+  currentProvider: "",
 };
 
 const connectWalletReducer = (
@@ -26,6 +28,8 @@ const connectWalletReducer = (
   switch (action.type) {
     case ActionType.ACCOUNT_BALANCE:
       return { ...state };
+    case ActionType.CURRENT_PROVIDER:
+      return { ...state, currentProvider: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };
     case ActionType.CONNECT_WALLET_SUCCESS:

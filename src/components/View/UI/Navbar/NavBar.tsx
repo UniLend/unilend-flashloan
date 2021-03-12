@@ -7,6 +7,7 @@ import walletlight from "assets/wallet-light.svg";
 import walletdark from "assets/wallet-dark.svg";
 import sun from "assets/sun.svg";
 import moon from "assets/moon.svg";
+import ethLogo from "assets/ethereum.webp";
 import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
@@ -15,6 +16,7 @@ import { shortenAddress } from "components/Helpers";
 import ConnectWalletModal from "../ConnectWalletModal";
 import WalletStateModal from "../WalletStatusModal";
 import { Wallet } from "components/Helpers/Types";
+import SwitchNetWorkModal from "../SwitchNetWorkModal";
 interface Props extends RouteComponentProps<any> {}
 interface WalletConnectModal {
   show: boolean;
@@ -22,6 +24,10 @@ interface WalletConnectModal {
 interface WalletInfo {
   show: boolean;
   address: string;
+}
+
+interface SwitchNetworkInfo {
+  show: boolean;
 }
 
 const NavBar: React.FC<Props> = (props) => {
@@ -35,6 +41,11 @@ const NavBar: React.FC<Props> = (props) => {
     show: false,
     address: "",
   });
+  const [switchNetWorkInfo, setSwitchNetworkInfo] = useState<SwitchNetworkInfo>(
+    {
+      show: false,
+    }
+  );
   const dispatch = useDispatch<Dispatch<SettingAction>>();
   const {
     walletConnected,
@@ -120,6 +131,15 @@ const NavBar: React.FC<Props> = (props) => {
               </li>
             </ul>
           </div>
+          <button
+            className={`d-flex btn ${
+              theme === "dark" && "btn-dark"
+            } btn-custom-secondary btn-round-switch`}
+            onClick={() => setSwitchNetworkInfo({ show: true })}
+          >
+            <img src={ethLogo} alt="ethereum" />
+            <span>Ethereum</span>
+          </button>
           {(accounts && accounts.length) || walletConnected ? (
             <button
               className={`d-flex btn ${
@@ -175,6 +195,13 @@ const NavBar: React.FC<Props> = (props) => {
                 });
               }}
               address={walletStatusInfo.address}
+            />
+          )}
+          {switchNetWorkInfo.show && (
+            <SwitchNetWorkModal
+              handleClose={() => {
+                setSwitchNetworkInfo({ show: false });
+              }}
             />
           )}
           <button

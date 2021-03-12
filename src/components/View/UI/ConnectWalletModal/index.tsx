@@ -54,9 +54,6 @@ const ConnectWalletModal: FC<Props> = ({
   handleWalletConnect,
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
-  useEffect(() => {
-    console.log((window as any).ethereum);
-  });
   return (
     <>
       <Modal
@@ -82,10 +79,6 @@ const ConnectWalletModal: FC<Props> = ({
                       onClick={() => {
                         handleWalletConnect(wallet);
                       }}
-                      disabled={
-                        wallet.name === "CoinbaseWallet" ||
-                        wallet.name === "walletConnect"
-                      }
                       block
                     >
                       <span className="text">
@@ -111,7 +104,11 @@ const ConnectWalletModal: FC<Props> = ({
         </Modal.Body>
         <Modal.Footer className="wallet-footer p-2">
           New to Ethereum?{" "}
-          <a href="https://ethereum.org/en/wallets/" target="_blank">
+          <a
+            href="https://ethereum.org/en/wallets/"
+            target="_blank"
+            rel="noreferrer"
+          >
             Learn more about wallets
           </a>
         </Modal.Footer>

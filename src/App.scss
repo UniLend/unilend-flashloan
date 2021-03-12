@@ -165,6 +165,56 @@ input[type="number"] {
 .walletconnect-qrcode__base {
   background: #25292e47 !important;
 }
+
+.btn-round-switch {
+  border-radius: 20px;
+  margin-right: 0.375rem;
+  padding: 4px;
+  align-items: center;
+  img {
+    vertical-align: middle;
+    border-style: none;
+    width: 30px;
+    padding-right: 5px;
+    height: auto;
+  }
+  span {
+    padding-right: 5px;
+  }
+}
+
+.modal-switch {
+  // .modal-dialog {
+  //   margin: 25% auto;
+  // }
+  .modal-header {
+    align-self: center;
+    border-bottom: none;
+  }
+}
+
+.btn-switch-pop {
+  width: 100%;
+  border-radius: 25px;
+  img {
+    width: 90px;
+    padding: 10px;
+  }
+  .selected {
+    width: 22px;
+    height: 100%;
+    padding: 2px;
+  }
+  .selected-div {
+    background-color: var(--theme-page-background);
+    display: inline-block;
+    position: absolute;
+    border-radius: 20px;
+    padding: 0px;
+    bottom: 7px;
+    right: 38px;
+  }
+}
 // .modal-wrapper {
 // background: transparent !important;
 // }

@@ -82,6 +82,10 @@ const ConnectWalletModal: FC<Props> = ({
                       onClick={() => {
                         handleWalletConnect(wallet);
                       }}
+                      disabled={
+                        wallet.name === "CoinbaseWallet" ||
+                        wallet.name === "walletConnect"
+                      }
                       block
                     >
                       <span className="text">

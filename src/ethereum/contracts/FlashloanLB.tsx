@@ -1,4 +1,3 @@
-import web3 from "ethereum/web3";
 import { AssetAddress, UnilendFlashLoanCoreContract } from ".";
 
 import UnilendFDonationABI from "../build/UnilendFDonation.json";

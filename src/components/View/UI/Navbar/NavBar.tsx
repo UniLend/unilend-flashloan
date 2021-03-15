@@ -7,7 +7,7 @@ import walletlight from "assets/wallet-light.svg";
 import walletdark from "assets/wallet-dark.svg";
 import sun from "assets/sun.svg";
 import moon from "assets/moon.svg";
-import ethLogo from "assets/ethereum.webp";
+// import ethLogo from "assets/ethereum.webp";
 import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
@@ -65,9 +65,6 @@ const NavBar: React.FC<Props> = (props) => {
 
   const handleUpdate = () => {
     themeChange(theme);
-  };
-  const connectWallet = async () => {
-    handleWalletConnect();
   };
   return (
     <>

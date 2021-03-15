@@ -12,6 +12,7 @@ interface Props {
   currFieldName: string;
   handleCurrChange: (selectedField: any) => void;
 }
+
 interface FList {
   id: number;
   name: string;

@@ -5,4 +5,9 @@ interface DepositAmount {
   payload: string;
 }
 
-export type DepositAction = DepositAmount;
+interface DepositApprovalStatus {
+  type: ActionType.DEPOSIT_APPROVAL_STATUS;
+  payload: boolean;
+}
+
+export type DepositAction = DepositAmount | DepositApprovalStatus;

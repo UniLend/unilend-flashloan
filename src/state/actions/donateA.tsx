@@ -10,4 +10,18 @@ interface DonateFailed {
   payload: string;
 }
 
-export type DonateAction = DonateSuccess | DonateFailed;
+interface DonateContract {
+  type: ActionType.GET_DONATION_CONTRACT;
+  payload: string;
+}
+
+interface DonateApprovalStatus {
+  type: ActionType.DONATE_APPROVAL_STATUS;
+  payload: boolean;
+}
+
+export type DonateAction =
+  | DonateSuccess
+  | DonateFailed
+  | DonateContract
+  | DonateApprovalStatus;

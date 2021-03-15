@@ -1,5 +1,5 @@
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { Children, FC, useEffect } from "react";
+import { Children, FC } from "react";
 import { Button, Col, Container, Modal, Row } from "react-bootstrap";
 import Metamask from "assets/metamask.png";
 import WalletConnectIcon from "assets/walletConnectIcon.svg";

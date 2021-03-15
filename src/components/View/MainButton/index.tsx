@@ -1,6 +1,9 @@
 import { Wallet } from "components/Helpers/Types";
+import { useActions } from "hooks/useActions";
+import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useState } from "react";
+// import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
 
 interface Props {
@@ -17,15 +20,25 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
   const {
     walletConnected,
     accounts: address,
+    currentProvider,
     handleWalletConnect,
   } = useWalletConnect();
 
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
-
+  const { isDepositApproved } = useTypedSelector((state) => state.deposit);
+  const { donateIsApproved, donateContractAddress } = useTypedSelector(
+    (state) => state.donate
+  );
+  const { depositApprove, donateApprove } = useActions();
   function handleMainButton() {
-    if (address && address.length && walletConnected) {
+    if (
+      address &&
+      address.length &&
+      walletConnected &&
+      (isDepositApproved === true || donateIsApproved === true)
+    ) {
       return (
         <button
           disabled={amount === ""}
@@ -34,6 +47,40 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
           type="button"
         >
           {actionName}
+        </button>
+      );
+    } else if (
+      address &&
+      address.length &&
+      walletConnected &&
+      (isDepositApproved === false || isDepositApproved === undefined) &&
+      donateIsApproved === false &&
+      (actionName === "Deposit" || actionName === "Reward")
+    ) {
+      let isApproving = localStorage.getItem("isApproving");
+      return (
+        <button
+          disabled={isApproving === "true"}
+          className="btn btn-lg btn-custom-primary"
+          onClick={() => {
+            if (actionName === "Deposit") {
+              depositApprove(currentProvider, address[0]);
+            } else if (actionName === "Reward") {
+              donateApprove(currentProvider, address[0], donateContractAddress);
+            }
+          }}
+          type="button"
+        >
+          {isApproving === "true" ? (
+            <div>
+              Approving
+              <div className="spinner-border approve-loader" role="status">
+                <span className="sr-only">Approving...</span>
+              </div>
+            </div>
+          ) : (
+            "Approve"
+          )}
         </button>
       );
     } else {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -6,8 +6,9 @@ import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
-import ConnectWalletModal from "../UI/ConnectWalletModal";
+// import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { Reciepent } from "ethereum/contracts";
+import { useTypedSelector } from "hooks/useTypedSelector";
 
 interface props {
   activeTab: string | null;
@@ -28,8 +29,59 @@ const CommonCard = (props: props) => {
     show: false,
     currency: "ht",
   });
-  const { handleDeposit, handleRedeem, handleDonate } = useActions();
-  const { accounts, currentProvider, handleWalletConnect } = useWalletConnect();
+  const {
+    handleDeposit,
+    handleRedeem,
+    handleDonate,
+    checkAllowance,
+    getDonationContract,
+    donateAllowance,
+  } = useActions();
+  const { accounts, walletConnected, currentProvider } = useWalletConnect();
+  const { isDepositApproved: isApproved } = useTypedSelector(
+    (state) => state.deposit
+  );
+  const { donateContractAddress, donateIsApproved } = useTypedSelector(
+    (state) => state.donate
+  );
+
+  useEffect(() => {
+    console.log(activeTab);
+    let interval: any;
+    if (
+      activeTab === "deposit" &&
+      currentProvider &&
+      walletConnected &&
+      !isApproved
+    ) {
+      checkAllowance(currentProvider, accounts[0]);
+      interval = setInterval(() => {
+        checkAllowance(currentProvider, accounts[0]);
+      }, 9000);
+    } else if (
+      activeTab === "reward" &&
+      currentProvider &&
+      walletConnected &&
+      !donateIsApproved
+    ) {
+      getDonationContract(currentProvider);
+      interval = setInterval(() => {
+        console.log(donateContractAddress);
+        if (donateContractAddress !== "") {
+          donateAllowance(currentProvider, accounts[0], donateContractAddress);
+        }
+      }, 9000);
+    }
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accounts,
+    activeTab,
+    currentProvider,
+    walletConnected,
+    isApproved,
+    donateContractAddress,
+  ]);
 
   const handleAmount = async () => {
     switch (activeTab) {
@@ -43,7 +95,7 @@ const CommonCard = (props: props) => {
         handleDonate(currentProvider, amount, accounts[0]);
         break;
       case "airdrop":
-        var fullAmount = (currentProvider as any).utils.toWei(amount, "ether");
+        // var fullAmount = (currentProvider as any).utils.toWei(amount, "ether");
         const transactionParameters = {
           gasPrice: "0x9184e72a000", // customizable by user during MetaMask confirmation.
           gas: "0x76c0", // customizable by user during MetaMask confirmation.
@@ -57,6 +109,8 @@ const CommonCard = (props: props) => {
           method: "eth_sendTransaction",
           params: [transactionParameters],
         });
+        if (txHash) {
+        }
         break;
       default:
         break;
@@ -71,9 +125,7 @@ const CommonCard = (props: props) => {
       currency: currency ? currency : modalInfo.currency,
     });
   };
-  const walletConnect = () => {
-    handleWalletConnect();
-  };
+
   return (
     <>
       {activeTab && (

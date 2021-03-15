@@ -176,6 +176,7 @@ input[type="number"] {
     border-style: none;
     width: 30px;
     padding-right: 5px;
+    padding-left: 1px;
     height: auto;
   }
   span {
@@ -218,7 +219,10 @@ input[type="number"] {
 // .modal-wrapper {
 // background: transparent !important;
 // }
-
+.approve-loader {
+  position: absolute;
+  right: 50px;
+}
 @keyframes run {
   0% {
     opacity: 0;

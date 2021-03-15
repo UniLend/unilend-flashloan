@@ -6,17 +6,17 @@ import LoadingPage from "components/View/UI/LoadingPage/LoadingPage";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Layout from "components/Layout/Layout";
 import dotEnv from "dotenv";
-import useWalletConnect from "hooks/useWalletConnect";
+// import useWalletConnect from "hooks/useWalletConnect";
 import CommonCard from "components/View/CommonCard";
-declare const window: any;
-interface ProviderMessage {
-  type: string;
-  data: unknown;
-}
+// declare const window: any;
+// interface ProviderMessage {
+//   type: string;
+//   data: unknown;
+// }
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  const { handleWalletConnect } = useWalletConnect();
+  // const { handleWalletConnect } = useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();

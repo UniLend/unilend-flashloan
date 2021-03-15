@@ -12,11 +12,12 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
-import { shortenAddress } from "components/Helpers";
+import { capitalize, shortenAddress } from "components/Helpers";
 import ConnectWalletModal from "../ConnectWalletModal";
 import WalletStateModal from "../WalletStatusModal";
 import { Wallet } from "components/Helpers/Types";
 import SwitchNetWorkModal from "../SwitchNetWorkModal";
+import { NETWORKS } from "components/constants";
 interface Props extends RouteComponentProps<any> {}
 interface WalletConnectModal {
   show: boolean;
@@ -28,6 +29,7 @@ interface WalletInfo {
 
 interface SwitchNetworkInfo {
   show: boolean;
+  selectedId: number;
 }
 
 const NavBar: React.FC<Props> = (props) => {
@@ -44,9 +46,13 @@ const NavBar: React.FC<Props> = (props) => {
   const [switchNetWorkInfo, setSwitchNetworkInfo] = useState<SwitchNetworkInfo>(
     {
       show: false,
+      selectedId: 1,
     }
   );
   const dispatch = useDispatch<Dispatch<SettingAction>>();
+  const networkInfo = NETWORKS.filter(
+    (item) => item.id === switchNetWorkInfo.selectedId
+  )[0];
   const {
     walletConnected,
     accounts,
@@ -135,10 +141,17 @@ const NavBar: React.FC<Props> = (props) => {
             className={`d-flex btn ${
               theme === "dark" && "btn-dark"
             } btn-custom-secondary btn-round-switch`}
-            onClick={() => setSwitchNetworkInfo({ show: true })}
+            onClick={() =>
+              setSwitchNetworkInfo({ ...switchNetWorkInfo, show: true })
+            }
           >
-            <img src={ethLogo} alt="ethereum" />
-            <span>Ethereum</span>
+            <img
+              src={
+                require(`../../../../assets/${networkInfo.logo}.png`).default
+              }
+              alt={networkInfo.label}
+            />
+            <span>{capitalize(networkInfo.label)}</span>
           </button>
           {(accounts && accounts.length) || walletConnected ? (
             <button
@@ -199,9 +212,13 @@ const NavBar: React.FC<Props> = (props) => {
           )}
           {switchNetWorkInfo.show && (
             <SwitchNetWorkModal
-              handleClose={() => {
-                setSwitchNetworkInfo({ show: false });
-              }}
+              selectedId={switchNetWorkInfo.selectedId}
+              onHide={() =>
+                setSwitchNetworkInfo({ ...switchNetWorkInfo, show: false })
+              }
+              handleNetwork={(id: number) =>
+                setSwitchNetworkInfo({ ...switchNetWorkInfo, selectedId: id })
+              }
             />
           )}
           <button

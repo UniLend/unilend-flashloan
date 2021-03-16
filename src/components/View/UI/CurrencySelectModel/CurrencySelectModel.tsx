@@ -6,7 +6,9 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
 import { Heading5, Heading6 } from "components/View/UI/widgets/Common";
-
+import EditIcon from "assets/edit.svg";
+import backIcon from "assets/back.svg";
+import Manage from "./Manage";
 // ! Let React Handle Keys
 interface Props {
   handleClose: () => void;
@@ -52,17 +54,89 @@ const CurrencySelectModel: FC<Props> = ({
       />
     </div>
   );
-
+  const ManageButton = (
+    <div className="manage" onClick={() => setOpenManage(!openManage)}>
+      <span>
+        <i className="fa fa-pencil-square-o cursor-pointer" />
+      </span>
+      <span className="ml-1 cursor-pointer">
+        <img src={EditIcon} alt="Edit" width="15" />
+        Manage
+      </span>
+    </div>
+  );
+  // const ManageBodyContent = <div></div>;
+  const MainBodyContent = (
+    <div className="curr-list-group">
+      <ListGroup>
+        {Children.toArray(
+          filteredList.map((item: any) => (
+            <ListGroup.Item
+              key={item.id}
+              action
+              onClick={() => handleCurrChange(item.name)}
+            >
+              <div className="row">
+                <div className="col-2 px-0 curr-list">
+                  <img width="24" className="list-icon" src={Logo} alt="" />
+                </div>
+                <div className="col-10">
+                  <div className="row">
+                    <h6 className="mb-0" style={{ textTransform: "uppercase" }}>
+                      {item.name}
+                    </h6>
+                  </div>
+                  <div className="row">
+                    <p
+                      className="mb-0 list-desc"
+                      style={{ textTransform: "capitalize" }}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </ListGroup.Item>
+          ))
+        )}
+      </ListGroup>
+    </div>
+  );
   return (
     <>
       <Modal
-        className={theme === "dark" ? "dark" : ""}
+        className={`curr-select-modal ${theme === "dark" ? "dark" : ""}`}
         animation={false}
         size="sm"
         show={true}
         onHide={handleClose}
       >
-        <Modal.Header>
+        <Modal.Header closeButton>
+          {openManage && (
+            <div
+              className="manage-back-icon"
+              onClick={() => {
+                setOpenManage(false);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={theme === "dark" ? "#fff" : "#111"}
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style={{ cursor: "pointer" }}
+              >
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </div>
+          )}
+          {/* <img className="manage-back-icon" src={backIcon} alt="Go back" /> */}
           <Modal.Title>
             <div className={`title ${openManage ? "manage" : "token"}`}>
               {openManage && (
@@ -84,58 +158,8 @@ const CurrencySelectModel: FC<Props> = ({
           </Modal.Title>
           {!openManage && SearchBar}
         </Modal.Header>
-        <Modal.Body>
-          <div className="curr-list-group">
-            <ListGroup>
-              {Children.toArray(
-                filteredList.map((item: any) => (
-                  <ListGroup.Item
-                    key={item.id}
-                    action
-                    onClick={() => handleCurrChange(item.name)}
-                  >
-                    <div className="row">
-                      <div className="col-2 px-0 curr-list">
-                        <img
-                          width="24"
-                          className="list-icon"
-                          src={Logo}
-                          alt=""
-                        />
-                      </div>
-                      <div className="col-10">
-                        <div className="row">
-                          <h6
-                            className="mb-0"
-                            style={{ textTransform: "uppercase" }}
-                          >
-                            {item.name}
-                          </h6>
-                        </div>
-                        <div className="row">
-                          <p
-                            className="mb-0 list-desc"
-                            style={{ textTransform: "capitalize" }}
-                          >
-                            {item.desc}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </ListGroup.Item>
-                ))
-              )}
-            </ListGroup>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="manage" onClick={() => setOpenManage(!openManage)}>
-            <span>
-              <i className="fa fa-pencil-square-o cursor-pointer" />
-            </span>
-            <span className="ml-1 cursor-pointer">Manage</span>
-          </div>
-        </Modal.Footer>
+        <Modal.Body>{openManage ? <Manage /> : MainBodyContent}</Modal.Body>
+        {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>}
       </Modal>
     </>
   );

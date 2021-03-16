@@ -1,7 +1,28 @@
 .list-group-item {
   border: none;
 }
+.curr-select-modal {
+  .modal-header{
+    .close {
+      position: absolute;
+      top: 16px;
+      color:black;
+      &:hover{
+        color:black !important;
 
+        }
+      
+    }
+  } 
+  .modal-content{
+   height: 500px;
+   overflow: auto;
+  }
+
+  .modal-body {
+    overflow: auto;
+  }
+}
 .modal-content {
   border-radius: 1rem;
 
@@ -24,6 +45,7 @@
     color: white;
     &:hover {
       background-color: rgb(44, 47, 54);
+      
     }
   }
   .curr-list {
@@ -35,6 +57,10 @@
     border-bottom: 1px solid #2d2f36;
     .close {
       color: white;
+      &:hover{
+        color:white !important;
+
+        }
     }
   }
   // .modal-body {
@@ -49,7 +75,7 @@
 
   .modal-title{
     width:100%;
-
+    display: inline-block;
     .title{
       font-size: 1.15rem;
       width:100%;
@@ -91,7 +117,9 @@
     }
   }
 }
-
+.close:not(:disabled):not(.disabled):focus, .close:not(:disabled):not(.disabled):hover {
+  color:transparent
+}
 .modal-body {
   border-bottom: none;
   padding: 0;
@@ -206,7 +234,6 @@
 }
 .curr-list-group {
   max-height: 420px;
-  overflow: auto;
 }
 .list-desc {
   font-size: smaller;
@@ -234,3 +261,57 @@
   cursor: pointer !important;
 }
 
+.cursor-pointer {
+   img {
+    padding-right: 4px;
+    width: 20px;
+   }
+}
+
+
+
+// manage
+
+.manage-back-icon {
+  display: inline-block;
+  position: absolute;
+}  
+
+.manage-toggle {
+  border-radius: 15px;
+  &:hover {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40;
+    box-shadow: none ;
+  }
+  &:active {
+    color: #fff !important;
+    background-color: #343a40 !important;
+    border-color: #343a40 !important;
+    box-shadow: none !important;
+  }
+  &:focus {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40;
+    box-shadow: none;
+  }
+}
+
+.manage-tab {
+  width: 48%;
+  padding: 10px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 600;
+  margin: auto 0.5rem;
+  color: rgb(255, 255, 255);
+  &.active {
+    background-color: rgb(33, 36, 41);
+  }
+}

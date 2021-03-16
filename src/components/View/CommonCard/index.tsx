@@ -54,6 +54,7 @@ const CommonCard = (props: props) => {
       walletConnected &&
       !isApproved
     ) {
+      // debugger;
       checkAllowance(currentProvider, accounts[0]);
       interval = setInterval(() => {
         checkAllowance(currentProvider, accounts[0]);

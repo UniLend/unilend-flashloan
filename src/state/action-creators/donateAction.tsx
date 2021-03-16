@@ -47,7 +47,7 @@ export const donateAllowance = (
               payload: false, // isApproved
             });
           } else {
-            localStorage.setItem("isApproving", "false");
+            localStorage.setItem("donateApproval", "false");
             dispatch({
               type: ActionType.DONATE_APPROVAL_STATUS,
               payload: true, // isApproved
@@ -69,7 +69,7 @@ export const donateApprove = (
     _IERC20.methods.approve(contractAddress, approveTokenMaximumValue).send({
       from: address,
     });
-    localStorage.setItem("isApproving", "true");
+    localStorage.setItem("donateApproval", "true");
   };
 };
 

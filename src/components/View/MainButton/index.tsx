@@ -54,13 +54,18 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
       address.length &&
       walletConnected &&
       (isDepositApproved === false || isDepositApproved === undefined) &&
-      donateIsApproved === false &&
+      (donateIsApproved === false || donateIsApproved === undefined) &&
       (actionName === "Deposit" || actionName === "Reward")
     ) {
+      // debugger;
       let isApproving = localStorage.getItem("isApproving");
+      let donateIsApproving = localStorage.getItem("donateApproval");
       return (
         <button
-          disabled={isApproving === "true"}
+          disabled={
+            (actionName === "Deposit" && isApproving === "true") ||
+            (actionName === "Reward" && donateIsApproving === "true")
+          }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === "Deposit") {
@@ -71,7 +76,8 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
           }}
           type="button"
         >
-          {isApproving === "true" ? (
+          {(actionName === "Deposit" && isApproving === "true") ||
+          (actionName === "Reward" && donateIsApproving === "true") ? (
             <div>
               Approving
               <div className="spinner-border approve-loader" role="status">

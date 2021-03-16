@@ -5,6 +5,7 @@ import Logo from "../../../../assets/htLogo.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
+import { Heading5, Heading6 } from "components/View/UI/widgets/Common";
 
 // ! Let React Handle Keys
 interface Props {
@@ -28,6 +29,7 @@ const CurrencySelectModel: FC<Props> = ({
 
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState<Array<FList>>([]);
+  const [openManage, setOpenManage] = useState<Boolean>(false);
 
   useEffect(() => {
     let filteredList = [...currencyList.currency];
@@ -39,6 +41,18 @@ const CurrencySelectModel: FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyList.currency, searchText]);
 
+  const SearchBar = (
+    <div style={{ margin: " 15px auto 0 auto" }}>
+      <input
+        type="text"
+        value={searchText}
+        className="form-control model-search-input"
+        placeholder="Search name or paste address"
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+    </div>
+  );
+
   return (
     <>
       <Modal
@@ -48,21 +62,27 @@ const CurrencySelectModel: FC<Props> = ({
         show={true}
         onHide={handleClose}
       >
-        <Modal.Header closeButton>
-          <Modal.Title className="model-title-custom">
-            <label className="form-label modal-label-search">
-              Select a token
-            </label>
-            <div style={{ margin: " 10px auto 0 auto" }}>
-              <input
-                type="text"
-                value={searchText}
-                className="form-control model-search-input"
-                placeholder="Search name or paste address"
-                onChange={(e) => setSearchText(e.target.value)}
-              />
+        <Modal.Header>
+          <Modal.Title>
+            <div className={`title ${openManage ? "manage" : "token"}`}>
+              {openManage && (
+                <span className={`arrow-btn ${theme}`}>
+                  <i
+                    className="fa fa-arrow-left"
+                    aria-hidden="true"
+                    onClick={() => setOpenManage(false)}
+                  />
+                </span>
+              )}
+              <span className="form-label">
+                {openManage ? "Manage" : "Select a token"}
+              </span>
+              <span className={`close-btn ${theme}`}>
+                <i className="fa fa-times" aria-hidden="true" />
+              </span>
             </div>
           </Modal.Title>
+          {!openManage && SearchBar}
         </Modal.Header>
         <Modal.Body>
           <div className="curr-list-group">
@@ -109,12 +129,12 @@ const CurrencySelectModel: FC<Props> = ({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {/* <div className="align-center">
-            <Button className="footer-btn">
-              <img style={{ stroke: "rgb(33, 114, 229)" }} src={Edit} alt="" />
-              Manage
-            </Button>
-          </div> */}
+          <div className="manage" onClick={() => setOpenManage(!openManage)}>
+            <span>
+              <i className="fa fa-pencil-square-o cursor-pointer" />
+            </span>
+            <span className="ml-1 cursor-pointer">Manage</span>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

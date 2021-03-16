@@ -44,6 +44,52 @@
 
 .modal-header {
   border-bottom: 1px solid #edeef28a;
+  padding:1.1rem;
+  display: block;  
+
+  .modal-title{
+    width:100%;
+
+    .title{
+      font-size: 1.15rem;
+      width:100%;
+
+
+      &.token{
+        float:left;
+        margin-bottom: 0.7rem;
+      }
+
+      &.manage{
+        text-align: center;
+      }
+
+      .arrow-btn{
+        float: left;
+      }
+
+      .arrow-btn,.close-btn{
+        cursor: pointer;
+
+        &.dark{
+          color:white;
+        }
+        
+        &:hover{
+          color:grey;
+        }
+      }
+
+      .form-label{
+        font-size: 1.1rem;
+        font-weight:600 !important;
+      }
+
+      .close-btn{
+        float:right;
+      }
+    }
+  }
 }
 
 .modal-body {
@@ -52,6 +98,17 @@
 }
 .modal-footer {
   border-top: none;
+  
+  .manage{
+    color:#2172e5;
+    text-align: center;
+    font-weight: 500;
+
+    &:hover {
+        background: transparent;
+        opacity: 0.7;
+      }
+  }
 }
 
 .modal-dialog {
@@ -59,7 +116,35 @@
 }
 
 .model-title-custom {
-  width: 100%;
+      width: 100%;
+  
+  .heading-tags{
+    margin-bottom: 0.8rem;
+
+    .fa-arrow-left{
+      font-size: 1.3rem;
+      font-weight: 300;
+      float:left;
+      // opacity: .5;
+
+      &:hover{
+        color:black;
+      }
+    }
+
+
+    .title{
+
+      &.manage{
+        font-size:large;
+      }
+      &.token{
+        text-align: left;
+      }
+
+    }
+
+  }
 }
 
 .modal-label-search {
@@ -128,19 +213,24 @@
   color: rgb(136, 141, 155);
 }
 
-.footer-btn {
-  background: transparent;
-  color: rgb(33, 114, 229);
-  border: none;
-  img {
-    stroke: rgb(33, 114, 229);
-    width: 19px;
-    padding-bottom: 4px;
-    padding-right: 4px;
-  }
-  &:hover {
-    background: transparent;
-    color: rgb(33, 114, 229);
-    opacity: 0.7;
-  }
+// .footer-btn {
+//   background: transparent;
+//   color: rgb(33, 114, 229);
+//   border: none;
+//   img {
+//     stroke: rgb(33, 114, 229);
+//     width: 19px;
+//     padding-bottom: 4px;
+//     padding-right: 4px;
+//   }
+//   &:hover {
+//     background: transparent;
+//     color: rgb(33, 114, 229);
+//     opacity: 0.7;
+//   }
+// }
+
+.cursor-pointer{
+  cursor: pointer !important;
 }
+

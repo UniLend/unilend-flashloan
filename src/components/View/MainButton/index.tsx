@@ -34,10 +34,11 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
   const { depositApprove, donateApprove } = useActions();
   function handleMainButton() {
     if (
-      address &&
-      address.length &&
-      walletConnected &&
-      (isDepositApproved === true || donateIsApproved === true)
+      (address &&
+        address.length &&
+        walletConnected &&
+        (isDepositApproved === true || donateIsApproved === true)) ||
+      (actionName !== "Deposit" && actionName !== "Reward")
     ) {
       return (
         <button

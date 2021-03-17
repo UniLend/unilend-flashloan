@@ -5,8 +5,11 @@ interface TokenDetail {
   payload: any;
 }
 
+interface TokenListRequest {
+  type: ActionType.GET_TOKEN_LIST_REQUEST;
+}
 interface TokenList {
-  type: ActionType.TOKEN_LIST;
+  type: ActionType.GET_TOKEN_LIST;
   payload: any;
 }
-export type TokenAction = TokenDetail | TokenList;
+export type TokenAction = TokenDetail | TokenList | TokenListRequest;

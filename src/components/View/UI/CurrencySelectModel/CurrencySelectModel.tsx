@@ -158,7 +158,7 @@ const CurrencySelectModel: FC<Props> = ({
           </Modal.Title>
           {!openManage && SearchBar}
         </Modal.Header>
-        <Modal.Body>{openManage ? <Manage /> : MainBodyContent}</Modal.Body>
+        <Modal.Body className={openManage && "manage"}>{openManage ? <Manage /> : MainBodyContent}</Modal.Body>
         {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>}
       </Modal>
     </>

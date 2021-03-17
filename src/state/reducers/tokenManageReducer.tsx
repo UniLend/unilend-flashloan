@@ -3,10 +3,18 @@ import { TokenAction } from "state/actions/tokenManageA";
 
 interface TokenManageState {
   searchedToken: any;
+  tokenList: {
+    isRequesting: boolean,
+    payload: Array<object> | []
+  }
 }
 
 const initialState = {
   searchedToken: null,
+  tokenList: {
+    isRequesting: false,
+    payload: []
+  }
 };
 
 const TokenManageReducer = (
@@ -15,10 +23,32 @@ const TokenManageReducer = (
 ): TokenManageState => {
   switch (action.type) {
     case ActionType.TOKEN_DETAIL:
-      return { ...state, searchedToken: action.payload };
+      state = { ...state, searchedToken: action.payload };
+      break;
+    case ActionType.GET_TOKEN_LIST_REQUEST: {
+      state = {
+        ...state,
+        tokenList: {
+          isRequesting: true,
+          payload: []
+        }
+      };
+      break;
+    }
+    case ActionType.GET_TOKEN_LIST: {
+      state = {
+        ...state,
+        tokenList: {
+          isRequesting: false,
+          payload: action.payload ? action.payload : []
+        }
+      };
+      break;
+    }
     default:
-      return { ...state };
+      break;
   }
+  return state;
 };
 
 export default TokenManageReducer;

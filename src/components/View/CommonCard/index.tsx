@@ -4,11 +4,13 @@ import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
+import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { Reciepent } from "ethereum/contracts";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { fetchTokenList } from "state/action-creators";
 
 interface props {
   activeTab: string | null;
@@ -22,6 +24,7 @@ interface ModalType {
 
 const CommonCard = (props: props) => {
   const { activeTab } = props;
+  const dispatch = useDispatch();
 
   const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
@@ -36,6 +39,7 @@ const CommonCard = (props: props) => {
     checkAllowance,
     getDonationContract,
     donateAllowance,
+    fetchTokenList
   } = useActions();
   const { accounts, walletConnected, currentProvider } = useWalletConnect();
   const { isDepositApproved: isApproved } = useTypedSelector(
@@ -44,6 +48,7 @@ const CommonCard = (props: props) => {
   const { donateContractAddress, donateIsApproved } = useTypedSelector(
     (state) => state.donate
   );
+  const { payload: tokenList } = useTypedSelector(state => state.tokenManage.tokenList);
 
   useEffect(() => {
     console.log(activeTab);
@@ -125,6 +130,7 @@ const CommonCard = (props: props) => {
       show,
       currency: currency ? currency : modalInfo.currency,
     });
+    if (tokenList.length === 0) fetchTokenList();
   };
 
   return (

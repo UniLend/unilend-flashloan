@@ -5,13 +5,21 @@ import { TokenAction } from "state/actions/tokenManageA";
 
 export const fetchTokenList = () => {
   return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     let URL = "https://www.gemini.com/uniswap/manifest.json";
     axios
       .get(URL)
-      .then((response) => {
-        dispatch({
-          type: ActionType.TOKEN_LIST,
-          payload: response,
+      .then(res => {
+        if (res.data) {
+          const tokenList = res.data.tokens;
+          dispatch({
+            type: ActionType.GET_TOKEN_LIST,
+            payload: tokenList,
+          });
+        }
+        else dispatch({
+          type: ActionType.GET_TOKEN_LIST,
+          payload: [],
         });
       })
       .catch((e: any) => {

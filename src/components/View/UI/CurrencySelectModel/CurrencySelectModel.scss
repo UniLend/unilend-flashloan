@@ -15,7 +15,8 @@
     }
   } 
   .modal-content{
-   height: 500px;
+   max-height: 600px;
+   height:500px;
    overflow: auto;
   }
 
@@ -123,6 +124,10 @@
 .modal-body {
   border-bottom: none;
   padding: 0;
+
+  &.manage{
+    padding:0 15px 0 15px;
+  }
 }
 .modal-footer {
   border-top: none;
@@ -180,9 +185,9 @@
   transform: translate(5px, -5px);
 }
 
-.modal-content {
-  //   background-color: var(--theme-modal-bg);
-}
+// .modal-content {
+//   //   background-color: var(--theme-modal-bg);
+// }
 
 @media (min-width: 576px) {
   .modal-sm {

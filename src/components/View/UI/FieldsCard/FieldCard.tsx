@@ -7,6 +7,7 @@ interface Props {
   fieldValue: any;
   selectLabel: String;
   selectValue: String;
+  selectedLogo: any;
   fieldType: string;
   handleModelOpen: () => void;
   onF1Change: (e: any) => void;
@@ -15,6 +16,7 @@ const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
 
   useEffect(() => {
+    console.log(props);
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
   return (
@@ -41,7 +43,11 @@ const FieldCard: FC<Props> = (props) => {
                   className="btn btn-curr"
                   onClick={props.handleModelOpen}
                 >
-                  <img className="curr-image" src={icon} alt="Curr" />
+                  <img
+                    className="curr-image"
+                    src={props.selectedLogo}
+                    alt="Curr"
+                  />
                   <p className="curr-text">{props.selectValue}</p>
                   <img
                     style={{ paddingLeft: "4px", width: "12px" }}

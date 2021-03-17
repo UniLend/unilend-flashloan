@@ -11,6 +11,7 @@ import MainButton from "../MainButton";
 import { Reciepent } from "ethereum/contracts";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { fetchTokenList } from "state/action-creators";
+import icon from "assets/htLogo.svg";
 
 interface props {
   activeTab: string | null;
@@ -19,6 +20,7 @@ interface props {
 interface ModalType {
   fieldName: string;
   show: boolean;
+  logo?: any;
   currency?: string;
 }
 
@@ -30,6 +32,7 @@ const CommonCard = (props: props) => {
   const [modalInfo, setModalInfo] = useState<ModalType>({
     fieldName: "",
     show: false,
+    logo: icon,
     currency: "ht",
   });
   const {
@@ -39,7 +42,7 @@ const CommonCard = (props: props) => {
     checkAllowance,
     getDonationContract,
     donateAllowance,
-    fetchTokenList
+    fetchTokenList,
   } = useActions();
   const { accounts, walletConnected, currentProvider } = useWalletConnect();
   const { isDepositApproved: isApproved } = useTypedSelector(
@@ -48,7 +51,9 @@ const CommonCard = (props: props) => {
   const { donateContractAddress, donateIsApproved } = useTypedSelector(
     (state) => state.donate
   );
-  const { payload: tokenList } = useTypedSelector(state => state.tokenManage.tokenList);
+  const { payload: tokenList } = useTypedSelector(
+    (state) => state.tokenManage.tokenList
+  );
 
   useEffect(() => {
     console.log(activeTab);
@@ -124,10 +129,16 @@ const CommonCard = (props: props) => {
     setAmount("");
   };
 
-  const handleModal = (field: string, show: boolean, currency?: string) => {
+  const handleModal = (
+    field: string,
+    show: boolean,
+    logo?: any,
+    currency?: string
+  ) => {
     setModalInfo({
       fieldName: field,
       show,
+      logo: logo ? logo : modalInfo.logo,
       currency: currency ? currency : modalInfo.currency,
     });
     if (tokenList.length === 0) fetchTokenList();
@@ -146,6 +157,7 @@ const CommonCard = (props: props) => {
               fieldType="text"
               selectLabel={``}
               selectValue={modalInfo.currency ? modalInfo.currency : ""}
+              selectedLogo={modalInfo.logo ? modalInfo.logo : ""}
             />
             <MainButton
               amount={amount}
@@ -167,8 +179,8 @@ const CommonCard = (props: props) => {
       {modalInfo.show && activeTab && (
         <CurrencySelectModel
           currFieldName={modalInfo.fieldName}
-          handleCurrChange={(selectedcrr) =>
-            handleModal(activeTab, false, selectedcrr)
+          handleCurrChange={(selectedcrr, selectedIcon) =>
+            handleModal(activeTab, false, selectedIcon, selectedcrr)
           }
           handleClose={() => handleModal("", false)}
         />

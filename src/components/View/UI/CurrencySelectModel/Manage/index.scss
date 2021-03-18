@@ -40,6 +40,7 @@
 
 .btn-radio {
   border-radius: 20px;
+  width: 80px !important;
   border: none;
   background: rgb(255, 255, 255);
   display: flex;
@@ -69,8 +70,10 @@
     font-weight: 600;
     margin: 0px 6px;
   }
+  &:focus {
+    outline: none;
+  }
 }
-
 .token-detail-card {
   position: absolute;
   top: -70px;

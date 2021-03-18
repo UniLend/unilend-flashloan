@@ -47,6 +47,11 @@ const wallets: Wallet[] = [
     name: "Portis",
     icon: PortisIcon,
   },
+  {
+    id: 6,
+    name: "binaceWallet",
+    icon: WalletConnectIcon,
+  },
 ];
 
 const ConnectWalletModal: FC<Props> = ({

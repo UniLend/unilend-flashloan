@@ -1,10 +1,21 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Card, ListGroup } from "react-bootstrap";
-import Logo from "assets/circle_done.svg";
+import Logo from "assets/download.svg";
 import settingsLogo from "assets/settings.svg";
+import { useActions } from "hooks/useActions";
 interface Props {}
 
 const TokenListGroup: FC<Props> = (props) => {
+  const [radio, setRadio] = useState("on");
+  const { resetList } = useActions();
+  const handleActive = () => {
+    if (radio === "on") {
+      resetList();
+      setRadio("off");
+    } else if (radio === "off") {
+      setRadio("on");
+    }
+  };
   return (
     <>
       <div className="list-container">
@@ -17,7 +28,7 @@ const TokenListGroup: FC<Props> = (props) => {
               <div className="col-7">
                 <div className="row">
                   <h6 className="mb-0" style={{ textTransform: "uppercase" }}>
-                    I am Name
+                    Aave Token List
                   </h6>
                 </div>
                 <div className="row">
@@ -26,14 +37,27 @@ const TokenListGroup: FC<Props> = (props) => {
                 </div>
               </div>
               <div className="col-3 p-0">
-                {/* <button className="btn-radio">
-                  <div className="radio-state">ON</div>
-                  <span className="button-on"></span>
-                </button> */}
-                <button className="btn-radio">
-                  <span className="button-off"></span>
-                  <div className="radio-state">OFF</div>
-                </button>
+                {radio === "on" ? (
+                  <button
+                    className="btn-radio"
+                    onClick={() => {
+                      handleActive();
+                    }}
+                  >
+                    <div className="radio-state">ON</div>
+                    <span className="button-on"></span>
+                  </button>
+                ) : (
+                  <button
+                    className="btn-radio"
+                    onClick={() => {
+                      handleActive();
+                    }}
+                  >
+                    <span className="button-off"></span>
+                    <div className="radio-state">OFF</div>
+                  </button>
+                )}
               </div>
               <Card className="token-detail-card">
                 <Card.Header>v1.3.0</Card.Header>

@@ -9,21 +9,25 @@ export const fetchTokenList = () => {
     let URL = "https://www.gemini.com/uniswap/manifest.json";
     axios
       .get(URL)
-      .then(res => {
+      .then((res) => {
         if (res.data) {
           const tokenList = res.data.tokens;
           dispatch({
             type: ActionType.GET_TOKEN_LIST,
             payload: tokenList,
           });
-        }
-        else dispatch({
-          type: ActionType.GET_TOKEN_LIST,
-          payload: [],
-        });
+        } else
+          dispatch({
+            type: ActionType.GET_TOKEN_LIST,
+            payload: [],
+          });
       })
       .catch((e: any) => {
         console.log(e);
       });
   };
+};
+
+export const getErcTokenDetail = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
 };

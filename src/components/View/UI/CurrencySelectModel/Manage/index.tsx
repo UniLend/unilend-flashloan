@@ -5,7 +5,8 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { useActions } from "hooks/useActions";
 import useWalletConnect from "hooks/useWalletConnect";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
-
+import TokenListGroup from "./tokenListGroup";
+import "./index.scss";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
@@ -63,14 +64,27 @@ const Manage: FC<Props> = (props) => {
           </Row>
         </Button>
       </Container>
-      {activeSubTab === "token" ? (
+      {activeSubTab === "list" ? (
+        <>
+          <div className="list-container">
+            <input
+              type="text"
+              value={searchText}
+              className="form-control model-search-input"
+              placeholder="https:// or ipfs:// or ENS name"
+              onChange={handleSearch}
+            />
+            <TokenListGroup />
+          </div>
+        </>
+      ) : (
         <>
           <div>
             <input
               type="text"
               value={searchText}
               className="form-control model-search-input"
-              placeholder="https:// or ipfs:// or ENS name"
+              placeholder="0x0000"
               onChange={handleSearch}
             />
           </div>
@@ -87,8 +101,6 @@ const Manage: FC<Props> = (props) => {
             )}
           </div>
         </>
-      ) : (
-        <div></div>
       )}
     </>
   );

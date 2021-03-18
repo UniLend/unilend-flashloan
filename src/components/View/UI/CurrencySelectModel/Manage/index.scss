@@ -1,0 +1,103 @@
+.list-container {
+  padding: 1rem 0px;
+  //   height: 100%;
+  //   overflow: auto;
+  .desc-set {
+    cursor: pointer;
+  }
+  .list-icon {
+    width: 39px;
+  }
+}
+
+.token-group-card {
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 12px;
+}
+
+.token-list-card {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  display: flex;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  background-color: rgb(247, 248, 250);
+  transition: all 200ms ease 0s;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 20px;
+  .row {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+  }
+}
+
+.btn-radio {
+  border-radius: 20px;
+  border: none;
+  background: rgb(255, 255, 255);
+  display: flex;
+  width: fit-content;
+  cursor: pointer;
+  outline: none;
+  padding: 0.4rem;
+  -webkit-box-align: center;
+  align-items: center;
+  .button-on {
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    background-color: rgb(56, 178, 196);
+    display: inline-block;
+  }
+  .button-off {
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    background-color: rgb(206, 208, 217);
+    display: inline-block;
+  }
+  .radio-state {
+    box-sizing: border-box;
+    min-width: 0px;
+    font-weight: 600;
+    margin: 0px 6px;
+  }
+}
+
+.token-detail-card {
+  position: absolute;
+  top: -70px;
+  left: 150px;
+  visibility: hidden;
+  button {
+    border: none;
+    text-decoration: none;
+    background: none;
+    cursor: pointer;
+    color: rgb(33, 114, 229);
+    font-weight: 500;
+    padding: 0px;
+    font-size: 1rem;
+    opacity: 1;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.dark {
+  .token-list-card {
+    background: #343a40;
+    color: #fff;
+  }
+  .token-detail-card {
+    background: rgb(44, 47, 54);
+  }
+}

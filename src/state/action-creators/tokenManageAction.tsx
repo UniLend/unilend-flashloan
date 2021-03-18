@@ -27,7 +27,14 @@ export const fetchTokenList = () => {
       });
   };
 };
-
+export const resetList = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({
+      type: ActionType.GET_TOKEN_LIST,
+      payload: [],
+    });
+  };
+};
 export const getErcTokenDetail = () => {
   return async (dispatch: Dispatch<TokenAction>) => {};
 };

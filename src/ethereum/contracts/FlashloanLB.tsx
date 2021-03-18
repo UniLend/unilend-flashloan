@@ -7,7 +7,7 @@ import IERC20ABI from "../build/IERC20.json";
 export const FlashloanLBCore = (currentProvider: any) => {
   return new currentProvider.eth.Contract(
     FlashloanABI.abi,
-    UnilendFlashLoanCoreContract
+    UnilendFlashLoanCoreContract(currentProvider)
   );
 };
 export const UnilendFDonation = (

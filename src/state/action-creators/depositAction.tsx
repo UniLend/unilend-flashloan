@@ -16,7 +16,7 @@ export const checkAllowance = (currentProvider: any, address: any) => {
     console.log(currentProvider);
     let _IERC20 = await IERC20(currentProvider);
     _IERC20.methods
-      .allowance(address, UnilendFlashLoanCoreContract)
+      .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
       .call((error: any, result: any) => {
         if (!error && result) {
           console.log("allowance", result);
@@ -42,13 +42,20 @@ export const checkAllowance = (currentProvider: any, address: any) => {
 // On Approve Action
 export const depositApprove = (currentProvider: any, address: any) => {
   return async (dispatch: Dispatch<DepositAction>) => {
-    let _IERC20 = await IERC20(currentProvider);
-    _IERC20.methods
-      .approve(UnilendFlashLoanCoreContract, approveTokenMaximumValue)
-      .send({
-        from: address,
-      });
-    localStorage.setItem("isApproving", "true");
+    try {
+      let _IERC20 = await IERC20(currentProvider);
+      _IERC20.methods
+        .approve(
+          UnilendFlashLoanCoreContract(currentProvider),
+          approveTokenMaximumValue
+        )
+        .send({
+          from: address,
+        });
+      localStorage.setItem("isApproving", "true");
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 

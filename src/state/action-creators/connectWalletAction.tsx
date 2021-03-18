@@ -8,11 +8,14 @@ import { CoinbaseProvider, CoinbaseWeb3 } from "ethereum/coinbaseWeb3";
 import { formaticWeb3 } from "ethereum/formatic";
 import { portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
-
+import { bscWeb3 } from "ethereum/bscWeb3";
+import { BscConnector } from "@binance-chain/bsc-connector";
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   let accounts: any;
   switch (wallet.name) {
     case "metamask":
+      //// Ethererum ////
+
       accounts = await web3Service.getAccounts();
       if (window && !(window as any).ethereum.selectedAddress) {
         (window as any).ethereum.enable().then(() => {
@@ -26,6 +29,63 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         dispatch({
           type: ActionType.CONNECT_WALLET_SUCCESS,
           payload: [...accounts],
+        });
+      }
+
+      break;
+    case "binaceWallet":
+      try {
+        // Binance //////
+
+        const bsc = new BscConnector({
+          supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
+        });
+        await bsc.activate();
+        let accounts = await bsc.getAccount();
+        console.log(await bsc.getChainId());
+        if (accounts) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_SUCCESS,
+            payload: [accounts],
+          });
+        }
+
+        const provider = (window as any).ethereum;
+        if (provider) {
+          const chainId = 56;
+          console.log(`0x${chainId.toString(16)}`);
+          try {
+            await provider.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: `0x${chainId.toString(16)}`,
+                  chainName: "Binance Smart Chain Mainnet",
+                  nativeCurrency: {
+                    name: "BNB",
+                    symbol: "bnb",
+                    decimals: 18,
+                  },
+                  rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                  blockExplorerUrls: ["https://bscscan.com/"],
+                },
+              ],
+            });
+            return true;
+          } catch (error) {
+            console.error(error);
+            return false;
+          }
+        } else {
+          console.error(
+            "Can't setup the BSC network on metamask because window.ethereum is undefined"
+          );
+          return false;
+        }
+      } catch (e) {
+        dispatch({
+          type: ActionType.CONNECT_WALLET_ERROR,
+          payload: e.message,
         });
       }
       break;
@@ -151,6 +211,14 @@ export const connectWalletAction = (wallet?: Wallet) => {
     });
     try {
       console.log("WALLET", wallet);
+      // let accounts = await (window as any).BinanceChain.request({
+      //   method: "eth_accounts",
+      // });
+      // dispatch({
+      //   type: ActionType.CONNECT_WALLET_SUCCESS,
+      //   payload: [...accounts],
+      // });
+      // console.log(accounts);
       if (wallet) {
         let currentProvider: any;
         switch (wallet.name) {
@@ -169,6 +237,8 @@ export const connectWalletAction = (wallet?: Wallet) => {
           case "Portis":
             currentProvider = portisWeb3;
             break;
+          case "binaceWallet":
+            currentProvider = bscWeb3;
         }
         dispatch({
           type: ActionType.CURRENT_PROVIDER,

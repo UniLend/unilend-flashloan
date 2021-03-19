@@ -21,6 +21,8 @@ const Manage: FC<Props> = (props) => {
   const { payload: tokenList, isRequesting } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
+  const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
+
   const { fetchTokenList } = useActions();
   useEffect(() => {
     console.log(tokenList);
@@ -38,7 +40,7 @@ const Manage: FC<Props> = (props) => {
     //     console.log(res);
     //   }
     // });
-    fetchTokenList();
+    fetchTokenList(tokenGroupList);
   };
   return (
     <>

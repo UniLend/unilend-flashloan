@@ -27,24 +27,26 @@ const CurrencySelectModel: FC<Props> = ({
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState([{}]);
   const [openManage, setOpenManage] = useState<Boolean>(false);
-  const { tokenList } = useTypedSelector((state) => state.tokenManage);
-  const { fetchTokenList } = useActions();
+  const { tokenList, tokenGroupList } = useTypedSelector(
+    (state) => state.tokenManage
+  );
+  const { fetchTokenList, searchToken } = useActions();
 
   useEffect(() => {
-    fetchTokenList();
+    fetchTokenList(tokenGroupList);
+    searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
   }, []);
 
   useEffect(() => {
+    let filteredList: any;
     if (tokenList.payload.length) {
-      let filteredList = tokenList.payload;
-      console.log(filteredList);
+      filteredList = tokenList.payload;
       if (searchText.trim().length > 0)
-        filteredList = filteredList.filter((e) => {
-          // console.log(e);
-          // searchWord(e.name, searchText) || searchWord(e.desc, searchText);
+        filteredList = filteredList.filter((e: any) => {
+          searchWord(e.name, searchText) || searchWord(e.desc, searchText);
         });
-      setFilteredList(filteredList);
     }
+    setFilteredList(filteredList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyList.currency, searchText, tokenList]);
 
@@ -73,7 +75,7 @@ const CurrencySelectModel: FC<Props> = ({
   // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
-      {filteredList.length ? (
+      {filteredList ? (
         <ListGroup>
           {Children.toArray(
             filteredList.map((item: any) => (
@@ -87,7 +89,7 @@ const CurrencySelectModel: FC<Props> = ({
                     <img
                       width="24"
                       className="list-icon"
-                      src={item.logoURI}
+                      src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${item.address}/logo.png`}
                       alt=""
                     />
                   </div>
@@ -116,7 +118,7 @@ const CurrencySelectModel: FC<Props> = ({
         </ListGroup>
       ) : (
         <>
-          <p>Fetching List</p>
+          <p className="no-data">No Data to Show</p>
         </>
       )}
     </div>
@@ -135,6 +137,8 @@ const CurrencySelectModel: FC<Props> = ({
             <div
               className="manage-back-icon"
               onClick={() => {
+                console.log("checking");
+                fetchTokenList(tokenGroupList);
                 setOpenManage(false);
               }}
             >
@@ -145,10 +149,15 @@ const CurrencySelectModel: FC<Props> = ({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke={theme === "dark" ? "#fff" : "#111"}
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                style={{ cursor: "pointer" }}
+                // stroke-width="2"
+                // stroke-linecap="round"
+                // stroke-linejoin="round"
+                style={{
+                  cursor: "pointer",
+                  strokeWidth: "2",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                }}
               >
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>

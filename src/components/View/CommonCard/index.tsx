@@ -8,10 +8,11 @@ import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
-import { Reciepent } from "ethereum/contracts";
+import { Reciepent, UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { fetchTokenList } from "state/action-creators";
-import icon from "assets/htLogo.svg";
+import icon from "assets/ethereum.png";
+import web3 from "ethereum/web3";
 
 interface props {
   activeTab: string | null;
@@ -33,7 +34,7 @@ const CommonCard = (props: props) => {
     fieldName: "",
     show: false,
     logo: icon,
-    currency: "ht",
+    currency: "eth",
   });
   const {
     handleDeposit,
@@ -54,6 +55,7 @@ const CommonCard = (props: props) => {
   const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
+  const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
 
   useEffect(() => {
     console.log(activeTab);
@@ -106,22 +108,12 @@ const CommonCard = (props: props) => {
         handleDonate(currentProvider, amount, accounts[0]);
         break;
       case "airdrop":
-        // var fullAmount = (currentProvider as any).utils.toWei(amount, "ether");
-        const transactionParameters = {
-          gasPrice: "0x9184e72a000", // customizable by user during MetaMask confirmation.
-          gas: "0x76c0", // customizable by user during MetaMask confirmation.
-          to: Reciepent, // Required except during contract publications.
-          from: (window as any).ethereum.selectedAddress, // must match user's active address.
-          value: "0x9184e72a",
-          data:
-            "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-        };
-        const txHash = await (window as any).ethereum.request({
-          method: "eth_sendTransaction",
-          params: [transactionParameters],
+        let trans = await web3.eth.sendTransaction({
+          from: accounts[0],
+          to: "0x186b707bB603c16295eF38EA27a081EBf5b65989",
+          value: web3.utils.toWei(amount),
         });
-        if (txHash) {
-        }
+        console.log(trans);
         break;
       default:
         break;
@@ -141,7 +133,7 @@ const CommonCard = (props: props) => {
       logo: logo ? logo : modalInfo.logo,
       currency: currency ? currency : modalInfo.currency,
     });
-    if (tokenList.length === 0) fetchTokenList();
+    if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
 
   return (

@@ -60,6 +60,9 @@
       }
     }
   }
+  .no-data {
+    color: white;
+  }
   // .modal-body {
   //   border-bottom: 1px solid #2d2f36;
   // }
@@ -317,9 +320,9 @@
 .manage-toggle {
   border-radius: 15px;
   color: black;
-    background: rgb(237, 238, 242);
-    border:none;
-  color:#222;
+  background: rgb(237, 238, 242);
+  border: none;
+  color: #222;
   &:hover {
     color: #222;
     background-color: rgb(237, 238, 242);
@@ -355,10 +358,7 @@
     background-color: #fff;
   }
   &:hover {
-
     opacity: 0.7;
     transition: 0.3s;
   }
 }
-
-

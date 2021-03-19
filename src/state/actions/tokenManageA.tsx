@@ -8,8 +8,24 @@ interface TokenDetail {
 interface TokenListRequest {
   type: ActionType.GET_TOKEN_LIST_REQUEST;
 }
+
+interface TokenListToggle {
+  type: ActionType.TOKEN_LIST_TOGGLE;
+  payload: number;
+}
 interface TokenList {
   type: ActionType.GET_TOKEN_LIST;
   payload: any;
 }
-export type TokenAction = TokenDetail | TokenList | TokenListRequest;
+
+interface SearchedToken {
+  type: ActionType.SEARCHED_TOKEN;
+  payload: any;
+}
+
+export type TokenAction =
+  | TokenDetail
+  | TokenList
+  | TokenListRequest
+  | TokenListToggle
+  | SearchedToken;

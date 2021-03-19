@@ -15,14 +15,15 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   switch (wallet.name) {
     case "metamask":
       //// Ethererum ////
-
       accounts = await web3Service.getAccounts();
       if (window && !(window as any).ethereum.selectedAddress) {
         (window as any).ethereum.enable().then(() => {
-          console.log("accounts", accounts);
-          dispatch({
-            type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [...accounts],
+          web3Service.getAccounts().then((res: any) => {
+            console.log(res);
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...res],
+            });
           });
         });
       } else {
@@ -182,6 +183,22 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         dispatch({
           type: ActionType.CONNECT_WALLET_ERROR,
           payload: err.message,
+        });
+      }
+      break;
+    default:
+      accounts = await web3Service.getAccounts();
+      if (window && !(window as any).ethereum.selectedAddress) {
+        (window as any).ethereum.enable();
+        console.log("accounts", accounts);
+        dispatch({
+          type: ActionType.CONNECT_WALLET_SUCCESS,
+          payload: [...accounts],
+        });
+      } else {
+        dispatch({
+          type: ActionType.CONNECT_WALLET_SUCCESS,
+          payload: [...accounts],
         });
       }
       break;

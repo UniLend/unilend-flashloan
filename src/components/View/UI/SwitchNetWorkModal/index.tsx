@@ -13,14 +13,17 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
   const { onHide } = props;
 
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId } = useTypedSelector(state => state.connectWallet);
+  const { selectedNetworkId } = useTypedSelector(
+    (state) => state.connectWallet
+  );
   const { setSelectedNetworkId } = useActions();
 
   return (
     <>
       <Modal
-        className={`modal-theme modal-switch ${theme === "dark" ? "dark" : "light"
-          }`}
+        className={`modal-theme modal-switch ${
+          theme === "dark" ? "dark" : "light"
+        }`}
         animation={false}
         size="sm"
         show={true}
@@ -40,9 +43,13 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                 return (
                   <Col key={item.id} className="p-3">
                     <button
-                      className={`btn ${theme === "dark" && "btn-dark"
-                        } btn-custom-secondary btn-switch-pop`}
-                      onClick={() => setSelectedNetworkId(item.id)}
+                      className={`btn ${
+                        theme === "dark" && "btn-dark"
+                      } btn-custom-secondary btn-switch-pop`}
+                      onClick={() => {
+                        setSelectedNetworkId(item.id);
+                        onHide();
+                      }}
                     >
                       <div style={{ position: "relative" }}>
                         <img src={logo} alt={item.label} />

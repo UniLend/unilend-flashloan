@@ -23,9 +23,15 @@ interface ConnectWalletErrorAction {
   payload: string;
 }
 
+interface setSelectedNetworkId {
+  type: ActionType.SELECTED_NETWORK_ID;
+  networkId: number;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
   | ConnectWalletSuccessAction
   | ConnectWalletErrorAction
-  | AccountBalance;
+  | AccountBalance
+  | setSelectedNetworkId;

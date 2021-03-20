@@ -10,6 +10,9 @@ import { portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
+
+export const setSelectedNetworkId = (selectedNetworkId: number) => ({ type: ActionType.SELECTED_NETWORK_ID, networkId: selectedNetworkId });
+
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   let accounts: any;
   switch (wallet.name) {

@@ -9,6 +9,7 @@ interface ConnectWalletState {
   accounts: string[];
   accountBalance: string;
   currentProvider: string;
+  selectedNetworkId: number;
 }
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   accounts: [],
   accountBalance: "0",
   currentProvider: "",
+  selectedNetworkId: 1
 };
 
 const connectWalletReducer = (
@@ -48,6 +50,11 @@ const connectWalletReducer = (
         data: [],
         walletConnected: false,
       };
+    case ActionType.SELECTED_NETWORK_ID:
+      return {
+        ...state,
+        selectedNetworkId: action.networkId ? action.networkId : 1
+      }
     default:
       return state;
   }

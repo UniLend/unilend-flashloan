@@ -12,12 +12,12 @@ interface TokenGroupList {
   isEnabled: boolean;
 }
 interface TokenManageState {
-  searchedToken: any;
   tokenList: {
     isRequesting: boolean;
     payload: Array<object> | [];
   };
   tokenGroupList: TokenGroupList[];
+  searchedToken: {} | null;
 }
 
 const initialState = {
@@ -53,9 +53,6 @@ const TokenManageReducer = (
   action: TokenAction
 ): TokenManageState => {
   switch (action.type) {
-    case ActionType.TOKEN_DETAIL:
-      state = { ...state, searchedToken: action.payload };
-      break;
     case ActionType.GET_TOKEN_LIST_REQUEST: {
       state = {
         ...state,
@@ -90,28 +87,10 @@ const TokenManageReducer = (
       break;
     }
     case ActionType.SEARCHED_TOKEN: {
-      //       URL: https://eth-mainnet.alchemyapi.io/v2/your-api-key
-      // RequestType: POST
-      // Body:
-      // {
-      //     "jsonrpc":"2.0",
-      //     "method":"alchemy_getTokenMetadata",
-      //     "params":["0x1985365e9f78359a9B6AD760e32412f4a445E862"],
-      //     "id":1
-      // }
-      axios
-        .post(
-          "https://eth-kovan.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
-          {
-            jsonrpc: "2.0",
-            method: "alchemy_getTokenMetadata",
-            params: action.payload,
-            id: 1,
-          }
-        )
-        .then((res: any) => {
-          console.log(res);
-        });
+      state = {
+        ...state,
+        searchedToken: action.payload,
+      };
       break;
     }
     default:

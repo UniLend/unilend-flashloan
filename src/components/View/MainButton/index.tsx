@@ -41,7 +41,6 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
         donateIsApproved === true ||
         (actionName !== "Deposit" && actionName !== "Reward"))
     ) {
-      debugger;
       return (
         <button
           disabled={amount === ""}

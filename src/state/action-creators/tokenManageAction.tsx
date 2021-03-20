@@ -51,10 +51,28 @@ export const handleTokenListToggle = (id: number) => {
 
 export const searchToken = (address: string) => {
   return async (dispatch: Dispatch<TokenAction>) => {
-    dispatch({
-      type: ActionType.SEARCHED_TOKEN,
-      payload: ["0x1985365e9f78359a9B6AD760e32412f4a445E862"],
-    });
+    const data = {
+      jsonrpc: "2.0",
+      method: "alchemy_getTokenMetadata",
+      params: ["0x6B175474E89094C44Da98b954EedeAC495271d0F"],
+      id: 1,
+    };
+    axios
+      .post(
+        "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
+        JSON.stringify(data)
+      )
+      .then((res: any) => {
+        if (res.data.result) {
+          dispatch({
+            type: ActionType.SEARCHED_TOKEN,
+            payload: res.data.result,
+          });
+        }
+      })
+      .catch((e: any) => {
+        console.log(e);
+      });
   };
 };
 

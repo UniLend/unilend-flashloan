@@ -17,11 +17,17 @@ interface TokenManageState {
     payload: Array<object> | [];
   };
   tokenGroupList: TokenGroupList[];
-  searchedToken: {} | null;
+  searchedToken: {
+    payload: any;
+    message: string | null;
+  };
 }
 
 const initialState = {
-  searchedToken: null,
+  searchedToken: {
+    payload: null,
+    message: null
+  },
   tokenList: {
     isRequesting: false,
     payload: [],
@@ -86,10 +92,15 @@ const TokenManageReducer = (
       };
       break;
     }
-    case ActionType.SEARCHED_TOKEN: {
+    case ActionType.SET_SEARCHED_TOKEN: {
+      const { data, message } = action.payload;
+
       state = {
         ...state,
-        searchedToken: action.payload,
+        searchedToken: {
+          payload: data ? data : null,
+          message: message ? message : null
+        }
       };
       break;
     }

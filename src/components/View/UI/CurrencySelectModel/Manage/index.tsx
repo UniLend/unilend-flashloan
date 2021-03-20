@@ -7,12 +7,14 @@ import useWalletConnect from "hooks/useWalletConnect";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
-interface Props {}
+import SearchTokenCard from "./SearchTokenCard";
+interface Props { }
 
 const Manage: FC<Props> = (props) => {
-  const {} = props;
+  const { } = props;
 
   const [searchText, setSearchText] = useState<string>("");
+  const [searchedTokenText, setSearchedTokenText] = useState<string>("");
 
   const [activeSubTab, setActiveSubTab] = useState<string>("list");
   const { currentProvider } = useWalletConnect();
@@ -22,11 +24,16 @@ const Manage: FC<Props> = (props) => {
     (state) => state.tokenManage.tokenList
   );
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
+  const { payload: searchedToken, message: errorMessage } = useTypedSelector(state => state.tokenManage.searchedToken);
 
-  const { fetchTokenList } = useActions();
+  const { fetchTokenList, searchToken } = useActions();
   useEffect(() => {
     console.log(tokenList);
   }, [tokenList]);
+
+  useEffect(() => {
+    if (searchedTokenText.length > 0) searchToken(searchedTokenText);
+  }, [searchedTokenText]);
 
   const handleActiveToggle = () => {
     setActiveSubTab(activeSubTab === "list" ? "token" : "list");
@@ -80,30 +87,25 @@ const Manage: FC<Props> = (props) => {
           </div>
         </>
       ) : (
-        <>
-          <div>
-            <input
-              type="text"
-              value={searchText}
-              className="form-control model-search-input"
-              placeholder="0x0000"
-              onChange={handleSearch}
-            />
-          </div>
-          <div>
-            {isRequesting || tokenList.length === 0 ? (
-              <span>{isRequesting ? "Loading..." : "No tokens found."}</span>
-            ) : (
-              <>
-                {/* {tokenList.length &&
-              tokenList.map((item: any, i: number) => (
-                <div key={i}>{item.name}</div>
-              ))} */}
-              </>
-            )}
-          </div>
-        </>
-      )}
+          <>
+            <div className={`${(searchedTokenText && errorMessage) ? "search-token" : ""}`}>
+              <input
+                type="text"
+                value={searchedTokenText}
+                className="form-control model-search-input"
+                placeholder="0x0000"
+                onChange={(e) => setSearchedTokenText(e.target.value)}
+              />
+              {(searchedTokenText && errorMessage) && <span className="error">{errorMessage}</span>}
+            </div>
+            {searchedToken &&
+              <SearchTokenCard
+                name={searchedToken.name}
+                symbol={searchedToken.symbol}
+                logo={searchedToken.logo}
+              />}
+          </>
+        )}
     </>
   );
 };

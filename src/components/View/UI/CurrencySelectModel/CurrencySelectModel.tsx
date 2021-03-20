@@ -1,15 +1,16 @@
-import React, { FC, useState, useEffect, Children } from "react";
+import React, { FC, useState, useEffect, Children, Dispatch } from "react";
+import { useDispatch } from "react-redux";
 import { ListGroup, Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
-import Logo from "../../../../assets/htLogo.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
-import { Heading5, Heading6 } from "components/View/UI/widgets/Common";
 import EditIcon from "assets/edit.svg";
 import backIcon from "assets/back.svg";
 import Manage from "./Manage";
 import { useActions } from "hooks/useActions";
+import { TokenAction } from "state/actions/tokenManageA";
+import { ActionType } from "state/action-types";
 // ! Let React Handle Keys
 interface Props {
   handleClose: () => void;
@@ -24,6 +25,7 @@ const CurrencySelectModel: FC<Props> = ({
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
 
+  const dispatch = useDispatch<Dispatch<TokenAction>>();
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState([{}]);
   const [openManage, setOpenManage] = useState<Boolean>(false);
@@ -34,7 +36,9 @@ const CurrencySelectModel: FC<Props> = ({
 
   useEffect(() => {
     fetchTokenList(tokenGroupList);
-    searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
+    // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
+
+    return () => dispatch({ type: ActionType.SET_SEARCHED_TOKEN, payload: { data: null, message: null } });
   }, []);
 
   useEffect(() => {
@@ -117,10 +121,10 @@ const CurrencySelectModel: FC<Props> = ({
           )}
         </ListGroup>
       ) : (
-        <>
-          <p className="no-data">No Data to Show</p>
-        </>
-      )}
+          <>
+            <p className="no-data">No Data to Show</p>
+          </>
+        )}
     </div>
   );
   return (

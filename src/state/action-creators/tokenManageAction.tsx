@@ -13,28 +13,28 @@ export const fetchTokenList = (tokenList: any) => {
       console.log(_enableChecked);
       _enableChecked
         ? tokenList.forEach((item: any) => {
-            if (item.isEnabled) {
-              axios
-                .get(item.fetchURI)
-                .then((res) => {
-                  if (res.data) {
-                    const tokenList: any = res.data.tokens;
-                    if (tokenList) totalTokenList.push(...tokenList);
-                  }
-                  dispatch({
-                    type: ActionType.GET_TOKEN_LIST,
-                    payload: [...totalTokenList],
-                  });
-                })
-                .catch((e: any) => {
-                  console.log(e);
+          if (item.isEnabled) {
+            axios
+              .get(item.fetchURI)
+              .then((res) => {
+                if (res.data) {
+                  const tokenList: any = res.data.tokens;
+                  if (tokenList) totalTokenList.push(...tokenList);
+                }
+                dispatch({
+                  type: ActionType.GET_TOKEN_LIST,
+                  payload: [...totalTokenList],
                 });
-            }
-          })
+              })
+              .catch((e: any) => {
+                console.log(e);
+              });
+          }
+        })
         : dispatch({
-            type: ActionType.GET_TOKEN_LIST,
-            payload: [],
-          });
+          type: ActionType.GET_TOKEN_LIST,
+          payload: [],
+        });
     }
   };
 };
@@ -54,7 +54,7 @@ export const searchToken = (address: string) => {
     const data = {
       jsonrpc: "2.0",
       method: "alchemy_getTokenMetadata",
-      params: ["0x6B175474E89094C44Da98b954EedeAC495271d0F"],
+      params: [`${address}`],
       id: 1,
     };
     axios
@@ -63,15 +63,11 @@ export const searchToken = (address: string) => {
         JSON.stringify(data)
       )
       .then((res: any) => {
-        if (res.data.result) {
-          dispatch({
-            type: ActionType.SEARCHED_TOKEN,
-            payload: res.data.result,
-          });
-        }
+        if (res.data.result) dispatch({ type: ActionType.SET_SEARCHED_TOKEN, payload: { data: res.data.result, message: null } });
       })
       .catch((e: any) => {
         console.log(e);
+        dispatch({ type: ActionType.SET_SEARCHED_TOKEN, payload: { data: null, message: "Enter valid token address" } });
       });
   };
 };
@@ -86,5 +82,5 @@ export const resetList = () => {
 };
 
 export const getErcTokenDetail = () => {
-  return async (dispatch: Dispatch<TokenAction>) => {};
+  return async (dispatch: Dispatch<TokenAction>) => { };
 };

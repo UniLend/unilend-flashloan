@@ -18,9 +18,9 @@ interface TokenList {
   payload: any;
 }
 
-interface SearchedToken {
-  type: ActionType.SEARCHED_TOKEN;
-  payload: any;
+interface setSearchedToken {
+  type: ActionType.SET_SEARCHED_TOKEN;
+  payload: { data: any, message: string | null };
 }
 
 export type TokenAction =
@@ -28,4 +28,4 @@ export type TokenAction =
   | TokenList
   | TokenListRequest
   | TokenListToggle
-  | SearchedToken;
+  | setSearchedToken;

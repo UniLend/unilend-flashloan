@@ -104,3 +104,15 @@
     background: rgb(44, 47, 54);
   }
 }
+
+.search-token{
+  input[type="text"]{
+    border-color: red;
+  }
+  .error{
+    font-weight: 600;
+    font-size: 0.9rem;
+    color:red;
+  }
+}
+

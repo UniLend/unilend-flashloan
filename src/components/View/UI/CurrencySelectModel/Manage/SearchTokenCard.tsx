@@ -3,6 +3,7 @@ import { Row, Col, Card } from "react-bootstrap";
 import "./SearchTokenCard.scss";
 import tickImg from "assets/tick.svg";
 import cantFind from "assets/cantFind.svg";
+import { useTypedSelector } from "hooks/useTypedSelector";
 interface Props {
   name: string;
   symbol: string;
@@ -12,9 +13,9 @@ interface Props {
 
 const SearchTokenCard: React.FC<Props> = (props) => {
   const { name, symbol, logo, handleImport } = props;
-
+  const { theme } = useTypedSelector((state) => state.settings);
   return (
-    <Card className="search-token-card">
+    <Card className={`search-token-card`}>
       <Row className="search-token-row m-0">
         <Col
           style={{ textAlign: "center" }}

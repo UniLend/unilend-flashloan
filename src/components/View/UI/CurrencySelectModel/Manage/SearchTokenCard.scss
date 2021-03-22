@@ -77,3 +77,15 @@
     }
   }
 }
+.dark {
+  .search-token-card {
+    background-color: #343a40;
+    .search-token-row {
+      .details {
+        .symbol {
+          color: #fff;
+        }
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ import { FC, useState } from "react";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
 
 interface Props {
+  isEth: boolean;
   amount: string;
   actionName: string;
   handleAmount: Function;
@@ -16,7 +17,7 @@ interface WalletConnectModal {
   show: boolean;
 }
 
-const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
+const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   const {
     walletConnected,
     accounts: address,
@@ -33,11 +34,13 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
   );
   const { depositApprove, donateApprove } = useActions();
   function handleMainButton() {
+    console.log("is", isEth);
     if (
       address &&
       address.length &&
       walletConnected &&
-      (isDepositApproved === true ||
+      (isEth ||
+        isDepositApproved === true ||
         donateIsApproved === true ||
         (actionName !== "Deposit" && actionName !== "Reward"))
     ) {
@@ -55,6 +58,7 @@ const MainButton: FC<Props> = ({ amount, actionName, handleAmount }) => {
       address &&
       address.length &&
       walletConnected &&
+      !isEth &&
       (isDepositApproved === false || isDepositApproved === undefined) &&
       (donateIsApproved === false || donateIsApproved === undefined) &&
       (actionName === "Deposit" || actionName === "Reward")

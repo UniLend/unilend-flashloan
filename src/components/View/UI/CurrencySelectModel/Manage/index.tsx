@@ -9,6 +9,7 @@ import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
 import { Reciepent } from "ethereum/contracts";
+import UFTLogo from "assets/logo.svg";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
@@ -29,7 +30,12 @@ const Manage: FC<Props> = (props) => {
     (state) => state.tokenManage.searchedToken
   );
 
-  const { fetchTokenList, searchToken, createPool } = useActions();
+  const {
+    fetchTokenList,
+    searchToken,
+    createPool,
+    handleImportAction,
+  } = useActions();
   useEffect(() => {
     console.log(tokenList);
   }, [tokenList]);
@@ -119,6 +125,60 @@ const Manage: FC<Props> = (props) => {
               logo={searchedToken.logo}
             />
           )}
+          <div className="custom-token-list">
+            <div className="token-number">
+              <span>1</span> Custom Token
+              <Button variant={theme} className=" clear-btn">
+                Clear all
+              </Button>
+            </div>
+            <div className="token-list">
+              <div className="details">
+                <img src={UFTLogo} alt="token-logo" />
+                <a href="">UFT</a>
+              </div>
+              <div className="action">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="delete"
+                >
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://etherscan.io/address/0x70401dFD142A16dC7031c56E862Fc88Cb9537Ce0"
+                  className="sc-eNQAEJ bJDHdm"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    className="view"
+                  >
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </>

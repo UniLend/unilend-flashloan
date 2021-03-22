@@ -34,7 +34,7 @@ const CommonCard = (props: props) => {
     fieldName: "",
     show: false,
     logo: icon,
-    currency: "eth",
+    currency: "ETH",
   });
   const {
     handleDeposit,
@@ -127,6 +127,7 @@ const CommonCard = (props: props) => {
     logo?: any,
     currency?: string
   ) => {
+    console.log(modalInfo.currency);
     setModalInfo({
       fieldName: field,
       show,
@@ -152,6 +153,7 @@ const CommonCard = (props: props) => {
               selectedLogo={modalInfo.logo ? modalInfo.logo : ""}
             />
             <MainButton
+              isEth={modalInfo.currency === "ETH"}
               amount={amount}
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}

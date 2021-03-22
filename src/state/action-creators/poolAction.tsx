@@ -14,17 +14,21 @@ export const createPool = (
       .send({
         from: address,
       })
-      .on("Response", (res: any) => {
-        var a: any = [];
-        let storedArr = localStorage.getItem("sessionImportedToken");
-        if (storedArr) {
-          a = JSON.parse(storedArr) || [];
-          a.push(searchedToken);
-        }
-        // Alert the array value
-        alert(a);
-        localStorage.setItem("sessionImportedToken", JSON.stringify(a));
-      })
+      .on("Response", (res: any) => {})
       .catch((e: any) => console.log("Importing Failed"));
+  };
+};
+
+export const handleImportAction = (searchedToken: any) => {
+  return async (dispatch: Dispatch<PoolAction>) => {
+    var a: any = [];
+    let storedArr = localStorage.getItem("sessionImportedToken");
+    if (storedArr) {
+      a = JSON.parse(storedArr) || [];
+      a.push(searchedToken);
+    }
+    // Alert the array value
+    alert(a);
+    localStorage.setItem("sessionImportedToken", JSON.stringify(a));
   };
 };

@@ -29,6 +29,11 @@
 }
 
 .dark {
+  .modal-body {
+    &.manage {
+      color: #fff;
+    }
+  }
   .modal-content {
     background-color: rgb(33, 36, 41);
   }

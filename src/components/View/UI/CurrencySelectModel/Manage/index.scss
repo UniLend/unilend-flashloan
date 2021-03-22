@@ -105,14 +105,115 @@
   }
 }
 
-.search-token{
-  input[type="text"]{
+.search-token {
+  input[type="text"] {
     border-color: red;
   }
-  .error{
+  .error {
     font-weight: 600;
     font-size: 0.9rem;
-    color:red;
+    color: red;
   }
 }
 
+// Custoom Token
+
+.custom-token-list {
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 24px;
+  padding: 20px;
+  .token-number {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    font-weight: 600;
+    .clear-btn {
+      outline: none;
+      border: none;
+      font-size: inherit;
+      padding: 0px;
+      margin: 0px;
+      background: none;
+      cursor: pointer;
+      float: right;
+      color: rgb(33, 114, 229);
+    }
+  }
+  .token-list {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    width: 100%;
+    display: flex;
+    padding: 0px;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+  }
+  .details {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    padding: 0px;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    width: fit-content;
+    img {
+      width: 20px;
+      height: 20px;
+      border-radius: 20px;
+      box-shadow: #00000014 0px 6px 10px;
+      background-color: rgb(255, 255, 255);
+    }
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      color: #007bff;
+      padding-left: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+  .action {
+    box-sizing: border-box;
+    margin: 0px;
+    min-width: 0px;
+    display: flex;
+    padding: 0px;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    width: fit-content;
+    .delete {
+      height: 16px;
+      width: 18px;
+      margin-left: 10px;
+      stroke: rgb(136, 141, 155);
+      cursor: pointer;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      justify-content: center;
+      display: flex;
+    }
+    .view {
+      text-decoration: none;
+      cursor: pointer;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      justify-content: center;
+      display: flex;
+      color: rgb(33, 114, 229);
+      height: 16px;
+      width: 18px;
+      margin-left: 10px;
+    }
+  }
+}

@@ -38,7 +38,11 @@ const CurrencySelectModel: FC<Props> = ({
     fetchTokenList(tokenGroupList);
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
 
-    return () => dispatch({ type: ActionType.SET_SEARCHED_TOKEN, payload: { data: null, message: null } });
+    return () =>
+      dispatch({
+        type: ActionType.SET_SEARCHED_TOKEN,
+        payload: { data: null, message: null },
+      });
   }, []);
 
   useEffect(() => {
@@ -93,7 +97,11 @@ const CurrencySelectModel: FC<Props> = ({
                     <img
                       width="24"
                       className="list-icon"
-                      src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${item.address}/logo.png`}
+                      src={
+                        item.symbol === "ETH"
+                          ? item.logoURI
+                          : `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${item.address}/logo.png`
+                      }
                       alt=""
                     />
                   </div>
@@ -121,10 +129,10 @@ const CurrencySelectModel: FC<Props> = ({
           )}
         </ListGroup>
       ) : (
-          <>
-            <p className="no-data">No Data to Show</p>
-          </>
-        )}
+        <>
+          <p className="no-data">No Data to Show</p>
+        </>
+      )}
     </div>
   );
   return (

@@ -7,10 +7,11 @@ interface Props {
   name: string;
   symbol: string;
   logo: string;
+  handleImport: () => void;
 }
 
 const SearchTokenCard: React.FC<Props> = (props) => {
-  const { name, symbol, logo } = props;
+  const { name, symbol, logo, handleImport } = props;
 
   return (
     <Card className="search-token-card">
@@ -50,7 +51,9 @@ const SearchTokenCard: React.FC<Props> = (props) => {
             </>
           ) : (
             <div>
-              <button className="import-btn">Import</button>
+              <button className="import-btn" onClick={() => handleImport()}>
+                Import
+              </button>
             </div>
           )}
         </Col>

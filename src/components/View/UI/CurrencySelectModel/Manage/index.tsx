@@ -4,29 +4,32 @@ import { FC } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useActions } from "hooks/useActions";
 import useWalletConnect from "hooks/useWalletConnect";
-import { IERC20 } from "ethereum/contracts/FlashloanLB";
+import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
 import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
-interface Props { }
+import { Reciepent } from "ethereum/contracts";
+interface Props {}
 
 const Manage: FC<Props> = (props) => {
-  const { } = props;
+  const {} = props;
 
   const [searchText, setSearchText] = useState<string>("");
   const [searchedTokenText, setSearchedTokenText] = useState<string>("");
 
   const [activeSubTab, setActiveSubTab] = useState<string>("list");
-  const { currentProvider } = useWalletConnect();
+  const { currentProvider, accounts } = useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
   const { payload: tokenList, isRequesting } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
-  const { payload: searchedToken, message: errorMessage } = useTypedSelector(state => state.tokenManage.searchedToken);
+  const { payload: searchedToken, message: errorMessage } = useTypedSelector(
+    (state) => state.tokenManage.searchedToken
+  );
 
-  const { fetchTokenList, searchToken } = useActions();
+  const { fetchTokenList, searchToken, createPool } = useActions();
   useEffect(() => {
     console.log(tokenList);
   }, [tokenList]);
@@ -48,6 +51,10 @@ const Manage: FC<Props> = (props) => {
     //   }
     // });
     fetchTokenList(tokenGroupList);
+  };
+  const handleImport = () => {
+    console.log("Imported");
+    createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };
   return (
     <>
@@ -87,25 +94,33 @@ const Manage: FC<Props> = (props) => {
           </div>
         </>
       ) : (
-          <>
-            <div className={`${(searchedTokenText && errorMessage) ? "search-token" : ""}`}>
-              <input
-                type="text"
-                value={searchedTokenText}
-                className="form-control model-search-input"
-                placeholder="0x0000"
-                onChange={(e) => setSearchedTokenText(e.target.value)}
-              />
-              {(searchedTokenText && errorMessage) && <span className="error">{errorMessage}</span>}
-            </div>
-            {searchedToken &&
-              <SearchTokenCard
-                name={searchedToken.name}
-                symbol={searchedToken.symbol}
-                logo={searchedToken.logo}
-              />}
-          </>
-        )}
+        <>
+          <div
+            className={`${
+              searchedTokenText && errorMessage ? "search-token" : ""
+            }`}
+          >
+            <input
+              type="text"
+              value={searchedTokenText}
+              className="form-control model-search-input"
+              placeholder="0x0000"
+              onChange={(e) => setSearchedTokenText(e.target.value)}
+            />
+            {searchedTokenText && errorMessage && (
+              <span className="error">{errorMessage}</span>
+            )}
+          </div>
+          {searchedToken && (
+            <SearchTokenCard
+              handleImport={() => handleImport()}
+              name={searchedToken.name}
+              symbol={searchedToken.symbol}
+              logo={searchedToken.logo}
+            />
+          )}
+        </>
+      )}
     </>
   );
 };

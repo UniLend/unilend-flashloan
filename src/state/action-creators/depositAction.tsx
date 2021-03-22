@@ -51,8 +51,13 @@ export const depositApprove = (currentProvider: any, address: any) => {
         )
         .send({
           from: address,
+        })
+        .on("res", (res: any) => {
+          localStorage.setItem("isApproving", "true");
+        })
+        .catch((e: Error) => {
+          console.log("Approval Rejected By User");
         });
-      localStorage.setItem("isApproving", "true");
     } catch (e) {
       console.log(e);
     }

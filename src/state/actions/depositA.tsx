@@ -10,4 +10,12 @@ interface DepositApprovalStatus {
   payload: boolean;
 }
 
-export type DepositAction = DepositAmount | DepositApprovalStatus;
+interface DepositStatus {
+  type: ActionType.DEPOSIT_STATUS;
+  payload: boolean;
+}
+
+export type DepositAction =
+  | DepositAmount
+  | DepositApprovalStatus
+  | DepositStatus;

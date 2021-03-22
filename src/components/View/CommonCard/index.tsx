@@ -21,8 +21,8 @@ interface props {
 interface ModalType {
   fieldName: string;
   show: boolean;
+  currency: string;
   logo?: any;
-  currency?: string;
 }
 
 const CommonCard = (props: props) => {
@@ -46,7 +46,7 @@ const CommonCard = (props: props) => {
     fetchTokenList,
   } = useActions();
   const { accounts, walletConnected, currentProvider } = useWalletConnect();
-  const { isDepositApproved: isApproved } = useTypedSelector(
+  const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
   const { donateContractAddress, donateIsApproved } = useTypedSelector(
@@ -67,6 +67,7 @@ const CommonCard = (props: props) => {
       !isApproved
     ) {
       // debugger;
+      console.log("ALLOWANCE");
       checkAllowance(currentProvider, accounts[0]);
       interval = setInterval(() => {
         checkAllowance(currentProvider, accounts[0]);
@@ -94,12 +95,20 @@ const CommonCard = (props: props) => {
     walletConnected,
     isApproved,
     donateContractAddress,
+    modalInfo.currency,
   ]);
+
+  useEffect(() => {
+    if (isDepositSuccess || donateIsApproved) {
+      console.log("success");
+      setAmount("");
+    }
+  }, [donateIsApproved, isDepositSuccess]);
 
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
-        handleDeposit(currentProvider, amount, accounts[0]);
+        handleDeposit(currentProvider, amount, accounts[0], modalInfo.currency);
         break;
       case "redeem":
         handleRedeem(currentProvider, amount, accounts[0]);
@@ -118,7 +127,6 @@ const CommonCard = (props: props) => {
       default:
         break;
     }
-    setAmount("");
   };
 
   const handleModal = (

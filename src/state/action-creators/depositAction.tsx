@@ -11,18 +11,14 @@ import { DepositAction } from "state/actions/depositA";
 // Allowance Should be checked to reveal the approval state of the contract
 export const checkAllowance = (currentProvider: any, address: any) => {
   return async (dispatch: Dispatch<DepositAction>) => {
-    console.log("Checking Allowance");
     let allowance;
-    console.log(currentProvider);
     let _IERC20 = await IERC20(currentProvider);
     _IERC20.methods
       .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
       .call((error: any, result: any) => {
         if (!error && result) {
-          console.log("allowance", result);
           allowance = result;
           if (allowance === "0") {
-            console.log("not approved");
             dispatch({
               type: ActionType.DEPOSIT_APPROVAL_STATUS,
               payload: false, // isApproved
@@ -44,6 +40,11 @@ export const depositApprove = (currentProvider: any, address: any) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     try {
       let _IERC20 = await IERC20(currentProvider);
+      localStorage.setItem("isApproving", "true");
+      dispatch({
+        type: ActionType.DEPOSIT_APPROVAL_STATUS,
+        payload: false,
+      });
       _IERC20.methods
         .approve(
           UnilendFlashLoanCoreContract(currentProvider),
@@ -52,10 +53,20 @@ export const depositApprove = (currentProvider: any, address: any) => {
         .send({
           from: address,
         })
-        .on("res", (res: any) => {
-          localStorage.setItem("isApproving", "true");
+        .on("receipt", (res: any) => {
+          localStorage.setItem("isApproving", "false");
+          dispatch({
+            type: ActionType.DEPOSIT_APPROVAL_STATUS,
+            payload: true,
+          });
         })
         .catch((e: Error) => {
+          localStorage.setItem("isApproving", "false");
+
+          dispatch({
+            type: ActionType.DEPOSIT_APPROVAL_STATUS,
+            payload: false,
+          });
           console.log("Approval Rejected By User");
         });
     } catch (e) {
@@ -67,7 +78,8 @@ export const depositApprove = (currentProvider: any, address: any) => {
 export const handleDeposit = (
   currentProvider: any,
   depositAmount: any,
-  address: string
+  address: string,
+  currencyType: string
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     try {
@@ -77,6 +89,19 @@ export const handleDeposit = (
         .send({
           from: address,
           value: 0,
+        })
+        .on("receipt", (res: any) => {
+          dispatch({
+            type: ActionType.DEPOSIT_STATUS,
+            payload: true,
+          });
+        })
+        .catch((e: any) => {
+          console.log("Err", e);
+          dispatch({
+            type: ActionType.DEPOSIT_STATUS,
+            payload: false,
+          });
         });
     } catch (e) {
       console.log(e);

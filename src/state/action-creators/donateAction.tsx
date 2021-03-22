@@ -1,4 +1,8 @@
-import { approveTokenMaximumValue, AssetAddress } from "ethereum/contracts";
+import {
+  approveTokenMaximumValue,
+  AssetAddress,
+  Reciepent,
+} from "ethereum/contracts";
 import {
   FlashloanLBCore,
   IERC20,
@@ -14,7 +18,6 @@ export const getDonationContract = (currentProvider: any) => {
       .methods.getDonationContract()
       .call((error: any, result: any) => {
         if (!error && result) {
-          console.log(result);
           dispatch({
             type: ActionType.GET_DONATION_CONTRACT,
             payload: result,
@@ -38,10 +41,8 @@ export const donateAllowance = (
       .allowance(address, contractAddress)
       .call((error: any, result: any) => {
         if (!error && result) {
-          console.log("allowance", result);
           allowance = result;
           if (allowance === "0") {
-            console.log("not approved");
             dispatch({
               type: ActionType.DONATE_APPROVAL_STATUS,
               payload: false, // isApproved
@@ -64,12 +65,20 @@ export const donateApprove = (
   contractAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
+    localStorage.setItem("donateApproval", "true");
     let _IERC20 = IERC20(currentProvider);
 
-    _IERC20.methods.approve(contractAddress, approveTokenMaximumValue).send({
-      from: address,
-    });
-    localStorage.setItem("donateApproval", "true");
+    _IERC20.methods
+      .approve(contractAddress, approveTokenMaximumValue)
+      .send({
+        from: address,
+      })
+      .on("receipt", (res: any) => {
+        localStorage.setItem("donateApproval", "false");
+      })
+      .catch((err: Error) => {
+        localStorage.setItem("donateApproval", "false");
+      });
   };
 };
 
@@ -86,14 +95,12 @@ export const handleDonate = (
         .methods.getDonationContract()
         .call((error: any, result: any) => {
           if (!error && result) {
-            console.log(result);
             let contractAddress = result;
             let allowance;
             _IERC20.methods
               .allowance(address, contractAddress)
               .call((error: any, result: any) => {
                 if (!error && result) {
-                  console.log("allowance", result);
                   allowance = result;
                   if (allowance === "0") {
                     _IERC20.methods
@@ -106,11 +113,22 @@ export const handleDonate = (
                     currentProvider,
                     contractAddress
                   );
-                  console.log(donationContract);
                   donationContract.methods
-                    .donate(AssetAddress, fullAmount)
+                    .donate(Reciepent, fullAmount)
                     .send({
                       from: address,
+                    })
+                    .on("receipt", (res: any) => {
+                      dispatch({
+                        type: ActionType.DONATE_APPROVAL_STATUS,
+                        payload: true,
+                      });
+                    })
+                    .catch((e: Error) => {
+                      dispatch({
+                        type: ActionType.DONATE_APPROVAL_STATUS,
+                        payload: false,
+                      });
                     });
                 } else {
                   console.log(error);

@@ -1,4 +1,5 @@
 import { FlashloanLBCore } from "ethereum/contracts/FlashloanLB";
+import { on } from "node:process";
 import { Dispatch } from "redux";
 import { PoolAction } from "state/actions/PoolA";
 
@@ -14,7 +15,10 @@ export const createPool = (
       .send({
         from: address,
       })
-      .on("Response", (res: any) => {})
+      .on("receipt", (res: any) => {})
+      .on("PoolCreated", (res: any) => {
+        console.log(res);
+      })
       .catch((e: any) => console.log("Importing Failed"));
   };
 };

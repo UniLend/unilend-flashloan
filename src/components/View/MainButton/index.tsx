@@ -2,7 +2,7 @@ import { Wallet } from "components/Helpers/Types";
 import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
 
@@ -25,6 +25,17 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     handleWalletConnect,
   } = useWalletConnect();
 
+  const [isApproving, setIsApproving] = useState<string | null>(
+    localStorage.getItem("isApproving")
+  );
+  const [donateIsApproving, setDonateIsApproving] = useState<string | null>(
+    localStorage.getItem("donateApproval")
+  );
+
+  function updateApproval() {
+    setIsApproving(localStorage.getItem("isApproving"));
+    setDonateIsApproving(localStorage.getItem("donateApproval"));
+  }
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
@@ -33,15 +44,19 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     (state) => state.donate
   );
   const { depositApprove, donateApprove } = useActions();
+  useEffect(() => {
+    updateApproval();
+  });
   function handleMainButton() {
     console.log("is", isEth);
+    debugger;
     if (
       address &&
       address.length &&
       walletConnected &&
       (isEth ||
-        isDepositApproved === true ||
-        donateIsApproved === true ||
+        (actionName === "Deposit" && isDepositApproved === true) ||
+        (actionName === "Reward" && donateIsApproved === true) ||
         (actionName !== "Deposit" && actionName !== "Reward"))
     ) {
       return (
@@ -59,13 +74,13 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
       address.length &&
       walletConnected &&
       !isEth &&
-      (isDepositApproved === false || isDepositApproved === undefined) &&
-      (donateIsApproved === false || donateIsApproved === undefined) &&
+      ((actionName === "Deposit" &&
+        (isDepositApproved === false || isDepositApproved === undefined)) ||
+        (actionName === "Reward" &&
+          (donateIsApproved === false || donateIsApproved === undefined))) &&
       (actionName === "Deposit" || actionName === "Reward")
     ) {
       // debugger;
-      let isApproving = localStorage.getItem("isApproving");
-      let donateIsApproving = localStorage.getItem("donateApproval");
       return (
         <button
           disabled={
@@ -75,8 +90,10 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === "Deposit") {
+              setIsApproving("true");
               depositApprove(currentProvider, address[0]);
             } else if (actionName === "Reward") {
+              setDonateIsApproving("true");
               donateApprove(currentProvider, address[0], donateContractAddress);
             }
           }}

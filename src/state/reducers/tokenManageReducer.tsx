@@ -26,7 +26,7 @@ interface TokenManageState {
 const initialState = {
   searchedToken: {
     payload: null,
-    message: null
+    message: null,
   },
   tokenList: {
     isRequesting: false,
@@ -35,14 +35,23 @@ const initialState = {
   tokenGroupList: [
     {
       id: 1,
-      name: "Gemini Token List",
-      icon: "https://gemini.com/static/images/loader.png",
-      token: 21,
-      fetchURI: "https://www.gemini.com/uniswap/manifest.json",
+      name: "Unilend Token List",
+      icon:
+        "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
+      token: 1,
+      fetchURI: "https://unilend.finance/list.json",
       isEnabled: true,
     },
     {
       id: 2,
+      name: "Gemini Token List",
+      icon: "https://gemini.com/static/images/loader.png",
+      token: 21,
+      fetchURI: "https://www.gemini.com/uniswap/manifest.json",
+      isEnabled: false,
+    },
+    {
+      id: 3,
       name: "CMC DeFi",
       icon:
         "https://cloudflare-ipfs.com/ipfs/QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx/",
@@ -99,8 +108,8 @@ const TokenManageReducer = (
         ...state,
         searchedToken: {
           payload: data ? data : null,
-          message: message ? message : null
-        }
+          message: message ? message : null,
+        },
       };
       break;
     }

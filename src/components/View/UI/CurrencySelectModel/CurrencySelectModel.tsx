@@ -97,11 +97,7 @@ const CurrencySelectModel: FC<Props> = ({
                     <img
                       width="24"
                       className="list-icon"
-                      src={
-                        item.symbol === "ETH"
-                          ? item.logoURI
-                          : `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${item.address}/logo.png`
-                      }
+                      src={item.logoURI}
                       alt=""
                     />
                   </div>
@@ -201,7 +197,7 @@ const CurrencySelectModel: FC<Props> = ({
         <Modal.Body className={openManage && "manage"}>
           {openManage ? <Manage /> : MainBodyContent}
         </Modal.Body>
-        {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>}
+        {/* {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>} */}
       </Modal>
     </>
   );

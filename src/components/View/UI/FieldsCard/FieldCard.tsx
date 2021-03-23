@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
+import { useTypedSelector } from "hooks/useTypedSelector";
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -13,13 +14,14 @@ interface Props {
 }
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
+  const { theme } = useTypedSelector((state) => state.settings);
 
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
   return (
     <>
-      <div className="card field-card">
+      <div className={`${theme} card field-card`}>
         <div className="card-body py-2">
           <div className="row">
             <div className=" col-6 col-sm-7">

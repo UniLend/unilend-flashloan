@@ -235,9 +235,11 @@ export const getUserTokenBalance = (currentProvider: any, accounts: any) => {
       let _IERC20 = IERC20(currentProvider);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
+          let fullAmount = currentProvider.utils.fromWei(r);
+          let fullAmountDeci = fullAmount.slice(0, 7);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
-            userTokenBalance: currentProvider.utils.fromWei(r),
+            userTokenBalance: fullAmountDeci,
           });
         }
       });
@@ -258,9 +260,11 @@ export const getPoolTokenBalance = (currentProvider: any, accounts: string) => {
         .methods.balanceOf(accounts)
         .call((e: any, r: any) => {
           if (!e) {
+            let fullAmount = currentProvider.utils.fromWei(r);
+            let fullAmountDeci = fullAmount.slice(0, 7);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
-              payload: currentProvider.utils.fromWei(r),
+              payload: fullAmountDeci,
             });
           }
         });

@@ -205,7 +205,7 @@ const CommonCard = (props: props) => {
                 </div>
               </div>
             )}
-            {activeTab === "redeem" && poolTokenBalance && donateIsApproved && (
+            {activeTab === "redeem" && poolTokenBalance && (
               <div className="price_head">
                 <div className="price_aa">
                   <div className="price-list">

@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import AirdropReducer from "./airdropReducer";
 import connectWalletReducer from "./connectWalletReducer";
 import DepositReducer from "./depositReducer";
 import DonateReducer from "./donateReducer";
@@ -12,6 +13,7 @@ const reducers = combineReducers({
   deposit: DepositReducer,
   donate: DonateReducer,
   redeem: RedeemReducer,
+  airdrop: AirdropReducer,
   tokenManage: TokenManageReducer,
 });
 

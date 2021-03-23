@@ -10,8 +10,6 @@ import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import icon from "assets/uft.svg";
-import web3 from "ethereum/web3";
-import { getAccountBalance } from "state/action-creators";
 
 interface props {
   activeTab: string | null;
@@ -35,7 +33,8 @@ const CommonCard = (props: props) => {
     getDonationContract,
     donateAllowance,
     fetchTokenList,
-    getRedeemTokenBalance,
+    getPoolTokenBalance,
+    handleAirdrop,
   } = useActions();
   const {
     accounts,
@@ -43,6 +42,7 @@ const CommonCard = (props: props) => {
     currentProvider,
     accountBalance,
     userTokenBalance,
+    poolTokenBalance,
     getUserTokenBalance,
   } = useWalletConnect();
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
@@ -59,7 +59,7 @@ const CommonCard = (props: props) => {
   const [modalInfo, setModalInfo] = useState<ModalType>({
     fieldName: "",
     show: false,
-    logo: tokenList?.length ? (tokenList[0] as any).logoURI : "",
+    logo: tokenList?.length ? (tokenList[0] as any).logoURI : icon,
     currency: tokenList?.length ? (tokenList[0] as any).symbol : "UFT",
   });
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
@@ -98,8 +98,6 @@ const CommonCard = (props: props) => {
   }, [
     accounts,
     activeTab,
-    currentProvider,
-    walletConnected,
     isApproved,
     donateContractAddress,
     modalInfo.currency,
@@ -114,51 +112,41 @@ const CommonCard = (props: props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected]);
+  const handleTokenBalance = () => {
+    // getAccountBalance(currentProvider);
+    getUserTokenBalance(currentProvider, accounts[0]);
+    getPoolTokenBalance(currentProvider, accounts[0]);
+  };
   useEffect(() => {
     if (walletConnected) {
-      getUserTokenBalance(currentProvider, accounts[0]);
-      getRedeemTokenBalance(currentProvider, accounts[0]);
-      console.log(userTokenBalance);
+      handleTokenBalance();
     }
     if (isDepositSuccess || donateIsApproved) {
-      console.log("success");
-
       setAmount("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    walletConnected,
-    donateIsApproved,
-    isDepositSuccess,
-    userTokenBalance,
-    currentProvider,
-    accounts,
-  ]);
-  const handleTokenBalance = () => {
-    getAccountBalance(currentProvider);
-    getRedeemTokenBalance(currentProvider, accounts[0]);
-  };
+  }, [walletConnected, donateIsApproved, isDepositSuccess, accounts]);
+
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
         handleDeposit(currentProvider, amount, accounts[0], modalInfo.currency);
-        handleTokenBalance();
         break;
       case "redeem":
         handleRedeem(currentProvider, amount, accounts[0]);
-        handleTokenBalance();
 
         break;
       case "reward":
         handleDonate(currentProvider, amount, accounts[0]);
         break;
       case "airdrop":
-        let trans = await web3.eth.sendTransaction({
-          from: accounts[0],
-          to: "0x186b707bB603c16295eF38EA27a081EBf5b65989",
-          value: web3.utils.toWei(amount),
-        });
-        console.log(trans);
+        // let trans = await web3.eth.sendTransaction({
+        //   from: accounts[0],
+        //   to: "0x186b707bB603c16295eF38EA27a081EBf5b65989",
+        //   value: web3.utils.toWei(amount),
+        // });
+        handleAirdrop(currentProvider, amount, accounts[0]);
+        debugger;
         break;
       default:
         break;
@@ -178,7 +166,7 @@ const CommonCard = (props: props) => {
       logo: logo ? logo : modalInfo.logo,
       currency: currency ? currency : modalInfo.currency,
     });
-    if (tokenList.length === 0) fetchTokenList(tokenGroupList);
+    // if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
 
   return (
@@ -192,7 +180,7 @@ const CommonCard = (props: props) => {
               fieldLabel="Amount"
               fieldValue={amount}
               fieldType="text"
-              selectLabel={""}
+              selectLabel={userTokenBalance}
               selectValue={modalInfo.currency ? modalInfo.currency : ""}
               selectedLogo={modalInfo.logo ? modalInfo.logo : ""}
             />
@@ -202,28 +190,28 @@ const CommonCard = (props: props) => {
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}
             />
-            {activeTab === "deposit" && (
+            {activeTab === "deposit" && isApproved && poolTokenBalance && (
               <div className="price_head">
                 <div className="price_aa">
-                  <div className="price-list">
+                  {/* <div className="price-list">
                     Pool percentage <span className="price">-</span>
-                  </div>
+                  </div> */}
                   <div className="price-list">
-                    Token Balance{" "}
+                    Pool Balance ( uUFT){" "}
                     <span className="price">{`${
-                      walletConnected ? userTokenBalance : "-"
+                      walletConnected ? poolTokenBalance : "-"
                     }`}</span>
                   </div>
                 </div>
               </div>
             )}
-            {activeTab === "redeem" && (
+            {activeTab === "redeem" && poolTokenBalance && donateIsApproved && (
               <div className="price_head">
                 <div className="price_aa">
                   <div className="price-list">
-                    Redeem Balance{" "}
+                    Pool Balance( uUFT){" "}
                     <span className="price">{`${
-                      walletConnected ? redeemTokenBalance : "-"
+                      walletConnected ? poolTokenBalance : "-"
                     }`}</span>
                   </div>
                 </div>

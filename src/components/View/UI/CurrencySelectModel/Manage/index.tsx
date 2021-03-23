@@ -48,7 +48,6 @@ const Manage: FC<Props> = (props) => {
     //     console.log(res);
     //   }
     // });
-    fetchTokenList(tokenGroupList);
   };
   const handleImport = () => {
     console.log("Imported");

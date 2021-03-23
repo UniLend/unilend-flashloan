@@ -34,9 +34,11 @@ const FieldCard: FC<Props> = (props) => {
             </div>
             <div className=" col-6 col-sm-5">
               <div className="align-end">
-                <label className="form-label">{`${
-                  props.selectLabel !== "" ? props.selectLabel : ""
-                }`}</label>
+                <label className="form-balance-label">
+                  {props.selectLabel !== ""
+                    ? `Balance: ${props.selectLabel}`
+                    : ""}
+                </label>
               </div>
               <div className="align-end">
                 <button

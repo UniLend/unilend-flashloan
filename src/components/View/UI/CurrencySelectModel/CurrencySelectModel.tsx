@@ -33,7 +33,6 @@ const CurrencySelectModel: FC<Props> = ({
   const { fetchTokenList } = useActions();
 
   useEffect(() => {
-    fetchTokenList(tokenGroupList);
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
 
     return () =>
@@ -147,7 +146,6 @@ const CurrencySelectModel: FC<Props> = ({
               className="manage-back-icon"
               onClick={() => {
                 console.log("checking");
-                fetchTokenList(tokenGroupList);
                 setOpenManage(false);
               }}
             >

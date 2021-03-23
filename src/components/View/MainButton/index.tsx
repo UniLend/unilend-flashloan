@@ -5,6 +5,7 @@ import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useEffect, useState } from "react";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
+import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 
 interface Props {
   isEth: boolean;
@@ -14,6 +15,10 @@ interface Props {
 }
 
 interface WalletConnectModal {
+  show: boolean;
+}
+
+interface TransModalInfo {
   show: boolean;
 }
 
@@ -36,9 +41,15 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     setIsApproving(localStorage.getItem("isApproving"));
     setDonateIsApproving(localStorage.getItem("donateApproval"));
   }
+
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
+
+  const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
+    show: false,
+  });
+
   const { isDepositApproved, depositLoading } = useTypedSelector(
     (state) => state.deposit
   );
@@ -47,10 +58,27 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     donateContractAddress,
     donateLoading,
   } = useTypedSelector((state) => state.donate);
-  const { depositApprove, donateApprove } = useActions();
+  const { airdropLoading } = useTypedSelector((state) => state.airdrop);
+  const { redeemLoading } = useTypedSelector((state) => state.redeem);
+  const {
+    depositApprove,
+    donateApprove,
+    getPoolTokenBalance,
+    getUserTokenBalance,
+    getAccountBalance,
+  } = useActions();
   useEffect(() => {
     updateApproval();
   });
+  const handleTokenBalance = () => {
+    // getAccountBalance(currentProvider);
+    getUserTokenBalance(currentProvider, address[0]);
+    getPoolTokenBalance(currentProvider, address[0]);
+  };
+  useEffect(() => {
+    handleTokenBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depositLoading, donateLoading, redeemLoading, airdropLoading]);
   function handleMainButton() {
     if (
       address &&
@@ -63,12 +91,28 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     ) {
       return (
         <button
-          disabled={amount === "" || depositLoading || donateLoading}
+          disabled={
+            amount === "" ||
+            depositLoading ||
+            donateLoading ||
+            redeemLoading ||
+            airdropLoading
+          }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}
           type="button"
         >
-          {actionName}
+          <div>
+            {actionName}
+            {(depositLoading ||
+              donateLoading ||
+              redeemLoading ||
+              airdropLoading) && (
+              <div className="spinner-border approve-loader" role="status">
+                <span className="sr-only">Approving...</span>
+              </div>
+            )}
+          </div>
         </button>
       );
     } else if (
@@ -131,7 +175,11 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
       show: true,
     });
   }
-
+  function handleTransClose() {
+    setTransModalInfo({
+      show: false,
+    });
+  }
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -141,6 +189,9 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
           handleClose={() => setWalletModalInfo({ show: false })}
           handleWalletConnect={(wallet: Wallet) => handleWalletConnect(wallet)}
         />
+      )}
+      {transModalInfo.show && (
+        <TransactionPopup handleClose={handleTransClose} />
       )}
     </>
   );

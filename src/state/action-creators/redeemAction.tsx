@@ -1,5 +1,5 @@
 import { Reciepent } from "ethereum/contracts";
-import { FlashloanLBCore } from "ethereum/contracts/FlashloanLB";
+import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { portis } from "ethereum/portis";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
@@ -18,7 +18,7 @@ export const handleRedeem = (
         console.log("error", error);
       });
       FlashloanLBCore(currentProvider)
-        .methods.redeem(Reciepent, fullAmount)
+        .methods.redeemUnderlying(Reciepent, fullAmount)
         .send({
           from: accounts,
         });
@@ -26,6 +26,32 @@ export const handleRedeem = (
     } catch (e) {
       console.log(e);
       dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
+    }
+  };
+};
+
+export const getRedeemTokenBalance = (
+  currentProvider: any,
+  accounts: string
+) => {
+  return async (dispatch: Dispatch<RedeemAction>) => {
+    try {
+      uUFTIERC20(currentProvider)
+        .methods.balanceOf(accounts)
+        .call((e: any, r: any) => {
+          if (!e) {
+            dispatch({
+              type: ActionType.REDEEM_TOKEN_BALANCE,
+              payload: currentProvider.utils.fromWei(r),
+            });
+          }
+        });
+    } catch (e: any) {
+      console.log(e);
+      dispatch({
+        type: ActionType.REDEEM_TOKEN_BALANCE,
+        payload: "",
+      });
     }
   };
 };

@@ -24,3 +24,7 @@ export const UnilendFDonation = (
 export const IERC20 = (currentProvider: any) => {
   return new currentProvider.eth.Contract(IERC20ABI.abi, Reciepent);
 };
+
+export const uUFTIERC20 = (currentProvider: any) => {
+  return new currentProvider.eth.Contract(IERC20ABI.abi, AssetAddress);
+};

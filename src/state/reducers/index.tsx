@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import connectWalletReducer from "./connectWalletReducer";
 import DepositReducer from "./depositReducer";
 import DonateReducer from "./donateReducer";
+import RedeemReducer from "./redeemReducer";
 import settingsReducer from "./settingsReducer";
 import TokenManageReducer from "./tokenManageReducer";
 
@@ -10,7 +11,8 @@ const reducers = combineReducers({
   settings: settingsReducer,
   deposit: DepositReducer,
   donate: DonateReducer,
-  tokenManage: TokenManageReducer
+  redeem: RedeemReducer,
+  tokenManage: TokenManageReducer,
 });
 
 export default reducers;

@@ -1,8 +1,4 @@
-import {
-  approveTokenMaximumValue,
-  AssetAddress,
-  Reciepent,
-} from "ethereum/contracts";
+import { approveTokenMaximumValue, Reciepent } from "ethereum/contracts";
 import {
   FlashloanLBCore,
   IERC20,
@@ -42,6 +38,7 @@ export const donateAllowance = (
       .call((error: any, result: any) => {
         if (!error && result) {
           allowance = result;
+          console.log(allowance);
           if (allowance === "0") {
             dispatch({
               type: ActionType.DONATE_APPROVAL_STATUS,
@@ -93,7 +90,6 @@ export const handleDonate = (
     });
     try {
       const fullAmount = currentProvider.utils.toWei(donateAmount, "ether");
-      let _IERC20 = IERC20(currentProvider);
       FlashloanLBCore(currentProvider)
         .methods.getDonationContract()
         .call((error: any, result: any) => {

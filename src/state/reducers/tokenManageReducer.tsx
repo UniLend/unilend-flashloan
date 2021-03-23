@@ -1,7 +1,5 @@
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
-import AaveIcon from "assets/download.svg";
-import axios from "axios";
 
 interface TokenGroupList {
   id: number;

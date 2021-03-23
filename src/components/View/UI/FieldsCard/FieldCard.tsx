@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
-import icon from "../../../../assets/htLogo.svg";
 import dropdown from "../../../../assets/dropdown.svg";
 interface Props {
   fieldLabel: String;
@@ -16,7 +15,6 @@ const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
 
   useEffect(() => {
-    console.log(props);
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
   return (
@@ -36,7 +34,9 @@ const FieldCard: FC<Props> = (props) => {
             </div>
             <div className=" col-6 col-sm-5">
               <div className="align-end">
-                <label className="form-label">{props.selectLabel}</label>
+                <label className="form-label">{`${
+                  props.selectLabel !== "" ? props.selectLabel : ""
+                }`}</label>
               </div>
               <div className="align-end">
                 <button

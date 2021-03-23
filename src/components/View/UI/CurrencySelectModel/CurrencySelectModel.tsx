@@ -5,8 +5,6 @@ import "./CurrencySelectModel.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
-import EditIcon from "assets/edit.svg";
-import backIcon from "assets/back.svg";
 import Manage from "./Manage";
 import { useActions } from "hooks/useActions";
 import { TokenAction } from "state/actions/tokenManageA";
@@ -32,7 +30,7 @@ const CurrencySelectModel: FC<Props> = ({
   const { tokenList, tokenGroupList } = useTypedSelector(
     (state) => state.tokenManage
   );
-  const { fetchTokenList, searchToken } = useActions();
+  const { fetchTokenList } = useActions();
 
   useEffect(() => {
     fetchTokenList(tokenGroupList);
@@ -43,6 +41,7 @@ const CurrencySelectModel: FC<Props> = ({
         type: ActionType.SET_SEARCHED_TOKEN,
         payload: { data: null, message: null },
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -51,7 +50,9 @@ const CurrencySelectModel: FC<Props> = ({
       filteredList = tokenList.payload;
       if (searchText.trim().length > 0)
         filteredList = filteredList.filter((e: any) => {
-          searchWord(e.name, searchText) || searchWord(e.desc, searchText);
+          return (
+            searchWord(e.name, searchText) || searchWord(e.desc, searchText)
+          );
         });
     }
     setFilteredList(filteredList);
@@ -69,17 +70,17 @@ const CurrencySelectModel: FC<Props> = ({
       />
     </div>
   );
-  const ManageButton = (
-    <div className="manage" onClick={() => setOpenManage(!openManage)}>
-      <span>
-        <i className="fa fa-pencil-square-o cursor-pointer" />
-      </span>
-      <span className="ml-1 cursor-pointer">
-        <img src={EditIcon} alt="Edit" width="15" />
-        Manage
-      </span>
-    </div>
-  );
+  // const ManageButton = (
+  //   <div className="manage" onClick={() => setOpenManage(!openManage)}>
+  //     <span>
+  //       <i className="fa fa-pencil-square-o cursor-pointer" />
+  //     </span>
+  //     <span className="ml-1 cursor-pointer">
+  //       <img src={EditIcon} alt="Edit" width="15" />
+  //       Manage
+  //     </span>
+  //   </div>
+  // );
   // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">

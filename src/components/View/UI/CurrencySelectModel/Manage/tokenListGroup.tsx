@@ -1,14 +1,12 @@
-import { FC, useState } from "react";
-import { Card, ListGroup } from "react-bootstrap";
-import Logo from "assets/download.svg";
+import { FC } from "react";
+import { Card } from "react-bootstrap";
 import settingsLogo from "assets/settings.svg";
 import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 interface Props {}
 
 const TokenListGroup: FC<Props> = (props) => {
-  const [radio, setRadio] = useState("on");
-  const { resetList, handleTokenListToggle } = useActions();
+  const { handleTokenListToggle } = useActions();
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
   const handleActive = (id: number) => {
     handleTokenListToggle(id);

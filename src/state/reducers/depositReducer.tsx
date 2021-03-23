@@ -4,11 +4,13 @@ import { DepositAction } from "state/actions/depositA";
 interface DepositState {
   isDepositApproved: boolean | undefined;
   isDepositSuccess: boolean | undefined;
+  depositLoading: boolean;
 }
 
 const initialState = {
   isDepositSuccess: undefined,
   isDepositApproved: undefined,
+  depositLoading: false,
 };
 
 const DepositReducer = (
@@ -18,6 +20,20 @@ const DepositReducer = (
   switch (action.type) {
     case ActionType.DEPOSIT_APPROVAL_STATUS:
       return { ...state, isDepositApproved: action.payload };
+    case ActionType.DEPOSIT_ACTION:
+      return { ...state, depositLoading: true };
+    case ActionType.DEPOSIT_SUCCESS:
+      return {
+        ...state,
+        depositLoading: false,
+        isDepositApproved: action.payload,
+      };
+    case ActionType.DEPOSIT_FAILED:
+      return {
+        ...state,
+        depositLoading: false,
+        isDepositApproved: action.payload,
+      };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };
     default:

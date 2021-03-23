@@ -39,10 +39,14 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
-  const { isDepositApproved } = useTypedSelector((state) => state.deposit);
-  const { donateIsApproved, donateContractAddress } = useTypedSelector(
-    (state) => state.donate
+  const { isDepositApproved, depositLoading } = useTypedSelector(
+    (state) => state.deposit
   );
+  const {
+    donateIsApproved,
+    donateContractAddress,
+    donateLoading,
+  } = useTypedSelector((state) => state.donate);
   const { depositApprove, donateApprove } = useActions();
   useEffect(() => {
     updateApproval();
@@ -61,7 +65,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     ) {
       return (
         <button
-          disabled={amount === ""}
+          disabled={amount === "" || depositLoading || donateLoading}
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}
           type="button"

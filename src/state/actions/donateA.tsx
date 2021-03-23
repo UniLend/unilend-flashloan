@@ -1,13 +1,17 @@
 import { ActionType } from "state/action-types";
 
+interface _DonateAction {
+  type: ActionType.DONATE_ACTION;
+}
+
 interface DonateSuccess {
   type: ActionType.DONATE_SUCCESS;
-  payload: string;
+  payload: boolean;
 }
 
 interface DonateFailed {
   type: ActionType.DONATE_FAILED;
-  payload: string;
+  payload: boolean;
 }
 
 interface DonateContract {
@@ -21,6 +25,7 @@ interface DonateApprovalStatus {
 }
 
 export type DonateAction =
+  | _DonateAction
   | DonateSuccess
   | DonateFailed
   | DonateContract

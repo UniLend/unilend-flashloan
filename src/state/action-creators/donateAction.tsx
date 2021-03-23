@@ -88,6 +88,9 @@ export const handleDonate = (
   address: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
+    dispatch({
+      type: ActionType.DONATE_ACTION,
+    });
     try {
       const fullAmount = currentProvider.utils.toWei(donateAmount, "ether");
       let _IERC20 = IERC20(currentProvider);
@@ -96,55 +99,38 @@ export const handleDonate = (
         .call((error: any, result: any) => {
           if (!error && result) {
             let contractAddress = result;
-            let allowance;
-            _IERC20.methods
-              .allowance(address, contractAddress)
-              .call((error: any, result: any) => {
-                if (!error && result) {
-                  allowance = result;
-                  if (allowance === "0") {
-                    _IERC20.methods
-                      .approve(contractAddress, approveTokenMaximumValue)
-                      .send({
-                        from: address,
-                      });
-                  }
-                  let donationContract = UnilendFDonation(
-                    currentProvider,
-                    contractAddress
-                  );
-                  donationContract.methods
-                    .donate(Reciepent, fullAmount)
-                    .send({
-                      from: address,
-                    })
-                    .on("receipt", (res: any) => {
-                      dispatch({
-                        type: ActionType.DONATE_APPROVAL_STATUS,
-                        payload: true,
-                      });
-                    })
-                    .catch((e: Error) => {
-                      dispatch({
-                        type: ActionType.DONATE_APPROVAL_STATUS,
-                        payload: false,
-                      });
-                    });
-                } else {
-                  console.log(error);
-                }
+            let donationContract = UnilendFDonation(
+              currentProvider,
+              contractAddress
+            );
+            donationContract.methods
+              .donate(Reciepent, fullAmount)
+              .send({
+                from: address,
+              })
+              .on("receipt", (res: any) => {
+                dispatch({
+                  type: ActionType.DONATE_SUCCESS,
+                  payload: true,
+                });
+              })
+              .catch((e: Error) => {
+                dispatch({
+                  type: ActionType.DONATE_FAILED,
+                  payload: false,
+                });
               });
           } else {
             dispatch({
               type: ActionType.DONATE_FAILED,
-              payload: error,
+              payload: false,
             });
           }
         });
-    } catch (e) {
+    } catch (e: any) {
       dispatch({
         type: ActionType.DONATE_FAILED,
-        payload: e,
+        payload: false,
       });
     }
   };

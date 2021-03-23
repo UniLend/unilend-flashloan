@@ -15,7 +15,24 @@ interface DepositStatus {
   payload: boolean;
 }
 
+interface _DepositAction {
+  type: ActionType.DEPOSIT_ACTION;
+}
+
+interface DepositSuccess {
+  type: ActionType.DEPOSIT_SUCCESS;
+  payload: boolean;
+}
+
+interface DepositFailed {
+  type: ActionType.DEPOSIT_FAILED;
+  payload: boolean;
+}
+
 export type DepositAction =
   | DepositAmount
   | DepositApprovalStatus
-  | DepositStatus;
+  | DepositStatus
+  | _DepositAction
+  | DepositSuccess
+  | DepositFailed;

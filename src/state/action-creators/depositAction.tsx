@@ -82,6 +82,9 @@ export const handleDeposit = (
   currencyType: string
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    dispatch({
+      type: ActionType.DEPOSIT_ACTION,
+    });
     try {
       var fullAmount = currentProvider.utils.toWei(depositAmount, "ether");
       FlashloanLBCore(currentProvider)
@@ -92,19 +95,22 @@ export const handleDeposit = (
         })
         .on("receipt", (res: any) => {
           dispatch({
-            type: ActionType.DEPOSIT_STATUS,
+            type: ActionType.DEPOSIT_SUCCESS,
             payload: true,
           });
         })
         .catch((e: any) => {
           console.log("Err", e);
           dispatch({
-            type: ActionType.DEPOSIT_STATUS,
+            type: ActionType.DEPOSIT_FAILED,
             payload: false,
           });
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.DEPOSIT_FAILED,
+        payload: false,
+      });
     }
   };
 };

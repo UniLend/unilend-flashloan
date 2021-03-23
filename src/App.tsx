@@ -16,22 +16,23 @@ import CommonCard from "components/View/CommonCard";
 function App() {
   const [loading, setLoading] = useState<Boolean>(false);
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  // const { handleWalletConnect } = useWalletConnect();
+  const { handleWalletConnect } = useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();
-    // if (window && window.ethereum !== undefined && window !== undefined) {
-    //   window.ethereum.on("disconnect", () => {});
-    //   window.ethereum.on("accountsChanged", (accounts: any) => {
-    //     handleWalletConnect();
-    //   });
-    //   window.ethereum.on("chainChanged", (chainId: any) => {
-    //     window.location.reload();
-    //   });
-    //   window.ethereum.on("message", (message: ProviderMessage) => {
-    //     console.log(message);
-    //   });
-    // }
+    if (window && window.ethereum !== undefined && window !== undefined) {
+      handleWalletConnect("metamask");
+      //   window.ethereum.on("disconnect", () => {});
+      //   window.ethereum.on("accountsChanged", (accounts: any) => {
+      //     handleWalletConnect();
+      //   });
+      window.ethereum.on("chainChanged", (chainId: any) => {
+        window.location.reload();
+      });
+      window.ethereum.on("message", (message: ProviderMessage) => {
+        console.log(message);
+      });
+    }
     setTimeout(() => {
       setLoading(false);
     }, 2000);

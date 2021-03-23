@@ -4,17 +4,13 @@ import { FC } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useActions } from "hooks/useActions";
 import useWalletConnect from "hooks/useWalletConnect";
-import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
 import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
-import { Reciepent } from "ethereum/contracts";
 import UFTLogo from "assets/logo.svg";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
-  const {} = props;
-
   const [searchText, setSearchText] = useState<string>("");
   const [searchedTokenText, setSearchedTokenText] = useState<string>("");
 
@@ -22,7 +18,7 @@ const Manage: FC<Props> = (props) => {
   const { currentProvider, accounts } = useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
-  const { payload: tokenList, isRequesting } = useTypedSelector(
+  const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
@@ -30,18 +26,14 @@ const Manage: FC<Props> = (props) => {
     (state) => state.tokenManage.searchedToken
   );
 
-  const {
-    fetchTokenList,
-    searchToken,
-    createPool,
-    handleImportAction,
-  } = useActions();
+  const { fetchTokenList, searchToken, createPool } = useActions();
   useEffect(() => {
     console.log(tokenList);
   }, [tokenList]);
 
   useEffect(() => {
     if (searchedTokenText.length > 0) searchToken(searchedTokenText);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchedTokenText]);
 
   const handleActiveToggle = () => {
@@ -50,7 +42,7 @@ const Manage: FC<Props> = (props) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
 
-    let IERC = IERC20(currentProvider);
+    // let IERC = IERC20(currentProvider);
     // IRC.methods.name(e.target.value).call((err: any, res: any) => {
     //   if (!err && res) {
     //     console.log(res);
@@ -135,7 +127,7 @@ const Manage: FC<Props> = (props) => {
             <div className="token-list">
               <div className="details">
                 <img src={UFTLogo} alt="token-logo" />
-                <a href="">UFT</a>
+                <span>UFT</span>
               </div>
               <div className="action">
                 <svg

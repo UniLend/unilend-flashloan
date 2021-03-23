@@ -8,7 +8,8 @@ import Layout from "components/Layout/Layout";
 import dotEnv from "dotenv";
 // import useWalletConnect from "hooks/useWalletConnect";
 import CommonCard from "components/View/CommonCard";
-// declare const window: any;
+import useWalletConnect from "hooks/useWalletConnect";
+declare const window: any;
 // interface ProviderMessage {
 //   type: string;
 //   data: unknown;
@@ -21,7 +22,10 @@ function App() {
   useEffect(() => {
     dotEnv.config();
     if (window && window.ethereum !== undefined && window !== undefined) {
-      handleWalletConnect("metamask");
+      // let wallet = localStorage.getItem("wallet");
+      // if (wallet) {
+      //   handleWalletConnect(JSON.parse(wallet));
+      // }
       //   window.ethereum.on("disconnect", () => {});
       //   window.ethereum.on("accountsChanged", (accounts: any) => {
       //     handleWalletConnect();
@@ -29,7 +33,14 @@ function App() {
       window.ethereum.on("chainChanged", (chainId: any) => {
         window.location.reload();
       });
-      window.ethereum.on("message", (message: ProviderMessage) => {
+      window.ethereum.on("accountsChanged", function (accounts: string) {
+        handleWalletConnect({
+          id: 1,
+          name: "metamask",
+          icon: "",
+        });
+      });
+      window.ethereum.on("message", (message: any) => {
         console.log(message);
       });
     }

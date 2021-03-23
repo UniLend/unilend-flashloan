@@ -9,9 +9,11 @@ export default function useWalletConnect() {
     accounts,
     loading,
     currentProvider,
+    userTokenBalance,
+    accountBalance,
   } = useTypedSelector((state) => state.connectWallet);
 
-  const { connectWalletAction } = useActions();
+  const { connectWalletAction, getUserTokenBalance } = useActions();
   const handleWalletConnect = useCallback((wallet?: Wallet) => {
     console.log("CONNECTING WALLET");
 
@@ -28,6 +30,9 @@ export default function useWalletConnect() {
     accounts,
     loading,
     currentProvider,
+    userTokenBalance,
+    accountBalance,
     handleWalletConnect,
+    getUserTokenBalance,
   };
 }

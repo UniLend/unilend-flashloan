@@ -52,8 +52,6 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     updateApproval();
   });
   function handleMainButton() {
-    console.log("is", isEth);
-    debugger;
     if (
       address &&
       address.length &&

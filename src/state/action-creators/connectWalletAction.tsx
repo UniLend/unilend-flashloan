@@ -10,8 +10,12 @@ import { portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
+import { IERC20 } from "ethereum/contracts/FlashloanLB";
 
-export const setSelectedNetworkId = (selectedNetworkId: number) => ({ type: ActionType.SELECTED_NETWORK_ID, networkId: selectedNetworkId });
+export const setSelectedNetworkId = (selectedNetworkId: number) => ({
+  type: ActionType.SELECTED_NETWORK_ID,
+  networkId: selectedNetworkId,
+});
 
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   let accounts: any;
@@ -214,12 +218,35 @@ export const getAccountBalance = (selectedAccount: string) => {
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
       let ethBalDeci = ethBal.slice(0, 7);
+      console.log(ethBalDeci);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
         payload: ethBalDeci,
       });
     } catch (e) {
       console.log(e);
+    }
+  };
+};
+
+export const getUserTokenBalance = (currentProvider: any, accounts: any) => {
+  return async (dispatch: Dispatch<Action>) => {
+    try {
+      let _IERC20 = IERC20(currentProvider);
+      _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
+        if (!e) {
+          dispatch({
+            type: ActionType.USER_TOKEN_BALANCE,
+            userTokenBalance: currentProvider.utils.fromWei(r),
+          });
+        }
+      });
+    } catch (e: any) {
+      console.log(e);
+      dispatch({
+        type: ActionType.USER_TOKEN_BALANCE,
+        userTokenBalance: "",
+      });
     }
   };
 };

@@ -4,15 +4,14 @@ import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
-import { Reciepent, UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { fetchTokenList } from "state/action-creators";
-import icon from "assets/ethereum.png";
+import icon from "assets/uft.svg";
 import web3 from "ethereum/web3";
+import { getAccountBalance } from "state/action-creators";
 
 interface props {
   activeTab: string | null;
@@ -27,15 +26,7 @@ interface ModalType {
 
 const CommonCard = (props: props) => {
   const { activeTab } = props;
-  const dispatch = useDispatch();
-
-  const [amount, setAmount] = useState<string>("");
-  const [modalInfo, setModalInfo] = useState<ModalType>({
-    fieldName: "",
-    show: false,
-    logo: icon,
-    currency: "ETH",
-  });
+  // const dispatch = useDispatch();
   const {
     handleDeposit,
     handleRedeem,
@@ -44,8 +35,16 @@ const CommonCard = (props: props) => {
     getDonationContract,
     donateAllowance,
     fetchTokenList,
+    getRedeemTokenBalance,
   } = useActions();
-  const { accounts, walletConnected, currentProvider } = useWalletConnect();
+  const {
+    accounts,
+    walletConnected,
+    currentProvider,
+    accountBalance,
+    userTokenBalance,
+    getUserTokenBalance,
+  } = useWalletConnect();
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
@@ -55,10 +54,18 @@ const CommonCard = (props: props) => {
   const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
+  const { redeemTokenBalance } = useTypedSelector((state) => state.redeem);
+  const [amount, setAmount] = useState<string>("");
+  const [modalInfo, setModalInfo] = useState<ModalType>({
+    fieldName: "",
+    show: false,
+    logo: tokenList?.length ? (tokenList[0] as any).logoURI : "",
+    currency: tokenList?.length ? (tokenList[0] as any).symbol : "UFT",
+  });
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
 
   useEffect(() => {
-    console.log(activeTab);
+    console.log(accountBalance);
     let interval: any;
     if (
       activeTab === "deposit" &&
@@ -99,19 +106,48 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
+    fetchTokenList(tokenGroupList);
+    setModalInfo({
+      ...modalInfo,
+      logo: tokenList?.length ? (tokenList[0] as any).logoURI : icon,
+      currency: tokenList?.length ? (tokenList[0] as any).symbol : "UFT",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletConnected]);
+  useEffect(() => {
+    if (walletConnected) {
+      getUserTokenBalance(currentProvider, accounts[0]);
+      getRedeemTokenBalance(currentProvider, accounts[0]);
+      console.log(userTokenBalance);
+    }
     if (isDepositSuccess || donateIsApproved) {
       console.log("success");
+
       setAmount("");
     }
-  }, [donateIsApproved, isDepositSuccess]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    walletConnected,
+    donateIsApproved,
+    isDepositSuccess,
+    userTokenBalance,
+    currentProvider,
+    accounts,
+  ]);
+  const handleTokenBalance = () => {
+    getAccountBalance(currentProvider);
+    getRedeemTokenBalance(currentProvider, accounts[0]);
+  };
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
         handleDeposit(currentProvider, amount, accounts[0], modalInfo.currency);
+        handleTokenBalance();
         break;
       case "redeem":
         handleRedeem(currentProvider, amount, accounts[0]);
+        handleTokenBalance();
+
         break;
       case "reward":
         handleDonate(currentProvider, amount, accounts[0]);
@@ -156,7 +192,7 @@ const CommonCard = (props: props) => {
               fieldLabel="Amount"
               fieldValue={amount}
               fieldType="text"
-              selectLabel={``}
+              selectLabel={""}
               selectValue={modalInfo.currency ? modalInfo.currency : ""}
               selectedLogo={modalInfo.logo ? modalInfo.logo : ""}
             />
@@ -171,6 +207,24 @@ const CommonCard = (props: props) => {
                 <div className="price_aa">
                   <div className="price-list">
                     Pool percentage <span className="price">-</span>
+                  </div>
+                  <div className="price-list">
+                    Token Balance{" "}
+                    <span className="price">{`${
+                      walletConnected ? userTokenBalance : "-"
+                    }`}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === "redeem" && (
+              <div className="price_head">
+                <div className="price_aa">
+                  <div className="price-list">
+                    Redeem Balance{" "}
+                    <span className="price">{`${
+                      walletConnected ? redeemTokenBalance : "-"
+                    }`}</span>
                   </div>
                 </div>
               </div>

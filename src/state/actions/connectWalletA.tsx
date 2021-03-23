@@ -28,10 +28,16 @@ interface setSelectedNetworkId {
   networkId: number;
 }
 
+interface UserTokenBalance {
+  type: ActionType.USER_TOKEN_BALANCE;
+  userTokenBalance: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
   | ConnectWalletSuccessAction
   | ConnectWalletErrorAction
   | AccountBalance
+  | UserTokenBalance
   | setSelectedNetworkId;

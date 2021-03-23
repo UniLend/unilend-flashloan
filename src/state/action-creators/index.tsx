@@ -5,3 +5,4 @@ export * from "./redeemAction";
 export * from "./donateAction";
 export * from "./poolAction";
 export * from "./tokenManageAction";
+export * from "./airdropAction";

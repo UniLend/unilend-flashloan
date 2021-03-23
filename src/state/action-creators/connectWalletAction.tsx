@@ -10,7 +10,7 @@ import { portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
-import { IERC20 } from "ethereum/contracts/FlashloanLB";
+import { IERC20, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -246,6 +246,29 @@ export const getUserTokenBalance = (currentProvider: any, accounts: any) => {
       dispatch({
         type: ActionType.USER_TOKEN_BALANCE,
         userTokenBalance: "",
+      });
+    }
+  };
+};
+
+export const getPoolTokenBalance = (currentProvider: any, accounts: string) => {
+  return async (dispatch: Dispatch<Action>) => {
+    try {
+      uUFTIERC20(currentProvider)
+        .methods.balanceOf(accounts)
+        .call((e: any, r: any) => {
+          if (!e) {
+            dispatch({
+              type: ActionType.POOL_TOKEN_BALANCE,
+              payload: currentProvider.utils.fromWei(r),
+            });
+          }
+        });
+    } catch (e: any) {
+      console.log(e);
+      dispatch({
+        type: ActionType.POOL_TOKEN_BALANCE,
+        payload: "",
       });
     }
   };

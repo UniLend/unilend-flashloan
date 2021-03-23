@@ -11,6 +11,7 @@ export default function useWalletConnect() {
     currentProvider,
     userTokenBalance,
     accountBalance,
+    poolTokenBalance,
   } = useTypedSelector((state) => state.connectWallet);
 
   const { connectWalletAction, getUserTokenBalance } = useActions();
@@ -32,6 +33,7 @@ export default function useWalletConnect() {
     currentProvider,
     userTokenBalance,
     accountBalance,
+    poolTokenBalance,
     handleWalletConnect,
     getUserTokenBalance,
   };

@@ -18,6 +18,8 @@ const RedeemReducer = (
   action: RedeemAction
 ): RedeemState => {
   switch (action.type) {
+    case ActionType.REDEEM_ACTION:
+      return { ...state, redeemLoading: true };
     case ActionType.REDEEM_SUCCESS:
       return { ...state, redeemLoading: false };
     case ActionType.REDEEM_FAILED:

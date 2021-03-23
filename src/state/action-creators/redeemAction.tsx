@@ -11,6 +11,8 @@ export const handleRedeem = (
   accounts: string
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
+    dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
+
     try {
       console.log("Starting");
       const fullAmount = currentProvider.utils.toWei(redeemAmount, "ether");
@@ -21,8 +23,13 @@ export const handleRedeem = (
         .methods.redeemUnderlying(Reciepent, fullAmount)
         .send({
           from: accounts,
+        })
+        .on("receipt", (res: any) => {
+          dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+        })
+        .catch((e: any) => {
+          dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
         });
-      dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
     } catch (e) {
       console.log(e);
       dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });

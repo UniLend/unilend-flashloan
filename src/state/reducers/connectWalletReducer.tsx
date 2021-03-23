@@ -11,6 +11,7 @@ interface ConnectWalletState {
   userTokenBalance: any;
   currentProvider: string;
   selectedNetworkId: number;
+  poolTokenBalance: any;
 }
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   accounts: [],
   accountBalance: "0",
   userTokenBalance: "",
+  poolTokenBalance: "",
   currentProvider: "",
   selectedNetworkId: 1,
 };
@@ -34,6 +36,8 @@ const connectWalletReducer = (
       return { ...state, accountBalance: action.payload };
     case ActionType.USER_TOKEN_BALANCE:
       return { ...state, userTokenBalance: action.userTokenBalance };
+    case ActionType.POOL_TOKEN_BALANCE:
+      return { ...state, poolTokenBalance: action.payload };
     case ActionType.CURRENT_PROVIDER:
       return { ...state, currentProvider: action.payload };
     case ActionType.CONNECT_WALLET:

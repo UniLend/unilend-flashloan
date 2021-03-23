@@ -1,5 +1,8 @@
 import { ActionType } from "state/action-types";
 
+interface _RedeemAction {
+  type: ActionType.REDEEM_ACTION;
+}
 interface RedeemSuccess {
   type: ActionType.REDEEM_SUCCESS;
   payload: string;
@@ -15,4 +18,8 @@ interface RedeemTokenBalance {
   payload: any;
 }
 
-export type RedeemAction = RedeemSuccess | RedeemFailed | RedeemTokenBalance;
+export type RedeemAction =
+  | RedeemSuccess
+  | RedeemFailed
+  | RedeemTokenBalance
+  | _RedeemAction;

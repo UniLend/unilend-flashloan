@@ -33,6 +33,11 @@ interface UserTokenBalance {
   userTokenBalance: any;
 }
 
+interface PoolTokenBalance {
+  type: ActionType.POOL_TOKEN_BALANCE;
+  payload: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -40,4 +45,5 @@ export type Action =
   | ConnectWalletErrorAction
   | AccountBalance
   | UserTokenBalance
-  | setSelectedNetworkId;
+  | setSelectedNetworkId
+  | PoolTokenBalance;

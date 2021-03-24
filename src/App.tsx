@@ -21,6 +21,11 @@ function App() {
 
   useEffect(() => {
     dotEnv.config();
+    let connectedWallet = localStorage.getItem("walletConnected");
+    console.log(connectedWallet);
+    if (connectedWallet) {
+      handleWalletConnect(JSON.parse(connectedWallet));
+    }
     if (window && window.ethereum !== undefined && window !== undefined) {
       // let wallet = localStorage.getItem("wallet");
       // if (wallet) {
@@ -30,6 +35,7 @@ function App() {
       //   window.ethereum.on("accountsChanged", (accounts: any) => {
       //     handleWalletConnect();
       //   });
+
       window.ethereum.on("chainChanged", (chainId: any) => {
         window.location.reload();
       });

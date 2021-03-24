@@ -60,6 +60,8 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   } = useTypedSelector((state) => state.donate);
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
+  const { receipentAddress } = useTypedSelector((state) => state.ethereum);
+
   const {
     depositApprove,
     donateApprove,
@@ -71,7 +73,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   });
   const handleTokenBalance = () => {
     // getAccountBalance(currentProvider);
-    getUserTokenBalance(currentProvider, address[0]);
+    getUserTokenBalance(currentProvider, address[0], receipentAddress);
     getPoolTokenBalance(currentProvider, address[0]);
   };
   useEffect(() => {
@@ -136,10 +138,15 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
           onClick={() => {
             if (actionName === "Deposit") {
               setIsApproving("true");
-              depositApprove(currentProvider, address[0]);
+              depositApprove(currentProvider, address[0], receipentAddress);
             } else if (actionName === "Reward") {
               setDonateIsApproving("true");
-              donateApprove(currentProvider, address[0], donateContractAddress);
+              donateApprove(
+                currentProvider,
+                address[0],
+                donateContractAddress,
+                receipentAddress
+              );
             }
           }}
           type="button"

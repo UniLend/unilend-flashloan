@@ -8,13 +8,14 @@ import { AirdropAction } from "state/actions/airdropA";
 export const handleAirdrop = (
   currentProvider: any,
   amount: any,
-  account: any
+  account: any,
+  reciepentAddress: string
 ) => {
   return async (dispatch: Dispatch<AirdropAction>) => {
     dispatch({
       type: ActionType.AIRDROP_ACTION,
     });
-    await IERC20(currentProvider)
+    await IERC20(currentProvider, reciepentAddress)
       .methods.transfer(
         UnilendFlashLoanCoreContract(currentProvider),
         web3.utils.toWei(amount)

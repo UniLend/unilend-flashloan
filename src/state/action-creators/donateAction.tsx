@@ -1,4 +1,4 @@
-import { approveTokenMaximumValue, Reciepent } from "ethereum/contracts";
+import { approveTokenMaximumValue } from "ethereum/contracts";
 import {
   FlashloanLBCore,
   IERC20,
@@ -28,42 +28,46 @@ export const getDonationContract = (currentProvider: any) => {
 export const donateAllowance = (
   currentProvider: any,
   address: string,
-  contractAddress: string
+  contractAddress: string,
+  receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
-    let _IERC20 = IERC20(currentProvider);
-    let allowance;
-    _IERC20.methods
-      .allowance(address, contractAddress)
-      .call((error: any, result: any) => {
-        if (!error && result) {
-          allowance = result;
-          console.log(allowance);
-          if (allowance === "0") {
-            dispatch({
-              type: ActionType.DONATE_APPROVAL_STATUS,
-              payload: false, // isApproved
-            });
-          } else {
-            localStorage.setItem("donateApproval", "false");
-            dispatch({
-              type: ActionType.DONATE_APPROVAL_STATUS,
-              payload: true, // isApproved
-            });
+    if (receipentAddress) {
+      let _IERC20 = IERC20(currentProvider, receipentAddress);
+      let allowance;
+      _IERC20.methods
+        .allowance(address, contractAddress)
+        .call((error: any, result: any) => {
+          if (!error && result) {
+            allowance = result;
+            console.log(allowance);
+            if (allowance === "0") {
+              dispatch({
+                type: ActionType.DONATE_APPROVAL_STATUS,
+                payload: false, // isApproved
+              });
+            } else {
+              localStorage.setItem("donateApproval", "false");
+              dispatch({
+                type: ActionType.DONATE_APPROVAL_STATUS,
+                payload: true, // isApproved
+              });
+            }
           }
-        }
-      });
+        });
+    }
   };
 };
 
 export const donateApprove = (
   currentProvider: any,
   address: string,
-  contractAddress: string
+  contractAddress: string,
+  receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     localStorage.setItem("donateApproval", "true");
-    let _IERC20 = IERC20(currentProvider);
+    let _IERC20 = IERC20(currentProvider, receipentAddress);
 
     _IERC20.methods
       .approve(contractAddress, approveTokenMaximumValue)
@@ -82,7 +86,8 @@ export const donateApprove = (
 export const handleDonate = (
   currentProvider: any,
   donateAmount: any,
-  address: string
+  address: string,
+  receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     dispatch({
@@ -100,7 +105,7 @@ export const handleDonate = (
               contractAddress
             );
             donationContract.methods
-              .donate(Reciepent, fullAmount)
+              .donate(receipentAddress, fullAmount)
               .send({
                 from: address,
               })

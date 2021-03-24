@@ -19,6 +19,8 @@ export const setSelectedNetworkId = (selectedNetworkId: number) => ({
 
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   let accounts: any;
+  let connectedWallet = JSON.stringify(wallet);
+  localStorage.setItem("walletConnected", connectedWallet);
   switch (wallet.name) {
     case "metamask":
       //// Ethererum ////
@@ -215,6 +217,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
 export const getAccountBalance = (selectedAccount: string) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
+      console.log(selectedAccount);
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
       let ethBalDeci = ethBal.slice(0, 7);
@@ -229,10 +232,14 @@ export const getAccountBalance = (selectedAccount: string) => {
   };
 };
 
-export const getUserTokenBalance = (currentProvider: any, accounts: any) => {
+export const getUserTokenBalance = (
+  currentProvider: any,
+  accounts: any,
+  reciepentAddress: string
+) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      let _IERC20 = IERC20(currentProvider);
+      let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
           let fullAmount = currentProvider.utils.fromWei(r);
@@ -262,6 +269,7 @@ export const getPoolTokenBalance = (currentProvider: any, accounts: string) => {
           if (!e) {
             let fullAmount = currentProvider.utils.fromWei(r);
             let fullAmountDeci = fullAmount.slice(0, 7);
+            console.log(fullAmountDeci);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
               payload: fullAmountDeci,
@@ -284,7 +292,6 @@ export const connectWalletAction = (wallet?: Wallet) => {
       type: ActionType.CONNECT_WALLET,
     });
     try {
-      console.log("WALLET", wallet);
       // let accounts = await (window as any).BinanceChain.request({
       //   method: "eth_accounts",
       // });

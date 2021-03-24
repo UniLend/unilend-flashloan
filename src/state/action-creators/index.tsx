@@ -6,3 +6,4 @@ export * from "./donateAction";
 export * from "./poolAction";
 export * from "./tokenManageAction";
 export * from "./airdropAction";
+export * from "./ethereumAction";

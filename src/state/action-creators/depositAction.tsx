@@ -1,6 +1,5 @@
 import {
   approveTokenMaximumValue,
-  Reciepent,
   UnilendFlashLoanCoreContract,
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
@@ -9,10 +8,14 @@ import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
 
 // Allowance Should be checked to reveal the approval state of the contract
-export const checkAllowance = (currentProvider: any, address: any) => {
+export const checkAllowance = (
+  currentProvider: any,
+  address: any,
+  receipentAddress: string
+) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     let allowance;
-    let _IERC20 = await IERC20(currentProvider);
+    let _IERC20 = await IERC20(currentProvider, receipentAddress);
     _IERC20.methods
       .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
       .call((error: any, result: any) => {
@@ -36,10 +39,14 @@ export const checkAllowance = (currentProvider: any, address: any) => {
 };
 
 // On Approve Action
-export const depositApprove = (currentProvider: any, address: any) => {
+export const depositApprove = (
+  currentProvider: any,
+  address: any,
+  receipentAddress: string
+) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     try {
-      let _IERC20 = await IERC20(currentProvider);
+      let _IERC20 = await IERC20(currentProvider, receipentAddress);
       localStorage.setItem("isApproving", "true");
       dispatch({
         type: ActionType.DEPOSIT_APPROVAL_STATUS,
@@ -79,7 +86,9 @@ export const handleDeposit = (
   currentProvider: any,
   depositAmount: any,
   address: string,
-  currencyType: string
+  currencyType: string,
+  recieptAddress: string,
+  isEth: boolean
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
@@ -88,12 +97,12 @@ export const handleDeposit = (
     try {
       var fullAmount = currentProvider.utils.toWei(depositAmount, "ether");
       FlashloanLBCore(currentProvider)
-        .methods.deposit(Reciepent, fullAmount)
+        .methods.deposit(recieptAddress, fullAmount)
         .send({
           from: address,
-          value: 0,
+          value: fullAmount,
         })
-        .on("receipt", (res: any) => {
+        .on("receipt", () => {
           dispatch({
             type: ActionType.DEPOSIT_SUCCESS,
             payload: true,

@@ -15,7 +15,8 @@ interface Props {
   handleCurrChange: (
     selectedField: string,
     selectedLogo: any,
-    address: string
+    address: string,
+    decimal: any
   ) => void;
 }
 
@@ -91,7 +92,12 @@ const CurrencySelectModel: FC<Props> = ({
                 key={item.id}
                 action
                 onClick={() =>
-                  handleCurrChange(item.symbol, item.logoURI, item.address)
+                  handleCurrChange(
+                    item.symbol,
+                    item.logoURI,
+                    item.address,
+                    item.decimals
+                  )
                 }
               >
                 <div className="row">

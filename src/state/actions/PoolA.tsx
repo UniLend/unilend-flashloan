@@ -9,4 +9,9 @@ interface PoolTokenName {
   payload: any;
 }
 
-export type PoolAction = CreatePoolSuccess | PoolTokenName;
+interface AssetAddress {
+  type: ActionType.ASSERT_ADDRESS;
+  payload: any;
+}
+
+export type PoolAction = CreatePoolSuccess | PoolTokenName | AssetAddress;

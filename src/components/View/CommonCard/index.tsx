@@ -22,10 +22,12 @@ interface ModalType {
   currency: string;
   logo: any;
   address: any;
+  decimal: any;
 }
 
 const CommonCard = (props: props) => {
   const { activeTab } = props;
+  const [decimalNo, setDecimalNo] = useState<any>(18);
   // const dispatch = useDispatch();
   const {
     handleDeposit,
@@ -63,10 +65,11 @@ const CommonCard = (props: props) => {
     logo: icon,
     currency: "ETH",
     address: Reciepent,
+    decimal: 18,
   });
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
-  const { poolName } = useTypedSelector((state) => state.pool);
+  const { poolName, assertAddress } = useTypedSelector((state) => state.pool);
   useEffect(() => {
     console.log(accountBalance);
     let interval: any;
@@ -123,8 +126,13 @@ const CommonCard = (props: props) => {
   }, [walletConnected]);
   const handleTokenBalance = () => {
     getAccountBalance(accounts[0]);
-    getUserTokenBalance(currentProvider, accounts[0], receipentAddress);
-    getPoolTokenBalance(currentProvider, accounts[0]);
+    getUserTokenBalance(
+      currentProvider,
+      accounts[0],
+      receipentAddress,
+      decimalNo
+    );
+    getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
   };
   useEffect(() => {
     console.log(receipentAddress);
@@ -146,13 +154,15 @@ const CommonCard = (props: props) => {
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
+        console.log(modalInfo);
         handleDeposit(
           currentProvider,
           amount,
           accounts[0],
           modalInfo.currency,
           receipentAddress,
-          modalInfo.currency === "ETH"
+          modalInfo.currency === "ETH",
+          modalInfo.decimal
         );
         break;
       case "redeem":
@@ -163,13 +173,7 @@ const CommonCard = (props: props) => {
         handleDonate(currentProvider, amount, accounts[0], receipentAddress);
         break;
       case "airdrop":
-        // let trans = await web3.eth.sendTransaction({
-        //   from: accounts[0],
-        //   to: "0x186b707bB603c16295eF38EA27a081EBf5b65989",
-        //   value: web3.utils.toWei(amount),
-        // });
         handleAirdrop(currentProvider, amount, accounts[0], receipentAddress);
-        debugger;
         break;
       default:
         break;
@@ -181,7 +185,8 @@ const CommonCard = (props: props) => {
     show: boolean,
     logo?: any,
     currency?: string,
-    address?: string
+    address?: string,
+    decimal?: any
   ) => {
     console.log(modalInfo.currency);
     setModalInfo({
@@ -190,6 +195,7 @@ const CommonCard = (props: props) => {
       logo: logo ? logo : modalInfo.logo,
       currency: currency ? currency : modalInfo.currency,
       address: address ? address : modalInfo.address,
+      decimal: decimal ? decimal : modalInfo.decimal,
     });
     // if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
@@ -213,25 +219,28 @@ const CommonCard = (props: props) => {
             />
             <MainButton
               isEth={modalInfo.currency === "ETH"}
+              decimal={decimalNo}
               amount={amount}
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}
             />
-            {activeTab === "deposit" && isApproved && poolTokenBalance && (
-              <div className="price_head">
-                <div className="price_aa">
-                  {/* <div className="price-list">
+            {activeTab === "deposit" &&
+              (isApproved || modalInfo.currency === "ETH") &&
+              poolTokenBalance && (
+                <div className="price_head">
+                  <div className="price_aa">
+                    {/* <div className="price-list">
                     Pool percentage <span className="price">-</span>
                   </div> */}
-                  <div className="price-list">
-                    Pool Balance ( {poolName ? poolName : ""}){" "}
-                    <span className="price">{`${
-                      walletConnected ? poolTokenBalance : "-"
-                    }`}</span>
+                    <div className="price-list">
+                      Pool Balance ( {poolName ? poolName : ""}){" "}
+                      <span className="price">{`${
+                        walletConnected ? poolTokenBalance : "-"
+                      }`}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
             {activeTab === "redeem" && poolTokenBalance && (
               <div className="price_head">
                 <div className="price_aa">
@@ -250,10 +259,24 @@ const CommonCard = (props: props) => {
       {modalInfo.show && activeTab && (
         <CurrencySelectModel
           currFieldName={modalInfo.fieldName}
-          handleCurrChange={(selectedcrr, selectedIcon, address) => {
-            getPool(address, currentProvider, accounts[0]);
-            handleReciepent(address);
-            handleModal(activeTab, false, selectedIcon, selectedcrr);
+          handleCurrChange={async (
+            selectedcrr,
+            selectedIcon,
+            address,
+            decimal
+          ) => {
+            setDecimalNo(decimal);
+            await getPool(address, currentProvider, accounts[0]);
+            await handleReciepent(address);
+            await handleTokenBalance();
+            await handleModal(
+              activeTab,
+              false,
+              selectedIcon,
+              selectedcrr,
+              address,
+              decimal
+            );
           }}
           handleClose={() => handleModal("", false)}
         />

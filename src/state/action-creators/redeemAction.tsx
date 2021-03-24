@@ -39,11 +39,12 @@ export const handleRedeem = (
 
 export const getRedeemTokenBalance = (
   currentProvider: any,
-  accounts: string
+  accounts: string,
+  assertAddress: any
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     try {
-      uUFTIERC20(currentProvider)
+      uUFTIERC20(currentProvider, assertAddress)
         .methods.balanceOf(accounts)
         .call((e: any, r: any) => {
           if (!e) {

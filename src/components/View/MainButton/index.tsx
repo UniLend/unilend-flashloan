@@ -9,6 +9,7 @@ import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 
 interface Props {
   isEth: boolean;
+  decimal: any;
   amount: string;
   actionName: string;
   handleAmount: Function;
@@ -22,7 +23,13 @@ interface TransModalInfo {
   show: boolean;
 }
 
-const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
+const MainButton: FC<Props> = ({
+  isEth,
+  amount,
+  actionName,
+  handleAmount,
+  decimal,
+}) => {
   const {
     walletConnected,
     accounts: address,
@@ -61,6 +68,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
+  const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const {
     depositApprove,
@@ -73,8 +81,8 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
   });
   const handleTokenBalance = () => {
     // getAccountBalance(currentProvider);
-    getUserTokenBalance(currentProvider, address[0], receipentAddress);
-    getPoolTokenBalance(currentProvider, address[0]);
+    getUserTokenBalance(currentProvider, address[0], receipentAddress, decimal);
+    getPoolTokenBalance(currentProvider, address[0], assertAddress);
   };
   useEffect(() => {
     handleTokenBalance();

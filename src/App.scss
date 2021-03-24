@@ -61,6 +61,8 @@
 // bootstrap default changes
 .align-end {
   text-align: end;
+  width: 150px;
+  float: right;
 }
 
 .align-center {
@@ -232,8 +234,8 @@ input[type="number"] {
   }
 }
 
-.divider{
-  height:1px;
-  width:inherit;
-  background-color:#4d557ed3 ;
+.divider {
+  height: 1px;
+  width: inherit;
+  background-color: #4d557ed3;
 }

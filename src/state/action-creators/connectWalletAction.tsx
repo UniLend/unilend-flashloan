@@ -220,7 +220,7 @@ export const getAccountBalance = (selectedAccount: string) => {
       console.log(selectedAccount);
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
-      let ethBalDeci = ethBal.slice(0, 7);
+      let ethBalDeci = parseFloat(ethBal).toFixed(4);
       console.log(ethBalDeci);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
@@ -235,18 +235,20 @@ export const getAccountBalance = (selectedAccount: string) => {
 export const getUserTokenBalance = (
   currentProvider: any,
   accounts: any,
-  reciepentAddress: string
+  reciepentAddress: string,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
-          let fullAmount = currentProvider.utils.fromWei(r);
-          let fullAmountDeci = fullAmount.slice(0, 7);
+          let fullAmount = r / Math.pow(10, decimal);
+          console.log("Bal", r / Math.pow(10, decimal));
+          // let fullAmountDeci = fullAmount.slice(0, 7);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
-            userTokenBalance: fullAmountDeci,
+            userTokenBalance: fullAmount,
           });
         }
       });
@@ -260,19 +262,21 @@ export const getUserTokenBalance = (
   };
 };
 
-export const getPoolTokenBalance = (currentProvider: any, accounts: string) => {
+export const getPoolTokenBalance = (
+  currentProvider: any,
+  accounts: string,
+  assertAddress: any
+) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      uUFTIERC20(currentProvider)
+      uUFTIERC20(currentProvider, assertAddress)
         .methods.balanceOf(accounts)
         .call((e: any, r: any) => {
           if (!e) {
             let fullAmount = currentProvider.utils.fromWei(r);
-            let fullAmountDeci = fullAmount.slice(0, 7);
-            console.log(fullAmountDeci);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
-              payload: fullAmountDeci,
+              payload: fullAmount,
             });
           }
         });

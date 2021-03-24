@@ -28,6 +28,11 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
       .methods.getPool(address)
       .call((err: any, res: any) => {
         if (!err) {
+          console.log("asset", res);
+          dispatch({
+            type: ActionType.ASSERT_ADDRESS,
+            payload: res,
+          });
           if (res === "0x0000000000000000000000000000000000000000") {
             console.log("Pool not Created");
           } else {

@@ -88,19 +88,22 @@ export const handleDeposit = (
   address: string,
   currencyType: string,
   recieptAddress: string,
-  isEth: boolean
+  isEth: boolean,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      var fullAmount = currentProvider.utils.toWei(depositAmount, "ether");
+      var fullAmount = isEth
+        ? currentProvider.utils.toWei(depositAmount, "ether")
+        : depositAmount * Math.pow(10, decimal);
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({
           from: address,
-          value: fullAmount,
+          value: isEth ? fullAmount : 0,
         })
         .on("receipt", () => {
           dispatch({

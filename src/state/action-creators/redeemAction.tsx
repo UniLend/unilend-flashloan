@@ -1,4 +1,3 @@
-import { Reciepent } from "ethereum/contracts";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { portis } from "ethereum/portis";
 import { Dispatch } from "redux";
@@ -8,7 +7,8 @@ import { RedeemAction } from "state/actions/redeemA";
 export const handleRedeem = (
   currentProvider: any,
   redeemAmount: any,
-  accounts: string
+  accounts: string,
+  receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
@@ -20,7 +20,7 @@ export const handleRedeem = (
         console.log("error", error);
       });
       FlashloanLBCore(currentProvider)
-        .methods.redeemUnderlying(Reciepent, fullAmount)
+        .methods.redeemUnderlying(receipentAddress, fullAmount)
         .send({
           from: accounts,
         })

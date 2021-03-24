@@ -1,5 +1,6 @@
-import { FlashloanLBCore } from "ethereum/contracts/FlashloanLB";
+import { ERC20, FlashloanLBCore } from "ethereum/contracts/FlashloanLB";
 import { Dispatch } from "redux";
+import { ActionType } from "state/action-types";
 import { PoolAction } from "state/actions/PoolA";
 
 export const createPool = (
@@ -21,7 +22,40 @@ export const createPool = (
       .catch((e: any) => console.log("Importing Failed"));
   };
 };
-
+export const getPool = (address: any, currentProvider: any, accounts: any) => {
+  return async (dispatch: Dispatch<PoolAction>) => {
+    FlashloanLBCore(currentProvider)
+      .methods.getPool(address)
+      .call((err: any, res: any) => {
+        if (!err) {
+          if (res === "0x0000000000000000000000000000000000000000") {
+            console.log("Pool not Created");
+          } else {
+            ERC20(currentProvider, res)
+              .methods.symbol()
+              .call((err: Error, res: any) => {
+                if (!err && res) {
+                  console.log(res);
+                  dispatch({
+                    type: ActionType.POOL_TOKEN_NAME,
+                    payload: res,
+                  });
+                }
+              });
+          }
+        }
+      });
+    // .on("receipt", (res: any) => {
+    //   console.log("Res", res);
+    //   if (res === "0x0000000000000000000000000000000000000000") {
+    //     console.log(res);
+    //   }
+    // })
+    // .catch((e: any) => {
+    //   console.log(e);
+    // });
+  };
+};
 export const handleImportAction = (searchedToken: any) => {
   return async (dispatch: Dispatch<PoolAction>) => {
     var a: any = [];

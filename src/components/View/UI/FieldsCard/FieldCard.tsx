@@ -24,7 +24,7 @@ const FieldCard: FC<Props> = (props) => {
       <div className={`${theme} card field-card`}>
         <div className="card-body py-2">
           <div className="row">
-            <div className=" col-6 col-sm-7">
+            <div className=" col-6 col-md-6">
               <label className="form-label">{props.fieldLabel}</label>
               <input
                 type={props.fieldType}
@@ -34,7 +34,7 @@ const FieldCard: FC<Props> = (props) => {
                 onChange={props.onF1Change}
               />
             </div>
-            <div className=" col-6 col-sm-5">
+            <div className=" col-6 col-md-6">
               <div className="align-end">
                 <label className="form-balance-label">
                   {props.selectLabel !== ""

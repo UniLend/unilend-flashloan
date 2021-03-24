@@ -1,4 +1,4 @@
-import { AssetAddress, Reciepent, UnilendFlashLoanCoreContract } from ".";
+import { AssetAddress, UnilendFlashLoanCoreContract } from ".";
 
 import UnilendFDonationABI from "../build/UnilendFDonation.json";
 import FlashloanABI from "../build/FlashLoanABI.json";
@@ -21,12 +21,12 @@ export const UnilendFDonation = (
   );
 };
 
-export const ERC20 = (currentProvider: any) => {
-  return new currentProvider.eth.Contract(ERC20ABI.abi, Reciepent);
+export const ERC20 = (currentProvider: any, reciepentAddress: string) => {
+  return new currentProvider.eth.Contract(ERC20ABI.abi, reciepentAddress);
 };
 
-export const IERC20 = (currentProvider: any) => {
-  return new currentProvider.eth.Contract(IERC20ABI.abi, Reciepent);
+export const IERC20 = (currentProvider: any, reciepentAddress: string) => {
+  return new currentProvider.eth.Contract(IERC20ABI.abi, reciepentAddress);
 };
 
 export const uUFTIERC20 = (currentProvider: any) => {

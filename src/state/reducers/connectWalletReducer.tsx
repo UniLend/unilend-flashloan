@@ -42,6 +42,8 @@ const connectWalletReducer = (
       return { ...state, currentProvider: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };
+    // case ActionType.DISCONNECT_WALLET:
+    //   return {...state, walletConnected: false, accounts: []}
     case ActionType.CONNECT_WALLET_SUCCESS:
       return {
         ...state,

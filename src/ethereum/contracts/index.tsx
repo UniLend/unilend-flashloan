@@ -6,7 +6,8 @@ export const UnilendFlashLoanCoreContract = (currentProvider: any) => {
   }
 };
 
-export const Reciepent: string = "0x1434536899Da6e26B2AD6E5Cfd34611B47F993Ef";
+export const Reciepent: string = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+// UFT address - 0x1434536899Da6e26B2AD6E5Cfd34611B47F993Ef
 export const AssetAddress: string =
   "0xb20e7d234c5e4f7d99fb982ee525e8b438eef7b5";
 export const approveTokenMaximumValue =

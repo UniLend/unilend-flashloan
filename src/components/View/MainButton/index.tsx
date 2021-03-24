@@ -65,7 +65,6 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
     donateApprove,
     getPoolTokenBalance,
     getUserTokenBalance,
-    getAccountBalance,
   } = useActions();
   useEffect(() => {
     updateApproval();
@@ -191,7 +190,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount }) => {
         />
       )}
       {transModalInfo.show && (
-        <TransactionPopup handleClose={handleTransClose} />
+        <TransactionPopup mode="success" handleClose={handleTransClose} />
       )}
     </>
   );

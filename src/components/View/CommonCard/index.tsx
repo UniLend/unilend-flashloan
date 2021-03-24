@@ -54,7 +54,6 @@ const CommonCard = (props: props) => {
   const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
-  const { redeemTokenBalance } = useTypedSelector((state) => state.redeem);
   const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
     fieldName: "",

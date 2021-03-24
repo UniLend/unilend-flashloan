@@ -6,7 +6,6 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
 import Manage from "./Manage";
-import { useActions } from "hooks/useActions";
 import { TokenAction } from "state/actions/tokenManageA";
 import { ActionType } from "state/action-types";
 // ! Let React Handle Keys
@@ -27,10 +26,7 @@ const CurrencySelectModel: FC<Props> = ({
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState([{}]);
   const [openManage, setOpenManage] = useState<Boolean>(false);
-  const { tokenList, tokenGroupList } = useTypedSelector(
-    (state) => state.tokenManage
-  );
-  const { fetchTokenList } = useActions();
+  const { tokenList } = useTypedSelector((state) => state.tokenManage);
 
   useEffect(() => {
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");

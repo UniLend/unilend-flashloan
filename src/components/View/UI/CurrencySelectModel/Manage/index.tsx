@@ -21,12 +21,12 @@ const Manage: FC<Props> = (props) => {
   const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
-  const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
+
   const { payload: searchedToken, message: errorMessage } = useTypedSelector(
     (state) => state.tokenManage.searchedToken
   );
 
-  const { fetchTokenList, searchToken, createPool } = useActions();
+  const { searchToken, createPool } = useActions();
   useEffect(() => {
     console.log(tokenList);
   }, [tokenList]);

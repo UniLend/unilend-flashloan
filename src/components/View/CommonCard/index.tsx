@@ -104,7 +104,27 @@ const CommonCard = (props: props) => {
     donateContractAddress,
     activeCurrency.symbol,
   ]);
-
+  useEffect(() => {
+    if (accounts.length && activeTab === "deposit") {
+      checkAllowance(currentProvider, accounts[0], receipentAddress);
+    } else if (accounts.length && activeTab === "reward") {
+      donateAllowance(
+        currentProvider,
+        accounts[0],
+        donateContractAddress,
+        receipentAddress
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accounts,
+    donateContractAddress,
+    isApproved,
+    currentProvider,
+    receipentAddress,
+    activeTab,
+    activeCurrency,
+  ]);
   useEffect(() => {
     fetchTokenList(tokenGroupList);
     setModalInfo({
@@ -113,14 +133,16 @@ const CommonCard = (props: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected]);
   const handleTokenBalance = () => {
-    getAccountBalance(accounts[0]);
-    getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
-    getUserTokenBalance(
-      currentProvider,
-      accounts[0],
-      receipentAddress,
-      activeCurrency.decimals
-    );
+    if (accounts.length && currentProvider) {
+      getAccountBalance(accounts[0]);
+      getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
+      getUserTokenBalance(
+        currentProvider,
+        accounts[0],
+        receipentAddress,
+        activeCurrency.decimals
+      );
+    }
   };
   useEffect(() => {
     console.log("Pooling");
@@ -148,12 +170,16 @@ const CommonCard = (props: props) => {
     assertAddress,
     activeCurrency,
     receipentAddress,
+    isDepositSuccess,
   ]);
+  useEffect(() => {
+    setAmount("");
+  }, [activeTab]);
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
         console.log(modalInfo);
-        handleDeposit(
+        await handleDeposit(
           currentProvider,
           amount,
           accounts[0],
@@ -161,13 +187,29 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
+        handleTokenBalance();
+
         break;
       case "redeem":
-        handleRedeem(currentProvider, amount, accounts[0], receipentAddress);
+        handleRedeem(
+          currentProvider,
+          amount,
+          accounts[0],
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
 
         break;
       case "reward":
-        handleDonate(currentProvider, amount, accounts[0], receipentAddress);
+        handleDonate(
+          currentProvider,
+          amount,
+          accounts[0],
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
         break;
       case "airdrop":
         handleAirdrop(currentProvider, amount, accounts[0], receipentAddress);

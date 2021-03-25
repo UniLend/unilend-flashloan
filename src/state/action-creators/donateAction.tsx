@@ -11,7 +11,7 @@ import { DonateAction } from "state/actions/donateA";
 export const getDonationContract = (currentProvider: any) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     FlashloanLBCore(currentProvider)
-      .methods.getDonationContract()
+      .methods.donationAddress()
       .call((error: any, result: any) => {
         if (!error && result) {
           dispatch({
@@ -87,14 +87,18 @@ export const handleDonate = (
   currentProvider: any,
   donateAmount: any,
   address: string,
-  receipentAddress: string
+  receipentAddress: string,
+  isEth: boolean,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     dispatch({
       type: ActionType.DONATE_ACTION,
     });
     try {
-      const fullAmount = currentProvider.utils.toWei(donateAmount, "ether");
+      var fullAmount = isEth
+        ? currentProvider.utils.toWei(donateAmount, "ether")
+        : donateAmount * Math.pow(10, decimal);
       FlashloanLBCore(currentProvider)
         .methods.getDonationContract()
         .call((error: any, result: any) => {

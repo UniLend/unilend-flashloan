@@ -26,13 +26,13 @@ const DepositReducer = (
       return {
         ...state,
         depositLoading: false,
-        isDepositApproved: action.payload,
+        isDepositSuccess: true,
       };
     case ActionType.DEPOSIT_FAILED:
       return {
         ...state,
         depositLoading: false,
-        isDepositApproved: action.payload,
+        isDepositSuccess: false,
       };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };

@@ -28,7 +28,7 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
       type: ActionType.GETTING_POOL,
     });
     FlashloanLBCore(currentProvider)
-      .methods.getPool(address)
+      .methods.Pools(address)
       .call((err: any, res: any) => {
         if (!err) {
           console.log("asset", res);

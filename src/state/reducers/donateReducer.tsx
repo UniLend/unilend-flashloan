@@ -29,13 +29,11 @@ const DonateReducer = (
       return {
         ...state,
         donateLoading: false,
-        donateIsApproved: action.payload,
       };
     case ActionType.DONATE_FAILED:
       return {
         ...state,
         donateLoading: false,
-        donateIsApproved: action.payload,
       };
     case ActionType.DONATE_APPROVAL_STATUS:
       return { ...state, donateIsApproved: action.payload };

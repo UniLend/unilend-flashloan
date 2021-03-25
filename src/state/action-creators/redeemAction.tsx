@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { portis } from "ethereum/portis";
 import { Dispatch } from "redux";
@@ -8,17 +9,24 @@ export const handleRedeem = (
   currentProvider: any,
   redeemAmount: any,
   accounts: string,
-  receipentAddress: string
+  receipentAddress: string,
+  isEth: boolean,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
 
     try {
-      console.log("Starting");
-      const fullAmount = currentProvider.utils.toWei(redeemAmount, "ether");
-      portis.onError((error) => {
-        console.log("error", error);
-      });
+      // const ten = new BigNumber(10);
+      // const base = 3 * ten.pow(new BigNumber(decimal));
+      // console.log(base);
+      var fullAmount = isEth
+        ? currentProvider.utils.toWei(redeemAmount, "ether")
+        : parseFloat(redeemAmount) * Math.pow(10, decimal);
+      console.log(fullAmount);
+      // portis.onError((error) => {
+      //   console.log("error", error);
+      // });
       FlashloanLBCore(currentProvider)
         .methods.redeemUnderlying(receipentAddress, fullAmount)
         .send({

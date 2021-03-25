@@ -86,7 +86,6 @@ export const handleDeposit = (
   currentProvider: any,
   depositAmount: any,
   address: string,
-  currencyType: string,
   recieptAddress: string,
   isEth: boolean,
   decimal: any

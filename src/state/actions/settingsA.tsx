@@ -9,4 +9,10 @@ interface ActiveTab {
   type: string;
   payload: string;
 }
-export type SettingAction = Theme | ActiveTab;
+
+interface ActiveCurrency {
+  type: string;
+  payload: any;
+}
+
+export type SettingAction = Theme | ActiveTab | ActiveCurrency;

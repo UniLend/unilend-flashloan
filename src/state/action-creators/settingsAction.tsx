@@ -24,6 +24,19 @@ export const themeChange = (currTheme: string) => {
   };
 };
 
+export const setActiveCurrency = (item: any) => {
+  return async (dispatch: Dispatch<SettingAction>) => {
+    try {
+      dispatch({
+        type: ActionType.ACTIVE_CURRENCY,
+        payload: item,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
 export const setActiveTab = (activeTab: string) => ({
   type: ActionType.SET_ACTIVE_TAB,
   payload: activeTab,

@@ -240,11 +240,14 @@ export const getUserTokenBalance = (
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
+      console.log(currentProvider, accounts, reciepentAddress, decimal);
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
-          let fullAmount = r / Math.pow(10, decimal);
-          console.log("Bal", r / Math.pow(10, decimal));
+          let amount = parseFloat(r);
+
+          let fullAmount = amount / Math.pow(10, decimal);
+          console.log("Bal", amount / Math.pow(10, decimal));
           // let fullAmountDeci = fullAmount.slice(0, 7);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,

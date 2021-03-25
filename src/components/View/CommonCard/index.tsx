@@ -9,25 +9,17 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import icon from "assets/ethereum.png";
-import { Reciepent } from "ethereum/contracts";
 
 interface props {
   activeTab: string | null;
 }
 
 interface ModalType {
-  fieldName: string;
   show: boolean;
-  currency: string;
-  logo: any;
-  address: any;
-  decimal: any;
 }
 
 const CommonCard = (props: props) => {
   const { activeTab } = props;
-  const [decimalNo, setDecimalNo] = useState<any>(18);
   // const dispatch = useDispatch();
   const {
     handleDeposit,
@@ -42,6 +34,7 @@ const CommonCard = (props: props) => {
     handleAirdrop,
     getAccountBalance,
     handleReciepent,
+    setActiveCurrency,
   } = useActions();
   const {
     accounts,
@@ -55,21 +48,19 @@ const CommonCard = (props: props) => {
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
+  const { activeCurrency } = useTypedSelector((state) => state.settings);
   const { donateContractAddress, donateIsApproved } = useTypedSelector(
     (state) => state.donate
   );
   const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
-    fieldName: "",
     show: false,
-    logo: icon,
-    currency: "ETH",
-    address: Reciepent,
-    decimal: 18,
   });
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
-  const { poolName, assertAddress } = useTypedSelector((state) => state.pool);
+  const { poolName, poolLoading, assertAddress } = useTypedSelector(
+    (state) => state.pool
+  );
   useEffect(() => {
     console.log(accountBalance);
     let interval: any;
@@ -111,33 +102,30 @@ const CommonCard = (props: props) => {
     activeTab,
     isApproved,
     donateContractAddress,
-    modalInfo.currency,
+    activeCurrency.symbol,
   ]);
 
   useEffect(() => {
     fetchTokenList(tokenGroupList);
     setModalInfo({
       ...modalInfo,
-      logo: icon,
-      currency: "ETH",
-      address: Reciepent,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected]);
   const handleTokenBalance = () => {
     getAccountBalance(accounts[0]);
+    getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
     getUserTokenBalance(
       currentProvider,
       accounts[0],
       receipentAddress,
-      decimalNo
+      activeCurrency.decimals
     );
-    getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
   };
   useEffect(() => {
-    console.log(receipentAddress);
+    console.log("Pooling");
     if (walletConnected) {
-      handleTokenBalance();
+      getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
     if (isDepositSuccess || donateIsApproved) {
       setAmount("");
@@ -148,9 +136,19 @@ const CommonCard = (props: props) => {
     donateIsApproved,
     isDepositSuccess,
     accounts,
+    currentProvider,
+    activeCurrency,
+  ]);
+  useEffect(() => {
+    handleTokenBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentProvider,
+    accounts,
+    assertAddress,
+    activeCurrency,
     receipentAddress,
   ]);
-
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
@@ -159,10 +157,9 @@ const CommonCard = (props: props) => {
           currentProvider,
           amount,
           accounts[0],
-          modalInfo.currency,
           receipentAddress,
-          modalInfo.currency === "ETH",
-          modalInfo.decimal
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
         );
         break;
       case "redeem":
@@ -180,22 +177,9 @@ const CommonCard = (props: props) => {
     }
   };
 
-  const handleModal = (
-    field: string,
-    show: boolean,
-    logo?: any,
-    currency?: string,
-    address?: string,
-    decimal?: any
-  ) => {
-    console.log(modalInfo.currency);
+  const handleModal = (show: boolean) => {
     setModalInfo({
-      fieldName: field,
       show,
-      logo: logo ? logo : modalInfo.logo,
-      currency: currency ? currency : modalInfo.currency,
-      address: address ? address : modalInfo.address,
-      decimal: decimal ? decimal : modalInfo.decimal,
     });
     // if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
@@ -207,25 +191,29 @@ const CommonCard = (props: props) => {
           <div className="swap-root">
             <FieldCard
               onF1Change={(e) => setAmount(e.target.value)}
-              handleModelOpen={() => handleModal(activeTab, true)}
+              handleModelOpen={() => handleModal(true)}
               fieldLabel="Amount"
               fieldValue={amount}
               fieldType="text"
               selectLabel={
-                modalInfo.currency === "ETH" ? accountBalance : userTokenBalance
+                activeCurrency.symbol === "ETH"
+                  ? accountBalance
+                  : userTokenBalance
               }
-              selectValue={modalInfo.currency ? modalInfo.currency : ""}
-              selectedLogo={modalInfo.logo ? modalInfo.logo : ""}
+              selectValue={activeCurrency.symbol ? activeCurrency.symbol : ""}
+              selectedLogo={
+                activeCurrency.logoURI ? activeCurrency.logoURI : ""
+              }
             />
             <MainButton
-              isEth={modalInfo.currency === "ETH"}
-              decimal={decimalNo}
+              isEth={activeCurrency.symbol === "ETH"}
+              decimal={activeCurrency.decimals}
               amount={amount}
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}
             />
             {activeTab === "deposit" &&
-              (isApproved || modalInfo.currency === "ETH") &&
+              (isApproved || activeCurrency.symbol === "ETH") &&
               poolTokenBalance && (
                 <div className="price_head">
                   <div className="price_aa">
@@ -233,9 +221,10 @@ const CommonCard = (props: props) => {
                     Pool percentage <span className="price">-</span>
                   </div> */}
                     <div className="price-list">
-                      Pool Balance ( {poolName ? poolName : ""}){" "}
+                      Pool Balance{" "}
+                      {!poolLoading && poolName ? `(${poolName})` : ""}
                       <span className="price">{`${
-                        walletConnected ? poolTokenBalance : "-"
+                        walletConnected && !poolLoading ? poolTokenBalance : "-"
                       }`}</span>
                     </div>
                   </div>
@@ -245,9 +234,10 @@ const CommonCard = (props: props) => {
               <div className="price_head">
                 <div className="price_aa">
                   <div className="price-list">
-                    Pool Balance( {poolName ? poolName : ""}){" "}
+                    Pool Balance{" "}
+                    {!poolLoading && poolName ? `(${poolName})` : ""}
                     <span className="price">{`${
-                      walletConnected ? poolTokenBalance : "-"
+                      walletConnected && !poolLoading ? poolTokenBalance : "-"
                     }`}</span>
                   </div>
                 </div>
@@ -258,27 +248,20 @@ const CommonCard = (props: props) => {
       )}
       {modalInfo.show && activeTab && (
         <CurrencySelectModel
-          currFieldName={modalInfo.fieldName}
-          handleCurrChange={async (
-            selectedcrr,
-            selectedIcon,
-            address,
-            decimal
-          ) => {
-            setDecimalNo(decimal);
-            await getPool(address, currentProvider, accounts[0]);
-            await handleReciepent(address);
-            await handleTokenBalance();
-            await handleModal(
-              activeTab,
-              false,
-              selectedIcon,
-              selectedcrr,
-              address,
-              decimal
+          currFieldName={activeCurrency.symbol}
+          handleCurrChange={async (selectedAddress: any) => {
+            await setActiveCurrency(selectedAddress);
+            await handleModal(false);
+            console.log(selectedAddress.address);
+            await getPool(
+              selectedAddress.address,
+              currentProvider,
+              accounts[0]
             );
+            await handleReciepent(selectedAddress.address);
+            await handleTokenBalance();
           }}
-          handleClose={() => handleModal("", false)}
+          handleClose={() => handleModal(false)}
         />
       )}
     </>

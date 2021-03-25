@@ -24,6 +24,9 @@ export const createPool = (
 };
 export const getPool = (address: any, currentProvider: any, accounts: any) => {
   return async (dispatch: Dispatch<PoolAction>) => {
+    dispatch({
+      type: ActionType.GETTING_POOL,
+    });
     FlashloanLBCore(currentProvider)
       .methods.getPool(address)
       .call((err: any, res: any) => {
@@ -45,20 +48,19 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
                     type: ActionType.POOL_TOKEN_NAME,
                     payload: res,
                   });
+                } else {
+                  dispatch({
+                    type: ActionType.POOL_FAILED,
+                  });
                 }
               });
           }
+        } else {
+          dispatch({
+            type: ActionType.POOL_FAILED,
+          });
         }
       });
-    // .on("receipt", (res: any) => {
-    //   console.log("Res", res);
-    //   if (res === "0x0000000000000000000000000000000000000000") {
-    //     console.log(res);
-    //   }
-    // })
-    // .catch((e: any) => {
-    //   console.log(e);
-    // });
   };
 };
 export const handleImportAction = (searchedToken: any) => {

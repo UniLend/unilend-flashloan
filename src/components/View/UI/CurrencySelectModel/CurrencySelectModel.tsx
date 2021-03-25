@@ -12,12 +12,7 @@ import { ActionType } from "state/action-types";
 interface Props {
   handleClose: () => void;
   currFieldName: any;
-  handleCurrChange: (
-    selectedField: string,
-    selectedLogo: any,
-    address: string,
-    decimal: any
-  ) => void;
+  handleCurrChange: (selectedCurrency: any) => void;
 }
 
 const CurrencySelectModel: FC<Props> = ({
@@ -91,14 +86,7 @@ const CurrencySelectModel: FC<Props> = ({
               <ListGroup.Item
                 key={item.id}
                 action
-                onClick={() =>
-                  handleCurrChange(
-                    item.symbol,
-                    item.logoURI,
-                    item.address,
-                    item.decimals
-                  )
-                }
+                onClick={() => handleCurrChange(item)}
               >
                 <div className="row">
                   <div className="col-2 px-0 curr-list">

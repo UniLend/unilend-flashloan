@@ -3,6 +3,7 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useEffect, useState } from "react";
+import { Alert } from "react-bootstrap";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
@@ -57,9 +58,11 @@ const MainButton: FC<Props> = ({
     show: false,
   });
 
-  const { isDepositApproved, depositLoading } = useTypedSelector(
-    (state) => state.deposit
-  );
+  const {
+    isDepositApproved,
+    depositLoading,
+    depositErrorMessage,
+  } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
     donateContractAddress,
@@ -73,6 +76,7 @@ const MainButton: FC<Props> = ({
   const {
     depositApprove,
     donateApprove,
+    getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
   } = useActions();
@@ -80,9 +84,16 @@ const MainButton: FC<Props> = ({
     updateApproval();
   });
   const handleTokenBalance = () => {
-    // getAccountBalance(currentProvider);
-    getUserTokenBalance(currentProvider, address[0], receipentAddress, decimal);
-    getPoolTokenBalance(currentProvider, address[0], assertAddress);
+    if (address.length && currentProvider) {
+      getAccountBalance(address[0]);
+      getUserTokenBalance(
+        currentProvider,
+        address[0],
+        receipentAddress,
+        decimal
+      );
+      getPoolTokenBalance(currentProvider, address[0], assertAddress);
+    }
   };
   useEffect(() => {
     handleTokenBalance();
@@ -203,6 +214,9 @@ const MainButton: FC<Props> = ({
           handleClose={() => setWalletModalInfo({ show: false })}
           handleWalletConnect={(wallet: Wallet) => handleWalletConnect(wallet)}
         />
+      )}
+      {depositErrorMessage !== "" && (
+        <Alert variant="danger">{depositErrorMessage}</Alert>
       )}
       {transModalInfo.show && (
         <TransactionPopup mode="success" handleClose={handleTransClose} />

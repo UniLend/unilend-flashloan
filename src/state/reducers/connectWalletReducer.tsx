@@ -73,7 +73,7 @@ const connectWalletReducer = (
         data: [],
         walletConnected: false,
         accounts: [],
-        accountBalance: "0",
+        accountBalance: "",
         userTokenBalance: "",
         poolTokenBalance: "",
         currentProvider: "",

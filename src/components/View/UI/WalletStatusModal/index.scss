@@ -8,3 +8,27 @@
     font-size: small;
   }
 }
+
+.disconnectBtn {
+  text-align: center;
+  outline: none;
+  text-decoration: none;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  -webkit-box-align: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  border: 1px solid #4d8fea;
+  color: #2172e5;
+  background-color: transparent;
+  border-radius: 12px;
+  width: fit-content;
+  font-weight: 400;
+  margin-left: 8px;
+  font-size: 0.825rem;
+  padding: 4px 6px;
+}

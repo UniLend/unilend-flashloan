@@ -18,7 +18,7 @@ import WalletStateModal from "../WalletStatusModal";
 import { Wallet } from "components/Helpers/Types";
 import SwitchNetWorkModal from "../SwitchNetWorkModal";
 import { NETWORKS } from "components/constants";
-interface Props extends RouteComponentProps<any> { }
+interface Props extends RouteComponentProps<any> {}
 interface WalletConnectModal {
   show: boolean;
 }
@@ -30,8 +30,10 @@ interface WalletInfo {
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId } = useTypedSelector(state => state.connectWallet);
-  const { themeChange, setActiveTab } = useActions();
+  const { selectedNetworkId } = useTypedSelector(
+    (state) => state.connectWallet
+  );
+  const { themeChange, setActiveTab, walletDisconnect } = useActions();
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
@@ -127,11 +129,10 @@ const NavBar: React.FC<Props> = (props) => {
             </ul>
           </div>
           <button
-            className={`d-flex btn ${theme === "dark" && "btn-dark"
-              } btn-custom-secondary btn-round-switch`}
-            onClick={() =>
-              setSwitchNetworkModal(true)
-            }
+            className={`d-flex btn ${
+              theme === "dark" && "btn-dark"
+            } btn-custom-secondary btn-round-switch`}
+            onClick={() => setSwitchNetworkModal(true)}
           >
             <img
               src={
@@ -143,8 +144,9 @@ const NavBar: React.FC<Props> = (props) => {
           </button>
           {(accounts && accounts.length) || walletConnected ? (
             <button
-              className={`d-flex btn ${theme === "dark" && "btn-dark"
-                } btn-custom-secondary`}
+              className={`d-flex btn ${
+                theme === "dark" && "btn-dark"
+              } btn-custom-secondary`}
               onClick={() =>
                 setWalletStatusInfo({
                   show: true,
@@ -155,28 +157,29 @@ const NavBar: React.FC<Props> = (props) => {
               {shortenAddress(accounts[0])}
             </button>
           ) : (
-              <button
-                className={`d-flex btn ${theme === "dark" && "btn-dark"
-                  } btn-custom-secondary`}
-                onClick={() => setWalletModalInfo({ show: true })}
-              >
-                {!loading ? (
-                  <span>
-                    <img
-                      src={theme === "light" ? walletlight : walletdark}
-                      width="26"
-                      alt="Wallet"
-                      className="d-inline-block px-1"
-                    />
+            <button
+              className={`d-flex btn ${
+                theme === "dark" && "btn-dark"
+              } btn-custom-secondary`}
+              onClick={() => setWalletModalInfo({ show: true })}
+            >
+              {!loading ? (
+                <span>
+                  <img
+                    src={theme === "light" ? walletlight : walletdark}
+                    width="26"
+                    alt="Wallet"
+                    className="d-inline-block px-1"
+                  />
                   Connect wallet
-                  </span>
-                ) : (
-                    <div className="spinner-border" role="status">
-                      <span className="sr-only">Loading...</span>
-                    </div>
-                  )}
-              </button>
-            )}
+                </span>
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+          )}
           {walletModalInfo.show && !walletConnected && (
             <ConnectWalletModal
               handleClose={() => setWalletModalInfo({ show: false })}
@@ -193,20 +196,22 @@ const NavBar: React.FC<Props> = (props) => {
                   address: "",
                 });
               }}
+              handleDisconnect={() => {
+                walletDisconnect();
+                setWalletStatusInfo({ ...walletStatusInfo, show: false });
+                setWalletModalInfo({ ...walletModalInfo, show: false });
+              }}
               address={walletStatusInfo.address}
             />
           )}
           {switchNetWorkModal && (
-            <SwitchNetWorkModal
-              onHide={() =>
-                setSwitchNetworkModal(false)
-              }
-            />
+            <SwitchNetWorkModal onHide={() => setSwitchNetworkModal(false)} />
           )}
           <button
             onClick={() => handleUpdate()}
-            className={`d-flex ml-3 btn ${theme === "dark" && "btn-dark"
-              } btn-custom-secondary btn-theme-icon`}
+            className={`d-flex ml-3 btn ${
+              theme === "dark" && "btn-dark"
+            } btn-custom-secondary btn-theme-icon`}
           >
             {
               <img

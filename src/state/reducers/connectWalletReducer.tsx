@@ -65,6 +65,19 @@ const connectWalletReducer = (
         ...state,
         selectedNetworkId: action.networkId ? action.networkId : 1,
       };
+    case ActionType.WALLET_DISCONNECT:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        data: [],
+        walletConnected: false,
+        accounts: [],
+        accountBalance: "0",
+        userTokenBalance: "",
+        poolTokenBalance: "",
+        currentProvider: "",
+      };
     default:
       return state;
   }

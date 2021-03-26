@@ -5,12 +5,14 @@ interface DepositState {
   isDepositApproved: boolean | undefined;
   isDepositSuccess: boolean | undefined;
   depositLoading: boolean;
+  depositErrorMessage: string;
 }
 
 const initialState = {
   isDepositSuccess: undefined,
   isDepositApproved: undefined,
   depositLoading: false,
+  depositErrorMessage: "",
 };
 
 const DepositReducer = (
@@ -21,7 +23,7 @@ const DepositReducer = (
     case ActionType.DEPOSIT_APPROVAL_STATUS:
       return { ...state, isDepositApproved: action.payload };
     case ActionType.DEPOSIT_ACTION:
-      return { ...state, depositLoading: true };
+      return { ...state, depositLoading: true, depositErrorMessage: "" };
     case ActionType.DEPOSIT_SUCCESS:
       return {
         ...state,
@@ -33,6 +35,7 @@ const DepositReducer = (
         ...state,
         depositLoading: false,
         isDepositSuccess: false,
+        depositErrorMessage: "Deposit Failed",
       };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };

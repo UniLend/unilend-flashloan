@@ -38,6 +38,10 @@ interface PoolTokenBalance {
   payload: any;
 }
 
+interface walletDisconnect {
+  type: ActionType.WALLET_DISCONNECT;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -46,4 +50,5 @@ export type Action =
   | AccountBalance
   | UserTokenBalance
   | setSelectedNetworkId
-  | PoolTokenBalance;
+  | PoolTokenBalance
+  | walletDisconnect;

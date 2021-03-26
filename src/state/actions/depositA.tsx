@@ -29,10 +29,25 @@ interface DepositFailed {
   payload: boolean;
 }
 
+interface AllowanceAction {
+  type: ActionType.DEPOSIT_ALLOWANCE_ACTION;
+}
+
+interface AllowanceSuccess {
+  type: ActionType.DEPOSIT_ALLOWANCE_SUCCESS;
+}
+
+interface AllowanceFailed {
+  type: ActionType.DEPOSIT_ALLOWANCE_FAILED;
+}
+
 export type DepositAction =
   | DepositAmount
   | DepositApprovalStatus
   | DepositStatus
   | _DepositAction
   | DepositSuccess
-  | DepositFailed;
+  | DepositFailed
+  | AllowanceAction
+  | AllowanceSuccess
+  | AllowanceFailed;

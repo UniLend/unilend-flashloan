@@ -24,9 +24,24 @@ interface DonateApprovalStatus {
   payload: boolean;
 }
 
+interface AllowanceAction {
+  type: ActionType.DONATE_ALLOWANCE_ACTION;
+}
+
+interface AllowanceSuccess {
+  type: ActionType.DONATE_ALLOWANCE_SUCCESS;
+}
+
+interface AllowanceFailed {
+  type: ActionType.DONATE_ALLOWANCE_FAILED;
+}
+
 export type DonateAction =
   | _DonateAction
   | DonateSuccess
   | DonateFailed
   | DonateContract
-  | DonateApprovalStatus;
+  | DonateApprovalStatus
+  | AllowanceAction
+  | AllowanceSuccess
+  | AllowanceFailed;

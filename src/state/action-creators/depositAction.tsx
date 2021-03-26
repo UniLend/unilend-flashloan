@@ -15,27 +15,40 @@ export const checkAllowance = (
   receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
-    let allowance;
-    let _IERC20 = await IERC20(currentProvider, receipentAddress);
-    _IERC20.methods
-      .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
-      .call((error: any, result: any) => {
-        if (!error && result) {
-          allowance = result;
-          if (allowance === "0") {
-            dispatch({
-              type: ActionType.DEPOSIT_APPROVAL_STATUS,
-              payload: false, // isApproved
-            });
+    dispatch({
+      type: ActionType.DEPOSIT_ALLOWANCE_ACTION,
+    });
+    try {
+      let allowance;
+      let _IERC20 = await IERC20(currentProvider, receipentAddress);
+      _IERC20.methods
+        .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
+        .call((error: any, result: any) => {
+          if (!error && result) {
+            allowance = result;
+            if (allowance === "0") {
+              dispatch({
+                type: ActionType.DEPOSIT_APPROVAL_STATUS,
+                payload: false, // isApproved
+              });
+            } else {
+              localStorage.setItem("isApproving", "false");
+              dispatch({
+                type: ActionType.DEPOSIT_APPROVAL_STATUS,
+                payload: true, // isApproved
+              });
+            }
           } else {
-            localStorage.setItem("isApproving", "false");
             dispatch({
-              type: ActionType.DEPOSIT_APPROVAL_STATUS,
-              payload: true, // isApproved
+              type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
             });
           }
-        }
+        });
+    } catch (e) {
+      dispatch({
+        type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
       });
+    }
   };
 };
 

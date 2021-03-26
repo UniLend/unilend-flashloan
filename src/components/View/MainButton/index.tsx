@@ -62,11 +62,13 @@ const MainButton: FC<Props> = ({
     isDepositApproved,
     depositLoading,
     depositErrorMessage,
+    depositAllowanceLoading,
   } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
     donateContractAddress,
     donateLoading,
+    donateAllowanceLoading,
   } = useTypedSelector((state) => state.donate);
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
@@ -79,10 +81,16 @@ const MainButton: FC<Props> = ({
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
+    getDonationContract,
   } = useActions();
   useEffect(() => {
     updateApproval();
   });
+  useEffect(() => {
+    if (address.length && currentProvider) {
+      getDonationContract(currentProvider);
+    }
+  }, [address, currentProvider]);
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {
       getAccountBalance(address[0]);
@@ -105,6 +113,8 @@ const MainButton: FC<Props> = ({
       address.length &&
       walletConnected &&
       (isEth ||
+        depositAllowanceLoading ||
+        donateAllowanceLoading ||
         (actionName === "Deposit" && isDepositApproved === true) ||
         (actionName === "Reward" && donateIsApproved === true) ||
         (actionName !== "Deposit" && actionName !== "Reward"))
@@ -116,7 +126,9 @@ const MainButton: FC<Props> = ({
             depositLoading ||
             donateLoading ||
             redeemLoading ||
-            airdropLoading
+            airdropLoading ||
+            depositAllowanceLoading ||
+            donateAllowanceLoading
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}
@@ -127,7 +139,9 @@ const MainButton: FC<Props> = ({
             {(depositLoading ||
               donateLoading ||
               redeemLoading ||
-              airdropLoading) && (
+              airdropLoading ||
+              depositAllowanceLoading ||
+              donateAllowanceLoading) && (
               <div className="spinner-border approve-loader" role="status">
                 <span className="sr-only">Approving...</span>
               </div>
@@ -139,6 +153,8 @@ const MainButton: FC<Props> = ({
       address &&
       address.length &&
       walletConnected &&
+      !depositAllowanceLoading &&
+      !donateAllowanceLoading &&
       !isEth &&
       ((actionName === "Deposit" &&
         (isDepositApproved === false || isDepositApproved === undefined)) ||

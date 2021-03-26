@@ -33,6 +33,9 @@ export const donateAllowance = (
   receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
+    dispatch({
+      type: ActionType.DONATE_ALLOWANCE_ACTION,
+    });
     try {
       if (receipentAddress) {
         let _IERC20 = IERC20(currentProvider, receipentAddress);
@@ -57,11 +60,17 @@ export const donateAllowance = (
               }
             } else {
               console.log(error);
+              dispatch({
+                type: ActionType.DONATE_ALLOWANCE_FAILED,
+              });
             }
           });
       }
     } catch (e) {
       console.log(e);
+      dispatch({
+        type: ActionType.DONATE_ALLOWANCE_FAILED,
+      });
     }
   };
 };

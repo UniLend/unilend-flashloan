@@ -61,40 +61,41 @@ const CommonCard = (props: props) => {
   const { poolName, poolLoading, assertAddress } = useTypedSelector(
     (state) => state.pool
   );
+
   useEffect(() => {
     console.log(accountBalance);
     let interval: any;
-    if (
-      activeTab === "deposit" &&
-      currentProvider &&
-      walletConnected &&
-      !isApproved
-    ) {
-      // debugger;
-      console.log("ALLOWANCE");
-      checkAllowance(currentProvider, accounts[0], receipentAddress);
-      interval = setInterval(() => {
-        checkAllowance(currentProvider, accounts[0], receipentAddress);
-      }, 9000);
-    } else if (
-      activeTab === "reward" &&
-      currentProvider &&
-      walletConnected &&
-      !donateIsApproved
-    ) {
-      getDonationContract(currentProvider);
-      interval = setInterval(() => {
-        console.log(donateContractAddress);
-        if (donateContractAddress !== "") {
-          donateAllowance(
-            currentProvider,
-            accounts[0],
-            donateContractAddress,
-            receipentAddress
-          );
-        }
-      }, 9000);
-    }
+    // if (
+    //   activeTab === "deposit" &&
+    //   currentProvider &&
+    //   walletConnected &&
+    //   !isApproved
+    // ) {
+    //   // debugger;
+    //   console.log("ALLOWANCE");
+    //   checkAllowance(currentProvider, accounts[0], receipentAddress);
+    //   interval = setInterval(() => {
+    //     checkAllowance(currentProvider, accounts[0], receipentAddress);
+    //   }, 9000);
+    // } else if (
+    //   activeTab === "reward" &&
+    //   currentProvider &&
+    //   walletConnected &&
+    //   !donateIsApproved
+    // ) {
+    //   getDonationContract(currentProvider);
+    //   interval = setInterval(() => {
+    //     console.log(donateContractAddress);
+    //     if (donateContractAddress !== "") {
+    //       donateAllowance(
+    //         currentProvider,
+    //         accounts[0],
+    //         donateContractAddress,
+    //         receipentAddress
+    //       );
+    //     }
+    //   }, 9000);
+    // }
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -105,9 +106,17 @@ const CommonCard = (props: props) => {
     activeCurrency.symbol,
   ]);
   useEffect(() => {
-    if (accounts.length && activeTab === "deposit") {
+    if (
+      accounts.length &&
+      activeCurrency.symbol !== "ETH" &&
+      activeTab === "deposit"
+    ) {
       checkAllowance(currentProvider, accounts[0], receipentAddress);
-    } else if (accounts.length && activeTab === "reward") {
+    } else if (
+      accounts.length &&
+      activeCurrency.symbol !== "ETH" &&
+      activeTab === "reward"
+    ) {
       donateAllowance(
         currentProvider,
         accounts[0],
@@ -144,6 +153,16 @@ const CommonCard = (props: props) => {
       );
     }
   };
+  useEffect(() => {
+    let interval: any;
+    interval = setInterval(() => {
+      if (accounts.length && walletConnected) {
+        console.log("handlingBalance");
+        handleTokenBalance();
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [accounts]);
   useEffect(() => {
     console.log("Pooling");
     if (walletConnected) {

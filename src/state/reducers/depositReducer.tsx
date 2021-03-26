@@ -5,6 +5,7 @@ interface DepositState {
   isDepositApproved: boolean | undefined;
   isDepositSuccess: boolean | undefined;
   depositLoading: boolean;
+  depositAllowanceLoading: boolean;
   depositErrorMessage: string;
 }
 
@@ -12,6 +13,7 @@ const initialState = {
   isDepositSuccess: undefined,
   isDepositApproved: undefined,
   depositLoading: false,
+  depositAllowanceLoading: false,
   depositErrorMessage: "",
 };
 
@@ -20,8 +22,24 @@ const DepositReducer = (
   action: DepositAction
 ): DepositState => {
   switch (action.type) {
+    case ActionType.DEPOSIT_ALLOWANCE_ACTION:
+      return { ...state, depositAllowanceLoading: true };
+    case ActionType.DEPOSIT_ALLOWANCE_FAILED:
+      return {
+        ...state,
+        depositAllowanceLoading: false,
+      };
+    case ActionType.DEPOSIT_ALLOWANCE_SUCCESS:
+      return {
+        ...state,
+        depositAllowanceLoading: false,
+      };
     case ActionType.DEPOSIT_APPROVAL_STATUS:
-      return { ...state, isDepositApproved: action.payload };
+      return {
+        ...state,
+        isDepositApproved: action.payload,
+        depositAllowanceLoading: false,
+      };
     case ActionType.DEPOSIT_ACTION:
       return { ...state, depositLoading: true, depositErrorMessage: "" };
     case ActionType.DEPOSIT_SUCCESS:

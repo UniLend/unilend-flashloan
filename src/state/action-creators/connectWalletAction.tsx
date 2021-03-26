@@ -342,3 +342,14 @@ export const connectWalletAction = (wallet?: Wallet) => {
     }
   };
 };
+
+export const walletDisconnect = () => {
+  return async (dispatch: Dispatch<Action>) => {
+    localStorage.removeItem("walletConnected");
+    localStorage.removeItem("isApproving");
+    localStorage.removeItem("donateApproval");
+    dispatch({
+      type: ActionType.WALLET_DISCONNECT,
+    });
+  };
+};

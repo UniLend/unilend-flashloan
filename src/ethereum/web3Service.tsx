@@ -10,4 +10,9 @@ export const web3Service = {
   getWei: (payload: any, curr: string) => {
     return web3.utils.fromWei(payload, curr);
   },
+  getValue: (isEth: any, currentProvider: any, amount: any, decimal: any) => {
+    return isEth
+      ? currentProvider.utils.toWei(amount, "ether")
+      : (amount * Math.pow(10, decimal)).toString();
+  },
 };

@@ -3,6 +3,7 @@ import {
   UnilendFlashLoanCoreContract,
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
+import { web3Service } from "ethereum/web3Service";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
@@ -95,9 +96,13 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      var fullAmount = isEth
-        ? currentProvider.utils.toWei(depositAmount, "ether")
-        : depositAmount * Math.pow(10, decimal);
+      console.log(depositAmount, decimal);
+      var fullAmount = web3Service.getValue(
+        isEth,
+        currentProvider,
+        depositAmount,
+        decimal
+      );
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({
@@ -118,6 +123,7 @@ export const handleDeposit = (
           });
         });
     } catch (e) {
+      console.log(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

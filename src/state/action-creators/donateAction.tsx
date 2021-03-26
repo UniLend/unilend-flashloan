@@ -4,6 +4,7 @@ import {
   IERC20,
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
+import { web3Service } from "ethereum/web3Service";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DonateAction } from "state/actions/donateA";
@@ -32,29 +33,35 @@ export const donateAllowance = (
   receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
-    if (receipentAddress) {
-      let _IERC20 = IERC20(currentProvider, receipentAddress);
-      let allowance;
-      _IERC20.methods
-        .allowance(address, contractAddress)
-        .call((error: any, result: any) => {
-          if (!error && result) {
-            allowance = result;
-            console.log(allowance);
-            if (allowance === "0") {
-              dispatch({
-                type: ActionType.DONATE_APPROVAL_STATUS,
-                payload: false, // isApproved
-              });
+    try {
+      if (receipentAddress) {
+        let _IERC20 = IERC20(currentProvider, receipentAddress);
+        let allowance;
+        _IERC20.methods
+          .allowance(address, contractAddress)
+          .call((error: any, result: any) => {
+            if (!error && result) {
+              allowance = result;
+              console.log(allowance);
+              if (allowance === "0") {
+                dispatch({
+                  type: ActionType.DONATE_APPROVAL_STATUS,
+                  payload: false, // isApproved
+                });
+              } else {
+                localStorage.setItem("donateApproval", "false");
+                dispatch({
+                  type: ActionType.DONATE_APPROVAL_STATUS,
+                  payload: true, // isApproved
+                });
+              }
             } else {
-              localStorage.setItem("donateApproval", "false");
-              dispatch({
-                type: ActionType.DONATE_APPROVAL_STATUS,
-                payload: true, // isApproved
-              });
+              console.log(error);
             }
-          }
-        });
+          });
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 };
@@ -78,6 +85,7 @@ export const donateApprove = (
         localStorage.setItem("donateApproval", "false");
       })
       .catch((err: Error) => {
+        console.log(err);
         localStorage.setItem("donateApproval", "false");
       });
   };
@@ -96,11 +104,14 @@ export const handleDonate = (
       type: ActionType.DONATE_ACTION,
     });
     try {
-      var fullAmount = isEth
-        ? currentProvider.utils.toWei(donateAmount, "ether")
-        : donateAmount * Math.pow(10, decimal);
+      let fullAmount = web3Service.getValue(
+        isEth,
+        currentProvider,
+        donateAmount,
+        decimal
+      );
       FlashloanLBCore(currentProvider)
-        .methods.getDonationContract()
+        .methods.donationAddress()
         .call((error: any, result: any) => {
           if (!error && result) {
             let contractAddress = result;
@@ -120,12 +131,14 @@ export const handleDonate = (
                 });
               })
               .catch((e: Error) => {
+                console.log(e);
                 dispatch({
                   type: ActionType.DONATE_FAILED,
                   payload: false,
                 });
               });
           } else {
+            console.log(error);
             dispatch({
               type: ActionType.DONATE_FAILED,
               payload: false,
@@ -133,6 +146,7 @@ export const handleDonate = (
           }
         });
     } catch (e: any) {
+      console.log(e);
       dispatch({
         type: ActionType.DONATE_FAILED,
         payload: false,

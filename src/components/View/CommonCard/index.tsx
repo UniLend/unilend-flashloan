@@ -212,7 +212,14 @@ const CommonCard = (props: props) => {
         );
         break;
       case "airdrop":
-        handleAirdrop(currentProvider, amount, accounts[0], receipentAddress);
+        handleAirdrop(
+          currentProvider,
+          amount,
+          accounts[0],
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
         break;
       default:
         break;

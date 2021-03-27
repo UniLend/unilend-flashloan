@@ -74,12 +74,8 @@ function App() {
                     exact
                     render={() => <CommonCard activeTab={activeTab} />}
                   />
-                  {/* <Route
-                    path="/"
-                    exact
-                    render={() => <CommonCard activeTab={"deposit"} />}
-                  /> */}
-                  <Redirect from="*" to="/deposit" />
+                  <Redirect from="/" to="/deposit" />
+                  <Redirect from="**" to="/deposit" />
                 </Switch>
               </div>
             </div>

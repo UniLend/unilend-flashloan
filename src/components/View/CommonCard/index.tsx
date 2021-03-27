@@ -26,7 +26,6 @@ const CommonCard = (props: props) => {
     handleRedeem,
     handleDonate,
     checkAllowance,
-    getDonationContract,
     donateAllowance,
     fetchTokenList,
     getPool,
@@ -162,6 +161,7 @@ const CommonCard = (props: props) => {
       }
     }, 5000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts]);
   useEffect(() => {
     console.log("Pooling");
@@ -239,6 +239,7 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
+        // handled
         break;
       default:
         break;

@@ -246,9 +246,7 @@ export const getUserTokenBalance = (
         if (!e) {
           let amount = parseFloat(r);
 
-          let fullAmount = amount / Math.pow(10, decimal);
-          console.log("Bal", amount / Math.pow(10, decimal));
-          // let fullAmountDeci = fullAmount.slice(0, 7);
+          let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,

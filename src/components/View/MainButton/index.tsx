@@ -90,6 +90,7 @@ const MainButton: FC<Props> = ({
     if (address.length && currentProvider) {
       getDonationContract(currentProvider);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, currentProvider]);
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {

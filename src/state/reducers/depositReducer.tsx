@@ -7,6 +7,7 @@ interface DepositState {
   depositLoading: boolean;
   depositAllowanceLoading: boolean;
   depositErrorMessage: string;
+  depositIsApproving: boolean;
 }
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   depositLoading: false,
   depositAllowanceLoading: false,
   depositErrorMessage: "",
+  depositIsApproving:false
 };
 
 const DepositReducer = (
@@ -34,6 +36,21 @@ const DepositReducer = (
         ...state,
         depositAllowanceLoading: false,
       };
+    case ActionType.DEPOSIT_APPROVE_ACTION:
+      return {
+        ...state,
+        depositIsApproving: true,
+      }
+    case ActionType.DEPOSIT_APPROVE_SUCCESS:
+      return {
+        ...state,
+        depositIsApproving: false,
+      }
+    case ActionType.DEPOSIT_APPROVE_FAILED:
+      return {
+        ...state,
+        depositIsApproving: false,
+      }
     case ActionType.DEPOSIT_APPROVAL_STATUS:
       return {
         ...state,

@@ -1,15 +1,11 @@
-import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Card, Container, Modal } from "react-bootstrap";
 import "./index.scss";
 interface Props {
   handleClose: () => void;
   handleDisconnect: () => void;
   address: string;
-}
-interface WalletConnectModal {
-  show: boolean;
 }
 const WalletStateModal: FC<Props> = ({
   handleClose,

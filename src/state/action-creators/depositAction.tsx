@@ -34,6 +34,9 @@ export const checkAllowance = (
             } else {
               localStorage.setItem("isApproving", "false");
               dispatch({
+                type:ActionType.DEPOSIT_APPROVE_SUCCESS
+              })
+              dispatch({
                 type: ActionType.DEPOSIT_APPROVAL_STATUS,
                 payload: true, // isApproved
               });
@@ -59,6 +62,9 @@ export const depositApprove = (
   receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    dispatch({
+      type: ActionType.DEPOSIT_APPROVE_ACTION
+    })
     try {
       let _IERC20 = await IERC20(currentProvider, receipentAddress);
       localStorage.setItem("isApproving", "true");
@@ -80,10 +86,15 @@ export const depositApprove = (
             type: ActionType.DEPOSIT_APPROVAL_STATUS,
             payload: true,
           });
+          dispatch({
+            type:ActionType.DEPOSIT_APPROVE_SUCCESS
+          })
         })
         .catch((e: Error) => {
           localStorage.setItem("isApproving", "false");
-
+          dispatch({
+            type:ActionType.DEPOSIT_APPROVE_FAILED
+          })
           dispatch({
             type: ActionType.DEPOSIT_APPROVAL_STATUS,
             payload: false,
@@ -91,7 +102,9 @@ export const depositApprove = (
           console.log("Approval Rejected By User");
         });
     } catch (e) {
-      console.log(e);
+       dispatch({
+            type:ActionType.DEPOSIT_APPROVE_FAILED
+          })
     }
   };
 };

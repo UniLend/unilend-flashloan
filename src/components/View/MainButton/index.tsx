@@ -38,17 +38,17 @@ const MainButton: FC<Props> = ({
     handleWalletConnect,
   } = useWalletConnect();
 
-  const [isApproving, setIsApproving] = useState<string | null>(
-    localStorage.getItem("isApproving")
-  );
-  const [donateIsApproving, setDonateIsApproving] = useState<string | null>(
-    localStorage.getItem("donateApproval")
-  );
+  // const [isApproving, setIsApproving] = useState<string | null>(
+  //   localStorage.getItem("isApproving")
+  // );
+  // const [donateIsApproving, setDonateIsApproving] = useState<string | null>(
+  //   localStorage.getItem("donateApproval")
+  // );
 
-  function updateApproval() {
-    setIsApproving(localStorage.getItem("isApproving"));
-    setDonateIsApproving(localStorage.getItem("donateApproval"));
-  }
+  // function updateApproval() {
+  //   setIsApproving(localStorage.getItem("isApproving"));
+  //   setDonateIsApproving(localStorage.getItem("donateApproval"));
+  // }
 
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
@@ -63,12 +63,14 @@ const MainButton: FC<Props> = ({
     depositLoading,
     depositErrorMessage,
     depositAllowanceLoading,
+    depositIsApproving
   } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
     donateContractAddress,
     donateLoading,
     donateAllowanceLoading,
+    donateApproving
   } = useTypedSelector((state) => state.donate);
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
@@ -83,9 +85,9 @@ const MainButton: FC<Props> = ({
     getUserTokenBalance,
     getDonationContract,
   } = useActions();
-  useEffect(() => {
-    updateApproval();
-  });
+  // useEffect(() => {
+  //   updateApproval();
+  // });
   useEffect(() => {
     if (address.length && currentProvider) {
       getDonationContract(currentProvider);
@@ -167,16 +169,14 @@ const MainButton: FC<Props> = ({
       return (
         <button
           disabled={
-            (actionName === "Deposit" && isApproving === "true") ||
-            (actionName === "Reward" && donateIsApproving === "true")
+            (actionName === "Deposit" && depositIsApproving === true) ||
+            (actionName === "Reward" && donateApproving === true)
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === "Deposit") {
-              setIsApproving("true");
               depositApprove(currentProvider, address[0], receipentAddress);
             } else if (actionName === "Reward") {
-              setDonateIsApproving("true");
               donateApprove(
                 currentProvider,
                 address[0],
@@ -187,8 +187,8 @@ const MainButton: FC<Props> = ({
           }}
           type="button"
         >
-          {(actionName === "Deposit" && isApproving === "true") ||
-          (actionName === "Reward" && donateIsApproving === "true") ? (
+          {(actionName === "Deposit" && depositIsApproving === true) ||
+          (actionName === "Reward" && donateApproving === true) ? (
             <div>
               Approving
               <div className="spinner-border approve-loader" role="status">

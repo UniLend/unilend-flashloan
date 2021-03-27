@@ -41,6 +41,18 @@ interface AllowanceFailed {
   type: ActionType.DEPOSIT_ALLOWANCE_FAILED;
 }
 
+interface ApproveAction {
+  type:ActionType.DEPOSIT_APPROVE_ACTION;
+}
+
+interface ApproveSuccess {
+  type:ActionType.DEPOSIT_APPROVE_SUCCESS;
+}
+
+interface ApproveFailed {
+  type:ActionType.DEPOSIT_APPROVE_FAILED;
+}
+
 export type DepositAction =
   | DepositAmount
   | DepositApprovalStatus
@@ -50,4 +62,7 @@ export type DepositAction =
   | DepositFailed
   | AllowanceAction
   | AllowanceSuccess
-  | AllowanceFailed;
+  | AllowanceFailed
+  | ApproveAction
+  | ApproveSuccess
+  | ApproveFailed;

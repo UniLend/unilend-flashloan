@@ -1,0 +1,98 @@
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayThin.ttf);
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets/fonts/NeueHaasDisplayBlackItalic.ttf);
+  font-style: italic;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayBold.ttf);
+  font-weight: bold;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayBoldItalic.ttf);
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayLight.ttf);
+  font-weight: 100;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayLightItalic.ttf);
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayMediu.ttf);
+  font-weight: 400;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayMediumItalic.ttf);
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: "NeueHaasDisplay", serif;
+  src: url(./assets//fonts/NeueHaasDisplayRoman.ttf);
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayRomanItalic.ttf);
+  font-style: italic;
+}
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url(./assets//fonts/NeueHaasDisplayThin.ttf);
+  font-weight: 100;
+}
+
+.light {
+  --theme-color-light: #000000b3;
+  --theme-page-background: linear-gradient(
+    180deg,
+    #bed4ff 0%,
+    #bed4ff 50%,
+    #dce5f7de 102%
+  );
+  --theme-page-text: #111;
+  --theme-field-text-color: #9fadc0;
+  --theme-card-bg: white;
+  --theme-button: white;
+  --theme-input-color: #495057;
+  --theme-card-border: #e7e7e7;
+  --theme-card-title: #f2f4fa;
+  --theme-card-title-bg: transparent;
+  --theme-field-card: #f2f4fa;
+  --theme-price-text: #8d9bae;
+  --theme-line-break: rgba(0, 0, 0, 0.1);
+  --theme-modal-bg: #ffffff;
+  --theme-wallet-list-border: #3333332e;
+  --theme-field-color: #2f4774;
+}
+
+.dark {
+  --theme-page-background: #273041;
+  --theme-page-text: #fff;
+  --theme-button: #273041;
+  --theme-field-text-color: white;
+  --theme-input-color: #fff;
+  --theme-card-bg: #2b3b59;
+  --theme-card-border: #23488c;
+  --theme-card-title: #2f4774;
+  --theme-card-title-bg: #283754;
+  --theme-field-card: #2f4774;
+  --theme-price-text: white;
+  --theme-line-break: white;
+  --theme-modal-bg: #212429;
+  --theme-wallet-list-border: #333;
+  --theme-field-color: #fff;
+}

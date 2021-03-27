@@ -61,6 +61,7 @@ const CommonCard = (props: props) => {
     getRewardReleaseRate,
     balanceReset,
     networkSwitchHandling,
+    rewardTokenList,
   } = useActions();
 
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
@@ -74,11 +75,11 @@ const CommonCard = (props: props) => {
   } = useTypedSelector((state) => state.donate);
   const { redeemSuccess } = useTypedSelector((state) => state.redeem);
   const { airdropSuccess } = useTypedSelector((state) => state.airdrop);
-  const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
-  const { receipentAddress } = useTypedSelector((state) => state.ethereum);
-  const { poolName, poolLoading, assertAddress } = useTypedSelector(
-    (state) => state.pool
+  const { tokenGroupList, tokenList } = useTypedSelector(
+    (state) => state.tokenManage
   );
+  const { receipentAddress } = useTypedSelector((state) => state.ethereum);
+  const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const handleTokenBalance = () => {
     console.log(activeTab);
@@ -116,7 +117,9 @@ const CommonCard = (props: props) => {
 
   useEffect(() => {
     networkSwitchHandling();
-  }, [walletConnected]);
+
+    console.log(networkId);
+  }, [walletConnected, tokenList]);
 
   useEffect(() => {
     if (
@@ -157,6 +160,9 @@ const CommonCard = (props: props) => {
 
   useEffect(() => {
     fetchTokenList(tokenGroupList, networkId);
+    // if (tokenList.payload && (tokenList.payload as any).tokens) {
+    //   setActiveCurrency((tokenList.payload as any).tokens[0]);
+    // }
     setModalInfo({
       ...modalInfo,
     });
@@ -167,15 +173,15 @@ const CommonCard = (props: props) => {
     let interval: any;
 
     interval = setInterval(() => {
+      getPoolLiquidity(
+        currentProvider,
+        receipentAddress,
+        activeCurrency.symbol === "ETH",
+        activeCurrency.decimals
+      );
       if (accounts.length && walletConnected) {
         console.log("handlingBalance");
         handleTokenBalance();
-        getPoolLiquidity(
-          currentProvider,
-          receipentAddress,
-          activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
-        );
       }
     }, 5000);
     return () => clearInterval(interval);
@@ -192,6 +198,9 @@ const CommonCard = (props: props) => {
 
   useEffect(() => {
     setAmount("");
+    // if (activeTab === "reward") {
+    //   rewardTokenList(tokenList);
+    // }
   }, [activeTab]);
 
   useEffect(() => {
@@ -326,7 +335,7 @@ const CommonCard = (props: props) => {
                   <div className="price-list">
                     Pool Liquidity{" "}
                     <span className="price">
-                      {walletConnected && poolLiquidity ? (
+                      {poolLiquidity ? (
                         <>
                           <span>{poolLiquidity}</span>
                           <img
@@ -427,6 +436,7 @@ const CommonCard = (props: props) => {
             await handleReciepent(selectedAddress.address);
           }}
           handleClose={() => handleModal(false)}
+          activeTab={activeTab}
         />
       )}
     </>

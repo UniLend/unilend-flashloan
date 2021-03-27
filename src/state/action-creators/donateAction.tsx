@@ -45,7 +45,7 @@ export const donateAllowance = (
           .call((error: any, result: any) => {
             if (!error && result) {
               allowance = result;
-              console.log(allowance);
+              console.log("allow",allowance);
               if (allowance === "0") {
                 dispatch({
                   type: ActionType.DONATE_APPROVAL_STATUS,
@@ -57,6 +57,9 @@ export const donateAllowance = (
                   type: ActionType.DONATE_APPROVAL_STATUS,
                   payload: true, // isApproved
                 });
+                dispatch({
+          type:ActionType.DONATE_APPROVE_SUCCESS
+        })
               }
             } else {
               console.log(error);
@@ -82,7 +85,18 @@ export const donateApprove = (
   receipentAddress: string
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
+    dispatch({
+      type:ActionType.DONATE_APPROVE_ACTION
+    })
+    try {
     localStorage.setItem("donateApproval", "true");
+    dispatch({
+      type:ActionType.DONATE_APPROVE_ACTION
+    })
+    dispatch({
+        type: ActionType.DONATE_APPROVAL_STATUS,
+        payload: false,
+      });
     let _IERC20 = IERC20(currentProvider, receipentAddress);
 
     _IERC20.methods
@@ -92,11 +106,32 @@ export const donateApprove = (
       })
       .on("receipt", (res: any) => {
         localStorage.setItem("donateApproval", "false");
+        dispatch({
+          type:ActionType.DONATE_APPROVAL_STATUS,
+          payload:true
+        })
+        dispatch({
+          type:ActionType.DONATE_APPROVE_SUCCESS
+        })
       })
       .catch((err: Error) => {
         console.log(err);
         localStorage.setItem("donateApproval", "false");
+        dispatch({
+          type:ActionType.DONATE_APPROVE_FAILED
+        })
+        dispatch({
+          type:ActionType.DONATE_APPROVAL_STATUS,
+          payload:false
+        })
       });
+    }
+    catch (e:any) {
+      console.log(e);
+      dispatch({
+          type:ActionType.DONATE_APPROVE_FAILED
+        })
+    }
   };
 };
 

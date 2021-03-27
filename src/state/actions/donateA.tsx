@@ -36,6 +36,18 @@ interface AllowanceFailed {
   type: ActionType.DONATE_ALLOWANCE_FAILED;
 }
 
+interface ApproveAction {
+  type: ActionType.DONATE_APPROVE_ACTION;
+}
+
+interface ApproveSuccess {
+  type: ActionType.DONATE_APPROVE_SUCCESS;
+}
+
+interface ApproveFailed {
+  type: ActionType.DONATE_APPROVE_FAILED;
+}
+
 export type DonateAction =
   | _DonateAction
   | DonateSuccess
@@ -44,4 +56,7 @@ export type DonateAction =
   | DonateApprovalStatus
   | AllowanceAction
   | AllowanceSuccess
-  | AllowanceFailed;
+  | AllowanceFailed
+  | ApproveAction
+  | ApproveSuccess
+  | ApproveFailed;

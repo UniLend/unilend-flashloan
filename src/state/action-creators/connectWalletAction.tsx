@@ -217,11 +217,9 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
 export const getAccountBalance = (selectedAccount: string) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      console.log(selectedAccount);
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
       let ethBalDeci = parseFloat(ethBal).toFixed(4);
-      console.log(ethBalDeci);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
         payload: ethBalDeci,
@@ -240,7 +238,6 @@ export const getUserTokenBalance = (
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      console.log(currentProvider, accounts, reciepentAddress, decimal);
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {

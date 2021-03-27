@@ -21,6 +21,22 @@ interface ModalType {
 const CommonCard = (props: props) => {
   const { activeTab } = props;
   // const dispatch = useDispatch();
+  const [amount, setAmount] = useState<string>("");
+  const [modalInfo, setModalInfo] = useState<ModalType>({
+    show: false,
+  });
+
+
+   const {
+    accounts,
+    walletConnected,
+    currentProvider,
+    accountBalance,
+    userTokenBalance,
+    poolTokenBalance,
+    getUserTokenBalance,
+  } = useWalletConnect();
+
   const {
     handleDeposit,
     handleRedeem,
@@ -35,15 +51,8 @@ const CommonCard = (props: props) => {
     handleReciepent,
     setActiveCurrency,
   } = useActions();
-  const {
-    accounts,
-    walletConnected,
-    currentProvider,
-    accountBalance,
-    userTokenBalance,
-    poolTokenBalance,
-    getUserTokenBalance,
-  } = useWalletConnect();
+  
+ 
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
@@ -51,59 +60,28 @@ const CommonCard = (props: props) => {
   const { donateContractAddress, donateIsApproved } = useTypedSelector(
     (state) => state.donate
   );
-  const [amount, setAmount] = useState<string>("");
-  const [modalInfo, setModalInfo] = useState<ModalType>({
-    show: false,
-  });
+  const {redeemSuccess} = useTypedSelector((state) => state.redeem);
+  const {airdropSuccess} = useTypedSelector((state) => state.airdrop)
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
   const { poolName, poolLoading, assertAddress } = useTypedSelector(
     (state) => state.pool
   );
 
-  useEffect(() => {
-    console.log(accountBalance);
-    let interval: any;
-    // if (
-    //   activeTab === "deposit" &&
-    //   currentProvider &&
-    //   walletConnected &&
-    //   !isApproved
-    // ) {
-    //   // debugger;
-    //   console.log("ALLOWANCE");
-    //   checkAllowance(currentProvider, accounts[0], receipentAddress);
-    //   interval = setInterval(() => {
-    //     checkAllowance(currentProvider, accounts[0], receipentAddress);
-    //   }, 9000);
-    // } else if (
-    //   activeTab === "reward" &&
-    //   currentProvider &&
-    //   walletConnected &&
-    //   !donateIsApproved
-    // ) {
-    //   getDonationContract(currentProvider);
-    //   interval = setInterval(() => {
-    //     console.log(donateContractAddress);
-    //     if (donateContractAddress !== "") {
-    //       donateAllowance(
-    //         currentProvider,
-    //         accounts[0],
-    //         donateContractAddress,
-    //         receipentAddress
-    //       );
-    //     }
-    //   }, 9000);
-    // }
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    accounts,
-    activeTab,
-    isApproved,
-    donateContractAddress,
-    activeCurrency.symbol,
-  ]);
+
+  const handleTokenBalance = () => {
+    if (accounts.length && currentProvider) {
+      getAccountBalance(accounts[0]);
+      getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
+      getUserTokenBalance(
+        currentProvider,
+        accounts[0],
+        receipentAddress,
+        activeCurrency.decimals
+      );
+    }
+  };
+  
   useEffect(() => {
     if (
       accounts.length &&
@@ -140,18 +118,7 @@ const CommonCard = (props: props) => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected]);
-  const handleTokenBalance = () => {
-    if (accounts.length && currentProvider) {
-      getAccountBalance(accounts[0]);
-      getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
-      getUserTokenBalance(
-        currentProvider,
-        accounts[0],
-        receipentAddress,
-        activeCurrency.decimals
-      );
-    }
-  };
+
   useEffect(() => {
     let interval: any;
     interval = setInterval(() => {
@@ -162,38 +129,32 @@ const CommonCard = (props: props) => {
     }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts]);
+  }, [accounts,activeTab,activeCurrency,receipentAddress, assertAddress]);
   useEffect(() => {
     console.log("Pooling");
     if (walletConnected) {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
-    if (isDepositSuccess || donateIsApproved) {
-      setAmount("");
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     walletConnected,
-    donateIsApproved,
-    isDepositSuccess,
+    
     accounts,
     currentProvider,
     activeCurrency,
   ]);
   useEffect(() => {
-    handleTokenBalance();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    currentProvider,
-    accounts,
-    assertAddress,
-    activeCurrency,
-    receipentAddress,
-    isDepositSuccess,
-  ]);
+      setAmount("");
+  },[activeTab])
   useEffect(() => {
-    setAmount("");
-  }, [activeTab]);
+    
+    if (isDepositSuccess || donateIsApproved || redeemSuccess || airdropSuccess) {
+      setAmount("");
+    }
+  }, [activeTab,donateIsApproved,
+    isDepositSuccess,
+    redeemSuccess,
+    airdropSuccess,]);
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
@@ -206,7 +167,6 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
-        handleTokenBalance();
 
         break;
       case "redeem":
@@ -321,14 +281,12 @@ const CommonCard = (props: props) => {
           handleCurrChange={async (selectedAddress: any) => {
             await setActiveCurrency(selectedAddress);
             await handleModal(false);
-            console.log(selectedAddress.address);
             await getPool(
               selectedAddress.address,
               currentProvider,
               accounts[0]
             );
             await handleReciepent(selectedAddress.address);
-            await handleTokenBalance();
           }}
           handleClose={() => handleModal(false)}
         />

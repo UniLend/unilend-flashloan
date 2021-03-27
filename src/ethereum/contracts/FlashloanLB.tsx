@@ -30,6 +30,5 @@ export const IERC20 = (currentProvider: any, reciepentAddress: string) => {
 };
 
 export const uUFTIERC20 = (currentProvider: any, assertAddress: any) => {
-  console.log("Asset", assertAddress);
   return new currentProvider.eth.Contract(IERC20ABI.abi, assertAddress);
 };

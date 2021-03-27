@@ -42,6 +42,27 @@ interface walletDisconnect {
   type: ActionType.WALLET_DISCONNECT;
 }
 
+interface getPoolLiquidity {
+  type: ActionType.POOL_LIQUIDITY;
+  payload: any;
+}
+
+interface RewardBalance {
+  type: ActionType.REWARD_POOL_BALANCE;
+  payload: any;
+}
+
+interface RewardRelease {
+  type: ActionType.REWARD_RELEASE_RATE;
+  payload: any;
+}
+
+interface ActiveNetwork {
+  type: ActionType.ACTIVE_NETWORK;
+  payload: any;
+  networkId: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -51,4 +72,8 @@ export type Action =
   | UserTokenBalance
   | setSelectedNetworkId
   | PoolTokenBalance
-  | walletDisconnect;
+  | getPoolLiquidity
+  | walletDisconnect
+  | RewardBalance
+  | RewardRelease
+  | ActiveNetwork;

@@ -12,9 +12,18 @@ export default function useWalletConnect() {
     userTokenBalance,
     accountBalance,
     poolTokenBalance,
+    poolLiquidity,
+    rewardPoolBalance,
+    rewardReleaseRate,
+    activeNetWork,
+    networkId,
   } = useTypedSelector((state) => state.connectWallet);
 
-  const { connectWalletAction, getUserTokenBalance } = useActions();
+  const {
+    connectWalletAction,
+    getUserTokenBalance,
+    getPoolLiquidity,
+  } = useActions();
   const handleWalletConnect = useCallback((wallet?: Wallet) => {
     console.log("CONNECTING WALLET");
 
@@ -34,7 +43,13 @@ export default function useWalletConnect() {
     userTokenBalance,
     accountBalance,
     poolTokenBalance,
+    poolLiquidity,
+    rewardPoolBalance,
+    rewardReleaseRate,
+    activeNetWork,
+    networkId,
     handleWalletConnect,
     getUserTokenBalance,
+    getPoolLiquidity,
   };
 }

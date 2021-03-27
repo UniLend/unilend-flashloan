@@ -37,7 +37,7 @@ export const setActiveCurrency = (item: any) => {
   };
 };
 
-export const setActiveTab = (activeTab: string) => ({
+export const setActiveTab = (activeTab: string | null) => ({
   type: ActionType.SET_ACTIVE_TAB,
   payload: activeTab,
 });

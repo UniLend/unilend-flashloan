@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
 
-export const fetchTokenList = (tokenList: any) => {
+export const fetchTokenList = (tokenList: any, networkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let totalTokenList: any = [
       {
@@ -28,7 +28,12 @@ export const fetchTokenList = (tokenList: any) => {
                 .get(item.fetchURI)
                 .then((res) => {
                   if (res.data) {
-                    const tokenList: any = res.data.tokens;
+                    const tokenList: any = res.data.tokens.filter(
+                      (item: any) => {
+                        return item.chainId == networkId;
+                      }
+                    );
+                    console.log(tokenList);
                     if (tokenList) totalTokenList.push(...tokenList);
                     console.log("TTL:", totalTokenList);
                   }

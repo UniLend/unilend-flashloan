@@ -63,14 +63,14 @@ const MainButton: FC<Props> = ({
     depositLoading,
     depositErrorMessage,
     depositAllowanceLoading,
-    depositIsApproving
+    depositIsApproving,
   } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
     donateContractAddress,
     donateLoading,
     donateAllowanceLoading,
-    donateApproving
+    donateApproving,
   } = useTypedSelector((state) => state.donate);
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
@@ -83,17 +83,11 @@ const MainButton: FC<Props> = ({
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
-    getDonationContract,
   } = useActions();
   // useEffect(() => {
   //   updateApproval();
   // });
-  useEffect(() => {
-    if (address.length && currentProvider) {
-      getDonationContract(currentProvider);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, currentProvider]);
+
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {
       getAccountBalance(address[0]);
@@ -103,7 +97,13 @@ const MainButton: FC<Props> = ({
         receipentAddress,
         decimal
       );
-      getPoolTokenBalance(currentProvider, address[0], assertAddress);
+      getPoolTokenBalance(
+        currentProvider,
+        address[0],
+        assertAddress,
+        receipentAddress,
+        decimal
+      );
     }
   };
   useEffect(() => {

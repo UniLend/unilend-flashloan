@@ -25,16 +25,22 @@ const CommonCard = (props: props) => {
   const [modalInfo, setModalInfo] = useState<ModalType>({
     show: false,
   });
+  const [poolPercentage, setPoolPercentage] = useState<any>("");
 
-
-   const {
+  const {
     accounts,
     walletConnected,
     currentProvider,
     accountBalance,
     userTokenBalance,
     poolTokenBalance,
+    poolLiquidity,
+    rewardPoolBalance,
+    rewardReleaseRate,
+    activeNetWork,
+    networkId,
     getUserTokenBalance,
+    getPoolLiquidity,
   } = useWalletConnect();
 
   const {
@@ -50,38 +56,68 @@ const CommonCard = (props: props) => {
     getAccountBalance,
     handleReciepent,
     setActiveCurrency,
+    getDonationContract,
+    getRewardPoolBalance,
+    getRewardReleaseRate,
+    balanceReset,
+    networkSwitchHandling,
   } = useActions();
-  
- 
+
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
   const { activeCurrency } = useTypedSelector((state) => state.settings);
-  const { donateContractAddress, donateIsApproved } = useTypedSelector(
-    (state) => state.donate
-  );
-  const {redeemSuccess} = useTypedSelector((state) => state.redeem);
-  const {airdropSuccess} = useTypedSelector((state) => state.airdrop)
+  const {
+    donateContractAddress,
+    donateIsApproved,
+    donateSuccess,
+  } = useTypedSelector((state) => state.donate);
+  const { redeemSuccess } = useTypedSelector((state) => state.redeem);
+  const { airdropSuccess } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList } = useTypedSelector((state) => state.tokenManage);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
   const { poolName, poolLoading, assertAddress } = useTypedSelector(
     (state) => state.pool
   );
 
-
   const handleTokenBalance = () => {
+    console.log(activeTab);
     if (accounts.length && currentProvider) {
       getAccountBalance(accounts[0]);
-      getPoolTokenBalance(currentProvider, accounts[0], assertAddress);
+      getPoolTokenBalance(
+        currentProvider,
+        accounts[0],
+        assertAddress,
+        receipentAddress,
+        activeCurrency.decimals
+      );
       getUserTokenBalance(
         currentProvider,
         accounts[0],
         receipentAddress,
         activeCurrency.decimals
       );
+      if (activeTab === "reward" && donateContractAddress) {
+        getRewardPoolBalance(
+          currentProvider,
+          donateContractAddress,
+          receipentAddress,
+          activeCurrency.decimals
+        );
+        getRewardReleaseRate(
+          currentProvider,
+          donateContractAddress,
+          receipentAddress,
+          activeCurrency.decimals
+        );
+      }
     }
   };
-  
+
+  useEffect(() => {
+    networkSwitchHandling();
+  }, [walletConnected]);
+
   useEffect(() => {
     if (
       accounts.length &&
@@ -111,50 +147,81 @@ const CommonCard = (props: props) => {
     activeTab,
     activeCurrency,
   ]);
+
   useEffect(() => {
-    fetchTokenList(tokenGroupList);
+    if (accounts.length && currentProvider) {
+      getDonationContract(currentProvider);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts, currentProvider]);
+
+  useEffect(() => {
+    fetchTokenList(tokenGroupList, networkId);
     setModalInfo({
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected]);
+  }, [walletConnected, networkId]);
 
   useEffect(() => {
     let interval: any;
+
     interval = setInterval(() => {
       if (accounts.length && walletConnected) {
         console.log("handlingBalance");
         handleTokenBalance();
+        getPoolLiquidity(
+          currentProvider,
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
       }
     }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts,activeTab,activeCurrency,receipentAddress, assertAddress]);
+  }, [accounts, activeTab, activeCurrency, receipentAddress, assertAddress]);
+
   useEffect(() => {
     console.log("Pooling");
     if (walletConnected) {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    walletConnected,
-    
-    accounts,
-    currentProvider,
-    activeCurrency,
-  ]);
+  }, [walletConnected, accounts, currentProvider, activeCurrency]);
+
   useEffect(() => {
-      setAmount("");
-  },[activeTab])
+    setAmount("");
+  }, [activeTab]);
+
   useEffect(() => {
-    
-    if (isDepositSuccess || donateIsApproved || redeemSuccess || airdropSuccess) {
+    if (
+      isDepositSuccess ||
+      donateIsApproved ||
+      donateSuccess ||
+      redeemSuccess ||
+      airdropSuccess
+    ) {
       setAmount("");
     }
-  }, [activeTab,donateIsApproved,
+  }, [
+    activeTab,
+    donateIsApproved,
     isDepositSuccess,
+    donateSuccess,
     redeemSuccess,
-    airdropSuccess,]);
+    airdropSuccess,
+  ]);
+
+  useEffect(() => {
+    if (poolTokenBalance > 0 && poolLiquidity > 0) {
+      let poolPercent = ((poolTokenBalance / poolLiquidity) * 100).toFixed(2);
+      setPoolPercentage(poolPercent);
+    } else {
+      setPoolPercentage(0);
+    }
+  }, [poolLiquidity, poolTokenBalance]);
+
   const handleAmount = async () => {
     switch (activeTab) {
       case "deposit":
@@ -215,6 +282,11 @@ const CommonCard = (props: props) => {
 
   return (
     <>
+      <div className="network-warning">
+        {activeNetWork !== "Kovan" &&
+          `You are currently connected to the ${activeNetWork} which is not supported.`}
+        {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
+      </div>
       {activeTab && (
         <ContentCard title={`${capitalize(activeTab)}`}>
           <div className="swap-root">
@@ -241,33 +313,97 @@ const CommonCard = (props: props) => {
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}
             />
-            {activeTab === "deposit" &&
-              (isApproved || activeCurrency.symbol === "ETH") &&
-              poolTokenBalance && (
-                <div className="price_head">
-                  <div className="price_aa">
-                    {/* <div className="price-list">
+            {(activeTab === "deposit" &&
+              (isApproved || activeCurrency.symbol === "ETH")) ||
+            activeTab === "redeem" ? (
+              // ||
+              // activeCurrency.symbol === "ETH"
+              <div className="price_head">
+                <div className="price_aa">
+                  {/* <div className="price-list">
                     Pool percentage <span className="price">-</span>
                   </div> */}
-                    <div className="price-list">
-                      Pool Balance{" "}
-                      {!poolLoading && poolName ? `(${poolName})` : ""}
-                      <span className="price">{`${
-                        walletConnected && !poolLoading ? poolTokenBalance : "-"
-                      }`}</span>
-                    </div>
+                  <div className="price-list">
+                    Pool Liquidity{" "}
+                    <span className="price">
+                      {walletConnected && poolLiquidity ? (
+                        <>
+                          <span>{poolLiquidity}</span>
+                          <img
+                            src={activeCurrency.logoURI}
+                            alt="logo"
+                            width="13"
+                          />
+                          <span>{activeCurrency.symbol}</span>
+                        </>
+                      ) : (
+                        "-"
+                      )}
+                    </span>
+                    <span></span>
+                  </div>
+                  <div className="price-list">
+                    Pool Share
+                    <span className="price">
+                      {poolPercentage !== "" &&
+                      poolLiquidity !== "" &&
+                      poolTokenBalance !== "" &&
+                      walletConnected
+                        ? `${poolPercentage}%`
+                        : "-"}
+                    </span>
+                  </div>
+                  <div className="price-list">
+                    Your Liquidity
+                    {/* {" "}
+                      {!poolLoading && poolName ? `(${poolName})` : ""} */}
+                    <span className="price">
+                      {walletConnected && poolTokenBalance !== "" ? (
+                        <>
+                          <span>{poolTokenBalance}</span>
+                          <img
+                            src={activeCurrency.logoURI}
+                            alt="logo"
+                            width="13"
+                          />
+                          <span>{activeCurrency.symbol}</span>
+                        </>
+                      ) : (
+                        "-"
+                      )}
+                    </span>
                   </div>
                 </div>
-              )}
-            {activeTab === "redeem" && poolTokenBalance && (
+              </div>
+            ) : (
+              ""
+            )}
+            {activeTab === "reward" && (
               <div className="price_head">
                 <div className="price_aa">
                   <div className="price-list">
-                    Pool Balance{" "}
-                    {!poolLoading && poolName ? `(${poolName})` : ""}
+                    Reward Available
+                    <span className="price">
+                      {walletConnected && rewardPoolBalance !== "" ? (
+                        <>
+                          <span>{rewardPoolBalance}</span>
+                          <img
+                            src={activeCurrency.logoURI}
+                            alt="logo"
+                            width="13"
+                          />
+                          <span>{activeCurrency.symbol}</span>
+                        </>
+                      ) : (
+                        "-"
+                      )}
+                    </span>
+                  </div>
+                  <div className="price-list">
+                    Reward Rate
                     <span className="price">{`${
-                      walletConnected && !poolLoading ? poolTokenBalance : "-"
-                    }`}</span>
+                      rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
+                    }/day`}</span>
                   </div>
                 </div>
               </div>
@@ -279,13 +415,15 @@ const CommonCard = (props: props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedAddress: any) => {
+            await balanceReset();
+            setPoolPercentage(0);
             await setActiveCurrency(selectedAddress);
-            await handleModal(false);
             await getPool(
               selectedAddress.address,
               currentProvider,
               accounts[0]
             );
+            await handleModal(false);
             await handleReciepent(selectedAddress.address);
           }}
           handleClose={() => handleModal(false)}

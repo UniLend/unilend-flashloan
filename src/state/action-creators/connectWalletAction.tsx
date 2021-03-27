@@ -10,7 +10,15 @@ import { portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
-import { IERC20, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
+import {
+  ERC20,
+  FlashloanLBCore,
+  FlashLoanPool,
+  IERC20,
+  UnilendFDonation,
+  uUFTIERC20,
+} from "ethereum/contracts/FlashloanLB";
+import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -28,7 +36,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       if (window && !(window as any).ethereum.selectedAddress) {
         (window as any).ethereum.enable().then(() => {
           web3Service.getAccounts().then((res: any) => {
-            console.log(res);
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],
@@ -102,7 +109,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
     case "walletConnect":
       try {
         let provider: any = CWweb3.connectWalletProvider;
-        console.log(provider);
         await provider.enable();
         accounts = await CWweb3.connectWalletWeb3.eth.getAcoounts();
         dispatch({
@@ -148,7 +154,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             .enable()
             .then((res: any) => {
               let address: string[];
-              console.log(res);
 
               address = res;
               dispatch({
@@ -187,7 +192,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             });
           }
         });
-        console.log(portisWeb3);
       } catch (err) {
         dispatch({
           type: ActionType.CONNECT_WALLET_ERROR,
@@ -214,6 +218,61 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   }
 }
 
+export const networkSwitchHandling = () => {
+  return async (dispatch: Dispatch<Action>) => {
+    // if (accs == 1) {
+    //
+    //         accsName = 'Mainnet';
+    //       } else if (accs == 42) {
+    //         this.isNotNetwork = true;
+    //         accsName = 'Kovan';
+    //       } else if (accs == 3) {
+    //
+    //         accsName = 'Ropsten';
+    //       } else if (accs == 4) {
+    //
+    //         accsName = 'RinkeBy';
+    //       }else if (accs == 5){
+    //
+    //         accsName = 'Goerli';
+    //       }else{
+    //
+    //         accsName = 'Localhost';
+    //       }
+    (window as any).ethereum
+      .request({ method: "net_version" })
+      .then((accs: any) => {
+        if (accs) {
+          console.log("Accs", accs);
+          let accsName;
+          if (accs == 1) {
+            accsName = "Mainnet";
+          } else if (accs == 42) {
+            accsName = "Kovan";
+          } else if (accs == 3) {
+            accsName = "Ropsten";
+          } else if (accs == 4) {
+            accsName = "RinkeBy";
+          } else if (accs == 5) {
+            accsName = "Goerli";
+          } else {
+            accsName = "Localhost";
+          }
+          dispatch({
+            type: ActionType.ACTIVE_NETWORK,
+            payload: accsName,
+            networkId: accs,
+          });
+          // that.messageService.setconnectedNetwork(accs);
+          // resolve(accs);
+        }
+      })
+      .catch(function (err: any) {
+        // reject({});
+      });
+  };
+};
+
 export const getAccountBalance = (selectedAccount: string) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
@@ -225,7 +284,10 @@ export const getAccountBalance = (selectedAccount: string) => {
         payload: ethBalDeci,
       });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.ACCOUNT_BALANCE,
+        payload: "",
+      });
     }
   };
 };
@@ -263,18 +325,34 @@ export const getUserTokenBalance = (
 export const getPoolTokenBalance = (
   currentProvider: any,
   accounts: string,
-  assertAddress: any
+  assertAddress: any,
+  reciepentAddress: any,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      uUFTIERC20(currentProvider, assertAddress)
-        .methods.balanceOf(accounts)
+      // uUFTIERC20(currentProvider, assertAddress)
+      //   .methods.balanceOf(accounts)
+      //   .call((e: any, r: any) => {
+      //     if (!e) {
+      //       let fullAmount = currentProvider.utils.fromWei(r);
+      //       dispatch({
+      //         type: ActionType.POOL_TOKEN_BALANCE,
+      //         payload: fullAmount,
+      //       });
+      //     }
+      //   });
+      FlashLoanPool(currentProvider, assertAddress)
+        .methods.balanceOfUnderlying(accounts)
         .call((e: any, r: any) => {
           if (!e) {
-            let fullAmount = currentProvider.utils.fromWei(r);
+            let amount = parseFloat(r);
+
+            let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
+
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
-              payload: fullAmount,
+              payload: r > 0 ? fullAmount : 0,
             });
           }
         });
@@ -284,6 +362,144 @@ export const getPoolTokenBalance = (
         type: ActionType.POOL_TOKEN_BALANCE,
         payload: "",
       });
+    }
+  };
+};
+
+export const getRewardPoolBalance = (
+  currentProvider: any,
+  donateContract: string,
+  reciepentAddress: string,
+  decimal: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    try {
+      UnilendFDonation(currentProvider, donateContract)
+        .methods.balanceOfToken(reciepentAddress)
+        .call((e: any, r: any) => {
+          if (!e) {
+            let fullAmount = r > 0 ? (r / Math.pow(10, decimal)).toFixed(4) : 0;
+            dispatch({
+              type: ActionType.REWARD_POOL_BALANCE,
+              payload: fullAmount,
+            });
+          } else {
+            dispatch({
+              type: ActionType.REWARD_POOL_BALANCE,
+              payload: "",
+            });
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+export const balanceReset = () => {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.REWARD_POOL_BALANCE,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.REWARD_RELEASE_RATE,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.POOL_LIQUIDITY,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.POOL_TOKEN_BALANCE,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.USER_TOKEN_BALANCE,
+      userTokenBalance: "",
+    });
+    dispatch({
+      type: ActionType.ACCOUNT_BALANCE,
+      payload: "",
+    });
+  };
+};
+export const getRewardReleaseRate = (
+  currentProvider: any,
+  donateContract: string,
+  reciepentAddress: string,
+  decimal: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    UnilendFDonation(currentProvider, donateContract)
+      .methods.getReleaseRate(reciepentAddress)
+      .call((e: any, r: any) => {
+        if (!e) {
+          let amount = parseFloat(r);
+
+          let fullAmountPerSec = amount / Math.pow(10, decimal);
+          let fullAmount = (fullAmountPerSec * (60 * 60 * 24)).toFixed(2);
+          dispatch({
+            type: ActionType.REWARD_RELEASE_RATE,
+            payload: fullAmount,
+          });
+        } else {
+          dispatch({
+            type: ActionType.REWARD_RELEASE_RATE,
+            payload: "",
+          });
+        }
+      });
+  };
+};
+
+export const getPoolLiquidity = (
+  currentProvider: any,
+  reciepentAddress: any,
+  isEth: boolean,
+  decimal: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    try {
+      if (isEth) {
+        web3Service
+          .getBalance(UnilendFlashLoanCoreContract(currentProvider))
+          .then((res: any) => {
+            let amount = web3Service.getWei(res, "ether");
+            dispatch({
+              type: ActionType.POOL_LIQUIDITY,
+              payload: amount,
+            });
+          })
+          .catch((e: any) => {
+            dispatch({
+              type: ActionType.POOL_LIQUIDITY,
+              payload: "",
+            });
+          });
+      } else {
+        let _IERC20 = IERC20(currentProvider, reciepentAddress);
+        _IERC20.methods
+          .balanceOf(UnilendFlashLoanCoreContract(currentProvider))
+          .call((e: any, r: any) => {
+            if (!e) {
+              let amount = r;
+
+              let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
+              dispatch({
+                type: ActionType.POOL_LIQUIDITY,
+                payload: fullAmount,
+              });
+            } else {
+              dispatch({
+                type: ActionType.POOL_LIQUIDITY,
+                payload: "",
+              });
+            }
+          });
+      }
+    } catch (e: any) {
+      console.log(e);
+      // });
     }
   };
 };

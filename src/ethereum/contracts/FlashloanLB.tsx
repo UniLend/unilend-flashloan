@@ -4,6 +4,7 @@ import UnilendFDonationABI from "../build/UnilendFDonation.json";
 import FlashloanABI from "../build/FlashLoanABI.json";
 import IERC20ABI from "../build/IERC20.json";
 import ERC20ABI from "../build/ERC20.json";
+import UFlashLoanPool from "../build/UFlashLoanPool.json";
 export const FlashloanLBCore = (currentProvider: any) => {
   return new currentProvider.eth.Contract(
     FlashloanABI.abi,
@@ -19,6 +20,10 @@ export const UnilendFDonation = (
     UnilendFDonationABI.abi,
     donateContract
   );
+};
+
+export const FlashLoanPool = (currentProvider: any, assertAddress: string) => {
+  return new currentProvider.eth.Contract(UFlashLoanPool.abi, assertAddress);
 };
 
 export const ERC20 = (currentProvider: any, reciepentAddress: string) => {

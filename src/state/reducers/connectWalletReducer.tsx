@@ -12,6 +12,11 @@ interface ConnectWalletState {
   currentProvider: string;
   selectedNetworkId: number;
   poolTokenBalance: any;
+  poolLiquidity: any;
+  rewardPoolBalance: any;
+  rewardReleaseRate: any;
+  activeNetWork: any;
+  networkId: any;
 }
 
 const initialState = {
@@ -25,6 +30,11 @@ const initialState = {
   poolTokenBalance: "",
   currentProvider: "",
   selectedNetworkId: 1,
+  poolLiquidity: "",
+  rewardPoolBalance: "",
+  rewardReleaseRate: "",
+  activeNetWork: "",
+  networkId: "",
 };
 
 const connectWalletReducer = (
@@ -38,10 +48,22 @@ const connectWalletReducer = (
       return { ...state, userTokenBalance: action.userTokenBalance };
     case ActionType.POOL_TOKEN_BALANCE:
       return { ...state, poolTokenBalance: action.payload };
+    case ActionType.POOL_LIQUIDITY:
+      return { ...state, poolLiquidity: action.payload };
+    case ActionType.REWARD_RELEASE_RATE:
+      return { ...state, rewardReleaseRate: action.payload };
     case ActionType.CURRENT_PROVIDER:
       return { ...state, currentProvider: action.payload };
+    case ActionType.REWARD_POOL_BALANCE:
+      return { ...state, rewardPoolBalance: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };
+    case ActionType.ACTIVE_NETWORK:
+      return {
+        ...state,
+        activeNetWork: action.payload,
+        networkId: action.networkId,
+      };
     // case ActionType.DISCONNECT_WALLET:
     //   return {...state, walletConnected: false, accounts: []}
     case ActionType.CONNECT_WALLET_SUCCESS:

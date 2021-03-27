@@ -3,14 +3,14 @@ export const UnilendFlashLoanCoreContract = (currentProvider: any) => {
     return "0x8b90F6Be5C8fF057d0744fB4D99F7EfFf6889460";
   } else {
     // return "0x186b707bB603c16295eF38EA27a081EBf5b65989"; // old contract address
-    return "0xED25433aF47Bd737a62b9f56B537e51f085BB5ad";
+    return "0xFb6dbB2958BB13396BcAEa3A86655DD895694BE8";
   }
 };
 
 export const Reciepent: string = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 // UFT address - 0x1434536899Da6e26B2AD6E5Cfd34611B47F993Ef
 export const AssetAddress: string =
-  "0xb20e7d234c5e4f7d99fb982ee525e8b438eef7b5";
+  "0xDe7195f2B5cD84749eeF8C3227046fb72F6b343d";
 export const approveTokenMaximumValue =
   "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const currencyList: {

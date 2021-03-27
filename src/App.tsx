@@ -9,20 +9,26 @@ import dotEnv from "dotenv";
 // import useWalletConnect from "hooks/useWalletConnect";
 import CommonCard from "components/View/CommonCard";
 import useWalletConnect from "hooks/useWalletConnect";
+import { useActions } from "hooks/useActions";
 declare const window: any;
 // interface ProviderMessage {
 //   type: string;
 //   data: unknown;
 // }
 function App() {
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(true);
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
+  const { setActiveTab, networkSwitchHandling } = useActions();
   const { handleWalletConnect } = useWalletConnect();
 
   useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
     dotEnv.config();
     let connectedWallet = localStorage.getItem("walletConnected");
     console.log(connectedWallet);
+
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
     }

@@ -7,6 +7,7 @@ interface DonateState {
   donateLoading: boolean;
   donateAllowanceLoading: boolean;
   donateApproving: boolean;
+  donateSuccess: boolean;
 }
 
 const initialState = {
@@ -14,7 +15,8 @@ const initialState = {
   donateIsApproved: undefined,
   donateLoading: false,
   donateAllowanceLoading: false,
-  donateApproving:false
+  donateApproving: false,
+  donateSuccess: false,
 };
 
 const DonateReducer = (
@@ -28,17 +30,17 @@ const DonateReducer = (
       return { ...state, donateAllowanceLoading: false };
     case ActionType.DONATE_ALLOWANCE_SUCCESS:
       return { ...state, donateAllowanceLoading: false };
-      case ActionType.DONATE_APPROVE_ACTION:
+    case ActionType.DONATE_APPROVE_ACTION:
       return {
         ...state,
         donateApproving: true,
       };
-      case ActionType.DONATE_APPROVE_FAILED:
+    case ActionType.DONATE_APPROVE_FAILED:
       return {
         ...state,
         donateApproving: false,
       };
-      case ActionType.DONATE_APPROVE_SUCCESS:
+    case ActionType.DONATE_APPROVE_SUCCESS:
       return {
         ...state,
         donateApproving: false,
@@ -49,16 +51,19 @@ const DonateReducer = (
       return {
         ...state,
         donateLoading: true,
+        donateSuccess: false,
       };
     case ActionType.DONATE_SUCCESS:
       return {
         ...state,
         donateLoading: false,
+        donateSuccess: true,
       };
     case ActionType.DONATE_FAILED:
       return {
         ...state,
         donateLoading: false,
+        donateSuccess: false,
       };
     case ActionType.DONATE_APPROVAL_STATUS:
       return {

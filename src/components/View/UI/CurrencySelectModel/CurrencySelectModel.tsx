@@ -13,12 +13,14 @@ interface Props {
   handleClose: () => void;
   currFieldName: any;
   handleCurrChange: (selectedCurrency: any) => void;
+  activeTab: string;
 }
 
 const CurrencySelectModel: FC<Props> = ({
   handleClose,
   currFieldName,
   handleCurrChange,
+  activeTab,
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
 
@@ -42,7 +44,10 @@ const CurrencySelectModel: FC<Props> = ({
   useEffect(() => {
     let filteredList: any;
     if (tokenList.payload.length) {
-      filteredList = tokenList.payload;
+      let filtered = tokenList.payload.filter((e: any) => {
+        return e.symbol !== "ETH";
+      });
+      filteredList = activeTab !== "reward" ? tokenList.payload : filtered;
       if (searchText.trim().length > 0)
         filteredList = filteredList.filter((e: any) => {
           return (

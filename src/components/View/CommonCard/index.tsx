@@ -81,7 +81,11 @@ const CommonCard = (props: props) => {
 
   const handleTokenBalance = () => {
     console.log(activeTab);
-    if (accounts.length && currentProvider) {
+    if (
+      accounts.length &&
+      currentProvider &&
+      activeCurrency.symbol !== "Select Token"
+    ) {
       getAccountBalance(accounts[0]);
       getPoolTokenBalance(
         currentProvider,
@@ -123,13 +127,13 @@ const CommonCard = (props: props) => {
   useEffect(() => {
     if (
       accounts.length &&
-      activeCurrency.symbol !== "ETH" &&
+      activeCurrency.symbol !== "Select Token" &&
       activeTab === "lend"
     ) {
       checkAllowance(currentProvider, accounts[0], receipentAddress);
     } else if (
       accounts.length &&
-      activeCurrency.symbol !== "ETH" &&
+      activeCurrency.symbol !== "Select Token" &&
       activeTab === "reward"
     ) {
       donateAllowance(

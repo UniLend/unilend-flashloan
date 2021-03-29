@@ -132,7 +132,9 @@ const NavBar: React.FC<Props> = (props) => {
             className={`d-flex btn ${
               theme === "dark" && "btn-dark"
             } btn-custom-secondary btn-round-switch`}
-            onClick={() => setSwitchNetworkModal(true)}
+            onClick={() => {
+              // setSwitchNetworkModal(true)
+            }}
           >
             <img
               src={

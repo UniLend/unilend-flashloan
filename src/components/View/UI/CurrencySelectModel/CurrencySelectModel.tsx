@@ -51,7 +51,9 @@ const CurrencySelectModel: FC<Props> = ({
       if (searchText.trim().length > 0)
         filteredList = filteredList.filter((e: any) => {
           return (
-            searchWord(e.name, searchText) || searchWord(e.desc, searchText)
+            searchWord(e.name, searchText) ||
+            searchWord(e.desc, searchText) ||
+            searchWord(e.address, searchText)
           );
         });
     }

@@ -102,7 +102,7 @@ const CurrencySelectModel: FC<Props> = ({
                       alt=""
                     />
                   </div>
-                  <div className="col-10">
+                  <div className="col-7">
                     <div className="row">
                       <h6
                         className="mb-0"
@@ -117,6 +117,19 @@ const CurrencySelectModel: FC<Props> = ({
                         style={{ textTransform: "capitalize" }}
                       >
                         {item.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-3" style={{ alignSelf: "center" }}>
+                    <div
+                      className="row"
+                      style={{ paddingRight: "15px", float: "right" }}
+                    >
+                      <p
+                        className="mb-0 list-desc"
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        {item.balance ? item.balance : ""}
                       </p>
                     </div>
                   </div>

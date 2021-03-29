@@ -161,12 +161,13 @@ const CommonCard = (props: props) => {
   }, [accounts, currentProvider]);
 
   useEffect(() => {
-    fetchTokenList(tokenGroupList, networkId);
+    if (currentProvider && accounts.length && activeCurrency)
+      fetchTokenList(tokenGroupList, networkId, currentProvider, accounts[0]);
     setModalInfo({
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, networkId]);
+  }, [walletConnected, networkId, currentProvider, accounts, activeCurrency]);
 
   useEffect(() => {
     let interval: any;

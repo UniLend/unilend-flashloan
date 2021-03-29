@@ -1,10 +1,17 @@
 import axios from "axios";
 import { Reciepent } from "ethereum/contracts";
+import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
 
-export const fetchTokenList = (tokenList: any, networkId: any) => {
+export const fetchTokenList = (
+  tokenList: any,
+  networkId: any,
+  currentProvider: any,
+  // reciepentAddress: any,
+  accounts: any
+) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let totalTokenList: any = [];
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
@@ -23,14 +30,46 @@ export const fetchTokenList = (tokenList: any, networkId: any) => {
                         return item.chainId == networkId;
                       }
                     );
-                    console.log(tokenList);
-                    if (tokenList) totalTokenList.push(...tokenList);
+                    if (accounts.length > 0) {
+                      let newList = tokenList.map((item: any) => {
+                        let _IERC20 = IERC20(currentProvider, item.address);
+                        _IERC20.methods
+                          .balanceOf(accounts)
+                          .call((e: any, r: any) => {
+                            if (!e) {
+                              let amount = parseFloat(r);
+
+                              let fullAmount = (
+                                amount / Math.pow(10, item.decimals)
+                              ).toFixed(3);
+                              item["balance"] = fullAmount;
+                              if (tokenList) totalTokenList.push(item);
+                              dispatch({
+                                type: ActionType.GET_TOKEN_LIST,
+                                payload: [...totalTokenList],
+                              });
+                              console.log(totalTokenList);
+                              return item;
+                            } else {
+                              dispatch({
+                                type: ActionType.GET_TOKEN_LIST,
+                                payload: [...totalTokenList],
+                              });
+                              return item;
+                            }
+                          });
+                      });
+                      // console.log(newList);
+                      // if (tokenList) totalTokenList.push(...newList);
+                    } else {
+                      if (tokenList) totalTokenList.push(...tokenList);
+                      dispatch({
+                        type: ActionType.GET_TOKEN_LIST,
+                        payload: [...totalTokenList],
+                      });
+                    }
                     console.log("TTL:", totalTokenList);
                   }
-                  dispatch({
-                    type: ActionType.GET_TOKEN_LIST,
-                    payload: [...totalTokenList],
-                  });
                 })
                 .catch((e: any) => {
                   console.log(e);

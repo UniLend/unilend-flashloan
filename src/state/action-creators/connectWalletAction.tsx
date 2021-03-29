@@ -257,7 +257,7 @@ export const getAccountBalance = (selectedAccount: string) => {
     try {
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
-      let ethBalDeci = parseFloat(ethBal).toFixed(4);
+      let ethBalDeci = parseFloat(ethBal).toFixed(3);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
         payload: ethBalDeci,
@@ -284,7 +284,7 @@ export const getUserTokenBalance = (
         if (!e) {
           let amount = parseFloat(r);
 
-          let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
+          let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,
@@ -327,7 +327,7 @@ export const getPoolTokenBalance = (
           if (!e) {
             let amount = parseFloat(r);
 
-            let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
+            let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
 
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
@@ -357,7 +357,7 @@ export const getRewardPoolBalance = (
         .methods.balanceOfToken(reciepentAddress)
         .call((e: any, r: any) => {
           if (!e) {
-            let fullAmount = r > 0 ? (r / Math.pow(10, decimal)).toFixed(4) : 0;
+            let fullAmount = r > 0 ? (r / Math.pow(10, decimal)).toFixed(3) : 0;
             dispatch({
               type: ActionType.REWARD_POOL_BALANCE,
               payload: fullAmount,
@@ -465,7 +465,7 @@ export const getPoolLiquidity = (
             if (!e) {
               let amount = r;
 
-              let fullAmount = (amount / Math.pow(10, decimal)).toFixed(4);
+              let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
               dispatch({
                 type: ActionType.POOL_LIQUIDITY,
                 payload: fullAmount,

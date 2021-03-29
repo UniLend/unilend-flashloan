@@ -78,13 +78,13 @@ const NavBar: React.FC<Props> = (props) => {
               <li className="nav-item">
                 <Link
                   className={
-                    currentPage === "/deposit" ? "nav-link active" : "nav-link"
+                    currentPage === "/lend" ? "nav-link active" : "nav-link"
                   }
                   aria-current="page"
-                  to="/deposit"
-                  onClick={() => dispatch(setActiveTab("deposit"))}
+                  to="/lend"
+                  onClick={() => dispatch(setActiveTab("lend"))}
                 >
-                  Deposit
+                  Lend
                 </Link>
               </li>
 

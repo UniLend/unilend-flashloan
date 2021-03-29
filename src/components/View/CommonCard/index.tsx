@@ -127,7 +127,7 @@ const CommonCard = (props: props) => {
     if (
       accounts.length &&
       activeCurrency.symbol !== "ETH" &&
-      activeTab === "deposit"
+      activeTab === "lend"
     ) {
       checkAllowance(currentProvider, accounts[0], receipentAddress);
     } else if (
@@ -249,7 +249,7 @@ const CommonCard = (props: props) => {
 
   const handleAmount = async () => {
     switch (activeTab) {
-      case "deposit":
+      case "lend":
         console.log(modalInfo);
         await handleDeposit(
           currentProvider,
@@ -335,10 +335,14 @@ const CommonCard = (props: props) => {
               isEth={activeCurrency.symbol === "ETH"}
               decimal={activeCurrency.decimals}
               amount={amount}
-              actionName={`${capitalize(activeTab)}`}
+              actionName={`${
+                activeTab === "lend"
+                  ? capitalize("deposit")
+                  : capitalize(activeTab)
+              }`}
               handleAmount={() => handleAmount()}
             />
-            {activeTab === "deposit" || activeTab === "redeem" ? (
+            {activeTab === "lend" || activeTab === "redeem" ? (
               // ||
               // activeCurrency.symbol === "ETH"
               <div className="price_head">

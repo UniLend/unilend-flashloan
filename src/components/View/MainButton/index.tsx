@@ -118,9 +118,9 @@ const MainButton: FC<Props> = ({
       (isEth ||
         depositAllowanceLoading ||
         donateAllowanceLoading ||
-        (actionName === "Deposit" && isDepositApproved === true) ||
+        (actionName === "Lend" && isDepositApproved === true) ||
         (actionName === "Reward" && donateIsApproved === true) ||
-        (actionName !== "Deposit" && actionName !== "Reward"))
+        (actionName !== "Lend" && actionName !== "Reward"))
     ) {
       return (
         <button
@@ -159,22 +159,22 @@ const MainButton: FC<Props> = ({
       !depositAllowanceLoading &&
       !donateAllowanceLoading &&
       !isEth &&
-      ((actionName === "Deposit" &&
+      ((actionName === "Lend" &&
         (isDepositApproved === false || isDepositApproved === undefined)) ||
         (actionName === "Reward" &&
           (donateIsApproved === false || donateIsApproved === undefined))) &&
-      (actionName === "Deposit" || actionName === "Reward")
+      (actionName === "Lend" || actionName === "Reward")
     ) {
       // debugger;
       return (
         <button
           disabled={
-            (actionName === "Deposit" && depositIsApproving === true) ||
+            (actionName === "Lend" && depositIsApproving === true) ||
             (actionName === "Reward" && donateApproving === true)
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
-            if (actionName === "Deposit") {
+            if (actionName === "Lend") {
               depositApprove(currentProvider, address[0], receipentAddress);
             } else if (actionName === "Reward") {
               donateApprove(
@@ -187,7 +187,7 @@ const MainButton: FC<Props> = ({
           }}
           type="button"
         >
-          {(actionName === "Deposit" && depositIsApproving === true) ||
+          {(actionName === "Lend" && depositIsApproving === true) ||
           (actionName === "Reward" && donateApproving === true) ? (
             <div>
               Approving

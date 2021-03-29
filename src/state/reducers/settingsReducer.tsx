@@ -13,7 +13,7 @@ const initialState = {
   theme: localStorage.getItem("theme") || "dark",
   activeTab: localStorage.getItem("activeTab")
     ? localStorage.getItem("activeTab")
-    : "deposit",
+    : "lend",
   activeCurrency: {
     name: "Ethereum",
     logoURI: icon,
@@ -34,11 +34,11 @@ const settingsReducer = (
     case ActionType.SET_ACTIVE_TAB:
       localStorage.setItem(
         "activeTab",
-        action.payload ? action.payload : "deposit"
+        action.payload ? action.payload : "lend"
       );
       return {
         ...state,
-        activeTab: action.payload ? action.payload : "deposit",
+        activeTab: action.payload ? action.payload : "lend",
       };
     case ActionType.ACTIVE_CURRENCY:
       return { ...state, activeCurrency: action.payload };

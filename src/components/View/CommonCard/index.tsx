@@ -99,14 +99,14 @@ const CommonCard = (props: props) => {
         receipentAddress,
         activeCurrency.decimals
       );
+      getRewardReleaseRate(
+        currentProvider,
+        donateContractAddress,
+        receipentAddress,
+        activeCurrency.decimals
+      );
       if (activeTab === "reward" && donateContractAddress) {
         getRewardPoolBalance(
-          currentProvider,
-          donateContractAddress,
-          receipentAddress,
-          activeCurrency.decimals
-        );
-        getRewardReleaseRate(
           currentProvider,
           donateContractAddress,
           receipentAddress,
@@ -338,9 +338,7 @@ const CommonCard = (props: props) => {
               actionName={`${capitalize(activeTab)}`}
               handleAmount={() => handleAmount()}
             />
-            {(activeTab === "deposit" &&
-              (isApproved || activeCurrency.symbol === "ETH")) ||
-            activeTab === "redeem" ? (
+            {activeTab === "deposit" || activeTab === "redeem" ? (
               // ||
               // activeCurrency.symbol === "ETH"
               <div className="price_head">
@@ -348,6 +346,12 @@ const CommonCard = (props: props) => {
                   {/* <div className="price-list">
                     Pool percentage <span className="price">-</span>
                   </div> */}
+                  <div className="price-list">
+                    APY
+                    <span className="price">{`${
+                      rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
+                    }/year`}</span>
+                  </div>
                   <div className="price-list">
                     Pool Liquidity{" "}
                     <span className="price">

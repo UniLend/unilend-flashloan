@@ -8,6 +8,11 @@
 }
 .app-bg {
   background: var(--theme-page-background);
+}
+.height-92 {
+  height: 91vh;
+}
+.height-100 {
   height: 100vh;
 }
 .bg-vector {
@@ -182,6 +187,8 @@ input[type="number"] {
   font-size: 16px;
   font-weight: 400;
   color: #333;
+  background-color: #fff6e4;
+  height: 64px;
   button {
     height: 100%;
   }
@@ -196,6 +203,18 @@ input[type="number"] {
   .alertext {
     font-size: 12px;
     margin-bottom: 0;
+    font-weight: 300;
+  }
+}
+
+.checkbox-custom {
+  input[type="checkbox"] {
+    height: 25px;
+    width: 25px;
+  }
+  label {
+    margin-bottom: 0;
+    margin-left: 10px;
   }
 }
 .walletconnect-qrcode__base {
@@ -272,4 +291,17 @@ input[type="number"] {
   height: 1px;
   width: inherit;
   background-color: #4d557ed3;
+}
+
+.warning-lead-text {
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.warning-note-text {
+  font-size: 15px;
+}
+.checkbox-custom input[type="checkbox"] {
+  height: 15px;
+  width: 15px;
 }

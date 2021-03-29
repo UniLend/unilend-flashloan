@@ -26,6 +26,7 @@ export const checkAllowance = (
         .call((error: any, result: any) => {
           if (!error && result) {
             allowance = result;
+            console.log(allowance);
             if (allowance === "0") {
               dispatch({
                 type: ActionType.DEPOSIT_APPROVAL_STATUS,
@@ -34,8 +35,8 @@ export const checkAllowance = (
             } else {
               localStorage.setItem("isApproving", "false");
               dispatch({
-                type:ActionType.DEPOSIT_APPROVE_SUCCESS
-              })
+                type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+              });
               dispatch({
                 type: ActionType.DEPOSIT_APPROVAL_STATUS,
                 payload: true, // isApproved
@@ -63,8 +64,8 @@ export const depositApprove = (
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
-      type: ActionType.DEPOSIT_APPROVE_ACTION
-    })
+      type: ActionType.DEPOSIT_APPROVE_ACTION,
+    });
     try {
       let _IERC20 = await IERC20(currentProvider, receipentAddress);
       localStorage.setItem("isApproving", "true");
@@ -87,14 +88,14 @@ export const depositApprove = (
             payload: true,
           });
           dispatch({
-            type:ActionType.DEPOSIT_APPROVE_SUCCESS
-          })
+            type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+          });
         })
         .catch((e: Error) => {
           localStorage.setItem("isApproving", "false");
           dispatch({
-            type:ActionType.DEPOSIT_APPROVE_FAILED
-          })
+            type: ActionType.DEPOSIT_APPROVE_FAILED,
+          });
           dispatch({
             type: ActionType.DEPOSIT_APPROVAL_STATUS,
             payload: false,
@@ -102,9 +103,9 @@ export const depositApprove = (
           console.log("Approval Rejected By User");
         });
     } catch (e) {
-       dispatch({
-            type:ActionType.DEPOSIT_APPROVE_FAILED
-          })
+      dispatch({
+        type: ActionType.DEPOSIT_APPROVE_FAILED,
+      });
     }
   };
 };

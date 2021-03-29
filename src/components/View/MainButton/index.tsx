@@ -14,6 +14,7 @@ interface Props {
   amount: string;
   actionName: string;
   handleAmount: Function;
+  isChecked: boolean;
 }
 
 interface WalletConnectModal {
@@ -30,6 +31,7 @@ const MainButton: FC<Props> = ({
   actionName,
   handleAmount,
   decimal,
+  isChecked,
 }) => {
   const {
     walletConnected,
@@ -121,9 +123,9 @@ const MainButton: FC<Props> = ({
       (activeCurrency.symbol === "Select Token" ||
         depositAllowanceLoading ||
         donateAllowanceLoading ||
-        (actionName === "Lend" && isDepositApproved === true) ||
+        (actionName === "Deposit" && isDepositApproved === true) ||
         (actionName === "Reward" && donateIsApproved === true) ||
-        (actionName !== "Lend" && actionName !== "Reward"))
+        (actionName !== "Deposit" && actionName !== "Reward"))
     ) {
       return (
         <button
@@ -136,6 +138,7 @@ const MainButton: FC<Props> = ({
             airdropLoading ||
             depositAllowanceLoading ||
             donateAllowanceLoading ||
+            !isChecked ||
             (activeTab === "redeem" && poolTokenBalance === 0)
           }
           className="btn btn-lg btn-custom-primary"
@@ -163,23 +166,24 @@ const MainButton: FC<Props> = ({
       walletConnected &&
       !depositAllowanceLoading &&
       !donateAllowanceLoading &&
-      !isEth &&
-      ((actionName === "Lend" &&
+      ((activeCurrency.symbol !== "Select Token" &&
+        actionName === "Deposit" &&
         (isDepositApproved === false || isDepositApproved === undefined)) ||
         (actionName === "Reward" &&
           (donateIsApproved === false || donateIsApproved === undefined))) &&
-      (actionName === "Lend" || actionName === "Reward")
+      (actionName === "Deposit" || actionName === "Reward")
     ) {
       // debugger;
       return (
         <button
           disabled={
-            (actionName === "Lend" && depositIsApproving === true) ||
-            (actionName === "Reward" && donateApproving === true)
+            (actionName === "Deposit" && depositIsApproving === true) ||
+            (actionName === "Reward" &&
+              (donateApproving === true || !isChecked))
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
-            if (actionName === "Lend") {
+            if (actionName === "Deposit") {
               depositApprove(currentProvider, address[0], receipentAddress);
             } else if (actionName === "Reward") {
               donateApprove(
@@ -192,7 +196,7 @@ const MainButton: FC<Props> = ({
           }}
           type="button"
         >
-          {(actionName === "Lend" && depositIsApproving === true) ||
+          {(actionName === "Deposit" && depositIsApproving === true) ||
           (actionName === "Reward" && donateApproving === true) ? (
             <div>
               Approving

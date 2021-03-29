@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -9,7 +9,7 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-
+import AlertImg from "assets/warning-standalone.svg";
 interface props {
   activeTab: string | null;
 }
@@ -25,6 +25,7 @@ const CommonCard = (props: props) => {
   const [modalInfo, setModalInfo] = useState<ModalType>({
     show: false,
   });
+  const [depositChecked, setDepositChecked] = useState<boolean>(false);
   const [poolPercentage, setPoolPercentage] = useState<any>("");
 
   const {
@@ -65,7 +66,7 @@ const CommonCard = (props: props) => {
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
     (state) => state.deposit
   );
-  const { activeCurrency } = useTypedSelector((state) => state.settings);
+  const { activeCurrency, theme } = useTypedSelector((state) => state.settings);
   const {
     donateContractAddress,
     donateIsApproved,
@@ -332,6 +333,38 @@ const CommonCard = (props: props) => {
                 activeCurrency.logoURI ? activeCurrency.logoURI : ""
               }
             />
+            {(activeTab === "reward" || activeTab === "airdrop") &&
+            activeCurrency.symbol !== "Select Token" ? (
+              <div className={`${theme} card field-card mt-4`}>
+                <div className="card-body py-2">
+                  <div className="w-100 align-items-center text-center pr-0 mr-0">
+                    <div className="alerticon justify-content-center d-flex w-100">
+                      <img className="icon" src={AlertImg} alt="alert" />
+                    </div>
+                    <p className="mb-0 mt-3 warning-lead-text">
+                      The amount you {capitalize(activeTab)}, will be deducted
+                      from your wallet permanently and added to the reward pool.
+                    </p>
+                    <p className="mb-0 mt-3 warning-note-text ">
+                      Please Note: This transaction is irreversible
+                    </p>
+                    <div className="checkbox-custom mt-3 d-flex align-items-center justify-content-center">
+                      <input
+                        type="checkbox"
+                        checked={depositChecked}
+                        onClick={() => {
+                          console.log(depositChecked);
+                          setDepositChecked(!depositChecked);
+                        }}
+                      />
+                      <label>I Understand</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             <MainButton
               isEth={activeCurrency.symbol === "ETH"}
               decimal={activeCurrency.decimals}
@@ -341,6 +374,7 @@ const CommonCard = (props: props) => {
                   ? capitalize("deposit")
                   : capitalize(activeTab)
               }`}
+              isChecked={depositChecked}
               handleAmount={() => {
                 if (activeCurrency.symbol === "Select Token") handleAmount();
               }}
@@ -361,7 +395,7 @@ const CommonCard = (props: props) => {
                     }/year`}</span>
                   </div>
                   <div className="price-list">
-                    Pool Liquidity{" "}
+                    Total Pool Liquidity{" "}
                     <span className="price">
                       {poolLiquidity ? (
                         <>
@@ -380,7 +414,7 @@ const CommonCard = (props: props) => {
                     <span></span>
                   </div>
                   <div className="price-list">
-                    Pool Share
+                    Your Pool Share
                     <span className="price">
                       {poolPercentage !== "" &&
                       poolLiquidity !== "" &&

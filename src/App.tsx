@@ -88,16 +88,15 @@ function App() {
                 <img className="icon" src={AlertImg} alt="alert" />
                 <p className="alertext ml-3">
                   UniLend FlashLoan contrfact has been audited by Certik.
-                  However, it is still in beta, use it at your own risk.
-                  <br />
-                  Please familiarize yourself with the platform to understand
-                  the correct usage and features of the platform.
+                  However, it is still in beta, use it at your own risk. Please
+                  familiarize yourself with the platform to understand the
+                  correct usage and features of the platform.
                 </p>
               </div>
             </Alert>
           )}
           <Layout>
-            <div className={`app-bg`}>
+            <div className={`app-bg ${alertShow ? "height-92" : "height-100"}`}>
               <div className={`bg-vector ${theme}`}>
                 <div
                   className="pt-6"

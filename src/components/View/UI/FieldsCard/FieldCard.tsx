@@ -44,7 +44,16 @@ const FieldCard: FC<Props> = (props) => {
               </div>
               <div className="align-end">
                 <button
-                  className="btn btn-curr"
+                  className="btn btn-max"
+                  onClick={() => {
+                    field1.current.value = props.selectLabel;
+                  }}
+                >
+                  {" "}
+                  <p className="max-text">MAX</p>
+                </button>
+                <button
+                  className="btn btn-curr ml-4"
                   onClick={props.handleModelOpen}
                 >
                   <img

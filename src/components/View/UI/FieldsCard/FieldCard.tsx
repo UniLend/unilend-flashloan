@@ -9,6 +9,7 @@ interface Props {
   selectValue: String;
   selectedLogo: any;
   fieldType: string;
+  setFieldValue: any;
   handleModelOpen: () => void;
   onF1Change: (e: any) => void;
 }
@@ -46,7 +47,7 @@ const FieldCard: FC<Props> = (props) => {
                 <button
                   className="btn btn-max"
                   onClick={() => {
-                    field1.current.value = props.selectLabel;
+                    props.setFieldValue(props.selectLabel);
                   }}
                 >
                   {" "}

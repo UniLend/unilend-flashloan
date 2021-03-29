@@ -9,8 +9,6 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import dropdown from "assets/dropdown.svg";
-import { Reciepent } from "ethereum/contracts";
 
 interface props {
   activeTab: string | null;
@@ -321,11 +319,10 @@ const CommonCard = (props: props) => {
               handleModelOpen={() => handleModal(true)}
               fieldLabel="Amount"
               fieldValue={amount}
+              setFieldValue={setAmount}
               fieldType="text"
               selectLabel={
-                activeCurrency.symbol === "ETH"
-                  ? accountBalance
-                  : userTokenBalance
+                activeTab === "redeem" ? poolTokenBalance : userTokenBalance
               }
               selectValue={activeCurrency.symbol ? activeCurrency.symbol : ""}
               selectedLogo={

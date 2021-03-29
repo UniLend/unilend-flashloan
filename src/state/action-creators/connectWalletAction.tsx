@@ -11,12 +11,9 @@ import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
 import {
-  ERC20,
-  FlashloanLBCore,
   FlashLoanPool,
   IERC20,
   UnilendFDonation,
-  uUFTIERC20,
 } from "ethereum/contracts/FlashloanLB";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 
@@ -220,40 +217,22 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
 
 export const networkSwitchHandling = () => {
   return async (dispatch: Dispatch<Action>) => {
-    // if (accs == 1) {
-    //
-    //         accsName = 'Mainnet';
-    //       } else if (accs == 42) {
-    //         this.isNotNetwork = true;
-    //         accsName = 'Kovan';
-    //       } else if (accs == 3) {
-    //
-    //         accsName = 'Ropsten';
-    //       } else if (accs == 4) {
-    //
-    //         accsName = 'RinkeBy';
-    //       }else if (accs == 5){
-    //
-    //         accsName = 'Goerli';
-    //       }else{
-    //
-    //         accsName = 'Localhost';
-    //       }
     (window as any).ethereum
       .request({ method: "net_version" })
       .then((accs: any) => {
         if (accs) {
           console.log("Accs", accs);
           let accsName;
-          if (accs == 1) {
+          console.log(typeof accs);
+          if (accs === "1") {
             accsName = "Mainnet";
-          } else if (accs == 42) {
+          } else if (accs === "42") {
             accsName = "Kovan";
-          } else if (accs == 3) {
+          } else if (accs === "3") {
             accsName = "Ropsten";
-          } else if (accs == 4) {
+          } else if (accs === "4") {
             accsName = "RinkeBy";
-          } else if (accs == 5) {
+          } else if (accs === "5") {
             accsName = "Goerli";
           } else {
             accsName = "Localhost";
@@ -437,7 +416,9 @@ export const getRewardReleaseRate = (
           let amount = parseFloat(r);
 
           let fullAmountPerSec = amount / Math.pow(10, decimal);
-          let fullAmount = (fullAmountPerSec * (60 * 60 * 24)).toFixed(2);
+          let fullAmount = (fullAmountPerSec * (60 * 60 * 24 * 365.25)).toFixed(
+            2
+          );
           dispatch({
             type: ActionType.REWARD_RELEASE_RATE,
             payload: fullAmount,

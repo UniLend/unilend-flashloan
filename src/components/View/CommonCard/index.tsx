@@ -9,6 +9,8 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import dropdown from "assets/dropdown.svg";
+import { Reciepent } from "ethereum/contracts";
 
 interface props {
   activeTab: string | null;
@@ -61,7 +63,6 @@ const CommonCard = (props: props) => {
     getRewardReleaseRate,
     balanceReset,
     networkSwitchHandling,
-    rewardTokenList,
   } = useActions();
 
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
@@ -119,6 +120,7 @@ const CommonCard = (props: props) => {
     networkSwitchHandling();
 
     console.log(networkId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, tokenList]);
 
   useEffect(() => {
@@ -160,9 +162,6 @@ const CommonCard = (props: props) => {
 
   useEffect(() => {
     fetchTokenList(tokenGroupList, networkId);
-    // if (tokenList.payload && (tokenList.payload as any).tokens) {
-    //   setActiveCurrency((tokenList.payload as any).tokens[0]);
-    // }
     setModalInfo({
       ...modalInfo,
     });
@@ -195,7 +194,24 @@ const CommonCard = (props: props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, accounts, currentProvider, activeCurrency]);
-
+  // useEffect(() => {
+  //   if (
+  //     tokenList.payload.length
+  //     // activeCurrency === "ETH"
+  //     // activeCurrency.symbol === undefined
+  //   ) {
+  //     setActiveCurrency(tokenList.payload[1]);
+  //     // setActiveCurrency({
+  //     //   name: "Select Token",
+  //     //   logoURI: dropdown,
+  //     //   chainId: 42,
+  //     //   symbol: "Select Token",
+  //     //   address: Reciepent,
+  //     //   decimals: 18,
+  //     // });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeTab, tokenList.payload]);
   useEffect(() => {
     setAmount("");
     // if (activeTab === "reward") {
@@ -412,7 +428,7 @@ const CommonCard = (props: props) => {
                     Reward Rate
                     <span className="price">{`${
                       rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
-                    }/day`}</span>
+                    }/year`}</span>
                   </div>
                 </div>
               </div>

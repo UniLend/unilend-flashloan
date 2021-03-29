@@ -38,6 +38,7 @@ const MainButton: FC<Props> = ({
     accounts: address,
     currentProvider,
     poolTokenBalance,
+    userTokenBalance,
     handleWalletConnect,
   } = useWalletConnect();
 
@@ -131,6 +132,7 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             amount === "" ||
+            amount > userTokenBalance ||
             activeCurrency.symbol === "Select Token" ||
             depositLoading ||
             donateLoading ||
@@ -138,7 +140,8 @@ const MainButton: FC<Props> = ({
             airdropLoading ||
             depositAllowanceLoading ||
             donateAllowanceLoading ||
-            !isChecked ||
+            (activeTab === "reward" && (!isChecked || userTokenBalance)) ||
+            (activeTab === "airdrop" && !isChecked) ||
             (activeTab === "redeem" && poolTokenBalance === 0)
           }
           className="btn btn-lg btn-custom-primary"
@@ -178,8 +181,7 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             (actionName === "Deposit" && depositIsApproving === true) ||
-            (actionName === "Reward" &&
-              (donateApproving === true || !isChecked))
+            (actionName === "Reward" && donateApproving === true)
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {

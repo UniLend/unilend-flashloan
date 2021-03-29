@@ -27,7 +27,6 @@ const CommonCard = (props: props) => {
   });
   const [depositChecked, setDepositChecked] = useState<boolean>(false);
   const [poolPercentage, setPoolPercentage] = useState<any>("");
-
   const {
     accounts,
     walletConnected,
@@ -39,6 +38,9 @@ const CommonCard = (props: props) => {
     rewardReleaseRate,
     activeNetWork,
     networkId,
+    currentApy,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
     getUserTokenBalance,
     getPoolLiquidity,
   } = useWalletConnect();
@@ -58,9 +60,12 @@ const CommonCard = (props: props) => {
     setActiveCurrency,
     getDonationContract,
     getRewardPoolBalance,
-    getRewardReleaseRate,
+    getCurrentAPY,
+    getRewardReleaseRatePerDay,
     balanceReset,
     networkSwitchHandling,
+    getTotalDepositedTokens,
+    getTotalTokensInRewardPool,
   } = useActions();
 
   const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
@@ -88,6 +93,7 @@ const CommonCard = (props: props) => {
       activeCurrency.symbol !== "Select Token"
     ) {
       getAccountBalance(accounts[0]);
+
       getPoolTokenBalance(
         currentProvider,
         accounts[0],
@@ -101,7 +107,18 @@ const CommonCard = (props: props) => {
         receipentAddress,
         activeCurrency.decimals
       );
-      getRewardReleaseRate(
+      console.log("TDD", totalDepositedTokens, "TTR", totalTokensInRewardPool);
+
+      getTotalDepositedTokens(currentProvider, activeCurrency.address);
+      if (donateContractAddress !== "") {
+        console.log("Calling donate", totalTokensInRewardPool);
+        getTotalTokensInRewardPool(
+          currentProvider,
+          activeCurrency.address,
+          donateContractAddress
+        );
+      }
+      getRewardReleaseRatePerDay(
         currentProvider,
         donateContractAddress,
         receipentAddress,
@@ -117,7 +134,39 @@ const CommonCard = (props: props) => {
       }
     }
   };
-
+  useEffect(() => {
+    if (accounts.length && currentProvider) {
+      getDonationContract(currentProvider);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accounts,
+    activeTab,
+    activeCurrency,
+    receipentAddress,
+    assertAddress,
+    donateContractAddress,
+  ]);
+  useEffect(() => {
+    if (totalDepositedTokens !== "" && totalTokensInRewardPool !== "") {
+      console.log("Calling apy");
+      getCurrentAPY(
+        currentProvider,
+        donateContractAddress,
+        receipentAddress,
+        activeCurrency.decimals,
+        totalDepositedTokens,
+        totalTokensInRewardPool
+      );
+    }
+  }, [
+    activeCurrency.decimals,
+    currentProvider,
+    donateContractAddress,
+    receipentAddress,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
+  ]);
   useEffect(() => {
     networkSwitchHandling();
 
@@ -156,13 +205,6 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    if (accounts.length && currentProvider) {
-      getDonationContract(currentProvider);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, currentProvider]);
-
-  useEffect(() => {
     if (currentProvider && accounts.length && activeCurrency)
       fetchTokenList(tokenGroupList, networkId, currentProvider, accounts[0]);
     setModalInfo({
@@ -188,7 +230,16 @@ const CommonCard = (props: props) => {
     }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, activeTab, activeCurrency, receipentAddress, assertAddress]);
+  }, [
+    accounts,
+    activeTab,
+    activeCurrency,
+    receipentAddress,
+    assertAddress,
+    donateContractAddress,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
+  ]);
 
   useEffect(() => {
     console.log("Pooling");
@@ -251,6 +302,7 @@ const CommonCard = (props: props) => {
   }, [poolLiquidity, poolTokenBalance]);
 
   const handleAmount = async () => {
+    console.log(activeTab);
     switch (activeTab) {
       case "lend":
         console.log(modalInfo);
@@ -311,8 +363,9 @@ const CommonCard = (props: props) => {
   return (
     <>
       <div className="network-warning">
-        {activeNetWork !== "Kovan" &&
-          `You are currently connected to the ${activeNetWork} which is not supported.`}
+        {activeNetWork !== "Kovan" && activeNetWork !== "Ropsten"
+          ? `You are currently connected to the ${activeNetWork} which is not supported.`
+          : ""}
         {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
       </div>
       {activeTab && (
@@ -334,13 +387,14 @@ const CommonCard = (props: props) => {
               }
             />
             {(activeTab === "reward" || activeTab === "airdrop") &&
-            activeCurrency.symbol !== "Select Token" ? (
+            activeCurrency.symbol !== "Select Token" &&
+            amount !== "" ? (
               <div className={`${theme} card field-card mt-4`}>
                 <div className="card-body py-2">
                   <div className="w-100 align-items-center text-center pr-0 mr-0">
-                    <div className="alerticon justify-content-center d-flex w-100">
+                    {/* <div className="alerticon justify-content-center d-flex w-100">
                       <img className="icon" src={AlertImg} alt="alert" />
-                    </div>
+                    </div> */}
                     <p className="mb-0 mt-3 warning-lead-text">
                       The amount you {capitalize(activeTab)}, will be deducted
                       from your wallet permanently and added to the reward pool.
@@ -357,7 +411,7 @@ const CommonCard = (props: props) => {
                           setDepositChecked(!depositChecked);
                         }}
                       />
-                      <label>I Understand</label>
+                      <label className="warning-note-text">I Understand</label>
                     </div>
                   </div>
                 </div>
@@ -376,7 +430,7 @@ const CommonCard = (props: props) => {
               }`}
               isChecked={depositChecked}
               handleAmount={() => {
-                if (activeCurrency.symbol === "Select Token") handleAmount();
+                if (activeCurrency.symbol !== "Select Token") handleAmount();
               }}
             />
             {(activeTab === "lend" || activeTab === "redeem") &&
@@ -389,9 +443,9 @@ const CommonCard = (props: props) => {
                     Pool percentage <span className="price">-</span>
                   </div> */}
                   <div className="price-list">
-                    APY
+                    Current APY
                     <span className="price">{`${
-                      rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
+                      currentApy !== "" ? `${currentApy}%` : "-"
                     }/year`}</span>
                   </div>
                   <div className="price-list">
@@ -454,6 +508,12 @@ const CommonCard = (props: props) => {
                 <div className="price_head">
                   <div className="price_aa">
                     <div className="price-list">
+                      Current APY
+                      <span className="price">{`${
+                        currentApy !== "" ? `${currentApy}%` : "-"
+                      }/year`}</span>
+                    </div>
+                    <div className="price-list">
                       Reward Available
                       <span className="price">
                         {walletConnected && rewardPoolBalance !== "" ? (
@@ -475,7 +535,7 @@ const CommonCard = (props: props) => {
                       Reward Rate
                       <span className="price">{`${
                         rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
-                      }/year`}</span>
+                      }/day`}</span>
                     </div>
                   </div>
                 </div>

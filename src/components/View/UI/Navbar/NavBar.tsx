@@ -30,7 +30,7 @@ interface WalletInfo {
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId } = useTypedSelector(
+  const { selectedNetworkId, activeNetWork } = useTypedSelector(
     (state) => state.connectWallet
   );
   const { themeChange, setActiveTab, walletDisconnect } = useActions();
@@ -127,6 +127,14 @@ const NavBar: React.FC<Props> = (props) => {
                 </Link>
               </li>
             </ul>
+          </div>
+          <div
+            className={`d-flex btn ${
+              theme === "dark" && "btn-dark"
+            } btn-custom-secondary btn-round-switch`}
+            style={{ padding: "7px" }}
+          >
+            {activeNetWork}
           </div>
           <button
             className={`d-flex btn ${

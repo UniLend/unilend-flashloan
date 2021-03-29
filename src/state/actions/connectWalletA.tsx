@@ -63,6 +63,20 @@ interface ActiveNetwork {
   networkId: any;
 }
 
+interface currentApy {
+  type: ActionType.CURRENT_APY;
+  payload: any;
+}
+
+interface getTotalTokensInRewardPool {
+  type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL;
+  payload: any;
+}
+interface getTotalDepositedTokens {
+  type: ActionType.TOTAL_DEPOSITION_TOKENS;
+  payload: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -76,4 +90,7 @@ export type Action =
   | walletDisconnect
   | RewardBalance
   | RewardRelease
-  | ActiveNetwork;
+  | ActiveNetwork
+  | currentApy
+  | getTotalDepositedTokens
+  | getTotalTokensInRewardPool;

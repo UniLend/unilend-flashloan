@@ -61,6 +61,18 @@
   color: var(--theme-field-color);
 }
 
+.active-network {
+  font-size: 13px;
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  width: 100%;
+  background-color: rgba(243, 132, 30, 0.05);
+  // color: rgb(243, 132, 30);
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -299,7 +311,8 @@ input[type="number"] {
 }
 
 .warning-note-text {
-  font-size: 15px;
+  font-size: 13px;
+  font-weight: 300;
 }
 .checkbox-custom input[type="checkbox"] {
   height: 15px;

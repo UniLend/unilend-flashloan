@@ -400,9 +400,117 @@ export const balanceReset = () => {
       type: ActionType.ACCOUNT_BALANCE,
       payload: "",
     });
+    dispatch({
+      type: ActionType.TOTAL_DEPOSITION_TOKENS,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+      payload: "",
+    });
+    dispatch({
+      type: ActionType.CURRENT_APY,
+      payload: "",
+    });
   };
 };
-export const getRewardReleaseRate = (
+export const getCurrentAPY = (
+  currentProvider: any,
+  donateContract: string,
+  reciepentAddress: string,
+  decimal: any,
+  totalDepositedTokens: any,
+  totalTokensInRewardPool: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    UnilendFDonation(currentProvider, donateContract)
+      .methods.getReleaseRate(reciepentAddress)
+      .call((e: any, r: any) => {
+        if (!e) {
+          let amount = parseFloat(r);
+          let fullAmountPerSec = amount / Math.pow(10, 18);
+          let _totalTokenInRewardPool =
+            totalTokensInRewardPool / Math.pow(10, decimal);
+          let _totalDepositedToken =
+            totalDepositedTokens / Math.pow(10, decimal);
+          let fullAmount: any = 0;
+          if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
+            fullAmount = (
+              fullAmountPerSec *
+              (60 * 60 * 24 * 365.25) *
+              (_totalTokenInRewardPool / _totalDepositedToken)
+            ).toFixed(2);
+          }
+          dispatch({
+            type: ActionType.CURRENT_APY,
+            payload: fullAmount,
+          });
+        } else {
+          dispatch({
+            type: ActionType.CURRENT_APY,
+            payload: "",
+          });
+        }
+      });
+  };
+};
+
+export const getTotalDepositedTokens = (
+  currentProvider: any,
+  recipientAddress: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    try {
+      console.log("calling reward Pool");
+      IERC20(currentProvider, recipientAddress)
+        .methods.balanceOf(UnilendFlashLoanCoreContract(currentProvider))
+        .call((err: any, res: any) => {
+          if (!err) {
+            console.log("rewardPoolBalance", res);
+            dispatch({
+              type: ActionType.TOTAL_DEPOSITION_TOKENS,
+              payload: res,
+            });
+          } else {
+            console.log(err);
+          }
+        });
+    } catch (e) {
+      dispatch({
+        type: ActionType.TOTAL_DEPOSITION_TOKENS,
+        payload: "",
+      });
+    }
+  };
+};
+
+export const getTotalTokensInRewardPool = (
+  currentProvider: any,
+  recipientAddress: any,
+  donationAddress: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    console.log("D add", donationAddress, "R add", recipientAddress);
+    IERC20(currentProvider, recipientAddress)
+      .methods.balanceOf(donationAddress)
+      .call((err: any, res: any) => {
+        if (!err) {
+          console.log("depositToken", res);
+          dispatch({
+            type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+            payload: res,
+          });
+        } else {
+          console.log("depositError", err);
+          dispatch({
+            type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+            payload: "",
+          });
+        }
+      });
+  };
+};
+export const getRewardReleaseRatePerDay = (
   currentProvider: any,
   donateContract: string,
   reciepentAddress: string,
@@ -415,10 +523,8 @@ export const getRewardReleaseRate = (
         if (!e) {
           let amount = parseFloat(r);
 
-          let fullAmountPerSec = amount / Math.pow(10, decimal);
-          let fullAmount = (fullAmountPerSec * (60 * 60 * 24 * 365.25)).toFixed(
-            2
-          );
+          let fullAmountPerSec = amount / Math.pow(10, 18);
+          let fullAmount = (fullAmountPerSec * (60 * 60 * 24)).toFixed(2);
           dispatch({
             type: ActionType.REWARD_RELEASE_RATE,
             payload: fullAmount,

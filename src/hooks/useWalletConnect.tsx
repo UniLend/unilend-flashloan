@@ -15,7 +15,10 @@ export default function useWalletConnect() {
     poolLiquidity,
     rewardPoolBalance,
     rewardReleaseRate,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
     activeNetWork,
+    currentApy,
     networkId,
   } = useTypedSelector((state) => state.connectWallet);
 
@@ -48,6 +51,9 @@ export default function useWalletConnect() {
     rewardReleaseRate,
     activeNetWork,
     networkId,
+    currentApy,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
     handleWalletConnect,
     getUserTokenBalance,
     getPoolLiquidity,

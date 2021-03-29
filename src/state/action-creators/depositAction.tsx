@@ -119,6 +119,7 @@ export const handleDeposit = (
   decimal: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    console.log("deposit");
     dispatch({
       type: ActionType.DEPOSIT_ACTION,
     });

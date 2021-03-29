@@ -17,6 +17,9 @@ interface ConnectWalletState {
   rewardReleaseRate: any;
   activeNetWork: any;
   networkId: any;
+  currentApy: any;
+  totalTokensInRewardPool: any;
+  totalDepositedTokens: any;
 }
 
 const initialState = {
@@ -35,6 +38,9 @@ const initialState = {
   rewardReleaseRate: "",
   activeNetWork: "",
   networkId: "",
+  currentApy: "",
+  totalTokensInRewardPool: "",
+  totalDepositedTokens: "",
 };
 
 const connectWalletReducer = (
@@ -56,6 +62,14 @@ const connectWalletReducer = (
       return { ...state, currentProvider: action.payload };
     case ActionType.REWARD_POOL_BALANCE:
       return { ...state, rewardPoolBalance: action.payload };
+    case ActionType.CURRENT_APY:
+      return { ...state, currentApy: action.payload };
+    case ActionType.TOTAL_DEPOSITION_TOKENS:
+      console.log("depo", action);
+      return { ...state, totalDepositedTokens: action.payload };
+    case ActionType.TOTAL_TOKENS_IN_REWARD_POOL:
+      console.log("record");
+      return { ...state, totalTokensInRewardPool: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };
     case ActionType.ACTIVE_NETWORK:

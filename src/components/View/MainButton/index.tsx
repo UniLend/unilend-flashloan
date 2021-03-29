@@ -35,6 +35,7 @@ const MainButton: FC<Props> = ({
     walletConnected,
     accounts: address,
     currentProvider,
+    poolTokenBalance,
     handleWalletConnect,
   } = useWalletConnect();
 
@@ -76,7 +77,9 @@ const MainButton: FC<Props> = ({
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
   const { assertAddress } = useTypedSelector((state) => state.pool);
-
+  const { activeTab, activeCurrency } = useTypedSelector(
+    (state) => state.settings
+  );
   const {
     depositApprove,
     donateApprove,
@@ -115,7 +118,7 @@ const MainButton: FC<Props> = ({
       address &&
       address.length &&
       walletConnected &&
-      (isEth ||
+      (activeCurrency.symbol === "Select Token" ||
         depositAllowanceLoading ||
         donateAllowanceLoading ||
         (actionName === "Lend" && isDepositApproved === true) ||
@@ -126,12 +129,14 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             amount === "" ||
+            activeCurrency.symbol === "Select Token" ||
             depositLoading ||
             donateLoading ||
             redeemLoading ||
             airdropLoading ||
             depositAllowanceLoading ||
-            donateAllowanceLoading
+            donateAllowanceLoading ||
+            (activeTab === "redeem" && poolTokenBalance === 0)
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}

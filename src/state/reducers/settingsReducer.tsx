@@ -1,7 +1,7 @@
 import { Reciepent } from "ethereum/contracts";
 import { ActionType } from "../action-types";
 import { SettingAction } from "../actions/settingsA";
-import icon from "assets/ethereum.png";
+import icon from "assets/dropdown.svg";
 
 interface SettingsState {
   theme: string;
@@ -15,10 +15,10 @@ const initialState = {
     ? localStorage.getItem("activeTab")
     : "lend",
   activeCurrency: {
-    name: "Ethereum",
+    name: "Select Token",
     logoURI: icon,
     chainId: 42,
-    symbol: "ETH",
+    symbol: "Select Token",
     address: Reciepent,
     decimals: 18,
   },

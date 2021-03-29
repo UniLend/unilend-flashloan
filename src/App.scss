@@ -176,7 +176,28 @@ input[type="number"] {
     padding-left: 2px;
   }
 }
-
+.alert {
+  margin-bottom: 0 !important;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: #333;
+  button {
+    height: 100%;
+  }
+  p {
+    margin-bottom: 0;
+  }
+  .close {
+    height: 100%;
+    color: #f07310 !important;
+    font-size: 20px;
+  }
+  .alertext {
+    font-size: 12px;
+    margin-bottom: 0;
+  }
+}
 .walletconnect-qrcode__base {
   background: #25292e47 !important;
 }

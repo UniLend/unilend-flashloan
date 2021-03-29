@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Reciepent } from "ethereum/contracts";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
@@ -31,7 +30,7 @@ export const fetchTokenList = (
                       }
                     );
                     if (accounts.length > 0) {
-                      let newList = tokenList.map((item: any) => {
+                      tokenList.forEach((item: any) => {
                         let _IERC20 = IERC20(currentProvider, item.address);
                         _IERC20.methods
                           .balanceOf(accounts)

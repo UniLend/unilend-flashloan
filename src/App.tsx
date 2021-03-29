@@ -9,7 +9,9 @@ import dotEnv from "dotenv";
 // import useWalletConnect from "hooks/useWalletConnect";
 import CommonCard from "components/View/CommonCard";
 import useWalletConnect from "hooks/useWalletConnect";
-import { useActions } from "hooks/useActions";
+import { Alert } from "react-bootstrap";
+import AlertImg from "assets/warning.svg";
+// import { useActions } from "hooks/useActions";
 declare const window: any;
 // interface ProviderMessage {
 //   type: string;
@@ -17,10 +19,22 @@ declare const window: any;
 // }
 function App() {
   const [loading, setLoading] = useState<Boolean>(true);
+  const [alertShow, setAlertShow] = useState<Boolean>(true);
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  const { setActiveTab, networkSwitchHandling } = useActions();
+  // const { tokenGroupList, tokenList } = useTypedSelector(
+  //   (state) => state.tokenManage
+  // );
+  // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
   const { handleWalletConnect } = useWalletConnect();
-
+  // useEffect(() => {
+  //   if (tokenList.payload.length === 0) {
+  //     setLoading(true);
+  //     fetchTokenList(tokenGroupList, networkId, activeTab);
+  //   }
+  //   if (tokenList.payload.length !== 0) {
+  //     setLoading(false);
+  //   }
+  // }, [tokenList, activeTab]);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -66,27 +80,48 @@ function App() {
       {loading ? (
         <LoadingPage />
       ) : (
-        <Layout>
-          <div className={`app-bg`}>
-            <div className={`bg-vector ${theme}`}>
-              <div
-                className="pt-6"
-                style={{ height: "100%", overflow: "auto", paddingTop: "60px" }}
-              >
-                <Switch>
-                  <Route
-                    key={activeTab}
-                    path={`/${activeTab}`}
-                    exact
-                    render={() => <CommonCard activeTab={activeTab} />}
-                  />
-                  <Redirect from="/" to="/deposit" />
-                  <Redirect from="**" to="/deposit" />
-                </Switch>
+        <>
+          {alertShow && (
+            <Alert onClose={() => setAlertShow(false)} dismissible>
+              {/* {/ <Alert.Heading>Oh snap! You got an error!</Alert.Heading> /} */}
+              <div className="alertbody d-flex align-items-center">
+                <img className="icon" src={AlertImg} alt="alert" />
+                <p className="alertext ml-3">
+                  UniLend FlashLoan contrfact has been audited by Certik.
+                  However, it is still in beta, use it at your own risk.
+                  <br />
+                  Please familiarize yourself with the platform to understand
+                  the correct usage and features of the platform.
+                </p>
+              </div>
+            </Alert>
+          )}
+          <Layout>
+            <div className={`app-bg`}>
+              <div className={`bg-vector ${theme}`}>
+                <div
+                  className="pt-6"
+                  style={{
+                    height: "100%",
+                    overflow: "auto",
+                    paddingTop: "60px",
+                  }}
+                >
+                  <Switch>
+                    <Route
+                      key={activeTab}
+                      path={`/${activeTab}`}
+                      exact
+                      render={() => <CommonCard activeTab={activeTab} />}
+                    />
+                    <Redirect from="/" to="/lend" />
+                    <Redirect from="**" to="/lend" />
+                  </Switch>
+                </div>
               </div>
             </div>
-          </div>
-        </Layout>
+          </Layout>
+        </>
       )}
     </div>
   );

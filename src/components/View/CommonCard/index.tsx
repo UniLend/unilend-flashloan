@@ -31,7 +31,6 @@ const CommonCard = (props: props) => {
     accounts,
     walletConnected,
     currentProvider,
-    accountBalance,
     userTokenBalance,
     poolTokenBalance,
     poolLiquidity,
@@ -338,9 +337,12 @@ const CommonCard = (props: props) => {
                   ? capitalize("deposit")
                   : capitalize(activeTab)
               }`}
-              handleAmount={() => handleAmount()}
+              handleAmount={() => {
+                if (activeCurrency.symbol === "Select Token") handleAmount();
+              }}
             />
-            {activeTab === "lend" || activeTab === "redeem" ? (
+            {(activeTab === "lend" || activeTab === "redeem") &&
+            activeCurrency.symbol !== "Select Token" ? (
               // ||
               // activeCurrency.symbol === "ETH"
               <div className="price_head">
@@ -409,36 +411,37 @@ const CommonCard = (props: props) => {
             ) : (
               ""
             )}
-            {activeTab === "reward" && (
-              <div className="price_head">
-                <div className="price_aa">
-                  <div className="price-list">
-                    Reward Available
-                    <span className="price">
-                      {walletConnected && rewardPoolBalance !== "" ? (
-                        <>
-                          <span>{rewardPoolBalance}</span>
-                          <img
-                            src={activeCurrency.logoURI}
-                            alt="logo"
-                            width="13"
-                          />
-                          <span>{activeCurrency.symbol}</span>
-                        </>
-                      ) : (
-                        "-"
-                      )}
-                    </span>
-                  </div>
-                  <div className="price-list">
-                    Reward Rate
-                    <span className="price">{`${
-                      rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
-                    }/year`}</span>
+            {activeTab === "reward" &&
+              activeCurrency.symbol !== "Select Token" && (
+                <div className="price_head">
+                  <div className="price_aa">
+                    <div className="price-list">
+                      Reward Available
+                      <span className="price">
+                        {walletConnected && rewardPoolBalance !== "" ? (
+                          <>
+                            <span>{rewardPoolBalance}</span>
+                            <img
+                              src={activeCurrency.logoURI}
+                              alt="logo"
+                              width="13"
+                            />
+                            <span>{activeCurrency.symbol}</span>
+                          </>
+                        ) : (
+                          "-"
+                        )}
+                      </span>
+                    </div>
+                    <div className="price-list">
+                      Reward Rate
+                      <span className="price">{`${
+                        rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
+                      }/year`}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </ContentCard>
       )}

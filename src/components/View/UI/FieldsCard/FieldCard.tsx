@@ -15,8 +15,7 @@ interface Props {
 }
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
-  const { theme } = useTypedSelector((state) => state.settings);
-
+  const { theme, activeCurrency } = useTypedSelector((state) => state.settings);
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
@@ -38,30 +37,35 @@ const FieldCard: FC<Props> = (props) => {
             <div className=" col-6 col-md-6">
               <div className="align-end">
                 <label className="form-balance-label">
-                  {props.selectLabel !== ""
+                  {props.selectLabel !== "" &&
+                  activeCurrency.symbol !== "Select Token"
                     ? `Balance: ${props.selectLabel}`
                     : ""}
                 </label>
               </div>
               <div className="align-end">
-                <button
-                  className="btn btn-max"
-                  onClick={() => {
-                    props.setFieldValue(props.selectLabel);
-                  }}
-                >
-                  {" "}
-                  <p className="max-text">MAX</p>
-                </button>
+                {activeCurrency.symbol !== "Select Token" &&
+                  props.selectLabel !== "" && (
+                    <button
+                      className="btn btn-max"
+                      onClick={() => {
+                        props.setFieldValue(props.selectLabel);
+                      }}
+                    >
+                      <p className="max-text">MAX</p>
+                    </button>
+                  )}
                 <button
                   className="btn btn-curr ml-4"
                   onClick={props.handleModelOpen}
                 >
-                  <img
-                    className="curr-image"
-                    src={props.selectedLogo}
-                    alt="Curr"
-                  />
+                  {activeCurrency.symbol !== "Select Token" && (
+                    <img
+                      className="curr-image"
+                      src={props.selectedLogo}
+                      alt="Curr"
+                    />
+                  )}
                   <p className="curr-text">{props.selectValue}</p>
                   <img
                     style={{ paddingLeft: "4px", width: "12px" }}

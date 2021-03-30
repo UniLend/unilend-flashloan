@@ -26,7 +26,7 @@ const FieldCard: FC<Props> = (props) => {
     // if value is not blank, then test the regex
     if (inputField === "" || floatRegExp.test(inputField)) {
       props.onF1Change(e);
-      setInputValue(inputField);
+      // setInputValue(inputField);
     }
   };
   return (
@@ -39,7 +39,7 @@ const FieldCard: FC<Props> = (props) => {
               <input
                 type={props.fieldType}
                 ref={field1}
-                value={inputValue}
+                value={props.fieldValue}
                 className="form-control field-input"
                 placeholder="0.0"
                 onChange={(e) => onHandleTelephoneChange(e)}

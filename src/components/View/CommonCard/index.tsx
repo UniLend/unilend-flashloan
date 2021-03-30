@@ -131,6 +131,26 @@ const CommonCard = (props: props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (
+      isDepositSuccess ||
+      donateIsApproved ||
+      donateSuccess ||
+      redeemSuccess ||
+      airdropSuccess
+    ) {
+      setAmount("");
+    }
+  }, [
+    activeTab,
+    donateIsApproved,
+    isDepositSuccess,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ]);
+
   useEffect(() => {
     if (accounts.length && currentProvider) {
       getDonationContract(currentProvider);
@@ -266,25 +286,6 @@ const CommonCard = (props: props) => {
     //   rewardTokenList(tokenList);
     // }
   }, [activeTab]);
-
-  useEffect(() => {
-    if (
-      isDepositSuccess ||
-      donateIsApproved ||
-      donateSuccess ||
-      redeemSuccess ||
-      airdropSuccess
-    ) {
-      setAmount("");
-    }
-  }, [
-    activeTab,
-    donateIsApproved,
-    isDepositSuccess,
-    donateSuccess,
-    redeemSuccess,
-    airdropSuccess,
-  ]);
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {

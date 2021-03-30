@@ -64,7 +64,6 @@ export const fetchTokenList = (
                       // if (tokenList) totalTokenList.push(...newList);
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
-                      console.log(tokenList);
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
                         payload: [...totalTokenList],

@@ -23,7 +23,7 @@ export const fetchTokenList = (
               axios
                 .get(item.fetchURI)
                 .then((res) => {
-                  console.log("res", res, accounts);
+                  console.log("res", res);
                   if (res.data) {
                     const tokenList: any = res.data.tokens.filter(
                       (item: any) => {
@@ -35,7 +35,7 @@ export const fetchTokenList = (
                       tokenList.forEach((item: any) => {
                         let _IERC20 = IERC20(currentProvider, item.address);
                         _IERC20.methods
-                          .balanceOf(accounts)
+                          .balanceOf(accounts[0])
                           .call((e: any, r: any) => {
                             if (!e) {
                               let amount = parseFloat(r);

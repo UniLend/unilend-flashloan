@@ -108,28 +108,29 @@ const CommonCard = (props: props) => {
         activeCurrency.decimals
       );
 
-      getTotalDepositedTokens(currentProvider, activeCurrency.address);
-      if (donateContractAddress !== "") {
-        getTotalTokensInRewardPool(
-          currentProvider,
-          activeCurrency.address,
-          donateContractAddress
-        );
-      }
-      getRewardReleaseRatePerDay(
+      console.log("CurrentProvider", currentProvider);
+    }
+    getTotalDepositedTokens(currentProvider, activeCurrency.address);
+    if (donateContractAddress !== "") {
+      getTotalTokensInRewardPool(
+        currentProvider,
+        activeCurrency.address,
+        donateContractAddress
+      );
+    }
+    getRewardReleaseRatePerDay(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+      activeCurrency.decimals
+    );
+    if (activeTab === "reward" && donateContractAddress) {
+      getRewardPoolBalance(
         currentProvider,
         donateContractAddress,
         receipentAddress,
         activeCurrency.decimals
       );
-      if (activeTab === "reward" && donateContractAddress) {
-        getRewardPoolBalance(
-          currentProvider,
-          donateContractAddress,
-          receipentAddress,
-          activeCurrency.decimals
-        );
-      }
     }
   };
 
@@ -153,9 +154,7 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    if (accounts.length && currentProvider) {
-      getDonationContract(currentProvider);
-    }
+    getDonationContract(currentProvider);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accounts,
@@ -222,7 +221,7 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    fetchTokenList(tokenGroupList, networkId, currentProvider, accounts[0]);
+    fetchTokenList(tokenGroupList, networkId, currentProvider, accounts);
     setModalInfo({
       ...modalInfo,
     });
@@ -233,15 +232,15 @@ const CommonCard = (props: props) => {
     let interval: any;
 
     interval = setInterval(() => {
-      getPoolLiquidity(
-        currentProvider,
-        receipentAddress,
-        activeCurrency.symbol === "ETH",
-        activeCurrency.decimals
-      );
       if (accounts.length && walletConnected) {
-        handleTokenBalance();
+        getPoolLiquidity(
+          currentProvider,
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
       }
+      handleTokenBalance();
     }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -543,15 +542,17 @@ const CommonCard = (props: props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedAddress: any) => {
+            await handleModal(false);
             await balanceReset();
             setPoolPercentage(0);
             await setActiveCurrency(selectedAddress);
-            await getPool(
-              selectedAddress.address,
-              currentProvider,
-              accounts[0]
-            );
-            await handleModal(false);
+            if (accounts.length && currentProvider) {
+              await getPool(
+                selectedAddress.address,
+                currentProvider,
+                accounts[0]
+              );
+            }
             await handleReciepent(selectedAddress.address);
           }}
           handleClose={() => handleModal(false)}

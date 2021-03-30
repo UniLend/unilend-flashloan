@@ -1,3 +1,4 @@
+import web3 from "ethereum/web3";
 import { Action } from "state/actions/connectWalletA";
 import { ActionType } from "../action-types";
 
@@ -34,7 +35,7 @@ const initialState = {
   accountBalance: "0",
   userTokenBalance: "",
   poolTokenBalance: "",
-  currentProvider: "",
+  currentProvider: web3,
   selectedNetworkId: 1,
   poolLiquidity: "",
   rewardPoolBalance: "",
@@ -122,7 +123,7 @@ const connectWalletReducer = (
         accountBalance: "",
         userTokenBalance: "",
         poolTokenBalance: "",
-        currentProvider: "",
+        currentProvider: web3,
       };
     default:
       return state;

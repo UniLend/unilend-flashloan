@@ -40,7 +40,7 @@ const initialState = {
   rewardPoolBalance: "",
   rewardReleaseRate: "",
   activeNetWork: "",
-  networkId: "",
+  networkId: "1",
   currentApy: "",
   totalTokensInRewardPool: "",
   totalDepositedTokens: "",

@@ -357,8 +357,11 @@ const CommonCard = (props: props) => {
   return (
     <>
       <div className="network-warning">
-        {activeNetWork !== "Kovan" && activeNetWork !== "Ropsten"
-          ? `You are currently connected to the ${activeNetWork} which is not supported.`
+        {accounts.length &&
+        activeNetWork !== "Mainnet" &&
+        activeNetWork !== "Ropsten"
+          ? // && activeNetWork !== "Mainnet"
+            `You are currently connected to the ${activeNetWork} which is not supported.`
           : ""}
         {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
       </div>

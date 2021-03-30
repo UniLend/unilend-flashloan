@@ -16,9 +16,7 @@ export const createPool = (
         from: address,
       })
       .on("receipt", (res: any) => {})
-      .on("PoolCreated", (res: any) => {
-        console.log(res);
-      })
+      .on("PoolCreated", (res: any) => {})
       .catch((e: any) => console.log("Importing Failed"));
   };
 };
@@ -31,19 +29,17 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
       .methods.Pools(address)
       .call((err: any, res: any) => {
         if (!err) {
-          console.log("asset", res);
           dispatch({
             type: ActionType.ASSERT_ADDRESS,
             payload: res,
           });
           if (res === "0x0000000000000000000000000000000000000000") {
-            console.log("Pool not Created");
+            alert("Pool not Created");
           } else {
             ERC20(currentProvider, res)
               .methods.symbol()
               .call((err: Error, res: any) => {
                 if (!err && res) {
-                  console.log(res);
                   dispatch({
                     type: ActionType.POOL_TOKEN_NAME,
                     payload: res,

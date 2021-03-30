@@ -41,7 +41,6 @@ function App() {
     }, 2000);
     dotEnv.config();
     let connectedWallet = localStorage.getItem("walletConnected");
-    console.log(connectedWallet);
 
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));

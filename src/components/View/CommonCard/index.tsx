@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -9,7 +9,7 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import AlertImg from "assets/warning-standalone.svg";
+// import AlertImg from "assets/warning-standalone.svg";
 interface props {
   activeTab: string | null;
 }
@@ -86,7 +86,6 @@ const CommonCard = (props: props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const handleTokenBalance = () => {
-    console.log(activeTab);
     if (
       accounts.length &&
       currentProvider &&
@@ -107,11 +106,9 @@ const CommonCard = (props: props) => {
         receipentAddress,
         activeCurrency.decimals
       );
-      console.log("TDD", totalDepositedTokens, "TTR", totalTokensInRewardPool);
 
       getTotalDepositedTokens(currentProvider, activeCurrency.address);
       if (donateContractAddress !== "") {
-        console.log("Calling donate", totalTokensInRewardPool);
         getTotalTokensInRewardPool(
           currentProvider,
           activeCurrency.address,
@@ -149,7 +146,6 @@ const CommonCard = (props: props) => {
   ]);
   useEffect(() => {
     if (totalDepositedTokens !== "" && totalTokensInRewardPool !== "") {
-      console.log("Calling apy");
       getCurrentAPY(
         currentProvider,
         donateContractAddress,
@@ -159,6 +155,7 @@ const CommonCard = (props: props) => {
         totalTokensInRewardPool
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeCurrency.decimals,
     currentProvider,
@@ -170,7 +167,6 @@ const CommonCard = (props: props) => {
   useEffect(() => {
     networkSwitchHandling();
 
-    console.log(networkId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, tokenList]);
 
@@ -224,7 +220,6 @@ const CommonCard = (props: props) => {
         activeCurrency.decimals
       );
       if (accounts.length && walletConnected) {
-        console.log("handlingBalance");
         handleTokenBalance();
       }
     }, 5000);
@@ -242,8 +237,7 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    console.log("Pooling");
-    if (walletConnected) {
+    if (walletConnected && activeCurrency.symbol !== "Select Token") {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -302,10 +296,8 @@ const CommonCard = (props: props) => {
   }, [poolLiquidity, poolTokenBalance]);
 
   const handleAmount = async () => {
-    console.log(activeTab);
     switch (activeTab) {
       case "lend":
-        console.log(modalInfo);
         await handleDeposit(
           currentProvider,
           amount,
@@ -407,7 +399,6 @@ const CommonCard = (props: props) => {
                         type="checkbox"
                         checked={depositChecked}
                         onClick={() => {
-                          console.log(depositChecked);
                           setDepositChecked(!depositChecked);
                         }}
                       />

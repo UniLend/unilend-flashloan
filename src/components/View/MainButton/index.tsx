@@ -132,7 +132,7 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             amount === "" ||
-            amount > userTokenBalance ||
+            amount === "0" ||
             activeCurrency.symbol === "Select Token" ||
             depositLoading ||
             donateLoading ||
@@ -140,9 +140,17 @@ const MainButton: FC<Props> = ({
             airdropLoading ||
             depositAllowanceLoading ||
             donateAllowanceLoading ||
-            (activeTab === "reward" && (!isChecked || userTokenBalance)) ||
-            (activeTab === "airdrop" && !isChecked) ||
-            (activeTab === "redeem" && poolTokenBalance === 0)
+            (activeTab === "reward" &&
+              (!isChecked ||
+                parseFloat(amount) > parseFloat(userTokenBalance))) ||
+            (activeTab === "lend" &&
+              parseFloat(amount) > parseFloat(userTokenBalance)) ||
+            (activeTab === "airdrop" &&
+              (!isChecked ||
+                parseFloat(amount) > parseFloat(userTokenBalance))) ||
+            (activeTab === "redeem" &&
+              (poolTokenBalance === 0 ||
+                parseFloat(amount) > parseFloat(poolTokenBalance)))
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}

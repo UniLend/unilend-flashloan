@@ -50,7 +50,6 @@ const Manage: FC<Props> = (props) => {
     // });
   };
   const handleImport = () => {
-    console.log("Imported");
     createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };
   return (

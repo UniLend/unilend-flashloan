@@ -161,7 +161,6 @@ const CurrencySelectModel: FC<Props> = ({
             <div
               className="manage-back-icon"
               onClick={() => {
-                console.log("checking");
                 setOpenManage(false);
               }}
             >

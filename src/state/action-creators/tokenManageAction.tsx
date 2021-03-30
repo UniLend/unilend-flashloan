@@ -16,7 +16,6 @@ export const fetchTokenList = (
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
-      console.log("_enableChecked", _enableChecked);
       _enableChecked
         ? tokenList.forEach((item: any) => {
             if (item.isEnabled) {
@@ -26,6 +25,7 @@ export const fetchTokenList = (
                   if (res.data) {
                     const tokenList: any = res.data.tokens.filter(
                       (item: any) => {
+                        // eslint-disable-next-line eqeqeq
                         return item.chainId == networkId;
                       }
                     );
@@ -47,7 +47,6 @@ export const fetchTokenList = (
                                 type: ActionType.GET_TOKEN_LIST,
                                 payload: [...totalTokenList],
                               });
-                              console.log(totalTokenList);
                               return item;
                             } else {
                               dispatch({
@@ -67,7 +66,6 @@ export const fetchTokenList = (
                         payload: [...totalTokenList],
                       });
                     }
-                    console.log("TTL:", totalTokenList);
                   }
                 })
                 .catch((e: any) => {

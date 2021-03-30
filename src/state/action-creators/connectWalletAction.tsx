@@ -56,7 +56,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         });
         await bsc.activate();
         let accounts = await bsc.getAccount();
-        console.log(await bsc.getChainId());
         if (accounts) {
           dispatch({
             type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -67,7 +66,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         const provider = (window as any).ethereum;
         if (provider) {
           const chainId = 56;
-          console.log(`0x${chainId.toString(16)}`);
           try {
             await provider.request({
               method: "wallet_addEthereumChain",
@@ -123,7 +121,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       try {
         CoinbaseProvider.enable()
           .then((accounts: string[]) => {
-            console.log(`User's address is ${accounts[0]}`);
             CoinbaseWeb3.eth.defaultAccount = accounts[0];
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -145,26 +142,25 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       break;
     case "Formatic":
       try {
-        let web3: any = formaticWeb3;
-        console.log(
-          web3.currentProvider
-            .enable()
-            .then((res: any) => {
-              let address: string[];
-
-              address = res;
-              dispatch({
-                type: ActionType.CONNECT_WALLET_SUCCESS,
-                payload: [...address],
-              });
-            })
-            .catch((err: any) => {
-              dispatch({
-                type: ActionType.CONNECT_WALLET_ERROR,
-                payload: err.message,
-              });
-            })
-        );
+        // let web3: any = formaticWeb3;
+        // console.log(
+        //   web3.currentProvider
+        //     .enable()
+        //     .then((res: any) => {
+        //       let address: string[];
+        //       address = res;
+        //       dispatch({
+        //         type: ActionType.CONNECT_WALLET_SUCCESS,
+        //         payload: [...address],
+        //       });
+        //     })
+        //     .catch((err: any) => {
+        //       dispatch({
+        //         type: ActionType.CONNECT_WALLET_ERROR,
+        //         payload: err.message,
+        //       });
+        //     })
+        // );
       } catch (err) {
         dispatch({
           type: ActionType.CONNECT_WALLET_ERROR,
@@ -200,7 +196,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       accounts = await web3Service.getAccounts();
       if (window && !(window as any).ethereum.selectedAddress) {
         (window as any).ethereum.enable();
-        console.log("accounts", accounts);
         dispatch({
           type: ActionType.CONNECT_WALLET_SUCCESS,
           payload: [...accounts],
@@ -221,9 +216,7 @@ export const networkSwitchHandling = () => {
       .request({ method: "net_version" })
       .then((accs: any) => {
         if (accs) {
-          console.log("Accs", accs);
           let accsName;
-          console.log(typeof accs);
           if (accs === "1") {
             accsName = "Mainnet";
           } else if (accs === "42") {
@@ -461,12 +454,10 @@ export const getTotalDepositedTokens = (
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      console.log("calling reward Pool");
       IERC20(currentProvider, recipientAddress)
         .methods.balanceOf(UnilendFlashLoanCoreContract(currentProvider))
         .call((err: any, res: any) => {
           if (!err) {
-            console.log("rewardPoolBalance", res);
             dispatch({
               type: ActionType.TOTAL_DEPOSITION_TOKENS,
               payload: res,
@@ -490,18 +481,15 @@ export const getTotalTokensInRewardPool = (
   donationAddress: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    console.log("D add", donationAddress, "R add", recipientAddress);
     IERC20(currentProvider, recipientAddress)
       .methods.balanceOf(donationAddress)
       .call((err: any, res: any) => {
         if (!err) {
-          console.log("depositToken", res);
           dispatch({
             type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
             payload: res,
           });
         } else {
-          console.log("depositError", err);
           dispatch({
             type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
             payload: "",

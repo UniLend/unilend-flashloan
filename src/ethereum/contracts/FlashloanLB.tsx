@@ -15,7 +15,6 @@ export const UnilendFDonation = (
   currentProvider: any,
   donateContract: string
 ) => {
-  console.log("donateContract", donateContract);
   return new currentProvider.eth.Contract(
     UnilendFDonationABI.abi,
     donateContract

@@ -26,7 +26,6 @@ export const checkAllowance = (
         .call((error: any, result: any) => {
           if (!error && result) {
             allowance = result;
-            console.log(allowance);
             if (allowance === "0") {
               dispatch({
                 type: ActionType.DEPOSIT_APPROVAL_STATUS,
@@ -100,7 +99,6 @@ export const depositApprove = (
             type: ActionType.DEPOSIT_APPROVAL_STATUS,
             payload: false,
           });
-          console.log("Approval Rejected By User");
         });
     } catch (e) {
       dispatch({
@@ -119,12 +117,10 @@ export const handleDeposit = (
   decimal: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
-    console.log("deposit");
     dispatch({
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      console.log(depositAmount, decimal);
       var fullAmount = web3Service.getValue(
         isEth,
         currentProvider,

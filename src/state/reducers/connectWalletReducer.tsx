@@ -65,10 +65,8 @@ const connectWalletReducer = (
     case ActionType.CURRENT_APY:
       return { ...state, currentApy: action.payload };
     case ActionType.TOTAL_DEPOSITION_TOKENS:
-      console.log("depo", action);
       return { ...state, totalDepositedTokens: action.payload };
     case ActionType.TOTAL_TOKENS_IN_REWARD_POOL:
-      console.log("record");
       return { ...state, totalTokensInRewardPool: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };

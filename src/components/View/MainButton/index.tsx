@@ -132,7 +132,7 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             amount === "" ||
-            amount === "0" ||
+            parseFloat(amount) <= 0 ||
             activeCurrency.symbol === "Select Token" ||
             depositLoading ||
             donateLoading ||

@@ -380,7 +380,8 @@ const CommonCard = (props: props) => {
             />
             {(activeTab === "reward" || activeTab === "airdrop") &&
             activeCurrency.symbol !== "Select Token" &&
-            amount !== "" ? (
+            amount !== "" &&
+            parseFloat(amount) > 0 ? (
               <div className={`${theme} card field-card mt-4`}>
                 <div className="card-body py-2">
                   <div className="w-100 align-items-center text-center pr-0 mr-0">

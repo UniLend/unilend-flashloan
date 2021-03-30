@@ -3,6 +3,7 @@ import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { floatRegExp } from "components/Helpers/index";
+import useWalletConnect from "hooks/useWalletConnect";
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -17,7 +18,12 @@ interface Props {
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
   // const [inputValue, setInputValue] = useState("");
-  const { theme, activeCurrency } = useTypedSelector((state) => state.settings);
+  const { fullUserTokenBalance, fullPoolTokenBalance } = useTypedSelector(
+    (state) => state.connectWallet
+  );
+  const { theme, activeCurrency, activeTab } = useTypedSelector(
+    (state) => state.settings
+  );
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
@@ -60,7 +66,12 @@ const FieldCard: FC<Props> = (props) => {
                     <button
                       className="btn btn-max"
                       onClick={() => {
-                        props.setFieldValue(props.selectLabel);
+                        if (activeTab === "redeem") {
+                          props.setFieldValue(fullPoolTokenBalance);
+                        } else {
+                          props.setFieldValue(fullUserTokenBalance);
+                        }
+                        // props.setFieldValue(props.selectLabel);
                       }}
                     >
                       <p className="max-text">MAX</p>

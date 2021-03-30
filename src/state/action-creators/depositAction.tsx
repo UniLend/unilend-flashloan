@@ -122,7 +122,7 @@ export const handleDeposit = (
     });
     try {
       var fullAmount = web3Service.getValue(
-        isEth,
+        false,
         currentProvider,
         depositAmount,
         decimal

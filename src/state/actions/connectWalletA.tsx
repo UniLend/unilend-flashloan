@@ -77,6 +77,21 @@ interface getTotalDepositedTokens {
   payload: any;
 }
 
+interface fullAccountBalance {
+  type: ActionType.FULL_AMOUNT_BALANCE;
+  payload: any;
+}
+
+interface fullUserTokenBalance {
+  type: ActionType.FULL_USER_TOKEN_BALANCE;
+  payload: any;
+}
+
+interface fullPoolTokenBalance {
+  type: ActionType.FULL_POOL_TOKEN_BALANCE;
+  payload: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -93,4 +108,7 @@ export type Action =
   | ActiveNetwork
   | currentApy
   | getTotalDepositedTokens
-  | getTotalTokensInRewardPool;
+  | getTotalTokensInRewardPool
+  | fullAccountBalance
+  | fullUserTokenBalance
+  | fullPoolTokenBalance;

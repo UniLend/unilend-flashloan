@@ -1,3 +1,4 @@
+import { eToNumber } from "components/Helpers";
 import web3 from "./web3";
 
 export const web3Service = {
@@ -11,8 +12,9 @@ export const web3Service = {
     return web3.utils.fromWei(payload, curr);
   },
   getValue: (isEth: any, currentProvider: any, amount: any, decimal: any) => {
+    console.log();
     return isEth
       ? currentProvider.utils.toWei(amount, "ether")
-      : (amount * Math.pow(10, decimal)).toString();
+      : eToNumber(amount * Math.pow(10, decimal)).toString();
   },
 };

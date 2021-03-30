@@ -257,9 +257,17 @@ export const getAccountBalance = (selectedAccount: string) => {
         type: ActionType.ACCOUNT_BALANCE,
         payload: ethBalDeci,
       });
+      dispatch({
+        type: ActionType.FULL_AMOUNT_BALANCE,
+        payload: ethBal,
+      });
     } catch (e) {
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
+        payload: "",
+      });
+      dispatch({
+        type: ActionType.FULL_AMOUNT_BALANCE,
         payload: "",
       });
     }
@@ -283,11 +291,15 @@ export const getUserTokenBalance = (
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
           let amount = parseFloat(r);
-
+          let decimalAmount = amount / Math.pow(10, decimal);
           let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,
+          });
+          dispatch({
+            type: ActionType.FULL_USER_TOKEN_BALANCE,
+            payload: decimalAmount,
           });
         }
       });
@@ -296,6 +308,10 @@ export const getUserTokenBalance = (
       dispatch({
         type: ActionType.USER_TOKEN_BALANCE,
         userTokenBalance: "",
+      });
+      dispatch({
+        type: ActionType.FULL_USER_TOKEN_BALANCE,
+        payload: "",
       });
     }
   };
@@ -329,12 +345,16 @@ export const getPoolTokenBalance = (
         .call((e: any, r: any) => {
           if (!e) {
             let amount = parseFloat(r);
-
+            let decimalAmount = amount / Math.pow(10, decimal);
             let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
             console.log(r);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
               payload: r > 0 ? fullAmount : 0,
+            });
+            dispatch({
+              type: ActionType.FULL_POOL_TOKEN_BALANCE,
+              payload: decimalAmount,
             });
           } else {
             console.log(e);
@@ -344,6 +364,10 @@ export const getPoolTokenBalance = (
       console.log(e);
       dispatch({
         type: ActionType.POOL_TOKEN_BALANCE,
+        payload: "",
+      });
+      dispatch({
+        type: ActionType.FULL_POOL_TOKEN_BALANCE,
         payload: "",
       });
     }

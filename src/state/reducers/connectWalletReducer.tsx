@@ -20,6 +20,9 @@ interface ConnectWalletState {
   currentApy: any;
   totalTokensInRewardPool: any;
   totalDepositedTokens: any;
+  fullAccountBalance: any;
+  fullUserTokenBalance: any;
+  fullPoolTokenBalance: any;
 }
 
 const initialState = {
@@ -41,6 +44,9 @@ const initialState = {
   currentApy: "",
   totalTokensInRewardPool: "",
   totalDepositedTokens: "",
+  fullAccountBalance: "",
+  fullUserTokenBalance: "",
+  fullPoolTokenBalance: "",
 };
 
 const connectWalletReducer = (
@@ -68,6 +74,12 @@ const connectWalletReducer = (
       return { ...state, totalDepositedTokens: action.payload };
     case ActionType.TOTAL_TOKENS_IN_REWARD_POOL:
       return { ...state, totalTokensInRewardPool: action.payload };
+    case ActionType.FULL_AMOUNT_BALANCE:
+      return { ...state, fullAccountBalance: action.payload };
+    case ActionType.FULL_USER_TOKEN_BALANCE:
+      return { ...state, fullUserTokenBalance: action.payload };
+    case ActionType.FULL_POOL_TOKEN_BALANCE:
+      return { ...state, fullPoolTokenBalance: action.payload };
     case ActionType.CONNECT_WALLET:
       return { ...state, loading: true, walletConnected: false };
     case ActionType.ACTIVE_NETWORK:

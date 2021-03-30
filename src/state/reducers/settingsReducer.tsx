@@ -17,7 +17,7 @@ const initialState = {
   activeCurrency: {
     name: "Select Token",
     logoURI: icon,
-    chainId: 42,
+    chainId: 1,
     symbol: "Select Token",
     address: Reciepent,
     decimals: 18,

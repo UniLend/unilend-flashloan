@@ -143,7 +143,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
           });
         }
         break;
-      case "Formatic":
+      case "Fortmatic":
         try {
           // let web3: any = formaticWeb3;
           // console.log(

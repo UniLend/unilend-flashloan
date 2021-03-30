@@ -44,30 +44,30 @@ function App() {
 
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
-    }
-    if (window && window.ethereum !== undefined && window !== undefined) {
-      // let wallet = localStorage.getItem("wallet");
-      // if (wallet) {
-      //   handleWalletConnect(JSON.parse(wallet));
-      // }
-      //   window.ethereum.on("disconnect", () => {});
-      //   window.ethereum.on("accountsChanged", (accounts: any) => {
-      //     handleWalletConnect();
-      //   });
+      if (window && window.ethereum !== undefined && window !== undefined) {
+        // let wallet = localStorage.getItem("wallet");
+        // if (wallet) {
+        //   handleWalletConnect(JSON.parse(wallet));
+        // }
+        //   window.ethereum.on("disconnect", () => {});
+        //   window.ethereum.on("accountsChanged", (accounts: any) => {
+        //     handleWalletConnect();
+        //   });
 
-      window.ethereum.on("chainChanged", (chainId: any) => {
-        window.location.reload();
-      });
-      window.ethereum.on("accountsChanged", function (accounts: string) {
-        handleWalletConnect({
-          id: 1,
-          name: "metamask",
-          icon: "",
+        window.ethereum.on("chainChanged", (chainId: any) => {
+          window.location.reload();
         });
-      });
-      window.ethereum.on("message", (message: any) => {
-        console.log(message);
-      });
+        window.ethereum.on("accountsChanged", function (accounts: string) {
+          handleWalletConnect({
+            id: 1,
+            name: "metamask",
+            icon: "",
+          });
+        });
+        window.ethereum.on("message", (message: any) => {
+          console.log(message);
+        });
+      }
     }
     setTimeout(() => {
       setLoading(false);

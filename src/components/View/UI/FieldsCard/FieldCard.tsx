@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
@@ -16,7 +16,7 @@ interface Props {
 }
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
-  const [inputValue, setInputValue] = useState("");
+  // const [inputValue, setInputValue] = useState("");
   const { theme, activeCurrency } = useTypedSelector((state) => state.settings);
   useEffect(() => {
     field1.current.value = props.fieldValue;

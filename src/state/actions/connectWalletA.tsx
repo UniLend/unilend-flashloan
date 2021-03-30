@@ -2,7 +2,7 @@ import { ActionType } from "../action-types";
 
 interface AccountBalance {
   type: ActionType.ACCOUNT_BALANCE;
-  payload: string;
+  payload: any;
 }
 
 interface CurrentProvider {

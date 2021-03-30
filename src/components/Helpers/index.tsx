@@ -65,6 +65,7 @@ export function toDecimalPlace(n: any, d: any) {
 export const floatRegExp = new RegExp("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
 
 export function toFixed(num: any, fixed: any) {
-  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
-  return num.toString().match(re)[0];
+  fixed = fixed || 0;
+  fixed = Math.pow(10, fixed);
+  return Math.floor(num * fixed) / fixed;
 }

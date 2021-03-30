@@ -1,7 +1,8 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { floatRegExp } from "components/Helpers/index";
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -15,10 +16,19 @@ interface Props {
 }
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
+  const [inputValue, setInputValue] = useState("");
   const { theme, activeCurrency } = useTypedSelector((state) => state.settings);
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
+  const onHandleTelephoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inputField = e.target.value;
+    // if value is not blank, then test the regex
+    if (inputField === "" || floatRegExp.test(inputField)) {
+      props.onF1Change(e);
+      setInputValue(inputField);
+    }
+  };
   return (
     <>
       <div className={`${theme} card field-card`}>
@@ -29,9 +39,10 @@ const FieldCard: FC<Props> = (props) => {
               <input
                 type={props.fieldType}
                 ref={field1}
+                value={inputValue}
                 className="form-control field-input"
                 placeholder="0.0"
-                onChange={props.onF1Change}
+                onChange={(e) => onHandleTelephoneChange(e)}
               />
             </div>
             <div className=" col-6 col-md-6">

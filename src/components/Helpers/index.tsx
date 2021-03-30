@@ -62,3 +62,4 @@ export function toDecimalPlace(n: any, d: any) {
 //     return w.replace(new RegExp(`^(.{${pos}})(.)`), `$1${dot}$2`);
 //   }
 // }
+export const floatRegExp = new RegExp("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");

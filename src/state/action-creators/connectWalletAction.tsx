@@ -347,7 +347,6 @@ export const getPoolTokenBalance = (
             let amount = parseFloat(r);
             let decimalAmount = amount / Math.pow(10, decimal);
             let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
-            console.log(r);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
               payload: r > 0 ? fullAmount : 0,

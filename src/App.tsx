@@ -86,10 +86,17 @@ function App() {
               <div className="alertbody d-flex align-items-center">
                 <img className="icon" src={AlertImg} alt="alert" />
                 <p className="alertext ml-3">
-                  UniLend FlashLoan contract has been audited by Certik.
-                  However, it is still in beta, use it at your own risk. Please
-                  familiarize yourself with the platform to understand the
-                  correct usage and features of the platform.
+                  UniLend FlashLoan contract has been audited by
+                  <a
+                    href="https://unilend.finance/docs/unilend_flashloan_audit_report.pdf"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {` Certik`}
+                  </a>
+                  . However, it is still in beta, use it at your own risk.
+                  Please familiarize yourself with the platform to understand
+                  the correct usage and features of the platform.
                 </p>
               </div>
             </Alert>

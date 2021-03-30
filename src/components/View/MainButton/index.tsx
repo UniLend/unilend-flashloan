@@ -136,8 +136,7 @@ const MainButton: FC<Props> = ({
           disabled={
             amount === "" ||
             parseFloat(amount) <= 0 ||
-            (activeCurrency.symbol === "UFT" &&
-              parseFloat(amount) + poolTokenBalance >= 1_000_000) ||
+            parseFloat(amount) + poolTokenBalance >= 1_000_000 ||
             activeCurrency.symbol === "Select Token" ||
             depositLoading ||
             donateLoading ||

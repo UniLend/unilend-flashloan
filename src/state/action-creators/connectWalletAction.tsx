@@ -25,190 +25,194 @@ export const setSelectedNetworkId = (selectedNetworkId: number) => ({
 });
 
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
-  let accounts: any;
-  let connectedWallet = JSON.stringify(wallet);
-  localStorage.setItem("walletConnected", connectedWallet);
-  switch (wallet.name) {
-    case "metamask":
-      //// Ethererum ////
-      accounts = await web3Service.getAccounts();
-      if (window && !(window as any).ethereum.selectedAddress) {
-        (window as any).ethereum.enable().then(() => {
-          web3Service.getAccounts().then((res: any) => {
-            dispatch({
-              type: ActionType.CONNECT_WALLET_SUCCESS,
-              payload: [...res],
+  try {
+    let accounts: any;
+    let connectedWallet = JSON.stringify(wallet);
+    localStorage.setItem("walletConnected", connectedWallet);
+    switch (wallet.name) {
+      case "metamask":
+        //// Ethererum ////
+        accounts = await web3Service.getAccounts();
+        if (window && !(window as any).ethereum.selectedAddress) {
+          (window as any).ethereum.enable().then(() => {
+            web3Service.getAccounts().then((res: any) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_SUCCESS,
+                payload: [...res],
+              });
             });
           });
-        });
-      } else {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_SUCCESS,
-          payload: [...accounts],
-        });
-      }
-
-      break;
-    case "binaceWallet":
-      try {
-        // Binance //////
-
-        const bsc = new BscConnector({
-          supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
-        });
-        await bsc.activate();
-        let accounts = await bsc.getAccount();
-        if (accounts) {
+        } else {
           dispatch({
             type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [accounts],
+            payload: [...accounts],
           });
         }
 
-        const provider = (window as any).ethereum;
-        if (provider) {
-          const chainId = 56;
-          try {
-            await provider.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: `0x${chainId.toString(16)}`,
-                  chainName: "Binance Smart Chain Mainnet",
-                  nativeCurrency: {
-                    name: "BNB",
-                    symbol: "bnb",
-                    decimals: 18,
-                  },
-                  rpcUrls: ["https://bsc-dataseed.binance.org/"],
-                  blockExplorerUrls: ["https://bscscan.com/"],
-                },
-              ],
+        break;
+      case "binaceWallet":
+        try {
+          // Binance //////
+
+          const bsc = new BscConnector({
+            supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
+          });
+          await bsc.activate();
+          let accounts = await bsc.getAccount();
+          if (accounts) {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [accounts],
             });
-            return true;
-          } catch (error) {
-            console.error(error);
+          }
+
+          const provider = (window as any).ethereum;
+          if (provider) {
+            const chainId = 56;
+            try {
+              await provider.request({
+                method: "wallet_addEthereumChain",
+                params: [
+                  {
+                    chainId: `0x${chainId.toString(16)}`,
+                    chainName: "Binance Smart Chain Mainnet",
+                    nativeCurrency: {
+                      name: "BNB",
+                      symbol: "bnb",
+                      decimals: 18,
+                    },
+                    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                    blockExplorerUrls: ["https://bscscan.com/"],
+                  },
+                ],
+              });
+              return true;
+            } catch (error) {
+              console.error(error);
+              return false;
+            }
+          } else {
+            console.error(
+              "Can't setup the BSC network on metamask because window.ethereum is undefined"
+            );
             return false;
           }
-        } else {
-          console.error(
-            "Can't setup the BSC network on metamask because window.ethereum is undefined"
-          );
-          return false;
-        }
-      } catch (e) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: e.message,
-        });
-      }
-      break;
-    case "walletConnect":
-      try {
-        let provider: any = CWweb3.connectWalletProvider;
-        await provider.enable();
-        accounts = await CWweb3.connectWalletWeb3.eth.getAcoounts();
-        dispatch({
-          type: ActionType.CONNECT_WALLET_SUCCESS,
-          payload: [...accounts],
-        });
-      } catch (err) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: err.message,
-        });
-      }
-      break;
-    case "CoinbaseWallet":
-      try {
-        CoinbaseProvider.enable()
-          .then((accounts: string[]) => {
-            CoinbaseWeb3.eth.defaultAccount = accounts[0];
-            dispatch({
-              type: ActionType.CONNECT_WALLET_SUCCESS,
-              payload: [...accounts],
-            });
-          })
-          .catch((err) => {
-            dispatch({
-              type: ActionType.CONNECT_WALLET_ERROR,
-              payload: err.message,
-            });
+        } catch (e) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: e.message,
           });
-      } catch (err) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: err.message,
-        });
-      }
-      break;
-    case "Formatic":
-      try {
-        // let web3: any = formaticWeb3;
-        // console.log(
-        //   web3.currentProvider
-        //     .enable()
-        //     .then((res: any) => {
-        //       let address: string[];
-        //       address = res;
-        //       dispatch({
-        //         type: ActionType.CONNECT_WALLET_SUCCESS,
-        //         payload: [...address],
-        //       });
-        //     })
-        //     .catch((err: any) => {
-        //       dispatch({
-        //         type: ActionType.CONNECT_WALLET_ERROR,
-        //         payload: err.message,
-        //       });
-        //     })
-        // );
-      } catch (err) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: err.message,
-        });
-      }
-      break;
-    case "Portis":
-      try {
-        portisWeb3.eth.getAccounts((error, accounts) => {
-          if (!error) {
-            let address: string[];
-            address = accounts;
-            dispatch({
-              type: ActionType.CONNECT_WALLET_SUCCESS,
-              payload: [...address],
+        }
+        break;
+      case "walletConnect":
+        try {
+          let provider: any = CWweb3.connectWalletProvider;
+          await provider.enable();
+          accounts = await CWweb3.connectWalletWeb3.eth.getAcoounts();
+          dispatch({
+            type: ActionType.CONNECT_WALLET_SUCCESS,
+            payload: [...accounts],
+          });
+        } catch (err) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: err.message,
+          });
+        }
+        break;
+      case "CoinbaseWallet":
+        try {
+          CoinbaseProvider.enable()
+            .then((accounts: string[]) => {
+              CoinbaseWeb3.eth.defaultAccount = accounts[0];
+              dispatch({
+                type: ActionType.CONNECT_WALLET_SUCCESS,
+                payload: [...accounts],
+              });
+            })
+            .catch((err) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: err.message,
+              });
             });
-          } else {
-            dispatch({
-              type: ActionType.CONNECT_WALLET_ERROR,
-              payload: error.message,
-            });
-          }
-        });
-      } catch (err) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: err.message,
-        });
-      }
-      break;
-    default:
-      accounts = await web3Service.getAccounts();
-      if (window && !(window as any).ethereum.selectedAddress) {
-        (window as any).ethereum.enable();
-        dispatch({
-          type: ActionType.CONNECT_WALLET_SUCCESS,
-          payload: [...accounts],
-        });
-      } else {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_SUCCESS,
-          payload: [...accounts],
-        });
-      }
-      break;
+        } catch (err) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: err.message,
+          });
+        }
+        break;
+      case "Formatic":
+        try {
+          // let web3: any = formaticWeb3;
+          // console.log(
+          //   web3.currentProvider
+          //     .enable()
+          //     .then((res: any) => {
+          //       let address: string[];
+          //       address = res;
+          //       dispatch({
+          //         type: ActionType.CONNECT_WALLET_SUCCESS,
+          //         payload: [...address],
+          //       });
+          //     })
+          //     .catch((err: any) => {
+          //       dispatch({
+          //         type: ActionType.CONNECT_WALLET_ERROR,
+          //         payload: err.message,
+          //       });
+          //     })
+          // );
+        } catch (err) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: err.message,
+          });
+        }
+        break;
+      case "Portis":
+        try {
+          portisWeb3.eth.getAccounts((error, accounts) => {
+            if (!error) {
+              let address: string[];
+              address = accounts;
+              dispatch({
+                type: ActionType.CONNECT_WALLET_SUCCESS,
+                payload: [...address],
+              });
+            } else {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: error.message,
+              });
+            }
+          });
+        } catch (err) {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: err.message,
+          });
+        }
+        break;
+      default:
+        accounts = await web3Service.getAccounts();
+        if (window && !(window as any).ethereum.selectedAddress) {
+          (window as any).ethereum.enable();
+          dispatch({
+            type: ActionType.CONNECT_WALLET_SUCCESS,
+            payload: [...accounts],
+          });
+        } else {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_SUCCESS,
+            payload: [...accounts],
+          });
+        }
+        break;
+    }
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -344,7 +348,6 @@ export const getPoolTokenBalance = (
       FlashloanLBCore(currentProvider)
         .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
         .call((e: any, r: any) => {
-          console.log("response of poolToken", r, timestamp);
           if (!e) {
             let amount = parseFloat(r);
             let decimalAmount = amount / Math.pow(10, decimal);
@@ -453,36 +456,40 @@ export const getCurrentAPY = (
   totalTokensInRewardPool: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    UnilendFDonation(currentProvider, donateContract)
-      .methods.getReleaseRate(reciepentAddress)
-      .call((e: any, r: any) => {
-        if (!e) {
-          let amount = parseFloat(r);
-          let fullAmountPerSec = amount / Math.pow(10, 18);
-          let _totalTokenInRewardPool =
-            totalTokensInRewardPool / Math.pow(10, decimal);
-          let _totalDepositedToken =
-            totalDepositedTokens / Math.pow(10, decimal);
-          let fullAmount: any = 0;
-          if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
-            fullAmount = toFixed(
-              fullAmountPerSec *
-                (60 * 60 * 24 * 365.25) *
-                (_totalTokenInRewardPool / _totalDepositedToken),
-              2
-            );
+    try {
+      UnilendFDonation(currentProvider, donateContract)
+        .methods.getReleaseRate(reciepentAddress)
+        .call((e: any, r: any) => {
+          if (!e) {
+            let amount = parseFloat(r);
+            let fullAmountPerSec = amount / Math.pow(10, 18);
+            let _totalTokenInRewardPool =
+              totalTokensInRewardPool / Math.pow(10, decimal);
+            let _totalDepositedToken =
+              totalDepositedTokens / Math.pow(10, decimal);
+            let fullAmount: any = 0;
+            if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
+              fullAmount = toFixed(
+                fullAmountPerSec *
+                  (60 * 60 * 24 * 365.25) *
+                  (_totalTokenInRewardPool / _totalDepositedToken),
+                2
+              );
+            }
+            dispatch({
+              type: ActionType.CURRENT_APY,
+              payload: fullAmount,
+            });
+          } else {
+            dispatch({
+              type: ActionType.CURRENT_APY,
+              payload: "",
+            });
           }
-          dispatch({
-            type: ActionType.CURRENT_APY,
-            payload: fullAmount,
-          });
-        } else {
-          dispatch({
-            type: ActionType.CURRENT_APY,
-            payload: "",
-          });
-        }
-      });
+        });
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 
@@ -519,21 +526,25 @@ export const getTotalTokensInRewardPool = (
   donationAddress: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    IERC20(currentProvider, recipientAddress)
-      .methods.balanceOf(donationAddress)
-      .call((err: any, res: any) => {
-        if (!err) {
-          dispatch({
-            type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
-            payload: res,
-          });
-        } else {
-          dispatch({
-            type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
-            payload: "",
-          });
-        }
-      });
+    try {
+      IERC20(currentProvider, recipientAddress)
+        .methods.balanceOf(donationAddress)
+        .call((err: any, res: any) => {
+          if (!err) {
+            dispatch({
+              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+              payload: res,
+            });
+          } else {
+            dispatch({
+              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+              payload: "",
+            });
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 export const getRewardReleaseRatePerDay = (
@@ -543,25 +554,29 @@ export const getRewardReleaseRatePerDay = (
   decimal: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    UnilendFDonation(currentProvider, donateContract)
-      .methods.getReleaseRate(reciepentAddress)
-      .call((e: any, r: any) => {
-        if (!e) {
-          let amount = parseFloat(r);
+    try {
+      UnilendFDonation(currentProvider, donateContract)
+        .methods.getReleaseRate(reciepentAddress)
+        .call((e: any, r: any) => {
+          if (!e) {
+            let amount = parseFloat(r);
 
-          let fullAmountPerSec = amount / Math.pow(10, 18);
-          let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2);
-          dispatch({
-            type: ActionType.REWARD_RELEASE_RATE,
-            payload: fullAmount,
-          });
-        } else {
-          dispatch({
-            type: ActionType.REWARD_RELEASE_RATE,
-            payload: "",
-          });
-        }
-      });
+            let fullAmountPerSec = amount / Math.pow(10, 18);
+            let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2);
+            dispatch({
+              type: ActionType.REWARD_RELEASE_RATE,
+              payload: fullAmount,
+            });
+          } else {
+            dispatch({
+              type: ActionType.REWARD_RELEASE_RATE,
+              payload: "",
+            });
+          }
+        });
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 
@@ -599,8 +614,6 @@ export const getPoolLiquidity = (
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
             if (!e) {
-              console.log("response of pool total", r, timestamp);
-
               let amount = r;
 
               let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);

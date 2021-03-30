@@ -203,8 +203,8 @@ input[type="number"] {
   border-radius: 0;
   font-size: 16px;
   font-weight: 400;
-  color: #333;
-  background-color: #fff6e4;
+  color: #fff;
+  background-color: #2f4774;
   height: 64px;
   button {
     height: 100%;
@@ -212,9 +212,15 @@ input[type="number"] {
   p {
     margin-bottom: 0;
   }
+  a {
+    color: #ffc107;
+    :hover {
+      color: #ffc107;
+    }
+  }
   .close {
     height: 100%;
-    color: #f07310 !important;
+    color: white !important;
     font-size: 20px;
   }
   .alertext {

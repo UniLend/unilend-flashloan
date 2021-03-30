@@ -343,6 +343,7 @@ export const getPoolTokenBalance = (
       FlashloanLBCore(currentProvider)
         .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
         .call((e: any, r: any) => {
+          console.log("response of poolToken", r, timestamp);
           if (!e) {
             let amount = parseFloat(r);
             let decimalAmount = amount / Math.pow(10, decimal);
@@ -588,7 +589,7 @@ export const getPoolLiquidity = (
             });
           });
       } else {
-        let timestamp = new Date().valueOf();
+        let timestamp = (new Date().valueOf() / 1000).toFixed(0);
 
         // let _IERC20 = IERC20(currentProvider, reciepentAddress);
         // _IERC20.methods
@@ -597,6 +598,8 @@ export const getPoolLiquidity = (
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
             if (!e) {
+              console.log("response of pool total", r, timestamp);
+
               let amount = r;
 
               let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);

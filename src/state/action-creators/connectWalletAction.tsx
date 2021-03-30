@@ -337,7 +337,8 @@ export const getPoolTokenBalance = (
       //       });
       //     }
       //   });
-      let timestamp = new Date().valueOf();
+      let timestamp = (new Date().valueOf() / 1000).toFixed(0);
+
       // FlashLoanPool(currentProvider, assertAddress)
       //   .methods.balanceOfUnderlying(accounts)
       FlashloanLBCore(currentProvider)

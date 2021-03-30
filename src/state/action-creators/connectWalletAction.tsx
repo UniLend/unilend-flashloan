@@ -274,6 +274,13 @@ export const getAccountBalance = (selectedAccount: string) => {
         type: ActionType.FULL_AMOUNT_BALANCE,
         payload: "",
       });
+      dispatch({
+        type: ActionType.CURRENT_PROVIDER,
+        payload: "",
+      });
+      dispatch({
+        type: ActionType.WALLET_DISCONNECT,
+      });
     }
   };
 };

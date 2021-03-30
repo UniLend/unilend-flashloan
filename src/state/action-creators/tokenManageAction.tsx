@@ -23,6 +23,7 @@ export const fetchTokenList = (
               axios
                 .get(item.fetchURI)
                 .then((res) => {
+                  console.log("res", res, accounts);
                   if (res.data) {
                     const tokenList: any = res.data.tokens.filter(
                       (item: any) => {
@@ -30,7 +31,7 @@ export const fetchTokenList = (
                         return item.chainId == networkId;
                       }
                     );
-                    if (accounts.length > 0) {
+                    if (currentProvider && accounts.length > 0) {
                       tokenList.forEach((item: any) => {
                         let _IERC20 = IERC20(currentProvider, item.address);
                         _IERC20.methods
@@ -63,6 +64,7 @@ export const fetchTokenList = (
                       // if (tokenList) totalTokenList.push(...newList);
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
+                      console.log(tokenList);
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
                         payload: [...totalTokenList],

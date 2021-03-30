@@ -222,8 +222,7 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    if (currentProvider && accounts.length && activeCurrency)
-      fetchTokenList(tokenGroupList, networkId, currentProvider, accounts[0]);
+    fetchTokenList(tokenGroupList, networkId, currentProvider, accounts[0]);
     setModalInfo({
       ...modalInfo,
     });

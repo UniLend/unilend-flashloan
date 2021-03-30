@@ -104,6 +104,7 @@ const CommonCard = (props: props) => {
         currentProvider,
         accounts[0],
         receipentAddress,
+        assertAddress,
         activeCurrency.decimals
       );
 
@@ -436,7 +437,7 @@ const CommonCard = (props: props) => {
                     Pool percentage <span className="price">-</span>
                   </div> */}
                   <div className="price-list">
-                    Current APY
+                    <p>Current APY</p>
                     <span className="price">{`${
                       currentApy !== "" ? `${currentApy}%` : "-"
                     }/year`}</span>

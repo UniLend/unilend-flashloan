@@ -181,6 +181,11 @@ input[type="number"] {
 .price-list {
   margin-top: 10px;
   text-align: left;
+  p {
+    letter-spacing: 0.75px;
+    display: inline-block;
+    margin-bottom: 0;
+  }
 }
 
 .price {
@@ -309,11 +314,13 @@ input[type="number"] {
 .warning-lead-text {
   font-size: 13px;
   font-weight: 300;
+  letter-spacing: 0.75px;
 }
 
 .warning-note-text {
   font-size: 13px;
   font-weight: 300;
+  letter-spacing: 0.75px;
 }
 .checkbox-custom input[type="checkbox"] {
   height: 15px;

@@ -11,6 +11,7 @@ import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
 import {
+  FlashloanLBCore,
   FlashLoanPool,
   IERC20,
   UnilendFDonation,
@@ -269,10 +270,15 @@ export const getUserTokenBalance = (
   currentProvider: any,
   accounts: any,
   reciepentAddress: string,
+  assertAddress: string,
   decimal: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
+      // let timestamp = new Date().valueOf();
+      // FlashloanLBCore(currentProvider)
+      //   .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
+      //   .call((e: any, r: any) => {
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
@@ -315,18 +321,23 @@ export const getPoolTokenBalance = (
       //       });
       //     }
       //   });
-      FlashLoanPool(currentProvider, assertAddress)
-        .methods.balanceOfUnderlying(accounts)
+      let timestamp = new Date().valueOf();
+      // FlashLoanPool(currentProvider, assertAddress)
+      //   .methods.balanceOfUnderlying(accounts)
+      FlashloanLBCore(currentProvider)
+        .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
         .call((e: any, r: any) => {
           if (!e) {
             let amount = parseFloat(r);
 
             let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
-
+            console.log(r);
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
               payload: r > 0 ? fullAmount : 0,
             });
+          } else {
+            console.log(e);
           }
         });
     } catch (e: any) {
@@ -554,9 +565,13 @@ export const getPoolLiquidity = (
             });
           });
       } else {
-        let _IERC20 = IERC20(currentProvider, reciepentAddress);
-        _IERC20.methods
-          .balanceOf(UnilendFlashLoanCoreContract(currentProvider))
+        let timestamp = new Date().valueOf();
+
+        // let _IERC20 = IERC20(currentProvider, reciepentAddress);
+        // _IERC20.methods
+        //   .balanceOf(UnilendFlashLoanCoreContract(currentProvider))
+        FlashloanLBCore(currentProvider)
+          .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
             if (!e) {
               let amount = r;

@@ -3,7 +3,7 @@ export const UnilendFlashLoanCoreContract = (currentProvider: any) => {
     return "0x8b90F6Be5C8fF057d0744fB4D99F7EfFf6889460";
   } else {
     // return "0x186b707bB603c16295eF38EA27a081EBf5b65989"; // old contract address
-    return "0xf09f8Fb3f0224b835f190CC801F5F1a2f9fAbf40";
+    return "0x9E586A8A686C7055bEd13231DA0C07954ed6Fe47";
   }
 };
 

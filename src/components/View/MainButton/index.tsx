@@ -101,6 +101,7 @@ const MainButton: FC<Props> = ({
         currentProvider,
         address[0],
         receipentAddress,
+        assertAddress,
         decimal
       );
       getPoolTokenBalance(

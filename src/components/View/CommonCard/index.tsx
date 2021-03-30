@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
-import { capitalize } from "components/Helpers";
+import { capitalize, toFixed } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
 // import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
@@ -289,7 +289,7 @@ const CommonCard = (props: props) => {
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
-      let poolPercent = ((poolTokenBalance / poolLiquidity) * 100).toFixed(2);
+      let poolPercent = toFixed((poolTokenBalance / poolLiquidity) * 100, 2);
       setPoolPercentage(poolPercent);
     } else {
       setPoolPercentage(0);

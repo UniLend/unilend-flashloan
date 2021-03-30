@@ -16,6 +16,7 @@ import {
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
+import { toFixed } from "components/Helpers";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -250,7 +251,7 @@ export const getAccountBalance = (selectedAccount: string) => {
     try {
       let balance = await web3Service.getBalance(selectedAccount);
       let ethBal = web3Service.getWei(balance, "ether");
-      let ethBalDeci = parseFloat(ethBal).toFixed(3);
+      let ethBalDeci = toFixed(parseFloat(ethBal), 3);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE,
         payload: ethBalDeci,
@@ -277,7 +278,7 @@ export const getUserTokenBalance = (
         if (!e) {
           let amount = parseFloat(r);
 
-          let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
+          let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,
@@ -320,7 +321,7 @@ export const getPoolTokenBalance = (
           if (!e) {
             let amount = parseFloat(r);
 
-            let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
+            let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
 
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
@@ -350,7 +351,7 @@ export const getRewardPoolBalance = (
         .methods.balanceOfToken(reciepentAddress)
         .call((e: any, r: any) => {
           if (!e) {
-            let fullAmount = r > 0 ? (r / Math.pow(10, decimal)).toFixed(3) : 0;
+            let fullAmount = r > 0 ? toFixed(r / Math.pow(10, decimal), 3) : 0;
             dispatch({
               type: ActionType.REWARD_POOL_BALANCE,
               payload: fullAmount,
@@ -428,11 +429,12 @@ export const getCurrentAPY = (
             totalDepositedTokens / Math.pow(10, decimal);
           let fullAmount: any = 0;
           if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
-            fullAmount = (
+            fullAmount = toFixed(
               fullAmountPerSec *
-              (60 * 60 * 24 * 365.25) *
-              (_totalTokenInRewardPool / _totalDepositedToken)
-            ).toFixed(2);
+                (60 * 60 * 24 * 365.25) *
+                (_totalTokenInRewardPool / _totalDepositedToken),
+              2
+            );
           }
           dispatch({
             type: ActionType.CURRENT_APY,
@@ -512,7 +514,7 @@ export const getRewardReleaseRatePerDay = (
           let amount = parseFloat(r);
 
           let fullAmountPerSec = amount / Math.pow(10, 18);
-          let fullAmount = (fullAmountPerSec * (60 * 60 * 24)).toFixed(2);
+          let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2);
           dispatch({
             type: ActionType.REWARD_RELEASE_RATE,
             payload: fullAmount,
@@ -559,7 +561,7 @@ export const getPoolLiquidity = (
             if (!e) {
               let amount = r;
 
-              let fullAmount = (amount / Math.pow(10, decimal)).toFixed(3);
+              let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
               dispatch({
                 type: ActionType.POOL_LIQUIDITY,
                 payload: fullAmount,

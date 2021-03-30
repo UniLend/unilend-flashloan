@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toFixed } from "components/Helpers";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
@@ -38,9 +39,10 @@ export const fetchTokenList = (
                             if (!e) {
                               let amount = parseFloat(r);
 
-                              let fullAmount = (
-                                amount / Math.pow(10, item.decimals)
-                              ).toFixed(3);
+                              let fullAmount = toFixed(
+                                amount / Math.pow(10, item.decimals),
+                                3
+                              );
                               item["balance"] = fullAmount;
                               if (tokenList) totalTokenList.push(item);
                               dispatch({

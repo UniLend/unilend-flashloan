@@ -56,7 +56,7 @@ const FieldCard: FC<Props> = (props) => {
                 <label className="form-balance-label">
                   {props.selectLabel !== "" &&
                   activeCurrency.symbol !== "Select Token"
-                    ? `Balance: ${props.selectLabel}`
+                    ? `Balance: ${props.selectLabel.toLocaleString()}`
                     : ""}
                 </label>
               </div>

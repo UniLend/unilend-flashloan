@@ -107,8 +107,6 @@ const CommonCard = (props: props) => {
         assertAddress,
         activeCurrency.decimals
       );
-
-      console.log("CurrentProvider", currentProvider);
     }
     getTotalDepositedTokens(currentProvider, activeCurrency.address);
     if (donateContractAddress !== "") {
@@ -448,7 +446,7 @@ const CommonCard = (props: props) => {
                     <span className="price">
                       {poolLiquidity ? (
                         <>
-                          <span>{poolLiquidity}</span>
+                          <span>{poolLiquidity.toLocaleString()}</span>
                           <img
                             src={activeCurrency.logoURI}
                             alt="logo"
@@ -480,7 +478,7 @@ const CommonCard = (props: props) => {
                     <span className="price">
                       {walletConnected && poolTokenBalance !== "" ? (
                         <>
-                          <span>{poolTokenBalance}</span>
+                          <span>{poolTokenBalance.toLocaleString()}</span>
                           <img
                             src={activeCurrency.logoURI}
                             alt="logo"
@@ -513,7 +511,7 @@ const CommonCard = (props: props) => {
                       <span className="price">
                         {walletConnected && rewardPoolBalance !== "" ? (
                           <>
-                            <span>{rewardPoolBalance}</span>
+                            <span>{rewardPoolBalance.toLocaleString()}</span>
                             <img
                               src={activeCurrency.logoURI}
                               alt="logo"

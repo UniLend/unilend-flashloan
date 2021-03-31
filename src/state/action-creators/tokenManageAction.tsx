@@ -44,7 +44,7 @@ export const fetchTokenList = (
                                 amount / Math.pow(10, item.decimals),
                                 3
                               );
-                              item["balance"] = fullAmount;
+                              item["balance"] = fullAmount.toLocaleString();
                               if (tokenList) totalTokenList.push(item);
                               dispatch({
                                 type: ActionType.GET_TOKEN_LIST,

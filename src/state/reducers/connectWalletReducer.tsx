@@ -24,6 +24,7 @@ interface ConnectWalletState {
   fullAccountBalance: any;
   fullUserTokenBalance: any;
   fullPoolTokenBalance: any;
+  walletProvider: any;
 }
 
 const initialState = {
@@ -48,6 +49,7 @@ const initialState = {
   fullAccountBalance: "",
   fullUserTokenBalance: "",
   fullPoolTokenBalance: "",
+  walletProvider: (window as any).ethereum,
 };
 
 const connectWalletReducer = (
@@ -66,7 +68,11 @@ const connectWalletReducer = (
     case ActionType.REWARD_RELEASE_RATE:
       return { ...state, rewardReleaseRate: action.payload };
     case ActionType.CURRENT_PROVIDER:
-      return { ...state, currentProvider: action.payload };
+      return {
+        ...state,
+        currentProvider: action.payload,
+        walletProvider: action.provider,
+      };
     case ActionType.REWARD_POOL_BALANCE:
       return { ...state, rewardPoolBalance: action.payload };
     case ActionType.CURRENT_APY:
@@ -113,6 +119,7 @@ const connectWalletReducer = (
         selectedNetworkId: action.networkId ? action.networkId : 1,
       };
     case ActionType.WALLET_DISCONNECT:
+      localStorage.removeItem("walletconnect");
       return {
         ...state,
         loading: false,
@@ -124,6 +131,7 @@ const connectWalletReducer = (
         userTokenBalance: "",
         poolTokenBalance: "",
         currentProvider: web3,
+        walletProvider: (window as any).ethereum,
       };
     default:
       return state;

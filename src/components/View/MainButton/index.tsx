@@ -38,7 +38,7 @@ const MainButton: FC<Props> = ({
     accounts: address,
     currentProvider,
     poolTokenBalance,
-    userTokenBalance,
+    // userTokenBalance,
     fullUserTokenBalance,
     fullPoolTokenBalance,
     handleWalletConnect,

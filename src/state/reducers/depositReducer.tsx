@@ -16,7 +16,7 @@ const initialState = {
   depositLoading: false,
   depositAllowanceLoading: false,
   depositErrorMessage: "",
-  depositIsApproving:false
+  depositIsApproving: false,
 };
 
 const DepositReducer = (
@@ -40,17 +40,18 @@ const DepositReducer = (
       return {
         ...state,
         depositIsApproving: true,
-      }
+      };
     case ActionType.DEPOSIT_APPROVE_SUCCESS:
       return {
         ...state,
         depositIsApproving: false,
-      }
+      };
     case ActionType.DEPOSIT_APPROVE_FAILED:
       return {
         ...state,
         depositIsApproving: false,
-      }
+        depositErrorMessage: action.message ? action.message : "Approve Failed",
+      };
     case ActionType.DEPOSIT_APPROVAL_STATUS:
       return {
         ...state,
@@ -70,7 +71,7 @@ const DepositReducer = (
         ...state,
         depositLoading: false,
         isDepositSuccess: false,
-        depositErrorMessage: "Deposit Failed",
+        depositErrorMessage: action.message,
       };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };

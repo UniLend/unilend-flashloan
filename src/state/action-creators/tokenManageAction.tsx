@@ -23,7 +23,6 @@ export const fetchTokenList = (
               axios
                 .get(item.fetchURI)
                 .then((res) => {
-                  console.log("res", res);
                   if (res.data) {
                     const tokenList: any = res.data.tokens.filter(
                       (item: any) => {

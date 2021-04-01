@@ -30,9 +30,10 @@ interface WalletInfo {
 const NavBar: React.FC<Props> = (props) => {
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId, activeNetWork } = useTypedSelector(
+  const { selectedNetworkId, activeNetWork, walletProvider } = useTypedSelector(
     (state) => state.connectWallet
   );
+  // const { activeCurrency } = useTypedSelector((state) => state.settings);
   const { themeChange, setActiveTab, walletDisconnect } = useActions();
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
@@ -51,6 +52,8 @@ const NavBar: React.FC<Props> = (props) => {
     walletConnected,
     accounts,
     loading,
+    accountBalance,
+
     handleWalletConnect,
   } = useWalletConnect();
   useEffect(() => {
@@ -128,14 +131,19 @@ const NavBar: React.FC<Props> = (props) => {
               </li>
             </ul>
           </div>
-          <div
-            className={`d-flex btn ${
-              theme === "dark" && "btn-dark"
-            } btn-custom-secondary btn-round-switch`}
-            style={{ padding: "7px" }}
-          >
-            {activeNetWork}
-          </div>
+          {walletConnected && !loading ? (
+            <div
+              className={`d-flex btn ${
+                theme === "dark" && "btn-dark"
+              } btn-custom-secondary btn-round-switch`}
+              style={{ padding: "7px" }}
+            >
+              {activeNetWork}
+            </div>
+          ) : (
+            ""
+          )}
+
           <button
             className={`d-flex btn ${
               theme === "dark" && "btn-dark"
@@ -152,6 +160,14 @@ const NavBar: React.FC<Props> = (props) => {
             />
             <span>{capitalize(networkInfo.label)}</span>
           </button>
+          {walletConnected && accounts.length && accountBalance ? (
+            <div className={`d-flex btn-custom-secondary acc-balance`}>
+              <span className="mr-1">{accountBalance}</span>
+              <span className="currency">ETH</span>
+            </div>
+          ) : (
+            ""
+          )}
           {(accounts && accounts.length) || walletConnected ? (
             <button
               className={`d-flex btn ${
@@ -207,7 +223,7 @@ const NavBar: React.FC<Props> = (props) => {
                 });
               }}
               handleDisconnect={() => {
-                walletDisconnect();
+                walletDisconnect(walletProvider);
                 setWalletStatusInfo({ ...walletStatusInfo, show: false });
                 setWalletModalInfo({ ...walletModalInfo, show: false });
               }}

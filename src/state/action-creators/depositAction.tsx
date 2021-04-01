@@ -90,16 +90,40 @@ export const depositApprove = (
             type: ActionType.DEPOSIT_APPROVE_SUCCESS,
           });
         })
-        .catch((e: Error) => {
-          localStorage.setItem("isApproving", "false");
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_FAILED,
-          });
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVAL_STATUS,
-            payload: false,
-          });
+        .on("error", (err: any, res: any) => {
+          if (res === undefined) {
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_FAILED,
+              payload: false,
+              // message: err.message.split(":")[1],
+              message: "Approval Rejected",
+            });
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVAL_STATUS,
+              payload: false,
+            });
+          } else {
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_FAILED,
+              payload: false,
+              message: "Approval Failed",
+            });
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVAL_STATUS,
+              payload: false,
+            });
+          }
         });
+      // .catch((e: Error) => {
+      //   localStorage.setItem("isApproving", "false");
+      //   dispatch({
+      //     type: ActionType.,
+      //   });
+      //   dispatch({
+      //     type: ActionType.DEPOSIT_APPROVAL_STATUS,
+      //     payload: false,
+      //   });
+      // });
     } catch (e) {
       dispatch({
         type: ActionType.DEPOSIT_APPROVE_FAILED,
@@ -139,18 +163,38 @@ export const handleDeposit = (
             payload: true,
           });
         })
-        .catch((e: any) => {
-          console.log("Err", e);
-          dispatch({
-            type: ActionType.DEPOSIT_FAILED,
-            payload: false,
-          });
+        // .on("confirmation", function (confirmationNumber: any, receipt: any) {
+        //   console.log(confirmationNumber, receipt);
+        // })
+        .on("error", (err: any, res: any) => {
+          if (res === undefined) {
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              // message: err.message.split(":")[1],
+              message: "Transaction Rejected",
+            });
+          } else {
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              message: "Transaction Failed",
+            });
+          }
         });
+      // .catch((e: any) => {
+      //   dispatch({
+      //     type: ActionType.DEPOSIT_FAILED,
+      //     payload: false,
+      //     message: "Deposit Failed",
+      //   });
+      // });
     } catch (e) {
       console.log(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,
+        message: "Transaction Failed",
       });
     }
   };

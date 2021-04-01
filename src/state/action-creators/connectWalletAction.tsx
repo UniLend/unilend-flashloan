@@ -5,14 +5,13 @@ import { ActionType } from "state/action-types";
 import { Action } from "state/actions/connectWalletA";
 import CWweb3 from "ethereum/connectWalletWeb3";
 import { CoinbaseProvider, CoinbaseWeb3 } from "ethereum/coinbaseWeb3";
-import { formaticWeb3 } from "ethereum/formatic";
-import { portisWeb3 } from "ethereum/portis";
+import { fm, formaticWeb3 } from "ethereum/formatic";
+import { portis, portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
 import {
   FlashloanLBCore,
-  FlashLoanPool,
   IERC20,
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
@@ -23,7 +22,52 @@ export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
   networkId: selectedNetworkId,
 });
-
+export const checkNet = (net: any) => {
+  switch (net) {
+    case 1:
+      return "Mainnet";
+    case 42:
+      return "Kovan";
+    case 3:
+      return "Ropsten";
+    case 4:
+      return "RinkeBy";
+    case 5:
+      return "Goerli";
+    default:
+      return "Localhost";
+  }
+};
+export const networkSwitchHandling = (currentProvider?: any) => {
+  return async (dispatch: Dispatch<Action>) => {
+    await currentProvider.eth.net.getId().then((res: any) => {
+      let accsName = checkNet(res);
+      dispatch({
+        type: ActionType.ACTIVE_NETWORK,
+        payload: accsName,
+        networkId: res,
+      });
+    });
+    // (window as any).ethereum
+    //   .request({ method: "net_version" })
+    //   .then((accs: any) => {
+    //     if (accs) {
+    //       let accsName = checkNet(accs);
+    //       dispatch({
+    //         type: ActionType.ACTIVE_NETWORK,
+    //         payload: accsName,
+    //         networkId: accs,
+    //       });
+    //       // that.messageService.setconnectedNetwork(accs);
+    //       // resolve(accs);
+    //     }
+    //   })
+    //   .catch(function (err: any) {
+    //     // reject({});
+    //   });
+    // }
+  };
+};
 async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   try {
     let accounts: any;
@@ -40,6 +84,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...res],
               });
+              getAccountBalance(res[0]);
             });
           });
         } else {
@@ -107,12 +152,43 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
       case "walletConnect":
         try {
           let provider: any = CWweb3.connectWalletProvider;
-          await provider.enable();
-          accounts = await CWweb3.connectWalletWeb3.eth.getAcoounts();
-          dispatch({
-            type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [...accounts],
+          await provider.enable().then((response: any) => {
+            CWweb3.connectWalletProvider.on(
+              "accountsChanged",
+              (accounts: string[]) => {
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_SUCCESS,
+                  payload: [...accounts],
+                });
+                getAccountBalance(accounts[0]);
+              }
+            );
+            // Subscribe to chainId change
+            CWweb3.connectWalletProvider.on(
+              "chainChanged",
+              (chainId: number) => {
+                networkSwitchHandling(chainId);
+                window.location.reload();
+              }
+            );
+
+            // Subscribe to session disconnection
+            CWweb3.connectWalletProvider.on(
+              "disconnect",
+              (code: number, reason: string) => {
+                console.log(code, reason);
+              }
+            );
           });
+          await CWweb3.connectWalletWeb3.eth.getAccounts().then((res: any) => {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...res],
+            });
+          });
+
+          // const chainId = await web3.eth.chainId();
+          // console.log(accounts, networkId, "ss", chainId);
         } catch (err) {
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
@@ -129,6 +205,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...accounts],
               });
+              getAccountBalance(accounts[0]);
             })
             .catch((err) => {
               dispatch({
@@ -145,24 +222,26 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         break;
       case "Fortmatic":
         try {
-          // let web3: any = formaticWeb3;
+          let web3: any = formaticWeb3;
           // console.log(
-          //   web3.currentProvider
-          //     .enable()
-          //     .then((res: any) => {
-          //       let address: string[];
-          //       address = res;
-          //       dispatch({
-          //         type: ActionType.CONNECT_WALLET_SUCCESS,
-          //         payload: [...address],
-          //       });
-          //     })
-          //     .catch((err: any) => {
-          //       dispatch({
-          //         type: ActionType.CONNECT_WALLET_ERROR,
-          //         payload: err.message,
-          //       });
-          //     })
+          web3.currentProvider
+            .enable()
+            .then((res: any) => {
+              let address: string[];
+              console.log(res);
+              address = res;
+              dispatch({
+                type: ActionType.CONNECT_WALLET_SUCCESS,
+                payload: [...address],
+              });
+              getAccountBalance(address[0]);
+            })
+            .catch((err: any) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: err.message,
+              });
+            });
           // );
         } catch (err) {
           dispatch({
@@ -177,6 +256,25 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             if (!error) {
               let address: string[];
               address = accounts;
+              portis.onActiveWalletChanged((walletAddress: any) => {
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_SUCCESS,
+                  payload: [...address],
+                });
+                getAccountBalance(walletAddress[0]);
+              });
+              portis.onError((error) => {
+                console.log("error", error);
+              });
+              portis.onLogin((walletAddress, email, reputation) => {
+                console.log(walletAddress, email, reputation);
+                getAccountBalance(walletAddress);
+              });
+              portis.onLogout(() => {
+                dispatch({
+                  type: ActionType.WALLET_DISCONNECT,
+                });
+              });
               dispatch({
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...address],
@@ -216,41 +314,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   }
 }
 
-export const networkSwitchHandling = () => {
-  return async (dispatch: Dispatch<Action>) => {
-    (window as any).ethereum
-      .request({ method: "net_version" })
-      .then((accs: any) => {
-        if (accs) {
-          let accsName;
-          if (accs === "1") {
-            accsName = "Mainnet";
-          } else if (accs === "42") {
-            accsName = "Kovan";
-          } else if (accs === "3") {
-            accsName = "Ropsten";
-          } else if (accs === "4") {
-            accsName = "RinkeBy";
-          } else if (accs === "5") {
-            accsName = "Goerli";
-          } else {
-            accsName = "Localhost";
-          }
-          dispatch({
-            type: ActionType.ACTIVE_NETWORK,
-            payload: accsName,
-            networkId: accs,
-          });
-          // that.messageService.setconnectedNetwork(accs);
-          // resolve(accs);
-        }
-      })
-      .catch(function (err: any) {
-        // reject({});
-      });
-  };
-};
-
 export const getAccountBalance = (selectedAccount: string) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
@@ -272,10 +335,6 @@ export const getAccountBalance = (selectedAccount: string) => {
       });
       dispatch({
         type: ActionType.FULL_AMOUNT_BALANCE,
-        payload: "",
-      });
-      dispatch({
-        type: ActionType.CURRENT_PROVIDER,
         payload: "",
       });
       dispatch({
@@ -659,18 +718,23 @@ export const connectWalletAction = (wallet?: Wallet) => {
       // console.log(accounts);
       if (wallet) {
         let currentProvider: any;
+        let provider: any;
         switch (wallet.name) {
           case "metamask":
             currentProvider = web3;
+            provider = (window as any).ethereum;
             break;
           case "walletConnect":
             currentProvider = CWweb3.connectWalletWeb3;
+            provider = CWweb3.connectWalletProvider;
             break;
           case "CoinbaseWallet":
             currentProvider = CoinbaseWeb3;
+            provider = (window as any).ethereum;
             break;
-          case "Formatic":
+          case "Fortmatic":
             currentProvider = formaticWeb3;
+            provider = fm;
             break;
           case "Portis":
             currentProvider = portisWeb3;
@@ -681,6 +745,7 @@ export const connectWalletAction = (wallet?: Wallet) => {
         dispatch({
           type: ActionType.CURRENT_PROVIDER,
           payload: currentProvider,
+          provider: provider,
         });
         handleWalletConnect(wallet, dispatch);
       }
@@ -693,11 +758,11 @@ export const connectWalletAction = (wallet?: Wallet) => {
   };
 };
 
-export const walletDisconnect = () => {
+export const walletDisconnect = (walletProvider: any) => {
   return async (dispatch: Dispatch<Action>) => {
-    localStorage.removeItem("walletConnected");
-    localStorage.removeItem("isApproving");
-    localStorage.removeItem("donateApproval");
+    localStorage.clear();
+    // if (walletProvider === (window as any).ethereum) walletProvider.disable();
+    // await walletProvider.disconnect();
     dispatch({
       type: ActionType.WALLET_DISCONNECT,
     });

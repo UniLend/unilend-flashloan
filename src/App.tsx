@@ -11,6 +11,7 @@ import CommonCard from "components/View/CommonCard";
 import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
+// import BigNumber from "bignumber.js";
 // import { useActions } from "hooks/useActions";
 declare const window: any;
 // interface ProviderMessage {
@@ -25,16 +26,7 @@ function App() {
   //   (state) => state.tokenManage
   // );
   // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
-  const { handleWalletConnect } = useWalletConnect();
-  // useEffect(() => {
-  //   if (tokenList.payload.length === 0) {
-  //     setLoading(true);
-  //     fetchTokenList(tokenGroupList, networkId, activeTab);
-  //   }
-  //   if (tokenList.payload.length !== 0) {
-  //     setLoading(false);
-  //   }
-  // }, [tokenList, activeTab]);
+  const { handleWalletConnect, walletProvider } = useWalletConnect();
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -44,28 +36,24 @@ function App() {
 
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
-      if (window && window.ethereum !== undefined && window !== undefined) {
-        // let wallet = localStorage.getItem("wallet");
-        // if (wallet) {
-        //   handleWalletConnect(JSON.parse(wallet));
-        // }
-        //   window.ethereum.on("disconnect", () => {});
-        //   window.ethereum.on("accountsChanged", (accounts: any) => {
-        //     handleWalletConnect();
-        //   });
-
-        window.ethereum.on("chainChanged", (chainId: any) => {
+      if (
+        window &&
+        window.ethereum !== undefined &&
+        window !== undefined &&
+        walletProvider
+      ) {
+        walletProvider.on("chainChanged", (chainId: any) => {
           window.location.reload();
         });
-        window.ethereum.on("accountsChanged", function (accounts: string) {
+        walletProvider.on("accountsChanged", function (accounts: string) {
           handleWalletConnect({
             id: 1,
             name: "metamask",
             icon: "",
           });
         });
-        window.ethereum.on("message", (message: any) => {
-          console.log(message);
+        (walletProvider as any).on("message", (message: any) => {
+          // console.log(message);
         });
       }
     }

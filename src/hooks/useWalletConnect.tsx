@@ -16,6 +16,7 @@ export default function useWalletConnect() {
     rewardPoolBalance,
     rewardReleaseRate,
     totalDepositedTokens,
+    walletProvider,
     totalTokensInRewardPool,
 
     fullUserTokenBalance,
@@ -53,6 +54,7 @@ export default function useWalletConnect() {
     rewardPoolBalance,
     rewardReleaseRate,
     activeNetWork,
+    walletProvider,
     networkId,
 
     fullUserTokenBalance,

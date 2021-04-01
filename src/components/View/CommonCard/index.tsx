@@ -9,6 +9,7 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
+// import { formaticWeb3 } from "ethereum/formatic";
 // import AlertImg from "assets/warning-standalone.svg";
 interface props {
   activeTab: string | null;
@@ -86,29 +87,31 @@ const CommonCard = (props: props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const handleTokenBalance = () => {
+    if (accounts.length && currentProvider) getAccountBalance(accounts[0]);
     if (
       accounts.length &&
       currentProvider &&
       activeCurrency.symbol !== "Select Token"
     ) {
-      getAccountBalance(accounts[0]);
-
-      getPoolTokenBalance(
-        currentProvider,
-        accounts[0],
-        assertAddress,
-        receipentAddress,
-        activeCurrency.decimals
-      );
-      getUserTokenBalance(
-        currentProvider,
-        accounts[0],
-        receipentAddress,
-        assertAddress,
-        activeCurrency.decimals
-      );
+      if (activeCurrency.symbol !== "Select Token")
+        getPoolTokenBalance(
+          currentProvider,
+          accounts[0],
+          assertAddress,
+          receipentAddress,
+          activeCurrency.decimals
+        );
+      if (activeCurrency.symbol !== "Select Token")
+        getUserTokenBalance(
+          currentProvider,
+          accounts[0],
+          receipentAddress,
+          assertAddress,
+          activeCurrency.decimals
+        );
     }
-    getTotalDepositedTokens(currentProvider, activeCurrency.address);
+    if (activeCurrency.symbol !== "Select Token")
+      getTotalDepositedTokens(currentProvider, activeCurrency.address);
     if (donateContractAddress !== "") {
       getTotalTokensInRewardPool(
         currentProvider,
@@ -116,13 +119,18 @@ const CommonCard = (props: props) => {
         donateContractAddress
       );
     }
-    getRewardReleaseRatePerDay(
-      currentProvider,
-      donateContractAddress,
-      receipentAddress,
-      activeCurrency.decimals
-    );
-    if (activeTab === "reward" && donateContractAddress) {
+    if (activeCurrency.symbol !== "Select Token")
+      getRewardReleaseRatePerDay(
+        currentProvider,
+        donateContractAddress,
+        receipentAddress,
+        activeCurrency.decimals
+      );
+    if (
+      activeTab === "reward" &&
+      donateContractAddress &&
+      activeCurrency.symbol !== "Select Token"
+    ) {
       getRewardPoolBalance(
         currentProvider,
         donateContractAddress,
@@ -183,7 +191,7 @@ const CommonCard = (props: props) => {
     totalTokensInRewardPool,
   ]);
   useEffect(() => {
-    networkSwitchHandling();
+    networkSwitchHandling(currentProvider);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, tokenList]);
@@ -252,31 +260,38 @@ const CommonCard = (props: props) => {
     totalDepositedTokens,
     totalTokensInRewardPool,
   ]);
+  useEffect(() => {
+    let interval: any;
 
+    interval = setInterval(() => {
+      if (accounts.length && walletConnected) {
+        getPoolLiquidity(
+          currentProvider,
+          receipentAddress,
+          activeCurrency.symbol === "ETH",
+          activeCurrency.decimals
+        );
+      }
+      handleTokenBalance();
+    }, 5000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    accounts,
+    activeTab,
+    activeCurrency,
+    receipentAddress,
+    assertAddress,
+    donateContractAddress,
+    totalDepositedTokens,
+    totalTokensInRewardPool,
+  ]);
   useEffect(() => {
     if (walletConnected && activeCurrency.symbol !== "Select Token") {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, accounts, currentProvider, activeCurrency]);
-  // useEffect(() => {
-  //   if (
-  //     tokenList.payload.length
-  //     // activeCurrency === "ETH"
-  //     // activeCurrency.symbol === undefined
-  //   ) {
-  //     setActiveCurrency(tokenList.payload[1]);
-  //     // setActiveCurrency({
-  //     //   name: "Select Token",
-  //     //   logoURI: dropdown,
-  //     //   chainId: 42,
-  //     //   symbol: "Select Token",
-  //     //   address: Reciepent,
-  //     //   decimals: 18,
-  //     // });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeTab, tokenList.payload]);
   useEffect(() => {
     setAmount("");
     // if (activeTab === "reward") {

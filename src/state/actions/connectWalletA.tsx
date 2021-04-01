@@ -8,6 +8,7 @@ interface AccountBalance {
 interface CurrentProvider {
   type: ActionType.CURRENT_PROVIDER;
   payload: string;
+  provider: any;
 }
 interface ConnectWalletAction {
   type: ActionType.CONNECT_WALLET;

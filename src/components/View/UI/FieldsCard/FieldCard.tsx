@@ -3,7 +3,7 @@ import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { floatRegExp } from "components/Helpers/index";
-import useWalletConnect from "hooks/useWalletConnect";
+// import useWalletConnect from "hooks/useWalletConnect";
 interface Props {
   fieldLabel: String;
   fieldValue: any;

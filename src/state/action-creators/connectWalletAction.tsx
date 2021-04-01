@@ -437,10 +437,6 @@ export const balanceReset = () => {
       userTokenBalance: "",
     });
     dispatch({
-      type: ActionType.ACCOUNT_BALANCE,
-      payload: "",
-    });
-    dispatch({
       type: ActionType.TOTAL_DEPOSITION_TOKENS,
       payload: "",
     });

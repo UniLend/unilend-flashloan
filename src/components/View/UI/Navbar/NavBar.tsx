@@ -51,8 +51,10 @@ const NavBar: React.FC<Props> = (props) => {
     walletConnected,
     accounts,
     loading,
+    accountBalance,
     handleWalletConnect,
   } = useWalletConnect();
+
   useEffect(() => {
     setCurrentPage(props.location.pathname);
   }, [props.location.pathname]);
@@ -152,6 +154,12 @@ const NavBar: React.FC<Props> = (props) => {
             />
             <span>{capitalize(networkInfo.label)}</span>
           </button>
+          {walletConnected && accounts.length && accountBalance && (
+            <div className={`d-flex btn-custom-secondary acc-balance`}>
+              <span className="mr-1">{accountBalance}</span>
+              <span className="currency">ETH</span>
+            </div>
+          )}
           {(accounts && accounts.length) || walletConnected ? (
             <button
               className={`d-flex btn ${

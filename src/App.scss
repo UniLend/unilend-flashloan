@@ -332,3 +332,18 @@ input[type="number"] {
   height: 15px;
   width: 15px;
 }
+
+  .acc-balance{
+    border-radius: 20px;
+    align-items: center;
+    margin-right:0.375rem;
+    padding:7px;
+
+    .currency{
+      font-size:0.75rem;
+    }
+
+    &:hover{
+      background-color: #212429;
+    }
+  }

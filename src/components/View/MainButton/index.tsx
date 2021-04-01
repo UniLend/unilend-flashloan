@@ -91,6 +91,7 @@ const MainButton: FC<Props> = ({
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
+    clearDepositError,
   } = useActions();
   // useEffect(() => {
   //   updateApproval();
@@ -147,8 +148,8 @@ const MainButton: FC<Props> = ({
             (activeTab === "reward" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            (activeTab === "lend" &&
-              parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
+            // (activeTab === "lend" &&
+            //   parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
             (activeTab === "airdrop" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
@@ -245,6 +246,13 @@ const MainButton: FC<Props> = ({
       show: false,
     });
   }
+  function handleAlertClose() {
+    switch (actionName) {
+      case "Deposit":
+        clearDepositError();
+        break;
+    }
+  }
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -256,7 +264,9 @@ const MainButton: FC<Props> = ({
         />
       )}
       {depositErrorMessage !== "" && (
-        <Alert variant="danger">{depositErrorMessage}</Alert>
+        <Alert variant="danger" onClose={handleAlertClose} dismissible>
+          {depositErrorMessage}
+        </Alert>
       )}
       {transModalInfo.show && (
         <TransactionPopup mode="success" handleClose={handleTransClose} />

@@ -27,6 +27,7 @@ interface DepositSuccess {
 interface DepositFailed {
   type: ActionType.DEPOSIT_FAILED;
   payload: boolean;
+  message?: any;
 }
 
 interface AllowanceAction {
@@ -42,15 +43,19 @@ interface AllowanceFailed {
 }
 
 interface ApproveAction {
-  type:ActionType.DEPOSIT_APPROVE_ACTION;
+  type: ActionType.DEPOSIT_APPROVE_ACTION;
 }
 
 interface ApproveSuccess {
-  type:ActionType.DEPOSIT_APPROVE_SUCCESS;
+  type: ActionType.DEPOSIT_APPROVE_SUCCESS;
 }
 
 interface ApproveFailed {
-  type:ActionType.DEPOSIT_APPROVE_FAILED;
+  type: ActionType.DEPOSIT_APPROVE_FAILED;
+}
+
+interface DepositErrorClear {
+  type: ActionType.DEPOSIT_MESSAGE_CLEAR;
 }
 
 export type DepositAction =
@@ -65,4 +70,5 @@ export type DepositAction =
   | AllowanceFailed
   | ApproveAction
   | ApproveSuccess
-  | ApproveFailed;
+  | ApproveFailed
+  | DepositErrorClear;

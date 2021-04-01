@@ -121,7 +121,7 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      var fullAmount = web3Service.getValue(
+      var fullAmount = await web3Service.getValue(
         false,
         currentProvider,
         depositAmount,
@@ -133,17 +133,34 @@ export const handleDeposit = (
           from: address,
           value: isEth ? fullAmount : 0,
         })
-        .on("receipt", () => {
+        .on("receipt", (res: any) => {
+          console.log(res);
           dispatch({
             type: ActionType.DEPOSIT_SUCCESS,
             payload: true,
           });
         })
+        .on("error", (err: any, res: any) => {
+          console.log("ERR", err, "RES", res);
+          if (res === undefined) {
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              message: err.message.split(":")[1],
+            });
+          } else {
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              message: "Transaction Failed: Transaction has been reverted",
+            });
+          }
+        })
         .catch((e: any) => {
-          console.log("Err", e);
           dispatch({
             type: ActionType.DEPOSIT_FAILED,
             payload: false,
+            message: "Deposit Failed",
           });
         });
     } catch (e) {
@@ -153,5 +170,12 @@ export const handleDeposit = (
         payload: false,
       });
     }
+  };
+};
+export const clearDepositError = () => {
+  return async (dispatch: Dispatch<DepositAction>) => {
+    dispatch({
+      type: ActionType.DEPOSIT_MESSAGE_CLEAR,
+    });
   };
 };

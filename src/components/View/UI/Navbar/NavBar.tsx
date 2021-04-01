@@ -161,7 +161,9 @@ const NavBar: React.FC<Props> = (props) => {
             <span>{capitalize(networkInfo.label)}</span>
           </button>
           {walletConnected && accounts.length && accountBalance ? (
-            <div className={`d-flex btn-custom-secondary acc-balance`}>
+            <div
+              className={`d-flex btn btn-dark btn-custom-secondary btn-round-switch acc-balance`}
+            >
               <span className="mr-1">{accountBalance}</span>
               <span className="currency">ETH</span>
             </div>

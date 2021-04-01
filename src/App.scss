@@ -60,7 +60,9 @@
   margin: 20px 0px 0px;
   color: var(--theme-field-color);
 }
-
+.acc-balance {
+  padding: 6px !important;
+}
 .active-network {
   font-size: 13px;
   box-sizing: border-box;
@@ -181,21 +183,25 @@ input[type="number"] {
 .price-list {
   margin-top: 10px;
   text-align: left;
+  display: grid;
+  grid-template-areas: "name name name name name price";
   p {
-    letter-spacing: 0.75px;
+    letter-spacing: 0.1px;
     display: inline-block;
     margin-bottom: 0;
+    grid-area: name;
   }
 }
 
 .price {
-  // color: #2c6def;
-  float: right;
+  grid-area: price;
+  text-align: end;
   span {
     padding-left: 2px;
   }
   img {
     padding-left: 2px;
+    padding-bottom: 3px;
   }
 }
 .alert {

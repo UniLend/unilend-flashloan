@@ -457,7 +457,7 @@ const CommonCard = (props: props) => {
                     }/year`}</span>
                   </div>
                   <div className="price-list">
-                    Total Pool Liquidity{" "}
+                    <p>Total Pool Liquidity </p>
                     <span className="price">
                       {poolLiquidity ? (
                         <>
@@ -476,7 +476,7 @@ const CommonCard = (props: props) => {
                     <span></span>
                   </div>
                   <div className="price-list">
-                    Your Pool Share
+                    <p>Your Pool Share</p>
                     <span className="price">
                       {poolPercentage !== "" &&
                       poolLiquidity !== "" &&
@@ -487,7 +487,7 @@ const CommonCard = (props: props) => {
                     </span>
                   </div>
                   <div className="price-list">
-                    Your Liquidity
+                    <p>Your Liquidity</p>
                     {/* {" "}
                       {!poolLoading && poolName ? `(${poolName})` : ""} */}
                     <span className="price">
@@ -516,13 +516,13 @@ const CommonCard = (props: props) => {
                 <div className="price_head">
                   <div className="price_aa">
                     <div className="price-list">
-                      Current APY
+                      <p>Current APY</p>
                       <span className="price">{`${
                         currentApy !== "" ? `${currentApy}%` : "-"
                       }/year`}</span>
                     </div>
                     <div className="price-list">
-                      Reward Available
+                      <p>Reward Available</p>
                       <span className="price">
                         {walletConnected && rewardPoolBalance !== "" ? (
                           <>
@@ -540,7 +540,7 @@ const CommonCard = (props: props) => {
                       </span>
                     </div>
                     <div className="price-list">
-                      Reward Rate
+                      <p>Reward Rate</p>
                       <span className="price">{`${
                         rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
                       }/day`}</span>

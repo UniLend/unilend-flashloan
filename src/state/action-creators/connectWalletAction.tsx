@@ -496,10 +496,6 @@ export const balanceReset = () => {
       userTokenBalance: "",
     });
     dispatch({
-      type: ActionType.ACCOUNT_BALANCE,
-      payload: "",
-    });
-    dispatch({
       type: ActionType.TOTAL_DEPOSITION_TOKENS,
       payload: "",
     });
@@ -738,6 +734,7 @@ export const connectWalletAction = (wallet?: Wallet) => {
             break;
           case "Portis":
             currentProvider = portisWeb3;
+            provider = portis;
             break;
           case "binaceWallet":
             currentProvider = bscWeb3;

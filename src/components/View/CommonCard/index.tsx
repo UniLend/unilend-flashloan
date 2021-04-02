@@ -367,15 +367,17 @@ const CommonCard = (props: props) => {
 
   return (
     <>
-      <div className="network-warning">
-        {accounts.length &&
-        activeNetWork !== "Mainnet" &&
-        activeNetWork !== "Ropsten"
-          ? // && activeNetWork !== "Mainnet"
-            `You are currently connected to the ${activeNetWork} which is not supported.`
-          : ""}
-        {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
-      </div>
+      {accounts.length &&
+      activeNetWork !== "Mainnet" &&
+      activeNetWork !== "Ropsten" ? (
+        <div className="network-warning">
+          `You are currently connected to the ${activeNetWork} which is not
+          supported.`
+          {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
+        </div>
+      ) : (
+        ""
+      )}
       {activeTab && (
         <ContentCard title={`${capitalize(activeTab)}`}>
           <div className="swap-root">

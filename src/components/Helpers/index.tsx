@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.substring(1);
 
@@ -69,3 +70,8 @@ export function toFixed(num: any, fixed: any) {
   fixed = Math.pow(10, fixed);
   return Math.floor(num * fixed) / fixed;
 }
+
+export const setTimestamp = () => {
+  var t = new Date();
+  return t.setSeconds(t.getSeconds() - 15).toFixed(0);
+};

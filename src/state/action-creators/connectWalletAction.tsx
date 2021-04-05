@@ -17,7 +17,7 @@ import {
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
-import { toFixed } from "components/Helpers";
+import { setTimestamp, toFixed } from "components/Helpers";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -348,7 +348,7 @@ export const getPoolTokenBalance = (
       //       });
       //     }
       //   });
-      let timestamp = (new Date().valueOf() / 1000).toFixed(0);
+      let timestamp = setTimestamp();
 
       // FlashLoanPool(currentProvider, assertAddress)
       //   .methods.balanceOfUnderlying(accounts)
@@ -608,7 +608,7 @@ export const getPoolLiquidity = (
             });
           });
       } else {
-        let timestamp = (new Date().valueOf() / 1000).toFixed(0);
+        let timestamp = setTimestamp();
 
         // let _IERC20 = IERC20(currentProvider, reciepentAddress);
         // _IERC20.methods

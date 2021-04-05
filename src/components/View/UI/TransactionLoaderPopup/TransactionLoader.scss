@@ -1,6 +1,24 @@
-.modal-body-info{
-    text-align: center;
+.modal-body-info {
+  text-align: center;
 }
-.modal-header-custom{
-    border: 0;
+.modal-header-custom {
+  border: 0;
+}
+.transaction-details {
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 12px;
+  justify-items: center;
+}
+
+.transaction-status {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.etherscan-link {
+  color: #2a6def;
 }

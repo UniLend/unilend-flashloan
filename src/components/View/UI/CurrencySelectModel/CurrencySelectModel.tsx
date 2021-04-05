@@ -131,7 +131,7 @@ const CurrencySelectModel: FC<Props> = ({
                         className="mb-0 list-desc"
                         style={{ textTransform: "capitalize" }}
                       >
-                        {item.balance ? item.balance : ""}
+                        {item.balance ? item.balance : "0"}
                       </p>
                     </div>
                   </div>
@@ -201,9 +201,9 @@ const CurrencySelectModel: FC<Props> = ({
               <span className="form-label">
                 {openManage ? "Manage" : "Select a token"}
               </span>
-              <span className={`close-btn ${theme}`}>
+              {/* <span className={`close-btn ${theme}`}>
                 <i className="fa fa-times" aria-hidden="true" />
-              </span>
+              </span> */}
             </div>
           </Modal.Title>
           {!openManage && SearchBar}

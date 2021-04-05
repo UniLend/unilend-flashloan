@@ -6,7 +6,6 @@ import { FC, useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
-import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 
 interface Props {
   isEth: boolean;
@@ -70,6 +69,7 @@ const MainButton: FC<Props> = ({
     depositErrorMessage,
     depositAllowanceLoading,
     depositIsApproving,
+    isDepositSuccess,
   } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
@@ -133,6 +133,18 @@ const MainButton: FC<Props> = ({
     ) {
       return (
         <button
+          // disabled={
+          //   amount === "" ||
+          //   activeCurrency.symbol === "Select Token" ||
+          //   depositLoading ||
+          //   donateLoading ||
+          //   redeemLoading ||
+          //   airdropLoading ||
+          //   depositAllowanceLoading ||
+          //   donateAllowanceLoading ||
+          //   !isChecked ||
+          //   (activeTab === "redeem" && poolTokenBalance === 0)
+          // }
           disabled={
             amount === "" ||
             parseFloat(amount) <= 0 ||
@@ -240,11 +252,13 @@ const MainButton: FC<Props> = ({
       show: true,
     });
   }
+
   function handleTransClose() {
     setTransModalInfo({
       show: false,
     });
   }
+
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -257,9 +271,6 @@ const MainButton: FC<Props> = ({
       )}
       {depositErrorMessage !== "" && (
         <Alert variant="danger">{depositErrorMessage}</Alert>
-      )}
-      {transModalInfo.show && (
-        <TransactionPopup mode="success" handleClose={handleTransClose} />
       )}
     </>
   );

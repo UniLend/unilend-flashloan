@@ -8,6 +8,8 @@ interface DepositState {
   depositAllowanceLoading: boolean;
   depositErrorMessage: string;
   depositIsApproving: boolean;
+  depositTransactionHash: any;
+  depositTransactionHashRecieved: boolean;
 }
 
 const initialState = {
@@ -17,6 +19,8 @@ const initialState = {
   depositAllowanceLoading: false,
   depositErrorMessage: "",
   depositIsApproving: false,
+  depositTransactionHash: "",
+  depositTransactionHashRecieved: false,
 };
 
 const DepositReducer = (
@@ -58,8 +62,21 @@ const DepositReducer = (
         isDepositApproved: action.payload,
         depositAllowanceLoading: false,
       };
+    case ActionType.DEPOSIT_TRANSACTION_HASH:
+      return {
+        ...state,
+        depositLoading: false,
+        depositTransactionHash: action.payload,
+        depositTransactionHashRecieved: true,
+      };
     case ActionType.DEPOSIT_ACTION:
-      return { ...state, depositLoading: true, depositErrorMessage: "" };
+      return {
+        ...state,
+        depositLoading: true,
+        depositTransactionHash: "",
+        depositTransactionHashRecieved: false,
+        depositErrorMessage: "",
+      };
     case ActionType.DEPOSIT_SUCCESS:
       return {
         ...state,
@@ -72,6 +89,7 @@ const DepositReducer = (
         depositLoading: false,
         isDepositSuccess: false,
         depositErrorMessage: action.message,
+        depositTransactionHashRecieved: false,
       };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };

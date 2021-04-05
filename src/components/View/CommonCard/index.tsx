@@ -9,8 +9,8 @@ import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-// import { formaticWeb3 } from "ethereum/formatic";
-// import AlertImg from "assets/warning-standalone.svg";
+import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
+import AlertImg from "assets/warning-standalone.svg";
 interface props {
   activeTab: string | null;
 }
@@ -27,7 +27,9 @@ const CommonCard = (props: props) => {
     show: false,
   });
   const [depositChecked, setDepositChecked] = useState<boolean>(false);
+  const [transModalInfo, setTransModalInfo] = useState<boolean>(false);
   const [poolPercentage, setPoolPercentage] = useState<any>("");
+
   const {
     accounts,
     walletConnected,
@@ -69,9 +71,13 @@ const CommonCard = (props: props) => {
     getTotalTokensInRewardPool,
   } = useActions();
 
-  const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
-    (state) => state.deposit
-  );
+  const {
+    isDepositApproved: isApproved,
+    isDepositSuccess,
+    depositLoading,
+    depositErrorMessage,
+    depositTransactionHashRecieved,
+  } = useTypedSelector((state) => state.deposit);
   const { activeCurrency, theme } = useTypedSelector((state) => state.settings);
   const {
     donateContractAddress,
@@ -299,6 +305,25 @@ const CommonCard = (props: props) => {
     // }
   }, [activeTab]);
 
+  // useEffect(() => {
+  //   if (
+  //     isDepositSuccess ||
+  //     donateIsApproved ||
+  //     donateSuccess ||
+  //     redeemSuccess ||
+  //     airdropSuccess
+  //   ) {
+  //     setAmount("");
+  //   }
+  // }, [
+  //   activeTab,
+  //   donateIsApproved,
+  //   isDepositSuccess,
+  //   donateSuccess,
+  //   redeemSuccess,
+  //   airdropSuccess,
+  // ]);
+
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
       let poolPercent = toFixed((poolTokenBalance / poolLiquidity) * 100, 2);
@@ -319,7 +344,7 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
-
+        handleTransModal(true);
         break;
       case "redeem":
         handleRedeem(
@@ -365,6 +390,8 @@ const CommonCard = (props: props) => {
     // if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
 
+  const handleTransModal = (isShow: boolean) => setTransModalInfo(isShow);
+
   return (
     <>
       {accounts.length &&
@@ -403,9 +430,9 @@ const CommonCard = (props: props) => {
               <div className={`${theme} card field-card mt-4`}>
                 <div className="card-body py-2">
                   <div className="w-100 align-items-center text-center pr-0 mr-0">
-                    {/* <div className="alerticon justify-content-center d-flex w-100">
+                    <div className="alerticon justify-content-center d-flex w-100">
                       <img className="icon" src={AlertImg} alt="alert" />
-                    </div> */}
+                    </div>
                     <p className="mb-0 mt-3 warning-lead-text">
                       The amount you {capitalize(activeTab)}, will be deducted
                       from your wallet permanently and added to the reward pool.
@@ -572,6 +599,19 @@ const CommonCard = (props: props) => {
           }}
           handleClose={() => handleModal(false)}
           activeTab={activeTab}
+        />
+      )}
+      {transModalInfo && (
+        <TransactionPopup
+          mode={
+            !depositTransactionHashRecieved && !depositErrorMessage
+              ? "loading"
+              : depositTransactionHashRecieved
+              ? "success"
+              : "failure"
+          }
+          activeTab={activeTab}
+          handleClose={() => handleTransModal(false)}
         />
       )}
     </>

@@ -9,11 +9,23 @@ interface Props {
   handleClose: () => void;
   mode: string;
   handleSwitch?: string;
+  activeTab: any;
 }
 
-const TransactionPopup: FC<Props> = ({ handleClose, mode, handleSwitch }) => {
+const TransactionPopup: FC<Props> = ({
+  handleClose,
+  mode,
+  handleSwitch,
+  activeTab,
+}) => {
   const { theme } = useTypedSelector((state) => state.settings);
-
+  const { depositTransactionHash } = useTypedSelector((state) => state.deposit);
+  const getActiveHash = () => {
+    switch (activeTab) {
+      case "lend":
+        return depositTransactionHash;
+    }
+  };
   function transactionMethods() {
     switch (mode) {
       case "success":
@@ -34,13 +46,43 @@ const TransactionPopup: FC<Props> = ({ handleClose, mode, handleSwitch }) => {
                   className="modal-body-info"
                   style={{ padding: "1rem 2rem" }}
                 >
-                  <img
-                    className="icon"
-                    src={ArrowUp}
-                    alt="alert icon"
-                    width="60"
-                  />
-                  <h5 className="mt-4">Transaction Submitted</h5>
+                  <div className="pb-5 pt-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="90"
+                      height="90"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#2a6def"
+                      style={{
+                        strokeWidth: "0.5",
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round",
+                      }}
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="16 12 12 8 8 12"></polyline>
+                      <line x1="12" y1="16" x2="12" y2="8"></line>
+                    </svg>
+                  </div>
+
+                  <div className="transaction-details">
+                    <div className=" transaction-status ">
+                      Transaction Submitted
+                    </div>
+                    {getActiveHash() ? (
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://ropsten.etherscan.io/tx/${getActiveHash()}`}
+                        className="sc-jKJlTe cEMwVc"
+                      >
+                        <div className="etherscan-link">View on Etherscan</div>
+                      </a>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {/* <p className="mt-3"> View on Etherscan</p> */}
                   <button
                     className="btn btn-lg btn-custom-primary mt-4"

@@ -163,6 +163,13 @@ export const handleDeposit = (
             payload: true,
           });
         })
+        .on("transactionHash", (hash: any) => {
+          console.log(hash);
+          dispatch({
+            type: ActionType.DEPOSIT_TRANSACTION_HASH,
+            payload: hash,
+          });
+        })
         // .on("confirmation", function (confirmationNumber: any, receipt: any) {
         //   console.log(confirmationNumber, receipt);
         // })

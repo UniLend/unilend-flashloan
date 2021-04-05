@@ -59,6 +59,11 @@ interface DepositErrorClear {
   type: ActionType.DEPOSIT_MESSAGE_CLEAR;
 }
 
+interface transactionHash {
+  type: ActionType.DEPOSIT_TRANSACTION_HASH;
+  payload: any;
+}
+
 export type DepositAction =
   | DepositAmount
   | DepositApprovalStatus
@@ -72,4 +77,5 @@ export type DepositAction =
   | ApproveAction
   | ApproveSuccess
   | ApproveFailed
-  | DepositErrorClear;
+  | DepositErrorClear
+  | transactionHash;

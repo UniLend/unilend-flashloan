@@ -263,10 +263,10 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
                 });
                 getAccountBalance(walletAddress[0]);
               });
-              portis.onError((error) => {
+              portis.onError((error: any) => {
                 console.log("error", error);
               });
-              portis.onLogin((walletAddress, email, reputation) => {
+              portis.onLogin((walletAddress: any, email: any, reputation: any) => {
                 console.log(walletAddress, email, reputation);
                 getAccountBalance(walletAddress);
               });
@@ -533,8 +533,8 @@ export const getCurrentAPY = (
             if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
               fullAmount = toFixed(
                 fullAmountPerSec *
-                  (60 * 60 * 24 * 365.25) *
-                  (_totalTokenInRewardPool / _totalDepositedToken),
+                (60 * 60 * 24 * 365.25) *
+                (_totalTokenInRewardPool / _totalDepositedToken),
                 2
               );
             }

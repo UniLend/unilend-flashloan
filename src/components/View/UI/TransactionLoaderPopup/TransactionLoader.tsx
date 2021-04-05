@@ -22,7 +22,7 @@ const TransactionPopup: FC<Props> = ({
   const { depositTransactionHash } = useTypedSelector((state) => state.deposit);
   const { donateTransactionHash } = useTypedSelector((state) => state.donate);
   const { redeemTransactionHash } = useTypedSelector((state) => state.redeem);
-
+  const { airdropTransactionHash } = useTypedSelector((state) => state.airdrop);
   const getActiveHash = () => {
     switch (activeTab) {
       case "lend":
@@ -31,6 +31,8 @@ const TransactionPopup: FC<Props> = ({
         return donateTransactionHash;
       case "redeem":
         return redeemTransactionHash;
+      case "airdrop":
+        return airdropTransactionHash;
     }
   };
   function transactionMethods() {
@@ -93,7 +95,7 @@ const TransactionPopup: FC<Props> = ({
                   {/* <p className="mt-3"> View on Etherscan</p> */}
                   <button
                     className="btn btn-lg btn-custom-primary mt-4"
-                    onClick={() => {}}
+                    onClick={handleClose}
                     type="button"
                   >
                     Close
@@ -161,7 +163,7 @@ const TransactionPopup: FC<Props> = ({
                   <h5 className="mt-4">Transaction Rejected</h5>
                   <button
                     className="btn btn-lg btn-custom-primary mt-4"
-                    onClick={() => {}}
+                    onClick={handleClose}
                     type="button"
                   >
                     Close

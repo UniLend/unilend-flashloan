@@ -36,10 +36,31 @@ export const handleAirdrop = (
           type: ActionType.AIRDROP_SUCCESS,
         });
       })
-      .catch((e: any) => {
+      .on("transactionHash", (hash: any) => {
+        console.log(hash);
         dispatch({
-          type: ActionType.AIRDROP_FAILED,
+          type: ActionType.AIRDROP_TRANSACTION_HASH,
+          payload: hash,
         });
+      })
+      // .on("confirmation", function (confirmationNumber: any, receipt: any) {
+      //   console.log(confirmationNumber, receipt);
+      // })
+      .on("error", (err: any, res: any) => {
+        if (res === undefined) {
+          dispatch({
+            type: ActionType.AIRDROP_FAILED,
+            // payload: false,
+            // message: err.message.split(":")[1],
+            message: "Transaction Rejected",
+          });
+        } else {
+          dispatch({
+            type: ActionType.AIRDROP_FAILED,
+            // payload: false,
+            message: "Transaction Failed",
+          });
+        }
       });
   };
 };

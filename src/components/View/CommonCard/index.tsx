@@ -92,7 +92,11 @@ const CommonCard = (props: props) => {
     redeemErrorMessage,
     redeemTransactionHashReceived,
   } = useTypedSelector((state) => state.redeem);
-  const { airdropSuccess } = useTypedSelector((state) => state.airdrop);
+  const {
+    airdropSuccess,
+    airdropTransactionHashReceived,
+    airdropErrorMessage,
+  } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList, tokenList } = useTypedSelector(
     (state) => state.tokenManage
   );
@@ -386,6 +390,8 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
+        handleTransModal(true);
+
         // handled
         break;
       default:
@@ -622,11 +628,15 @@ const CommonCard = (props: props) => {
               !donateErrorMessage) ||
             (activeTab === "redeem" &&
               !redeemTransactionHashReceived &&
-              !redeemErrorMessage)
+              !redeemErrorMessage) ||
+            (activeTab === "airdrop" &&
+              !airdropTransactionHashReceived &&
+              !airdropErrorMessage)
               ? "loading"
               : (activeTab === "lend" && depositTransactionHashRecieved) ||
                 (activeTab === "reward" && donateTransactionHashRecieved) ||
-                (activeTab === "redeem" && redeemTransactionHashReceived)
+                (activeTab === "redeem" && redeemTransactionHashReceived) ||
+                (activeTab === "airdrop" && airdropTransactionHashReceived)
               ? "success"
               : "failure"
           }

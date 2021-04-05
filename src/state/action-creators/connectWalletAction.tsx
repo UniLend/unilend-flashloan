@@ -16,7 +16,7 @@ import {
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
-import { toFixed } from "components/Helpers";
+import { setTimestamp, toFixed } from "components/Helpers";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -266,10 +266,12 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
               portis.onError((error: any) => {
                 console.log("error", error);
               });
-              portis.onLogin((walletAddress: any, email: any, reputation: any) => {
-                console.log(walletAddress, email, reputation);
-                getAccountBalance(walletAddress);
-              });
+              portis.onLogin(
+                (walletAddress: any, email: any, reputation: any) => {
+                  console.log(walletAddress, email, reputation);
+                  getAccountBalance(walletAddress);
+                }
+              );
               portis.onLogout(() => {
                 dispatch({
                   type: ActionType.WALLET_DISCONNECT,
@@ -407,7 +409,7 @@ export const getPoolTokenBalance = (
       //       });
       //     }
       //   });
-      let timestamp = (new Date().valueOf() / 1000).toFixed(0);
+      let timestamp = setTimestamp();
 
       // FlashLoanPool(currentProvider, assertAddress)
       //   .methods.balanceOfUnderlying(accounts)
@@ -533,8 +535,8 @@ export const getCurrentAPY = (
             if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
               fullAmount = toFixed(
                 fullAmountPerSec *
-                (60 * 60 * 24 * 365.25) *
-                (_totalTokenInRewardPool / _totalDepositedToken),
+                  (60 * 60 * 24 * 365.25) *
+                  (_totalTokenInRewardPool / _totalDepositedToken),
                 2
               );
             }
@@ -667,7 +669,7 @@ export const getPoolLiquidity = (
             });
           });
       } else {
-        let timestamp = (new Date().valueOf() / 1000).toFixed(0);
+        let timestamp = setTimestamp();
 
         // let _IERC20 = IERC20(currentProvider, reciepentAddress);
         // _IERC20.methods

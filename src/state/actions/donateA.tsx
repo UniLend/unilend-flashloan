@@ -11,7 +11,7 @@ interface DonateSuccess {
 
 interface DonateFailed {
   type: ActionType.DONATE_FAILED;
-  payload: boolean;
+  message: string;
 }
 
 interface DonateContract {
@@ -48,6 +48,11 @@ interface ApproveFailed {
   type: ActionType.DONATE_APPROVE_FAILED;
 }
 
+interface TransactionHash {
+  type: ActionType.DONATE_TRANSACTION_HASH;
+  payload: string;
+}
+
 export type DonateAction =
   | _DonateAction
   | DonateSuccess
@@ -59,4 +64,5 @@ export type DonateAction =
   | AllowanceFailed
   | ApproveAction
   | ApproveSuccess
-  | ApproveFailed;
+  | ApproveFailed
+  | TransactionHash;

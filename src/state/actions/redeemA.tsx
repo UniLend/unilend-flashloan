@@ -10,7 +10,7 @@ interface RedeemSuccess {
 
 interface RedeemFailed {
   type: ActionType.REDEEM_FAILED;
-  payload: string;
+  message: string;
 }
 
 interface RedeemTokenBalance {
@@ -18,8 +18,14 @@ interface RedeemTokenBalance {
   payload: any;
 }
 
+interface TransactionHash {
+  type: ActionType.REDEEM_TRANSACTION_HASH;
+  payload: any;
+}
+
 export type RedeemAction =
   | RedeemSuccess
   | RedeemFailed
   | RedeemTokenBalance
+  | TransactionHash
   | _RedeemAction;

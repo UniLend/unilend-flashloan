@@ -123,6 +123,9 @@
   font-weight: 900;
   font-size: smaller;
   border: none;
+  &:hover {
+    box-shadow: var(--theme-btn-hover-shadow);
+  }
 }
 .btn-theme-icon-header,
 .btn-theme-icon-footer {

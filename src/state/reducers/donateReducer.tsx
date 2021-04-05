@@ -8,6 +8,9 @@ interface DonateState {
   donateAllowanceLoading: boolean;
   donateApproving: boolean;
   donateSuccess: boolean;
+  donateTransactionHash: string;
+  donateTransactionHashRecieved: boolean;
+  donateErrorMessage: string;
 }
 
 const initialState = {
@@ -17,6 +20,9 @@ const initialState = {
   donateAllowanceLoading: false,
   donateApproving: false,
   donateSuccess: false,
+  donateTransactionHash: "",
+  donateTransactionHashRecieved: false,
+  donateErrorMessage: "",
 };
 
 const DonateReducer = (
@@ -52,6 +58,16 @@ const DonateReducer = (
         ...state,
         donateLoading: true,
         donateSuccess: false,
+        donateTransactionHash: "",
+        donateTransactionHashRecieved: false,
+        donateErrorMessage: "",
+      };
+    case ActionType.DONATE_TRANSACTION_HASH:
+      console.log(action.payload);
+      return {
+        ...state,
+        donateTransactionHash: action.payload,
+        donateTransactionHashRecieved: true,
       };
     case ActionType.DONATE_SUCCESS:
       return {
@@ -64,6 +80,8 @@ const DonateReducer = (
         ...state,
         donateLoading: false,
         donateSuccess: false,
+        donateErrorMessage: action.message,
+        donateTransactionHashRecieved: false,
       };
     case ActionType.DONATE_APPROVAL_STATUS:
       return {

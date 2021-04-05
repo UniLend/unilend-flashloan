@@ -37,12 +37,37 @@ export const handleRedeem = (
         .on("receipt", (res: any) => {
           dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
         })
-        .catch((e: any) => {
-          dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
+        .on("transactionHash", (hash: any) => {
+          console.log(hash);
+          dispatch({
+            type: ActionType.REDEEM_TRANSACTION_HASH,
+            payload: hash,
+          });
+        })
+        .on("error", (err: any, res: any) => {
+          console.log(err, res);
+          if (res === undefined) {
+            dispatch({
+              type: ActionType.REDEEM_FAILED,
+              // message: err.message.split(":")[1],
+              message: "Transaction Rejected",
+            });
+          } else {
+            dispatch({
+              type: ActionType.REDEEM_FAILED,
+              message: "Transaction Failed",
+            });
+          }
         });
+      // .catch((e: any) => {
+      //   dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
+      // });
     } catch (e) {
       console.log(e);
-      dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
+      dispatch({
+        type: ActionType.REDEEM_FAILED,
+        message: "Transaction Failed",
+      });
     }
   };
 };

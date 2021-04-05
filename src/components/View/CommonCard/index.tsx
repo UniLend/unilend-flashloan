@@ -83,8 +83,15 @@ const CommonCard = (props: props) => {
     donateContractAddress,
     donateIsApproved,
     donateSuccess,
+    donateLoading,
+    donateErrorMessage,
+    donateTransactionHashRecieved,
   } = useTypedSelector((state) => state.donate);
-  const { redeemSuccess } = useTypedSelector((state) => state.redeem);
+  const {
+    redeemSuccess,
+    redeemErrorMessage,
+    redeemTransactionHashReceived,
+  } = useTypedSelector((state) => state.redeem);
   const { airdropSuccess } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList, tokenList } = useTypedSelector(
     (state) => state.tokenManage
@@ -155,6 +162,7 @@ const CommonCard = (props: props) => {
       airdropSuccess
     ) {
       setAmount("");
+      setDepositChecked(false);
     }
   }, [
     activeTab,
@@ -355,7 +363,7 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
-
+        handleTransModal(true);
         break;
       case "reward":
         handleDonate(
@@ -366,6 +374,8 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
+        handleTransModal(true);
+
         break;
       case "airdrop":
         handleAirdrop(
@@ -444,7 +454,7 @@ const CommonCard = (props: props) => {
                       <input
                         type="checkbox"
                         checked={depositChecked}
-                        onClick={() => {
+                        onChange={() => {
                           setDepositChecked(!depositChecked);
                         }}
                       />
@@ -604,9 +614,19 @@ const CommonCard = (props: props) => {
       {transModalInfo && (
         <TransactionPopup
           mode={
-            !depositTransactionHashRecieved && !depositErrorMessage
+            (activeTab === "lend" &&
+              !depositTransactionHashRecieved &&
+              !depositErrorMessage) ||
+            (activeTab === "reward" &&
+              !donateTransactionHashRecieved &&
+              !donateErrorMessage) ||
+            (activeTab === "redeem" &&
+              !redeemTransactionHashReceived &&
+              !redeemErrorMessage)
               ? "loading"
-              : depositTransactionHashRecieved
+              : (activeTab === "lend" && depositTransactionHashRecieved) ||
+                (activeTab === "reward" && donateTransactionHashRecieved) ||
+                (activeTab === "redeem" && redeemTransactionHashReceived)
               ? "success"
               : "failure"
           }

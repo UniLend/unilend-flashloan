@@ -172,18 +172,33 @@ export const handleDonate = (
                   payload: true,
                 });
               })
-              .catch((e: Error) => {
-                console.log(e);
+
+              .on("transactionHash", (hash: any) => {
+                console.log(hash);
                 dispatch({
-                  type: ActionType.DONATE_FAILED,
-                  payload: false,
+                  type: ActionType.DONATE_TRANSACTION_HASH,
+                  payload: hash,
                 });
+              })
+              .on("error", (err: any, res: any) => {
+                if (res === undefined) {
+                  dispatch({
+                    type: ActionType.DONATE_FAILED,
+                    // message: err.message.split(":")[1],
+                    message: "Transaction Rejected",
+                  });
+                } else {
+                  dispatch({
+                    type: ActionType.DONATE_FAILED,
+                    message: "Transaction Failed",
+                  });
+                }
               });
           } else {
             console.log(error);
             dispatch({
               type: ActionType.DONATE_FAILED,
-              payload: false,
+              message: "Transaction Failed",
             });
           }
         });
@@ -191,7 +206,7 @@ export const handleDonate = (
       console.log(e);
       dispatch({
         type: ActionType.DONATE_FAILED,
-        payload: false,
+        message: "Transaction Failed",
       });
     }
   };

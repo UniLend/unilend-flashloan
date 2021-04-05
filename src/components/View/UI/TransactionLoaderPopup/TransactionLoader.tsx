@@ -4,7 +4,7 @@ import "./TransactionLoader.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import Loader from "react-loader-spinner";
 import Alert from "assets/alert.png";
-import ArrowUp from "assets/arrowup.png";
+// import ArrowUp from "assets/arrowup.png";
 interface Props {
   handleClose: () => void;
   mode: string;
@@ -20,10 +20,17 @@ const TransactionPopup: FC<Props> = ({
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
   const { depositTransactionHash } = useTypedSelector((state) => state.deposit);
+  const { donateTransactionHash } = useTypedSelector((state) => state.donate);
+  const { redeemTransactionHash } = useTypedSelector((state) => state.redeem);
+
   const getActiveHash = () => {
     switch (activeTab) {
       case "lend":
         return depositTransactionHash;
+      case "reward":
+        return donateTransactionHash;
+      case "redeem":
+        return redeemTransactionHash;
     }
   };
   function transactionMethods() {

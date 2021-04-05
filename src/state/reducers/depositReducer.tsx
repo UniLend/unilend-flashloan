@@ -65,7 +65,6 @@ const DepositReducer = (
     case ActionType.DEPOSIT_TRANSACTION_HASH:
       return {
         ...state,
-        depositLoading: false,
         depositTransactionHash: action.payload,
         depositTransactionHashRecieved: true,
       };

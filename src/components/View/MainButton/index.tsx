@@ -20,9 +20,9 @@ interface WalletConnectModal {
   show: boolean;
 }
 
-interface TransModalInfo {
-  show: boolean;
-}
+// interface TransModalInfo {
+//   show: boolean;
+// }
 
 const MainButton: FC<Props> = ({
   isEth,
@@ -59,9 +59,9 @@ const MainButton: FC<Props> = ({
     show: false,
   });
 
-  const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
-    show: false,
-  });
+  // const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
+  //   show: false,
+  // });
 
   const {
     isDepositApproved,
@@ -69,7 +69,6 @@ const MainButton: FC<Props> = ({
     depositErrorMessage,
     depositAllowanceLoading,
     depositIsApproving,
-    isDepositSuccess,
   } = useTypedSelector((state) => state.deposit);
   const {
     donateIsApproved,
@@ -253,11 +252,11 @@ const MainButton: FC<Props> = ({
     });
   }
 
-  function handleTransClose() {
-    setTransModalInfo({
-      show: false,
-    });
-  }
+  // function handleTransClose() {
+  //   setTransModalInfo({
+  //     show: false,
+  //   });
+  // }
 
   return (
     <>

@@ -59,6 +59,10 @@ const MainButton: FC<Props> = ({
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
+  const decimalLength =
+    amount &&
+    amount.toString().split(".")[1] &&
+    amount.toString().split(".")[1].length;
 
   const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
     show: false,
@@ -134,6 +138,19 @@ const MainButton: FC<Props> = ({
     ) {
       return (
         <button
+          // disabled={
+          //   amount === "" ||
+          //   activeCurrency.symbol === "Select Token" ||
+          //   depositLoading ||
+          //   donateLoading ||
+          //   redeemLoading ||
+          //   airdropLoading ||
+          //   depositAllowanceLoading ||
+          //   donateAllowanceLoading ||
+          //   !isChecked ||
+          //   (activeTab === "redeem" && poolTokenBalance === 0)||
+          // (decimalLength>18)
+          // }
           disabled={
             amount === "" ||
             parseFloat(amount) <= 0 ||
@@ -148,14 +165,15 @@ const MainButton: FC<Props> = ({
             (activeTab === "reward" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            // (activeTab === "lend" &&
-            //   parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
+            (activeTab === "lend" &&
+              parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
             (activeTab === "airdrop" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
             (activeTab === "redeem" &&
               (poolTokenBalance === 0 ||
-                parseFloat(amount) > parseFloat(fullPoolTokenBalance)))
+                parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
+            decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}
@@ -194,7 +212,8 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             (actionName === "Deposit" && depositIsApproving === true) ||
-            (actionName === "Reward" && donateApproving === true)
+            (actionName === "Reward" && donateApproving === true) ||
+            decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
@@ -227,6 +246,7 @@ const MainButton: FC<Props> = ({
     } else {
       return (
         <button
+          disabled={decimalLength > 18}
           className="btn btn-lg btn-custom-primary"
           onClick={walletConnect}
         >

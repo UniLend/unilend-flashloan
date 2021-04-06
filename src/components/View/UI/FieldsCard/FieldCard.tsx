@@ -3,7 +3,7 @@ import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { floatRegExp } from "components/Helpers/index";
-import useWalletConnect from "hooks/useWalletConnect";
+// import useWalletConnect from "hooks/useWalletConnect";
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -55,7 +55,7 @@ const FieldCard: FC<Props> = (props) => {
               <div className="align-end">
                 <label className="form-balance-label">
                   {props.selectLabel !== "" &&
-                  activeCurrency.symbol !== "Select Token"
+                    activeCurrency.symbol !== "Select Token"
                     ? `Balance: ${props.selectLabel.toLocaleString()}`
                     : ""}
                 </label>
@@ -67,9 +67,9 @@ const FieldCard: FC<Props> = (props) => {
                       className="btn btn-max"
                       onClick={() => {
                         if (activeTab === "redeem") {
-                          props.setFieldValue(fullPoolTokenBalance);
+                          props.setFieldValue(fullPoolTokenBalance.toFixed(18));
                         } else {
-                          props.setFieldValue(fullUserTokenBalance);
+                          props.setFieldValue(fullUserTokenBalance.toFixed(18));
                         }
                         // props.setFieldValue(props.selectLabel);
                       }}

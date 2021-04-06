@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { floatRegExp } from "components/Helpers/index";
+import { floatRegExp, toFixed } from "components/Helpers/index";
 // import useWalletConnect from "hooks/useWalletConnect";
 interface Props {
   fieldLabel: String;
@@ -24,6 +24,9 @@ const FieldCard: FC<Props> = (props) => {
   const { theme, activeCurrency, activeTab } = useTypedSelector(
     (state) => state.settings
   );
+  // useEffect(() => {
+  //   console.log(fullPoolTokenBalance, fullUserTokenBalance);
+  // });
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
@@ -55,7 +58,7 @@ const FieldCard: FC<Props> = (props) => {
               <div className="align-end">
                 <label className="form-balance-label">
                   {props.selectLabel !== "" &&
-                    activeCurrency.symbol !== "Select Token"
+                  activeCurrency.symbol !== "Select Token"
                     ? `Balance: ${props.selectLabel.toLocaleString()}`
                     : ""}
                 </label>
@@ -67,9 +70,13 @@ const FieldCard: FC<Props> = (props) => {
                       className="btn btn-max"
                       onClick={() => {
                         if (activeTab === "redeem") {
-                          props.setFieldValue(fullPoolTokenBalance.toFixed(18));
+                          props.setFieldValue(
+                            toFixed(fullPoolTokenBalance, 18)
+                          );
                         } else {
-                          props.setFieldValue(fullUserTokenBalance.toFixed(18));
+                          props.setFieldValue(
+                            toFixed(fullUserTokenBalance, 18)
+                          );
                         }
                         // props.setFieldValue(props.selectLabel);
                       }}

@@ -18,15 +18,6 @@ export const handleRedeem = (
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
 
     try {
-      // const ten = new BigNumber(10);
-      // const base = 3 * ten.pow(new BigNumber(decimal));
-      // console.log(base);
-      // var fullAmount = web3Service.getValue(
-      //   isEth,
-      //   currentProvider,
-      //   redeemAmount,
-      //   decimal
-      // );
       let fullAmount = new BigNumber(redeemAmount)
         .multipliedBy(Math.pow(10, decimal))
         .toString();
@@ -45,7 +36,6 @@ export const handleRedeem = (
           dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
         });
     } catch (e) {
-      console.log(e);
       dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
     }
   };
@@ -69,7 +59,6 @@ export const getRedeemTokenBalance = (
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.REDEEM_TOKEN_BALANCE,
         payload: "",

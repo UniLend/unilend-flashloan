@@ -141,14 +141,12 @@ export const handleDeposit = (
           value: isEth ? fullAmount : 0,
         })
         .on("receipt", (res: any) => {
-          console.log(res);
           dispatch({
             type: ActionType.DEPOSIT_SUCCESS,
             payload: true,
           });
         })
         .on("error", (err: any, res: any) => {
-          console.log("ERR", err, "RES", res);
           if (res === undefined) {
             dispatch({
               type: ActionType.DEPOSIT_FAILED,
@@ -171,7 +169,6 @@ export const handleDeposit = (
           });
         });
     } catch (e) {
-      console.log(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

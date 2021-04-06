@@ -311,7 +311,6 @@ export const getUserTokenBalance = (
           let fullAmount = new BigNumber(decimalAmount)
             .toFixed(3, 1)
             .toString();
-          console.log(fullAmount, decimalAmount);
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,

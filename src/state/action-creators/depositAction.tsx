@@ -134,7 +134,6 @@ export const handleDeposit = (
       // portis.onError((error) => {
       //   console.log("error", error);
       // });
-      console.log("fullAmount", fullAmount);
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({

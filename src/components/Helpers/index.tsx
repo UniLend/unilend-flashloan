@@ -73,5 +73,5 @@ export function toFixed(num: any, fixed: any) {
 
 export const setTimestamp = () => {
   var t = new Date();
-  return t.setSeconds(t.getSeconds() - 15).toFixed(0);
+  return (t.setSeconds(t.getSeconds() - 15) / 1000).toFixed(0);
 };

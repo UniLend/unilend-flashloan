@@ -212,8 +212,11 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         }
         break;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    dispatch({
+      type: ActionType.CONNECT_WALLET_ERROR,
+      payload: err.message,
+    });
   }
 }
 
@@ -322,7 +325,6 @@ export const getUserTokenBalance = (
         }
       });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.USER_TOKEN_BALANCE,
         userTokenBalance: "",
@@ -381,11 +383,17 @@ export const getPoolTokenBalance = (
               payload: decimalAmount,
             });
           } else {
-            console.log(e);
+            dispatch({
+              type: ActionType.POOL_TOKEN_BALANCE,
+              payload: "",
+            });
+            dispatch({
+              type: ActionType.FULL_POOL_TOKEN_BALANCE,
+              payload: "",
+            });
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.POOL_TOKEN_BALANCE,
         payload: "",
@@ -423,7 +431,10 @@ export const getRewardPoolBalance = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.REWARD_POOL_BALANCE,
+        payload: "",
+      });
     }
   };
 };
@@ -504,7 +515,10 @@ export const getCurrentAPY = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.CURRENT_APY,
+        payload: "",
+      });
     }
   };
 };
@@ -524,7 +538,10 @@ export const getTotalDepositedTokens = (
               payload: res,
             });
           } else {
-            console.log(err);
+            dispatch({
+              type: ActionType.TOTAL_DEPOSITION_TOKENS,
+              payload: "",
+            });
           }
         });
     } catch (e) {
@@ -559,7 +576,10 @@ export const getTotalTokensInRewardPool = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+        payload: "",
+      });
     }
   };
 };
@@ -591,7 +611,10 @@ export const getRewardReleaseRatePerDay = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.REWARD_RELEASE_RATE,
+        payload: "",
+      });
     }
   };
 };
@@ -646,8 +669,10 @@ export const getPoolLiquidity = (
           });
       }
     } catch (e: any) {
-      console.log(e);
-      // });
+      dispatch({
+        type: ActionType.POOL_LIQUIDITY,
+        payload: "",
+      });
     }
   };
 };

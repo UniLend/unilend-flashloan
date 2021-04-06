@@ -26,14 +26,10 @@ export const themeChange = (currTheme: string) => {
 
 export const setActiveCurrency = (item: any) => {
   return async (dispatch: Dispatch<SettingAction>) => {
-    try {
-      dispatch({
-        type: ActionType.ACTIVE_CURRENCY,
-        payload: item,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    dispatch({
+      type: ActionType.ACTIVE_CURRENCY,
+      payload: item,
+    });
   };
 };
 

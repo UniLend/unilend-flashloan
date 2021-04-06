@@ -23,7 +23,6 @@ export const fetchTokenList = (
               axios
                 .get(item.fetchURI)
                 .then((res) => {
-                  console.log("res", res);
                   if (res.data) {
                     const tokenList: any = res.data.tokens.filter(
                       (item: any) => {
@@ -60,8 +59,6 @@ export const fetchTokenList = (
                             }
                           });
                       });
-                      // console.log(newList);
-                      // if (tokenList) totalTokenList.push(...newList);
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
                       dispatch({
@@ -72,7 +69,10 @@ export const fetchTokenList = (
                   }
                 })
                 .catch((e: any) => {
-                  console.log(e);
+                  dispatch({
+                    type: ActionType.GET_TOKEN_LIST,
+                    payload: [],
+                  });
                 });
             }
           })
@@ -86,7 +86,6 @@ export const fetchTokenList = (
 
 export const handleTokenListToggle = (id: number) => {
   return async (dispatch: Dispatch<TokenAction>) => {
-    console.log(id);
     dispatch({
       type: ActionType.TOKEN_LIST_TOGGLE,
       payload: id,
@@ -115,7 +114,6 @@ export const searchToken = (address: string) => {
           });
       })
       .catch((e: any) => {
-        console.log(e);
         dispatch({
           type: ActionType.SET_SEARCHED_TOKEN,
           payload: { data: null, message: "Enter valid token address" },

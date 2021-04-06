@@ -20,7 +20,10 @@ export const getDonationContract = (currentProvider: any) => {
             payload: result,
           });
         } else {
-          console.log("ERR", error);
+          dispatch({
+            type: ActionType.GET_DONATION_CONTRACT,
+            payload: "",
+          });
         }
       });
   };
@@ -61,7 +64,6 @@ export const donateAllowance = (
                 });
               }
             } else {
-              console.log(error);
               dispatch({
                 type: ActionType.DONATE_ALLOWANCE_FAILED,
               });
@@ -69,7 +71,6 @@ export const donateAllowance = (
           });
       }
     } catch (e) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_ALLOWANCE_FAILED,
       });
@@ -114,7 +115,6 @@ export const donateApprove = (
           });
         })
         .catch((err: Error) => {
-          console.log(err);
           localStorage.setItem("donateApproval", "false");
           dispatch({
             type: ActionType.DONATE_APPROVE_FAILED,
@@ -125,7 +125,6 @@ export const donateApprove = (
           });
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_APPROVE_FAILED,
       });
@@ -173,14 +172,12 @@ export const handleDonate = (
                 });
               })
               .catch((e: Error) => {
-                console.log(e);
                 dispatch({
                   type: ActionType.DONATE_FAILED,
                   payload: false,
                 });
               });
           } else {
-            console.log(error);
             dispatch({
               type: ActionType.DONATE_FAILED,
               payload: false,
@@ -188,7 +185,6 @@ export const handleDonate = (
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_FAILED,
         payload: false,

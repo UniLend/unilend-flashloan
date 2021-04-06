@@ -65,7 +65,7 @@ function App() {
           });
         });
         window.ethereum.on("message", (message: any) => {
-          console.log(message);
+          // console.log(message);
         });
       }
     }

@@ -25,9 +25,6 @@ const FieldCard: FC<Props> = (props) => {
   const { theme, activeCurrency, activeTab } = useTypedSelector(
     (state) => state.settings
   );
-  // useEffect(() => {
-  //   console.log(fullPoolTokenBalance, fullUserTokenBalance);
-  // });
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
@@ -76,16 +73,12 @@ const FieldCard: FC<Props> = (props) => {
                             bFullAmount.toFixed(18, 1).toString()
                           );
                         } else {
-                          // console.log(fullUserTokenBalance, "USER TOKEN");
-                          // console.log(toFixed(fullUserTokenBalance, 18));
                           let bFullAmount = new BigNumber(fullUserTokenBalance);
-                          // console.log(bFullAmount.toFixed(18, 1));
                           props.setFieldValue(
                             // toFixed(fullUserTokenBalance, 18)
                             bFullAmount.toFixed(18, 1).toString()
                           );
                         }
-                        // props.setFieldValue(props.selectLabel);
                       }}
                     >
                       <p className="max-text">MAX</p>

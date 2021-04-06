@@ -33,7 +33,6 @@ export const handleRedeem = (
       // portis.onError((error) => {
       //   console.log("error", error);
       // });
-      console.log("fullAmount", fullAmount);
       FlashloanLBCore(currentProvider)
         .methods.redeemUnderlying(receipentAddress, fullAmount)
         .send({

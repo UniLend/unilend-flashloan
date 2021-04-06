@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import {
   approveTokenMaximumValue,
   UnilendFlashLoanCoreContract,
@@ -121,12 +122,19 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      var fullAmount = await web3Service.getValue(
-        false,
-        currentProvider,
-        depositAmount,
-        decimal
-      );
+      // var fullAmount = await web3Service.getValue(
+      //   false,
+      //   currentProvider,
+      //   depositAmount,
+      //   decimal
+      // );
+      let fullAmount = new BigNumber(depositAmount)
+        .multipliedBy(Math.pow(10, decimal))
+        .toString();
+      // portis.onError((error) => {
+      //   console.log("error", error);
+      // });
+      console.log("fullAmount", fullAmount);
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({

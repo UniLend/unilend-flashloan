@@ -3,6 +3,7 @@ import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { floatRegExp, toFixed } from "components/Helpers/index";
+import BigNumber from "bignumber.js";
 // import useWalletConnect from "hooks/useWalletConnect";
 interface Props {
   fieldLabel: String;
@@ -70,12 +71,18 @@ const FieldCard: FC<Props> = (props) => {
                       className="btn btn-max"
                       onClick={() => {
                         if (activeTab === "redeem") {
+                          let bFullAmount = new BigNumber(fullPoolTokenBalance);
                           props.setFieldValue(
-                            toFixed(fullPoolTokenBalance, 18)
+                            bFullAmount.toFixed(18, 1).toString()
                           );
                         } else {
+                          // console.log(fullUserTokenBalance, "USER TOKEN");
+                          // console.log(toFixed(fullUserTokenBalance, 18));
+                          let bFullAmount = new BigNumber(fullUserTokenBalance);
+                          // console.log(bFullAmount.toFixed(18, 1));
                           props.setFieldValue(
-                            toFixed(fullUserTokenBalance, 18)
+                            // toFixed(fullUserTokenBalance, 18)
+                            bFullAmount.toFixed(18, 1).toString()
                           );
                         }
                         // props.setFieldValue(props.selectLabel);

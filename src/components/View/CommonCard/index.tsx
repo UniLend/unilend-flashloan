@@ -11,6 +11,7 @@ import MainButton from "../MainButton";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 import AlertImg from "assets/warning-standalone.svg";
+import AlertToast from "../UI/AlertToast/AlertToast";
 interface props {
   activeTab: string | null;
 }
@@ -18,7 +19,9 @@ interface props {
 interface ModalType {
   show: boolean;
 }
-
+interface AlertType {
+  show: boolean;
+}
 const CommonCard = (props: props) => {
   const { activeTab } = props;
   // const dispatch = useDispatch();
@@ -26,6 +29,10 @@ const CommonCard = (props: props) => {
   const [modalInfo, setModalInfo] = useState<ModalType>({
     show: false,
   });
+  const [alertInfo, setAlertInfo] = useState<AlertType>({
+    show: false,
+  });
+  const [progressValue, setProgressValue] = useState<Number>(100);
   const [depositChecked, setDepositChecked] = useState<boolean>(false);
   const [transModalInfo, setTransModalInfo] = useState<boolean>(false);
   const [poolPercentage, setPoolPercentage] = useState<any>("");
@@ -76,6 +83,7 @@ const CommonCard = (props: props) => {
     isDepositSuccess,
     depositLoading,
     depositErrorMessage,
+    depositSuccessMessage,
     depositTransactionHashRecieved,
   } = useTypedSelector((state) => state.deposit);
   const { activeCurrency, theme } = useTypedSelector((state) => state.settings);
@@ -85,17 +93,20 @@ const CommonCard = (props: props) => {
     donateSuccess,
     donateLoading,
     donateErrorMessage,
+    donateSuccessMessage,
     donateTransactionHashRecieved,
   } = useTypedSelector((state) => state.donate);
   const {
     redeemSuccess,
     redeemErrorMessage,
     redeemTransactionHashReceived,
+    redeemSuccessMessage,
   } = useTypedSelector((state) => state.redeem);
   const {
     airdropSuccess,
     airdropTransactionHashReceived,
     airdropErrorMessage,
+    airdropSuccessMessage,
   } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList, tokenList } = useTypedSelector(
     (state) => state.tokenManage
@@ -156,7 +167,35 @@ const CommonCard = (props: props) => {
       );
     }
   };
+  const getErrorMessage = () => {
+    switch (activeTab) {
+      case "lend":
+        return depositErrorMessage;
+      case "reward":
+        return donateErrorMessage;
+      case "redeem":
+        return redeemErrorMessage;
+      case "airdrop":
+        return airdropErrorMessage;
+      default:
+        return "";
+    }
+  };
 
+  const getSuccessMessage = () => {
+    switch (activeTab) {
+      case "lend":
+        return depositSuccessMessage;
+      case "reward":
+        return donateSuccessMessage;
+      case "redeem":
+        return redeemSuccessMessage;
+      case "airdrop":
+        return airdropSuccessMessage;
+      default:
+        return "";
+    }
+  };
   useEffect(() => {
     if (
       isDepositSuccess ||
@@ -187,6 +226,71 @@ const CommonCard = (props: props) => {
     receipentAddress,
     assertAddress,
     donateContractAddress,
+  ]);
+  const handleToast = (show: boolean) => {
+    setAlertInfo({
+      show,
+    });
+  };
+  useEffect(() => {
+    let interval: any;
+    if (
+      (activeTab === "lend" && depositErrorMessage === "Transaction Failed") ||
+      (activeTab === "reward" && donateErrorMessage === "Transaction Failed") ||
+      (activeTab === "redeem" && redeemErrorMessage === "Transaction Failed") ||
+      (activeTab === "airdrop" && airdropErrorMessage === "Transaction Failed")
+    ) {
+      var now = 100;
+      interval = setInterval(() => {
+        now--;
+        setProgressValue(now);
+        if (now === 0) {
+          handleToast(false);
+          clearInterval(interval);
+        }
+      }, 100);
+      handleToast(true);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    depositErrorMessage,
+    donateErrorMessage,
+    redeemErrorMessage,
+    airdropErrorMessage,
+  ]);
+  useEffect(() => {
+    let interval: any;
+    if (
+      (activeTab === "lend" && isDepositSuccess) ||
+      (activeTab === "reward" && donateSuccess) ||
+      (activeTab === "redeem" && redeemSuccess) ||
+      (activeTab === "airdrop" && airdropSuccess)
+    ) {
+      var now = 100;
+      interval = setInterval(() => {
+        now--;
+        setProgressValue(now);
+        if (now === 0) {
+          handleToast(false);
+          clearInterval(interval);
+        }
+      }, 100);
+      handleToast(true);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isDepositSuccess,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+    activeTab,
   ]);
   useEffect(() => {
     if (totalDepositedTokens !== "" && totalTokensInRewardPool !== "") {
@@ -397,6 +501,17 @@ const CommonCard = (props: props) => {
       default:
         break;
     }
+  };
+  const handleAlertProgress = () => {
+    var now = 100;
+    const interval = setInterval(() => {
+      now--;
+      setProgressValue(now);
+      if (now === 0) {
+        handleToast(false);
+        clearInterval(interval);
+      }
+    }, 100);
   };
 
   const handleModal = (show: boolean) => {
@@ -644,6 +759,37 @@ const CommonCard = (props: props) => {
           handleClose={() => handleTransModal(false)}
         />
       )}
+      {alertInfo.show &&
+        activeTab &&
+        getErrorMessage() === "Transaction Failed" && (
+          <AlertToast
+            handleClose={() => {
+              handleToast(false);
+            }}
+            now={progressValue}
+            status="failed"
+            message={getErrorMessage()}
+            activeTab={activeTab}
+          />
+        )}
+      {alertInfo.show &&
+        activeTab &&
+        ((activeTab === "lend" && isDepositSuccess && depositSuccessMessage) ||
+          (activeTab === "reward" && donateSuccessMessage && donateSuccess) ||
+          (activeTab === "redeem" && redeemSuccess && redeemSuccessMessage) ||
+          (activeTab === "airdrop" &&
+            airdropSuccess &&
+            airdropSuccessMessage)) && (
+          <AlertToast
+            handleClose={() => {
+              handleToast(false);
+            }}
+            now={progressValue}
+            status="success"
+            message={getSuccessMessage()}
+            activeTab={activeTab}
+          />
+        )}
     </>
   );
 };

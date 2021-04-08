@@ -59,6 +59,10 @@ const MainButton: FC<Props> = ({
     show: false,
   });
 
+  const decimalLength =
+    amount &&
+    amount.toString().split(".")[1] &&
+    amount.toString().split(".")[1].length;
   // const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
   //   show: false,
   // });
@@ -70,6 +74,7 @@ const MainButton: FC<Props> = ({
     depositAllowanceLoading,
     depositIsApproving,
   } = useTypedSelector((state) => state.deposit);
+
   const {
     donateIsApproved,
     donateContractAddress,
@@ -77,19 +82,26 @@ const MainButton: FC<Props> = ({
     donateAllowanceLoading,
     donateApproving,
   } = useTypedSelector((state) => state.donate);
+
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
+
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
+
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
+
   const { assertAddress } = useTypedSelector((state) => state.pool);
+
   const { activeTab, activeCurrency } = useTypedSelector(
     (state) => state.settings
   );
+
   const {
     depositApprove,
     donateApprove,
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
+    clearDepositError,
   } = useActions();
   // useEffect(() => {
   //   updateApproval();
@@ -165,7 +177,8 @@ const MainButton: FC<Props> = ({
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
             (activeTab === "redeem" &&
               (poolTokenBalance === 0 ||
-                parseFloat(amount) > parseFloat(fullPoolTokenBalance)))
+                parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
+            decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => handleAmount()}
@@ -204,7 +217,8 @@ const MainButton: FC<Props> = ({
         <button
           disabled={
             (actionName === "Deposit" && depositIsApproving === true) ||
-            (actionName === "Reward" && donateApproving === true)
+            (actionName === "Reward" && donateApproving === true) ||
+            decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
@@ -258,6 +272,13 @@ const MainButton: FC<Props> = ({
   //   });
   // }
 
+  function handleAlertClose() {
+    switch (actionName) {
+      case "Deposit":
+        clearDepositError();
+        break;
+    }
+  }
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -269,7 +290,9 @@ const MainButton: FC<Props> = ({
         />
       )}
       {depositErrorMessage !== "" && (
-        <Alert variant="danger">{depositErrorMessage}</Alert>
+        <Alert variant="danger" onClose={handleAlertClose} dismissible>
+          {depositErrorMessage}
+        </Alert>
       )}
     </>
   );

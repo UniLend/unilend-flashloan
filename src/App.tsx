@@ -11,7 +11,6 @@ import CommonCard from "components/View/CommonCard";
 import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
-// import BigNumber from "bignumber.js";
 // import { useActions } from "hooks/useActions";
 declare const window: any;
 // interface ProviderMessage {
@@ -27,6 +26,15 @@ function App() {
   // );
   // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
   const { handleWalletConnect, walletProvider } = useWalletConnect();
+  // useEffect(() => {
+  //   if (tokenList.payload.length === 0) {
+  //     setLoading(true);
+  //     fetchTokenList(tokenGroupList, networkId, activeTab);
+  //   }
+  //   if (tokenList.payload.length !== 0) {
+  //     setLoading(false);
+  //   }
+  // }, [tokenList, activeTab]);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -52,7 +60,7 @@ function App() {
             icon: "",
           });
         });
-        (walletProvider as any).on("message", (message: any) => {
+        walletProvider.on("message", (message: any) => {
           // console.log(message);
         });
       }

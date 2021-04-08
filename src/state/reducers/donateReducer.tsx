@@ -11,6 +11,7 @@ interface DonateState {
   donateTransactionHash: string;
   donateTransactionHashRecieved: boolean;
   donateErrorMessage: string;
+  donateSuccessMessage: string;
 }
 
 const initialState = {
@@ -23,6 +24,7 @@ const initialState = {
   donateTransactionHash: "",
   donateTransactionHashRecieved: false,
   donateErrorMessage: "",
+  donateSuccessMessage: "",
 };
 
 const DonateReducer = (
@@ -60,6 +62,7 @@ const DonateReducer = (
         donateSuccess: false,
         donateTransactionHash: "",
         donateTransactionHashRecieved: false,
+        donateSuccessMessage: "",
         donateErrorMessage: "",
       };
     case ActionType.DONATE_TRANSACTION_HASH:
@@ -73,6 +76,7 @@ const DonateReducer = (
       return {
         ...state,
         donateLoading: false,
+        donateSuccessMessage: "Donated Successfully",
         donateSuccess: true,
       };
     case ActionType.DONATE_FAILED:

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import {
   approveTokenMaximumValue,
   UnilendFlashLoanCoreContract,
@@ -145,12 +146,9 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      var fullAmount = web3Service.getValue(
-        false,
-        currentProvider,
-        depositAmount,
-        decimal
-      );
+      let fullAmount = new BigNumber(depositAmount)
+        .multipliedBy(Math.pow(10, decimal))
+        .toString();
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({
@@ -189,13 +187,6 @@ export const handleDeposit = (
             });
           }
         });
-      // .catch((e: any) => {
-      //   dispatch({
-      //     type: ActionType.DEPOSIT_FAILED,
-      //     payload: false,
-      //     message: "Deposit Failed",
-      //   });
-      // });
     } catch (e) {
       console.log(e);
       dispatch({
@@ -204,5 +195,13 @@ export const handleDeposit = (
         message: "Transaction Failed",
       });
     }
+  };
+};
+
+export const clearDepositError = () => {
+  return async (dispatch: Dispatch<DepositAction>) => {
+    dispatch({
+      type: ActionType.DEPOSIT_MESSAGE_CLEAR,
+    });
   };
 };

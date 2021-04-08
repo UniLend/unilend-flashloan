@@ -10,6 +10,7 @@ interface DepositState {
   depositIsApproving: boolean;
   depositTransactionHash: any;
   depositTransactionHashRecieved: boolean;
+  depositSuccessMessage: string;
 }
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   depositIsApproving: false,
   depositTransactionHash: "",
   depositTransactionHashRecieved: false,
+  depositSuccessMessage: "",
 };
 
 const DepositReducer = (
@@ -75,12 +77,15 @@ const DepositReducer = (
         depositTransactionHash: "",
         depositTransactionHashRecieved: false,
         depositErrorMessage: "",
+        depositSuccessMessage: "",
+        isDepositSuccess: false,
       };
     case ActionType.DEPOSIT_SUCCESS:
       return {
         ...state,
         depositLoading: false,
         isDepositSuccess: true,
+        depositSuccessMessage: "Deposited Successfully",
       };
     case ActionType.DEPOSIT_FAILED:
       return {
@@ -92,6 +97,8 @@ const DepositReducer = (
       };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };
+    case ActionType.DEPOSIT_MESSAGE_CLEAR:
+      return { ...state, depositErrorMessage: "" };
     default:
       return { ...state };
   }

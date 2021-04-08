@@ -17,6 +17,7 @@ import {
 } from "ethereum/contracts/FlashloanLB";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { setTimestamp, toFixed } from "components/Helpers";
+import BigNumber from "bignumber.js";
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -362,9 +363,15 @@ export const getUserTokenBalance = (
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
-          let amount = parseFloat(r);
-          let decimalAmount = amount / Math.pow(10, decimal);
-          let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
+          let amount = r;
+          // let decimalAmount = amount / Math.pow(10, decimal);
+          // const ten: any = new BigNumber(10);
+          const decimalAmount = new BigNumber(amount)
+            .dividedBy(Math.pow(10, decimal))
+            .toString();
+          let fullAmount = new BigNumber(decimalAmount)
+            .toFixed(3, 1)
+            .toString();
           dispatch({
             type: ActionType.USER_TOKEN_BALANCE,
             userTokenBalance: fullAmount,
@@ -398,17 +405,6 @@ export const getPoolTokenBalance = (
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      // uUFTIERC20(currentProvider, assertAddress)
-      //   .methods.balanceOf(accounts)
-      //   .call((e: any, r: any) => {
-      //     if (!e) {
-      //       let fullAmount = currentProvider.utils.fromWei(r);
-      //       dispatch({
-      //         type: ActionType.POOL_TOKEN_BALANCE,
-      //         payload: fullAmount,
-      //       });
-      //     }
-      //   });
       let timestamp = setTimestamp();
 
       // FlashLoanPool(currentProvider, assertAddress)
@@ -417,9 +413,15 @@ export const getPoolTokenBalance = (
         .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
         .call((e: any, r: any) => {
           if (!e) {
-            let amount = parseFloat(r);
-            let decimalAmount = amount / Math.pow(10, decimal);
-            let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
+            let amount = r;
+            // let decimalAmount = amount / Math.pow(10, decimal);
+            // const ten: any = new BigNumber(10);
+            const decimalAmount = new BigNumber(amount)
+              .dividedBy(Math.pow(10, decimal))
+              .toString();
+            let fullAmount = new BigNumber(decimalAmount)
+              .toFixed(3, 1)
+              .toString();
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE,
               payload: r > 0 ? fullAmount : 0,

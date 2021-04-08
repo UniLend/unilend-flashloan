@@ -9,6 +9,7 @@ interface RedeemState {
   redeemTransactionHash: string;
   redeemTransactionHashReceived: boolean;
   redeemErrorMessage: string;
+  redeemSuccessMessage: string;
 }
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   redeemTransactionHash: "",
   redeemTransactionHashReceived: false,
   redeemErrorMessage: "",
+  redeemSuccessMessage: "",
 };
 
 const RedeemReducer = (
@@ -34,9 +36,15 @@ const RedeemReducer = (
         redeemTransactionHash: "",
         redeemTransactionHashReceived: false,
         redeemErrorMessage: "",
+        redeemSuccessMessage: "",
       };
     case ActionType.REDEEM_SUCCESS:
-      return { ...state, redeemLoading: false, redeemSuccess: true };
+      return {
+        ...state,
+        redeemLoading: false,
+        redeemSuccess: true,
+        redeemSuccessMessage: "Redeem Successful",
+      };
     case ActionType.REDEEM_FAILED:
       return {
         ...state,

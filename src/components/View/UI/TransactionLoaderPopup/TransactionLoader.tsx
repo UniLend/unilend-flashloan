@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import "./TransactionLoader.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import Loader from "react-loader-spinner";
-import Alert from "assets/alert.png";
+import Alert from "assets/error.svg";
 // import ArrowUp from "assets/arrowup.png";
 interface Props {
   handleClose: () => void;
@@ -121,12 +121,18 @@ const TransactionPopup: FC<Props> = ({
               </Modal.Header>
               <Modal.Body>
                 <div className="modal-body-info">
-                  <Loader
-                    type="Circles"
-                    color={`${theme === "dark" ? "#800080" : "#800080"}`}
-                    height={100}
-                    width={100}
-                  />
+                  <div
+                    style={{
+                      margin: " 25px 0",
+                    }}
+                  >
+                    <Loader
+                      type="Circles"
+                      color={`${theme === "dark" ? "#800080" : "#800080"}`}
+                      height={100}
+                      width={100}
+                    />
+                  </div>
                   <h4 className="mt-4">Waiting For Confirmation</h4>
                   {/* <h5>Swapping 1 ETH for 2.945 UNI</h5> */}
                   <p>Confirm this transaction in your wallet</p>

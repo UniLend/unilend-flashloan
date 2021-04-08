@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
 // import { portis } from "ethereum/portis";
@@ -20,12 +21,9 @@ export const handleRedeem = (
       // const ten = new BigNumber(10);
       // const base = 3 * ten.pow(new BigNumber(decimal));
       // console.log(base);
-      var fullAmount = web3Service.getValue(
-        isEth,
-        currentProvider,
-        redeemAmount,
-        decimal
-      );
+      let fullAmount = new BigNumber(redeemAmount)
+        .multipliedBy(Math.pow(10, decimal))
+        .toString();
       // portis.onError((error) => {
       //   console.log("error", error);
       // });

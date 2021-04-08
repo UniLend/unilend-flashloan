@@ -1,0 +1,29 @@
+.toast-custom {
+  width: 240px;
+}
+.toast-custom-header {
+  background-color: transparent;
+  border: none;
+}
+.toast-custom-body {
+  padding: 0;
+}
+.errorMessage {
+  padding: 2rem;
+  margin-bottom: 0;
+}
+.progress {
+  height: 0.2rem;
+  border-radius: 0 0 40px 40px;
+}
+.dark {
+  .toast-custom {
+    background: #2e384a;
+    button.close {
+      color: #fff;
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}

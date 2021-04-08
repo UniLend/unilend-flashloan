@@ -2,8 +2,10 @@ import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { floatRegExp } from "components/Helpers/index";
+import { floatRegExp, toFixed } from "components/Helpers/index";
+import BigNumber from "bignumber.js";
 // import useWalletConnect from "hooks/useWalletConnect";
+
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -67,9 +69,15 @@ const FieldCard: FC<Props> = (props) => {
                       className="btn btn-max"
                       onClick={() => {
                         if (activeTab === "redeem") {
-                          props.setFieldValue(fullPoolTokenBalance);
+                          let bFullAmount = new BigNumber(fullPoolTokenBalance);
+                          props.setFieldValue(
+                            bFullAmount.toFixed(18, 1).toString()
+                          );
                         } else {
-                          props.setFieldValue(fullUserTokenBalance);
+                          let bFullAmount = new BigNumber(fullUserTokenBalance);
+                          props.setFieldValue(
+                            bFullAmount.toFixed(18, 1).toString()
+                          );
                         }
                         // props.setFieldValue(props.selectLabel);
                       }}

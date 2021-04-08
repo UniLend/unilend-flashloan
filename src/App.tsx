@@ -39,10 +39,10 @@ function App() {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-    dotEnv.config();
     let connectedWallet = localStorage.getItem("walletConnected");
 
     if (connectedWallet) {
+      dotEnv.config();
       handleWalletConnect(JSON.parse(connectedWallet));
       if (
         window &&

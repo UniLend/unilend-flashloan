@@ -66,7 +66,6 @@ const DonateReducer = (
         donateErrorMessage: "",
       };
     case ActionType.DONATE_TRANSACTION_HASH:
-      console.log(action.payload);
       return {
         ...state,
         donateTransactionHash: action.payload,

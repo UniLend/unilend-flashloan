@@ -12,7 +12,7 @@ interface Props {
   activeTab: any;
 }
 
-const AlertFailed: FC<Props> = ({
+const AlertToast: FC<Props> = ({
   handleClose,
   message,
   now,
@@ -118,4 +118,4 @@ const AlertFailed: FC<Props> = ({
   );
 };
 
-export default AlertFailed;
+export default AlertToast;

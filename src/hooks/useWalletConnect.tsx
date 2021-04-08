@@ -31,16 +31,20 @@ export default function useWalletConnect() {
     getUserTokenBalance,
     getPoolLiquidity,
   } = useActions();
-  const handleWalletConnect = useCallback((wallet?: Wallet) => {
-    console.log("CONNECTING WALLET");
+  const handleWalletConnect = useCallback(
+    (wallet?: Wallet) => {
+      console.log("CONNECTING WALLET");
 
-    if (wallet) {
-      connectWalletAction(wallet);
-    } else {
-      connectWalletAction();
-    }
+      if (wallet) {
+        connectWalletAction(walletConnected, wallet);
+      } else {
+        connectWalletAction(walletConnected);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [walletConnected]
+  );
 
   return {
     walletConnected,

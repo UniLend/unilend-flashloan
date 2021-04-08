@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { floatRegExp, toFixed } from "components/Helpers/index";
+import { floatRegExp } from "components/Helpers/index";
 import BigNumber from "bignumber.js";
 // import useWalletConnect from "hooks/useWalletConnect";
 

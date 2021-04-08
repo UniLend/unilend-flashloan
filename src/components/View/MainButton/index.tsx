@@ -212,7 +212,6 @@ const MainButton: FC<Props> = ({
           (donateIsApproved === false || donateIsApproved === undefined))) &&
       (actionName === "Deposit" || actionName === "Reward")
     ) {
-      // debugger;
       return (
         <button
           disabled={

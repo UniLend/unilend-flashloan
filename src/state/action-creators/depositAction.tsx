@@ -4,7 +4,6 @@ import {
   UnilendFlashLoanCoreContract,
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
-import { web3Service } from "ethereum/web3Service";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
@@ -162,7 +161,6 @@ export const handleDeposit = (
           });
         })
         .on("transactionHash", (hash: any) => {
-          console.log(hash);
           dispatch({
             type: ActionType.DEPOSIT_TRANSACTION_HASH,
             payload: hash,
@@ -188,7 +186,6 @@ export const handleDeposit = (
           }
         });
     } catch (e) {
-      console.log(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

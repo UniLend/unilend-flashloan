@@ -37,7 +37,6 @@ export const handleAirdrop = (
         });
       })
       .on("transactionHash", (hash: any) => {
-        console.log(hash);
         dispatch({
           type: ActionType.AIRDROP_TRANSACTION_HASH,
           payload: hash,

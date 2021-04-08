@@ -19,21 +19,20 @@ export const themeChange = (currTheme: string) => {
         });
       }
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.CURRENT_THEME,
+        payload: "dark",
+      });
     }
   };
 };
 
 export const setActiveCurrency = (item: any) => {
   return async (dispatch: Dispatch<SettingAction>) => {
-    try {
-      dispatch({
-        type: ActionType.ACTIVE_CURRENCY,
-        payload: item,
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    dispatch({
+      type: ActionType.ACTIVE_CURRENCY,
+      payload: item,
+    });
   };
 };
 

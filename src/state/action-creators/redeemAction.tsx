@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
-import { web3Service } from "ethereum/web3Service";
+// import { web3Service } from "ethereum/web3Service";
 // import { portis } from "ethereum/portis";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
@@ -36,14 +36,12 @@ export const handleRedeem = (
           dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
         })
         .on("transactionHash", (hash: any) => {
-          console.log(hash);
           dispatch({
             type: ActionType.REDEEM_TRANSACTION_HASH,
             payload: hash,
           });
         })
         .on("error", (err: any, res: any) => {
-          console.log(err, res);
           if (res === undefined) {
             dispatch({
               type: ActionType.REDEEM_FAILED,
@@ -61,7 +59,6 @@ export const handleRedeem = (
       //   dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
       // });
     } catch (e) {
-      console.log(e);
       dispatch({
         type: ActionType.REDEEM_FAILED,
         message: "Transaction Failed",
@@ -88,7 +85,6 @@ export const getRedeemTokenBalance = (
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.REDEEM_TOKEN_BALANCE,
         payload: "",

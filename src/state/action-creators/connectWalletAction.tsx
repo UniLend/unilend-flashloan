@@ -79,15 +79,23 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         //// Ethererum ////
         accounts = await web3Service.getAccounts();
         if (window && !(window as any).ethereum.selectedAddress) {
-          (window as any).ethereum.enable().then(() => {
-            web3Service.getAccounts().then((res: any) => {
-              dispatch({
-                type: ActionType.CONNECT_WALLET_SUCCESS,
-                payload: [...res],
+          (window as any).ethereum
+            .enable()
+            .then(() => {
+              web3Service.getAccounts().then((res: any) => {
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_SUCCESS,
+                  payload: [...res],
+                });
+                getAccountBalance(res[0]);
               });
-              getAccountBalance(res[0]);
+            })
+            .catch((e: any) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: e.message,
+              });
             });
-          });
         } else {
           dispatch({
             type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -177,7 +185,10 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             CWweb3.connectWalletProvider.on(
               "disconnect",
               (code: number, reason: string) => {
-                console.log(code, reason);
+                dispatch({
+                  type: ActionType.WALLET_DISCONNECT,
+                });
+                // console.log(code, reason);
               }
             );
           });
@@ -229,7 +240,6 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
             .enable()
             .then((res: any) => {
               let address: string[];
-              console.log(res);
               address = res;
               dispatch({
                 type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -253,27 +263,27 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         break;
       case "Portis":
         try {
-          portisWeb3.eth.getAccounts((error, accounts) => {
+          portisWeb3().eth.getAccounts((error, accounts) => {
             if (!error) {
               let address: string[];
               address = accounts;
-              portis.onActiveWalletChanged((walletAddress: any) => {
+              portis().onActiveWalletChanged((walletAddress: any) => {
                 dispatch({
                   type: ActionType.CONNECT_WALLET_SUCCESS,
                   payload: [...address],
                 });
                 getAccountBalance(walletAddress[0]);
               });
-              portis.onError((error: any) => {
-                console.log("error", error);
+              portis().onError((error: any) => {
+                // console.log("error", error);
               });
-              portis.onLogin(
+              portis().onLogin(
                 (walletAddress: any, email: any, reputation: any) => {
-                  console.log(walletAddress, email, reputation);
+                  // console.log(walletAddress, email, reputation);
                   getAccountBalance(walletAddress);
                 }
               );
-              portis.onLogout(() => {
+              portis().onLogout(() => {
                 dispatch({
                   type: ActionType.WALLET_DISCONNECT,
                 });
@@ -313,7 +323,10 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         break;
     }
   } catch (e) {
-    console.log(e);
+    dispatch({
+      type: ActionType.CONNECT_WALLET_ERROR,
+      payload: e.message,
+    });
   }
 }
 
@@ -383,7 +396,6 @@ export const getUserTokenBalance = (
         }
       });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.USER_TOKEN_BALANCE,
         userTokenBalance: "",
@@ -431,11 +443,17 @@ export const getPoolTokenBalance = (
               payload: decimalAmount,
             });
           } else {
-            console.log(e);
+            dispatch({
+              type: ActionType.POOL_TOKEN_BALANCE,
+              payload: "",
+            });
+            dispatch({
+              type: ActionType.FULL_POOL_TOKEN_BALANCE,
+              payload: "",
+            });
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.POOL_TOKEN_BALANCE,
         payload: "",
@@ -473,7 +491,10 @@ export const getRewardPoolBalance = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.REWARD_POOL_BALANCE,
+        payload: "",
+      });
     }
   };
 };
@@ -554,7 +575,10 @@ export const getCurrentAPY = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.CURRENT_APY,
+        payload: "",
+      });
     }
   };
 };
@@ -574,7 +598,10 @@ export const getTotalDepositedTokens = (
               payload: res,
             });
           } else {
-            console.log(err);
+            dispatch({
+              type: ActionType.TOTAL_DEPOSITION_TOKENS,
+              payload: "",
+            });
           }
         });
     } catch (e) {
@@ -609,7 +636,10 @@ export const getTotalTokensInRewardPool = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+        payload: "",
+      });
     }
   };
 };
@@ -641,7 +671,10 @@ export const getRewardReleaseRatePerDay = (
           }
         });
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.REWARD_RELEASE_RATE,
+        payload: "",
+      });
     }
   };
 };
@@ -696,13 +729,18 @@ export const getPoolLiquidity = (
           });
       }
     } catch (e: any) {
-      console.log(e);
-      // });
+      dispatch({
+        type: ActionType.POOL_LIQUIDITY,
+        payload: "",
+      });
     }
   };
 };
 
-export const connectWalletAction = (wallet?: Wallet) => {
+export const connectWalletAction = (
+  walletConnected: boolean,
+  wallet?: Wallet
+) => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: ActionType.CONNECT_WALLET,
@@ -737,8 +775,10 @@ export const connectWalletAction = (wallet?: Wallet) => {
             provider = fm;
             break;
           case "Portis":
-            currentProvider = portisWeb3;
-            provider = portis;
+            // if (walletConnected) {
+            currentProvider = portisWeb3();
+            provider = portis();
+            // }
             break;
           case "binaceWallet":
             currentProvider = bscWeb3;
@@ -748,7 +788,9 @@ export const connectWalletAction = (wallet?: Wallet) => {
           payload: currentProvider,
           provider: provider,
         });
+        // if (walletConnected) {
         handleWalletConnect(wallet, dispatch);
+        // }
       }
     } catch (err) {
       dispatch({

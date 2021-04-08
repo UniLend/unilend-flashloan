@@ -81,7 +81,6 @@ const CommonCard = (props: props) => {
   const {
     isDepositApproved: isApproved,
     isDepositSuccess,
-    depositLoading,
     depositErrorMessage,
     depositSuccessMessage,
     depositTransactionHashRecieved,
@@ -91,7 +90,6 @@ const CommonCard = (props: props) => {
     donateContractAddress,
     donateIsApproved,
     donateSuccess,
-    donateLoading,
     donateErrorMessage,
     donateSuccessMessage,
     donateTransactionHashRecieved,
@@ -313,10 +311,12 @@ const CommonCard = (props: props) => {
     totalTokensInRewardPool,
   ]);
   useEffect(() => {
-    networkSwitchHandling(currentProvider);
+    if (walletConnected) {
+      networkSwitchHandling(currentProvider);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, tokenList]);
+  }, [tokenList, currentProvider]);
 
   useEffect(() => {
     if (
@@ -502,17 +502,17 @@ const CommonCard = (props: props) => {
         break;
     }
   };
-  const handleAlertProgress = () => {
-    var now = 100;
-    const interval = setInterval(() => {
-      now--;
-      setProgressValue(now);
-      if (now === 0) {
-        handleToast(false);
-        clearInterval(interval);
-      }
-    }, 100);
-  };
+  // const handleAlertProgress = () => {
+  //   var now = 100;
+  //   const interval = setInterval(() => {
+  //     now--;
+  //     setProgressValue(now);
+  //     if (now === 0) {
+  //       handleToast(false);
+  //       clearInterval(interval);
+  //     }
+  //   }, 100);
+  // };
 
   const handleModal = (show: boolean) => {
     setModalInfo({

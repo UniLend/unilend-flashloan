@@ -112,6 +112,7 @@ const connectWalletReducer = (
         error: action.payload,
         data: [],
         walletConnected: false,
+        currentProvider: web3,
       };
     case ActionType.SELECTED_NETWORK_ID:
       return {

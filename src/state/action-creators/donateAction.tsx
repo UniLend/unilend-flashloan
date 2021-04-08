@@ -11,18 +11,28 @@ import { DonateAction } from "state/actions/donateA";
 
 export const getDonationContract = (currentProvider: any) => {
   return async (dispatch: Dispatch<DonateAction>) => {
-    FlashloanLBCore(currentProvider)
-      .methods.donationAddress()
-      .call((error: any, result: any) => {
-        if (!error && result) {
-          dispatch({
-            type: ActionType.GET_DONATION_CONTRACT,
-            payload: result,
-          });
-        } else {
-          console.log("ERR", error);
-        }
+    try {
+      FlashloanLBCore(currentProvider)
+        .methods.donationAddress()
+        .call((error: any, result: any) => {
+          if (!error && result) {
+            dispatch({
+              type: ActionType.GET_DONATION_CONTRACT,
+              payload: result,
+            });
+          } else {
+            dispatch({
+              type: ActionType.GET_DONATION_CONTRACT,
+              payload: "",
+            });
+          }
+        });
+    } catch (e) {
+      dispatch({
+        type: ActionType.GET_DONATION_CONTRACT,
+        payload: "",
       });
+    }
   };
 };
 
@@ -61,7 +71,6 @@ export const donateAllowance = (
                 });
               }
             } else {
-              console.log(error);
               dispatch({
                 type: ActionType.DONATE_ALLOWANCE_FAILED,
               });
@@ -69,7 +78,6 @@ export const donateAllowance = (
           });
       }
     } catch (e) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_ALLOWANCE_FAILED,
       });
@@ -114,7 +122,6 @@ export const donateApprove = (
           });
         })
         .catch((err: Error) => {
-          console.log(err);
           localStorage.setItem("donateApproval", "false");
           dispatch({
             type: ActionType.DONATE_APPROVE_FAILED,
@@ -125,7 +132,6 @@ export const donateApprove = (
           });
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_APPROVE_FAILED,
       });
@@ -174,7 +180,6 @@ export const handleDonate = (
               })
 
               .on("transactionHash", (hash: any) => {
-                console.log(hash);
                 dispatch({
                   type: ActionType.DONATE_TRANSACTION_HASH,
                   payload: hash,
@@ -195,7 +200,6 @@ export const handleDonate = (
                 }
               });
           } else {
-            console.log(error);
             dispatch({
               type: ActionType.DONATE_FAILED,
               message: "Transaction Failed",
@@ -203,7 +207,6 @@ export const handleDonate = (
           }
         });
     } catch (e: any) {
-      console.log(e);
       dispatch({
         type: ActionType.DONATE_FAILED,
         message: "Transaction Failed",

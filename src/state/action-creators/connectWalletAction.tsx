@@ -74,6 +74,10 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
     let accounts: any;
     let connectedWallet = JSON.stringify(wallet);
     localStorage.setItem("walletConnected", connectedWallet);
+    dispatch({
+      type: ActionType.CONNECTED_WALLET,
+      payload: connectedWallet,
+    });
     switch (wallet.name) {
       case "metamask":
         //// Ethererum ////

@@ -51,6 +51,7 @@ const CommonCard = (props: props) => {
     currentApy,
     totalDepositedTokens,
     totalTokensInRewardPool,
+    walletProvider,
     getUserTokenBalance,
     getPoolLiquidity,
   } = useWalletConnect();
@@ -316,7 +317,7 @@ const CommonCard = (props: props) => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenList, currentProvider]);
+  }, [tokenList, currentProvider, walletConnected, walletProvider]);
 
   useEffect(() => {
     if (

@@ -25,6 +25,7 @@ interface ConnectWalletState {
   fullUserTokenBalance: any;
   fullPoolTokenBalance: any;
   walletProvider: any;
+  connectedWallet: any;
 }
 
 const initialState = {
@@ -32,6 +33,7 @@ const initialState = {
   error: null,
   data: [],
   walletConnected: false,
+  connectedWallet: localStorage.getItem("walletConnected"),
   accounts: [],
   accountBalance: "",
   userTokenBalance: "",
@@ -67,6 +69,8 @@ const connectWalletReducer = (
       return { ...state, poolLiquidity: action.payload };
     case ActionType.REWARD_RELEASE_RATE:
       return { ...state, rewardReleaseRate: action.payload };
+    case ActionType.CONNECTED_WALLET:
+      return { ...state, connectedWallet: action.payload };
     case ActionType.CURRENT_PROVIDER:
       return {
         ...state,

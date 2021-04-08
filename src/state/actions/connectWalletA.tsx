@@ -93,6 +93,11 @@ interface fullPoolTokenBalance {
   payload: any;
 }
 
+interface ConnectedWallet {
+  type: ActionType.CONNECTED_WALLET;
+  payload: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -112,4 +117,5 @@ export type Action =
   | getTotalTokensInRewardPool
   | fullAccountBalance
   | fullUserTokenBalance
-  | fullPoolTokenBalance;
+  | fullPoolTokenBalance
+  | ConnectedWallet;

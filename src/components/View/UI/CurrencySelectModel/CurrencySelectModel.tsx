@@ -86,7 +86,7 @@ const CurrencySelectModel: FC<Props> = ({
   // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
-      {filteredList ? (
+      {filteredList && !tokenList.isRequesting ? (
         <ListGroup>
           {Children.toArray(
             filteredList.map((item: any) => (
@@ -140,6 +140,12 @@ const CurrencySelectModel: FC<Props> = ({
             ))
           )}
         </ListGroup>
+      ) : tokenList.isRequesting ? (
+        <>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </>
       ) : (
         <>
           <p className="no-data">No Data to Show</p>

@@ -25,7 +25,12 @@ function App() {
   //   (state) => state.tokenManage
   // );
   // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
-  const { handleWalletConnect, walletProvider } = useWalletConnect();
+  const {
+    handleWalletConnect,
+    walletProvider,
+    connectedWallet,
+  } = useWalletConnect();
+  // const { walletConnected, accounts } = useWalletConnect();
   // useEffect(() => {
   //   if (tokenList.payload.length === 0) {
   //     setLoading(true);
@@ -39,37 +44,41 @@ function App() {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-    let connectedWallet = localStorage.getItem("walletConnected");
-
-    if (connectedWallet) {
-      dotEnv.config();
-      handleWalletConnect(JSON.parse(connectedWallet));
-      if (
-        window &&
-        window.ethereum !== undefined &&
-        window !== undefined &&
-        walletProvider
-      ) {
-        walletProvider.on("chainChanged", (chainId: any) => {
-          window.location.reload();
-        });
-        walletProvider.on("accountsChanged", function (accounts: string) {
-          handleWalletConnect({
-            id: 1,
-            name: "metamask",
-            icon: "",
-          });
-        });
-        walletProvider.on("message", (message: any) => {
-          // console.log(message);
-        });
-      }
-    }
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    // let connectedWallet = localStorage.getItem("walletConnected");
+    dotEnv.config();
+
+    if (connectedWallet) {
+      handleWalletConnect(JSON.parse(connectedWallet));
+      // if (
+      //   // window &&
+      //   // window.ethereum !== undefined &&
+      //   // window !== undefined &&
+      //   walletProvider
+      // ) {
+      walletProvider.on("chainChanged", (chainId: any) => {
+        console.log(chainId);
+        window.location.reload();
+      });
+      walletProvider.on("accountsChanged", function (accounts: string) {
+        handleWalletConnect({
+          id: 1,
+          name: "metamask",
+          icon: "",
+        });
+      });
+      // walletProvider.on("networkChanged", (networkId: any) => {
+      //   console.log(networkId);
+      // });
+      walletProvider.on("message", (message: any) => {
+        // console.log(message);
+      });
+      // }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletProvider, connectedWallet]);
   return (
     <div className={`App ${theme}`}>
       {loading ? (

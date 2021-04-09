@@ -57,7 +57,6 @@ function App() {
       //   // window !== undefined &&
       //   walletProvider
       // ) {
-      console.log(walletProvider);
       if (walletProvider) {
         walletProvider.on("chainChanged", (chainId: any) => {
           window.location.reload();

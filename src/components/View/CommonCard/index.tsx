@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
@@ -12,17 +12,21 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 import AlertImg from "assets/warning-standalone.svg";
 import AlertToast from "../UI/AlertToast/AlertToast";
-interface props {
+import { RouteComponentProps, withRouter } from "react-router";
+import queryString from "query-string";
+interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
 
 interface ModalType {
   show: boolean;
 }
+
 interface AlertType {
   show: boolean;
 }
-const CommonCard = (props: props) => {
+
+const CommonCard: FC<Props> = (props) => {
   const { activeTab } = props;
   // const dispatch = useDispatch();
   const [amount, setAmount] = useState<string>("");
@@ -52,6 +56,7 @@ const CommonCard = (props: props) => {
     totalDepositedTokens,
     totalTokensInRewardPool,
     walletProvider,
+    selectedNetworkId,
     getUserTokenBalance,
     getPoolLiquidity,
   } = useWalletConnect();
@@ -114,7 +119,8 @@ const CommonCard = (props: props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const handleTokenBalance = () => {
-    if (accounts.length && currentProvider) getAccountBalance(accounts[0]);
+    if (accounts.length && currentProvider)
+      getAccountBalance(accounts[0], selectedNetworkId);
     if (
       accounts.length &&
       currentProvider &&
@@ -195,6 +201,26 @@ const CommonCard = (props: props) => {
         return "";
     }
   };
+  useEffect(() => {
+    if (tokenList.payload.length > 0 && props.location.search) {
+      let query: any = queryString.parse(props.location.search);
+      let filteredToken: any = tokenList.payload.filter((item: any) => {
+        return item.address.toLowerCase() === query.token.toLowerCase();
+      });
+      if (filteredToken.length > 0) {
+        setActiveCurrency(filteredToken[0]);
+        networkSwitchHandling(currentProvider);
+        handleModal(false);
+        balanceReset();
+        setPoolPercentage(0);
+        if (accounts.length && currentProvider) {
+          getPool(filteredToken[0].address, currentProvider, accounts[0]);
+        }
+        handleReciepent(filteredToken[0].address);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenList]);
   useEffect(() => {
     if (
       isDepositSuccess ||
@@ -357,13 +383,13 @@ const CommonCard = (props: props) => {
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, networkId, currentProvider, accounts, activeCurrency]);
+  }, [walletConnected, networkId, currentProvider, accounts]);
 
   useEffect(() => {
     let interval: any;
 
     interval = setInterval(() => {
-      if (accounts.length && walletConnected) {
+      if (activeCurrency.symbol !== "Select Token") {
         getPoolLiquidity(
           currentProvider,
           receipentAddress,
@@ -384,33 +410,34 @@ const CommonCard = (props: props) => {
     donateContractAddress,
     totalDepositedTokens,
     totalTokensInRewardPool,
+    tokenList,
   ]);
-  useEffect(() => {
-    let interval: any;
+  // useEffect(() => {
+  //   let interval: any;
 
-    interval = setInterval(() => {
-      if (accounts.length && walletConnected) {
-        getPoolLiquidity(
-          currentProvider,
-          receipentAddress,
-          activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
-        );
-      }
-      handleTokenBalance();
-    }, 5000);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    accounts,
-    activeTab,
-    activeCurrency,
-    receipentAddress,
-    assertAddress,
-    donateContractAddress,
-    totalDepositedTokens,
-    totalTokensInRewardPool,
-  ]);
+  //   interval = setInterval(() => {
+  //     if (accounts.length && walletConnected) {
+  //       getPoolLiquidity(
+  //         currentProvider,
+  //         receipentAddress,
+  //         activeCurrency.symbol === "ETH",
+  //         activeCurrency.decimals
+  //       );
+  //     }
+  //     handleTokenBalance();
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   accounts,
+  //   activeTab,
+  //   activeCurrency,
+  //   receipentAddress,
+  //   assertAddress,
+  //   donateContractAddress,
+  //   totalDepositedTokens,
+  //   totalTokensInRewardPool,
+  // ]);
   useEffect(() => {
     if (walletConnected && activeCurrency.symbol !== "Select Token") {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
@@ -718,6 +745,7 @@ const CommonCard = (props: props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedAddress: any) => {
+            console.log(selectedAddress);
             await handleModal(false);
             await balanceReset();
             setPoolPercentage(0);
@@ -797,4 +825,4 @@ const CommonCard = (props: props) => {
   );
 };
 
-export default CommonCard;
+export default withRouter(CommonCard);

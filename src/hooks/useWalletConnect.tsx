@@ -19,7 +19,7 @@ export default function useWalletConnect() {
     walletProvider,
     connectedWallet,
     totalTokensInRewardPool,
-
+    selectedNetworkId,
     fullUserTokenBalance,
     fullPoolTokenBalance,
     activeNetWork,
@@ -55,6 +55,7 @@ export default function useWalletConnect() {
     accountBalance,
     poolTokenBalance,
     poolLiquidity,
+    selectedNetworkId,
     rewardPoolBalance,
     rewardReleaseRate,
     activeNetWork,

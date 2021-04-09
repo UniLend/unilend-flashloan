@@ -43,7 +43,7 @@ export const checkNet = (net: any) => {
       return "Localhost";
   }
 };
-export const networkSwitchHandling = (currentProvider?: any) => {
+export const networkSwitchHandling = (currentProvider?: any, id?: any) => {
   return async (dispatch: Dispatch<Action>) => {
     await currentProvider.eth.net.getId().then((res: any) => {
       let accsName = checkNet(res);
@@ -53,6 +53,14 @@ export const networkSwitchHandling = (currentProvider?: any) => {
         networkId: res,
       });
     });
+    if (id) {
+      let accsName = checkNet(id);
+      dispatch({
+        type: ActionType.ACTIVE_NETWORK,
+        payload: accsName,
+        networkId: id,
+      });
+    }
     // (window as any).ethereum
     //   .request({ method: "net_version" })
     //   .then((accs: any) => {
@@ -126,6 +134,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [accounts],
             });
+            getAccountBalance(accounts, 2);
           }
 
           const provider = (window as any).ethereum;
@@ -338,10 +347,19 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
   }
 }
 
-export const getAccountBalance = (selectedAccount: string) => {
+export const getAccountBalance = (selectedAccount: string, networkId?: any) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      let balance = await web3Service.getBalance(selectedAccount);
+      let balance: any;
+      console.log(networkId);
+      if (networkId && networkId === 2) {
+        balance = await (window as any).BinanceChain.request({
+          method: "eth_getBalance",
+          params: [selectedAccount, "latest"],
+        });
+      } else {
+        balance = await web3Service.getBalance(selectedAccount);
+      }
       let ethBal = web3Service.getWei(balance, "ether");
       let ethBalDeci = toFixed(parseFloat(ethBal), 3);
       dispatch({

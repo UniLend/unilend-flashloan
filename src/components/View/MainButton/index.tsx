@@ -3,7 +3,6 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
 
@@ -32,6 +31,15 @@ const MainButton: FC<Props> = ({
   decimal,
   isChecked,
 }) => {
+  const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
+    show: false,
+  });
+
+  const decimalLength =
+    amount &&
+    amount.toString().split(".")[1] &&
+    amount.toString().split(".")[1].length;
+
   const {
     walletConnected,
     accounts: address,
@@ -44,34 +52,10 @@ const MainButton: FC<Props> = ({
     handleWalletConnect,
   } = useWalletConnect();
 
-  // const [isApproving, setIsApproving] = useState<string | null>(
-  //   localStorage.getItem("isApproving")
-  // );
-  // const [donateIsApproving, setDonateIsApproving] = useState<string | null>(
-  //   localStorage.getItem("donateApproval")
-  // );
-
-  // function updateApproval() {
-  //   setIsApproving(localStorage.getItem("isApproving"));
-  //   setDonateIsApproving(localStorage.getItem("donateApproval"));
-  // }
-
-  const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
-    show: false,
-  });
-
-  const decimalLength =
-    amount &&
-    amount.toString().split(".")[1] &&
-    amount.toString().split(".")[1].length;
-  // const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
-  //   show: false,
-  // });
-
   const {
     isDepositApproved,
     depositLoading,
-    depositErrorMessage,
+    // depositErrorMessage,
     depositAllowanceLoading,
     depositIsApproving,
   } = useTypedSelector((state) => state.deposit);
@@ -280,6 +264,7 @@ const MainButton: FC<Props> = ({
         break;
     }
   }
+
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -290,11 +275,11 @@ const MainButton: FC<Props> = ({
           handleWalletConnect={(wallet: Wallet) => handleWalletConnect(wallet)}
         />
       )}
-      {depositErrorMessage !== "" && (
+      {/* {depositErrorMessage !== "" && (
         <Alert variant="danger" onClose={handleAlertClose} dismissible>
           {depositErrorMessage}
         </Alert>
-      )}
+      )} */}
     </>
   );
 };

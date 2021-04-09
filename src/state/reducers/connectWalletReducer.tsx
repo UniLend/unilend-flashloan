@@ -39,7 +39,9 @@ const initialState = {
   userTokenBalance: "",
   poolTokenBalance: "",
   currentProvider: web3,
-  selectedNetworkId: 1,
+  selectedNetworkId: localStorage.getItem("activeNetworkId")
+    ? parseInt(localStorage.getItem("activeNetworkId") || "1")
+    : 1,
   poolLiquidity: "",
   rewardPoolBalance: "",
   rewardReleaseRate: "",
@@ -119,6 +121,7 @@ const connectWalletReducer = (
         currentProvider: web3,
       };
     case ActionType.SELECTED_NETWORK_ID:
+      localStorage.setItem("activeNetworkId", action.networkId.toString());
       return {
         ...state,
         selectedNetworkId: action.networkId ? action.networkId : 1,

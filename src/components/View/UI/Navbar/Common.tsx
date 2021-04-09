@@ -78,7 +78,9 @@ export const NetworkInfoTab = ({
       className={`d-flex btn ${
         theme === "dark" && "btn-dark"
       } btn-custom-secondary btn-round-switch  ${className ? className : ""}`}
-      // onClick={() => { // onClick(true)}}
+      onClick={() => {
+        onClick();
+      }}
     >
       <img
         src={require(`../../../../assets/${logo}.png`).default}

@@ -41,7 +41,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                 const logo = require(`../../../../assets/${item.logo}.png`)
                   .default;
                 return (
-                  <Col key={item.id} className="p-3">
+                  <Col key={item.id} className="p-3 text-center">
                     <button
                       className={`btn ${
                         theme === "dark" && "btn-dark"
@@ -51,7 +51,13 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                         onHide();
                       }}
                     >
-                      <div style={{ position: "relative" }}>
+                      <div
+                        style={{
+                          position: "relative",
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
                         <img src={logo} alt={item.label} />
                         {selectedNetworkId === item.id && (
                           <div className="selected-div">
@@ -68,6 +74,9 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                   </Col>
                 );
               })}
+              {/* {NETWORKS.length % 2 !== 0 && (
+                <Col className="p-3 center-block"></Col>
+              )} */}
             </Row>
           </Container>
         </Modal.Body>

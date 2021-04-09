@@ -35,6 +35,10 @@ export const checkNet = (net: any) => {
       return "RinkeBy";
     case 5:
       return "Goerli";
+    case 56:
+      return "Binance Mainnet";
+    case 97:
+      return "Binance Testnet";
     default:
       return "Localhost";
   }
@@ -108,7 +112,7 @@ async function handleWalletConnect(wallet: Wallet, dispatch: Dispatch<Action>) {
         }
 
         break;
-      case "binaceWallet":
+      case "binanceWallet":
         try {
           // Binance //////
 
@@ -741,10 +745,7 @@ export const getPoolLiquidity = (
   };
 };
 
-export const connectWalletAction = (
-  walletConnected: boolean,
-  wallet?: Wallet
-) => {
+export const connectWalletAction = (wallet?: Wallet) => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: ActionType.CONNECT_WALLET,
@@ -784,8 +785,13 @@ export const connectWalletAction = (
             provider = portis();
             // }
             break;
-          case "binaceWallet":
+          case "binanceWallet":
             currentProvider = bscWeb3;
+            provider = (window as any).BinanceChain;
+            break;
+          default:
+            currentProvider = web3;
+            provider = (window as any).ethereum;
         }
         dispatch({
           type: ActionType.CURRENT_PROVIDER,

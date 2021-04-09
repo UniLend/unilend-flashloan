@@ -49,7 +49,6 @@ function App() {
   useEffect(() => {
     // let connectedWallet = localStorage.getItem("walletConnected");
     dotEnv.config();
-
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
       // if (
@@ -58,24 +57,26 @@ function App() {
       //   // window !== undefined &&
       //   walletProvider
       // ) {
-      walletProvider.on("chainChanged", (chainId: any) => {
-        console.log(chainId);
-        window.location.reload();
-      });
-      walletProvider.on("accountsChanged", function (accounts: string) {
-        handleWalletConnect({
-          id: 1,
-          name: "metamask",
-          icon: "",
+      console.log(walletProvider);
+      if (walletProvider) {
+        walletProvider.on("chainChanged", (chainId: any) => {
+          window.location.reload();
         });
-      });
-      // walletProvider.on("networkChanged", (networkId: any) => {
-      //   console.log(networkId);
-      // });
-      walletProvider.on("message", (message: any) => {
-        // console.log(message);
-      });
-      // }
+        walletProvider.on("accountsChanged", function (accounts: string) {
+          handleWalletConnect({
+            id: 1,
+            name: "metamask",
+            icon: "",
+          });
+        });
+        // walletProvider.on("networkChanged", (networkId: any) => {
+        //   console.log(networkId);
+        // });
+        walletProvider.on("message", (message: any) => {
+          // console.log(message);
+        });
+        // }
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider, connectedWallet]);

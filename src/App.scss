@@ -126,6 +126,9 @@
   &:hover {
     box-shadow: var(--theme-btn-hover-shadow);
   }
+  &:focus {
+    box-shadow: var(--theme-btn-hover-shadow);
+  }
 }
 .btn-theme-icon-header,
 .btn-theme-icon-footer {
@@ -307,6 +310,7 @@ input[type="number"] {
 
 .btn-switch-pop {
   width: 100%;
+  max-width: 171px;
   border-radius: 25px;
   img {
     width: 90px;
@@ -325,6 +329,9 @@ input[type="number"] {
     padding: 0px;
     bottom: 7px;
     right: 38px;
+  }
+  &:hover {
+    background: var(--theme-btn-switch-bg);
   }
 }
 // .modal-wrapper {

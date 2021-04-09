@@ -35,11 +35,10 @@ export default function useWalletConnect() {
   const handleWalletConnect = useCallback(
     (wallet?: Wallet) => {
       console.log("CONNECTING WALLET");
-
       if (wallet) {
-        connectWalletAction(walletConnected, wallet);
+        connectWalletAction(wallet);
       } else {
-        connectWalletAction(walletConnected);
+        connectWalletAction();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },

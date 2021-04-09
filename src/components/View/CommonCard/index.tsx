@@ -199,6 +199,7 @@ const CommonCard = (props: props) => {
     if (
       isDepositSuccess ||
       donateIsApproved ||
+      isApproved ||
       donateSuccess ||
       redeemSuccess ||
       airdropSuccess
@@ -210,6 +211,7 @@ const CommonCard = (props: props) => {
     activeTab,
     donateIsApproved,
     isDepositSuccess,
+    isApproved,
     donateSuccess,
     redeemSuccess,
     airdropSuccess,

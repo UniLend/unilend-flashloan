@@ -86,11 +86,8 @@ const MainButton: FC<Props> = ({
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
-    clearDepositError,
+    // clearDepositError,
   } = useActions();
-  // useEffect(() => {
-  //   updateApproval();
-  // });
 
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {
@@ -257,13 +254,13 @@ const MainButton: FC<Props> = ({
   //   });
   // }
 
-  function handleAlertClose() {
-    switch (actionName) {
-      case "Deposit":
-        clearDepositError();
-        break;
-    }
-  }
+  // function handleAlertClose() {
+  //   switch (actionName) {
+  //     case "Deposit":
+  //       clearDepositError();
+  //       break;
+  //   }
+  // }
 
   return (
     <>

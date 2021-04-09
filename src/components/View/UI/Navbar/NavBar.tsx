@@ -150,6 +150,7 @@ const NavBar: React.FC<Props> = (props) => {
               <AccountBalance
                 theme={theme}
                 accountBalance={accountBalance}
+                tokenType={selectedNetworkId}
                 className="acc-balance-header"
               />
             ) : (

@@ -72,6 +72,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
         {walletConnected && accounts.length && accountBalance ? (
           <AccountBalance
             theme={theme}
+            tokenType={selectedNetworkId}
             accountBalance={accountBalance}
             className="acc-balance-footer"
           />

@@ -57,8 +57,10 @@ const CommonCard: FC<Props> = (props) => {
     totalTokensInRewardPool,
     walletProvider,
     selectedNetworkId,
+    connectedWallet,
     getUserTokenBalance,
     getPoolLiquidity,
+    handleWalletConnect,
   } = useWalletConnect();
 
   const {
@@ -346,7 +348,13 @@ const CommonCard: FC<Props> = (props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList, currentProvider, walletConnected, walletProvider]);
-
+  useEffect(() => {
+    // window.location.reload();
+    networkSwitchHandling(currentProvider);
+    if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet));
+    // handleTokenBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetworkId]);
   useEffect(() => {
     if (
       accounts.length &&

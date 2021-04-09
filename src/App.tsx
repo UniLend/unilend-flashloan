@@ -51,31 +51,22 @@ function App() {
     dotEnv.config();
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
-      // if (
-      //   // window &&
-      //   // window.ethereum !== undefined &&
-      //   // window !== undefined &&
-      //   walletProvider
-      // ) {
-      if (walletProvider) {
-        walletProvider.on("chainChanged", (chainId: any) => {
-          window.location.reload();
-        });
-        walletProvider.on("accountsChanged", function (accounts: string) {
-          handleWalletConnect({
-            id: 1,
-            name: "metamask",
-            icon: "",
-          });
-        });
-        // walletProvider.on("networkChanged", (networkId: any) => {
-        //   console.log(networkId);
-        // });
-        walletProvider.on("message", (message: any) => {
-          // console.log(message);
-        });
-        // }
-      }
+      // if (walletProvider) {
+      //   walletProvider.on("chainChanged", (chainId: any) => {
+      //     window.location.reload();
+      //   });
+      //   walletProvider.on("accountsChanged", function (accounts: string) {
+      //     handleWalletConnect({
+      //       id: 1,
+      //       name: "metamask",
+      //       icon: "",
+      //     });
+      //   });
+      //   walletProvider.on("message", (message: any) => {
+      //     // console.log(message);
+      //   });
+      //   // }
+      // }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider, connectedWallet]);

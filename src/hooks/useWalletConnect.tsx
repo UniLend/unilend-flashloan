@@ -36,14 +36,14 @@ export default function useWalletConnect() {
     (wallet?: Wallet) => {
       console.log("CONNECTING WALLET");
       if (wallet) {
-        connectWalletAction(wallet);
+        connectWalletAction(selectedNetworkId, wallet);
       } else {
-        connectWalletAction();
+        connectWalletAction(selectedNetworkId);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [walletConnected]
+    [walletConnected, selectedNetworkId]
   );
 
   return {

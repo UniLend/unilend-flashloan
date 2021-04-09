@@ -10,7 +10,13 @@ import {
   ConnectWalletButtonProps,
   AddressTabProps,
 } from "../../../Helpers/Types";
-
+const activeNetworkBaseCurrency = (selectedNetworkId: any) => {
+  if (selectedNetworkId === 1) {
+    return "ETH";
+  } else if (selectedNetworkId === 2) {
+    return "BNB";
+  }
+};
 export const ThemeButton = ({
   onClick,
   theme,
@@ -32,6 +38,7 @@ export const ThemeButton = ({
 
 export const AccountBalance = ({
   accountBalance,
+  tokenType,
   className,
   theme,
 }: AccountBalanceProps) => {
@@ -44,7 +51,7 @@ export const AccountBalance = ({
       }`}
     >
       <span className="mr-1">{accountBalance}</span>
-      <span className="currency">ETH</span>
+      <span className="currency">{activeNetworkBaseCurrency(tokenType)}</span>
     </button>
   );
 };

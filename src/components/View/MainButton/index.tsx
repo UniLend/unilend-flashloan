@@ -40,6 +40,7 @@ const MainButton: FC<Props> = ({
     // userTokenBalance,
     fullUserTokenBalance,
     fullPoolTokenBalance,
+    accountBalance,
     handleWalletConnect,
   } = useWalletConnect();
 
@@ -217,6 +218,7 @@ const MainButton: FC<Props> = ({
           disabled={
             (actionName === "Deposit" && depositIsApproving === true) ||
             (actionName === "Reward" && donateApproving === true) ||
+            parseFloat(accountBalance) <= 0 ||
             decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"

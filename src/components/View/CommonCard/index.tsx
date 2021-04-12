@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize, toFixed } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
-// import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
-// import AlertImg from "assets/warning-standalone.svg";
-interface props {
+import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
+import AlertToast from "../UI/AlertToast/AlertToast";
+import { RouteComponentProps, withRouter } from "react-router";
+import queryString from "query-string";
+import { RiskApproval } from "./RiskApproval";
+interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
 
@@ -18,15 +21,26 @@ interface ModalType {
   show: boolean;
 }
 
-const CommonCard = (props: props) => {
+interface AlertType {
+  show: boolean;
+}
+
+const CommonCard: FC<Props> = (props) => {
   const { activeTab } = props;
   // const dispatch = useDispatch();
+  const [redeemMax, setRedeemMax] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
     show: false,
   });
+  const [alertInfo, setAlertInfo] = useState<AlertType>({
+    show: false,
+  });
+  const [progressValue, setProgressValue] = useState<Number>(100);
   const [depositChecked, setDepositChecked] = useState<boolean>(false);
+  const [transModalInfo, setTransModalInfo] = useState<boolean>(false);
   const [poolPercentage, setPoolPercentage] = useState<any>("");
+
   const {
     accounts,
     walletConnected,
@@ -39,10 +53,17 @@ const CommonCard = (props: props) => {
     activeNetWork,
     networkId,
     currentApy,
+    accountBalance,
     totalDepositedTokens,
     totalTokensInRewardPool,
+    walletProvider,
+    selectedNetworkId,
+    connectedWallet,
+    fullPoolUTokenBalance,
+    // userTokenBalanceLoading,
     getUserTokenBalance,
     getPoolLiquidity,
+    handleWalletConnect,
   } = useWalletConnect();
 
   const {
@@ -66,19 +87,37 @@ const CommonCard = (props: props) => {
     networkSwitchHandling,
     getTotalDepositedTokens,
     getTotalTokensInRewardPool,
+    getPooluTokenBalance,
   } = useActions();
 
-  const { isDepositApproved: isApproved, isDepositSuccess } = useTypedSelector(
-    (state) => state.deposit
-  );
-  const { activeCurrency, theme } = useTypedSelector((state) => state.settings);
+  const {
+    isDepositApproved: isApproved,
+    isDepositSuccess,
+    depositErrorMessage,
+    depositSuccessMessage,
+    depositTransactionHashRecieved,
+  } = useTypedSelector((state) => state.deposit);
+  const { activeCurrency } = useTypedSelector((state) => state.settings);
   const {
     donateContractAddress,
     donateIsApproved,
     donateSuccess,
+    donateErrorMessage,
+    donateSuccessMessage,
+    donateTransactionHashRecieved,
   } = useTypedSelector((state) => state.donate);
-  const { redeemSuccess } = useTypedSelector((state) => state.redeem);
-  const { airdropSuccess } = useTypedSelector((state) => state.airdrop);
+  const {
+    redeemSuccess,
+    redeemErrorMessage,
+    redeemTransactionHashReceived,
+    redeemSuccessMessage,
+  } = useTypedSelector((state) => state.redeem);
+  const {
+    airdropSuccess,
+    airdropTransactionHashReceived,
+    airdropErrorMessage,
+    airdropSuccessMessage,
+  } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList, tokenList } = useTypedSelector(
     (state) => state.tokenManage
   );
@@ -86,29 +125,40 @@ const CommonCard = (props: props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool);
 
   const handleTokenBalance = () => {
+    if (accounts.length && currentProvider)
+      getAccountBalance(accounts[0], selectedNetworkId);
     if (
       accounts.length &&
       currentProvider &&
       activeCurrency.symbol !== "Select Token"
     ) {
-      getAccountBalance(accounts[0]);
-
-      getPoolTokenBalance(
-        currentProvider,
-        accounts[0],
-        assertAddress,
-        receipentAddress,
-        activeCurrency.decimals
-      );
-      getUserTokenBalance(
-        currentProvider,
-        accounts[0],
-        receipentAddress,
-        assertAddress,
-        activeCurrency.decimals
-      );
+      if (activeTab === "redeem") {
+        getPooluTokenBalance(
+          currentProvider,
+          accounts[0],
+          receipentAddress,
+          activeCurrency.decimals
+        );
+      }
+      if (activeCurrency.symbol !== "Select Token")
+        getPoolTokenBalance(
+          currentProvider,
+          accounts[0],
+          assertAddress,
+          receipentAddress,
+          activeCurrency.decimals
+        );
+      if (activeCurrency.symbol !== "Select Token")
+        getUserTokenBalance(
+          currentProvider,
+          accounts[0],
+          receipentAddress,
+          assertAddress,
+          activeCurrency.decimals
+        );
     }
-    getTotalDepositedTokens(currentProvider, activeCurrency.address);
+    if (activeCurrency.symbol !== "Select Token")
+      getTotalDepositedTokens(currentProvider, activeCurrency.address);
     if (donateContractAddress !== "") {
       getTotalTokensInRewardPool(
         currentProvider,
@@ -116,13 +166,18 @@ const CommonCard = (props: props) => {
         donateContractAddress
       );
     }
-    getRewardReleaseRatePerDay(
-      currentProvider,
-      donateContractAddress,
-      receipentAddress,
-      activeCurrency.decimals
-    );
-    if (activeTab === "reward" && donateContractAddress) {
+    if (activeCurrency.symbol !== "Select Token")
+      getRewardReleaseRatePerDay(
+        currentProvider,
+        donateContractAddress,
+        receipentAddress,
+        activeCurrency.decimals
+      );
+    if (
+      activeTab === "reward" &&
+      donateContractAddress &&
+      activeCurrency.symbol !== "Select Token"
+    ) {
       getRewardPoolBalance(
         currentProvider,
         donateContractAddress,
@@ -131,21 +186,72 @@ const CommonCard = (props: props) => {
       );
     }
   };
+  const getErrorMessage = () => {
+    switch (activeTab) {
+      case "lend":
+        return depositErrorMessage;
+      case "reward":
+        return donateErrorMessage;
+      case "redeem":
+        return redeemErrorMessage;
+      case "airdrop":
+        return airdropErrorMessage;
+      default:
+        return "";
+    }
+  };
 
+  const getSuccessMessage = () => {
+    switch (activeTab) {
+      case "lend":
+        return depositSuccessMessage;
+      case "reward":
+        return donateSuccessMessage;
+      case "redeem":
+        return redeemSuccessMessage;
+      case "airdrop":
+        return airdropSuccessMessage;
+      default:
+        return "";
+    }
+  };
+  useEffect(() => {
+    if (tokenList.payload.length > 0 && props.location.search) {
+      let query: any = queryString.parse(props.location.search);
+      let filteredToken: any = tokenList.payload.filter((item: any) => {
+        return item.address.toLowerCase() === query.token.toLowerCase();
+      });
+      if (filteredToken.length > 0) {
+        setActiveCurrency(filteredToken[0]);
+        networkSwitchHandling(currentProvider);
+        handleModal(false);
+        balanceReset();
+        setPoolPercentage(0);
+        if (accounts.length && currentProvider) {
+          getPool(filteredToken[0].address, currentProvider, accounts[0]);
+        }
+        handleReciepent(filteredToken[0].address);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenList]);
   useEffect(() => {
     if (
       isDepositSuccess ||
       donateIsApproved ||
+      isApproved ||
       donateSuccess ||
       redeemSuccess ||
       airdropSuccess
     ) {
       setAmount("");
+      setDepositChecked(false);
     }
   }, [
     activeTab,
     donateIsApproved,
     isDepositSuccess,
+    isApproved,
     donateSuccess,
     redeemSuccess,
     airdropSuccess,
@@ -161,6 +267,71 @@ const CommonCard = (props: props) => {
     receipentAddress,
     assertAddress,
     donateContractAddress,
+  ]);
+  const handleToast = (show: boolean) => {
+    setAlertInfo({
+      show,
+    });
+  };
+  useEffect(() => {
+    let interval: any;
+    if (
+      (activeTab === "lend" && depositErrorMessage === "Transaction Failed") ||
+      (activeTab === "reward" && donateErrorMessage === "Transaction Failed") ||
+      (activeTab === "redeem" && redeemErrorMessage === "Transaction Failed") ||
+      (activeTab === "airdrop" && airdropErrorMessage === "Transaction Failed")
+    ) {
+      var now = 100;
+      interval = setInterval(() => {
+        now--;
+        setProgressValue(now);
+        if (now === 0) {
+          handleToast(false);
+          clearInterval(interval);
+        }
+      }, 100);
+      handleToast(true);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    depositErrorMessage,
+    donateErrorMessage,
+    redeemErrorMessage,
+    airdropErrorMessage,
+  ]);
+  useEffect(() => {
+    let interval: any;
+    if (
+      (activeTab === "lend" && isDepositSuccess) ||
+      (activeTab === "reward" && donateSuccess) ||
+      (activeTab === "redeem" && redeemSuccess) ||
+      (activeTab === "airdrop" && airdropSuccess)
+    ) {
+      var now = 100;
+      interval = setInterval(() => {
+        now--;
+        setProgressValue(now);
+        if (now === 0) {
+          handleToast(false);
+          clearInterval(interval);
+        }
+      }, 100);
+      handleToast(true);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isDepositSuccess,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+    activeTab,
   ]);
   useEffect(() => {
     if (totalDepositedTokens !== "" && totalTokensInRewardPool !== "") {
@@ -183,11 +354,19 @@ const CommonCard = (props: props) => {
     totalTokensInRewardPool,
   ]);
   useEffect(() => {
-    networkSwitchHandling();
+    if (walletConnected) {
+      networkSwitchHandling(currentProvider);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, tokenList]);
-
+  }, [tokenList, currentProvider, walletConnected, walletProvider]);
+  useEffect(() => {
+    // window.location.reload();
+    networkSwitchHandling(currentProvider);
+    if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet));
+    // handleTokenBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetworkId]);
   useEffect(() => {
     if (
       accounts.length &&
@@ -219,18 +398,31 @@ const CommonCard = (props: props) => {
   ]);
 
   useEffect(() => {
-    fetchTokenList(tokenGroupList, networkId, currentProvider, accounts);
+    fetchTokenList(
+      tokenGroupList,
+      networkId,
+      currentProvider,
+      accounts,
+      accountBalance
+    );
     setModalInfo({
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, networkId, currentProvider, accounts, activeCurrency]);
+  }, [
+    walletConnected,
+    networkId,
+    currentProvider,
+    accounts,
+    walletConnected,
+    accountBalance,
+  ]);
 
   useEffect(() => {
     let interval: any;
 
     interval = setInterval(() => {
-      if (accounts.length && walletConnected) {
+      if (activeCurrency.symbol !== "Select Token") {
         getPoolLiquidity(
           currentProvider,
           receipentAddress,
@@ -251,38 +443,65 @@ const CommonCard = (props: props) => {
     donateContractAddress,
     totalDepositedTokens,
     totalTokensInRewardPool,
+    tokenList,
   ]);
+  // useEffect(() => {
+  //   let interval: any;
 
+  //   interval = setInterval(() => {
+  //     if (accounts.length && walletConnected) {
+  //       getPoolLiquidity(
+  //         currentProvider,
+  //         receipentAddress,
+  //         activeCurrency.symbol === "ETH",
+  //         activeCurrency.decimals
+  //       );
+  //     }
+  //     handleTokenBalance();
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   accounts,
+  //   activeTab,
+  //   activeCurrency,
+  //   receipentAddress,
+  //   assertAddress,
+  //   donateContractAddress,
+  //   totalDepositedTokens,
+  //   totalTokensInRewardPool,
+  // ]);
   useEffect(() => {
     if (walletConnected && activeCurrency.symbol !== "Select Token") {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, accounts, currentProvider, activeCurrency]);
-  // useEffect(() => {
-  //   if (
-  //     tokenList.payload.length
-  //     // activeCurrency === "ETH"
-  //     // activeCurrency.symbol === undefined
-  //   ) {
-  //     setActiveCurrency(tokenList.payload[1]);
-  //     // setActiveCurrency({
-  //     //   name: "Select Token",
-  //     //   logoURI: dropdown,
-  //     //   chainId: 42,
-  //     //   symbol: "Select Token",
-  //     //   address: Reciepent,
-  //     //   decimals: 18,
-  //     // });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeTab, tokenList.payload]);
   useEffect(() => {
     setAmount("");
     // if (activeTab === "reward") {
     //   rewardTokenList(tokenList);
     // }
   }, [activeTab]);
+
+  // useEffect(() => {
+  //   if (
+  //     isDepositSuccess ||
+  //     donateIsApproved ||
+  //     donateSuccess ||
+  //     redeemSuccess ||
+  //     airdropSuccess
+  //   ) {
+  //     setAmount("");
+  //   }
+  // }, [
+  //   activeTab,
+  //   donateIsApproved,
+  //   isDepositSuccess,
+  //   donateSuccess,
+  //   redeemSuccess,
+  //   airdropSuccess,
+  // ]);
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
@@ -304,7 +523,7 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
-
+        handleTransModal(true);
         break;
       case "redeem":
         handleRedeem(
@@ -313,9 +532,11 @@ const CommonCard = (props: props) => {
           accounts[0],
           receipentAddress,
           activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          redeemMax,
+          fullPoolUTokenBalance
         );
-
+        handleTransModal(true);
         break;
       case "reward":
         handleDonate(
@@ -326,6 +547,8 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
+        handleTransModal(true);
+
         break;
       case "airdrop":
         handleAirdrop(
@@ -336,7 +559,7 @@ const CommonCard = (props: props) => {
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals
         );
-        // handled
+        handleTransModal(true);
         break;
       default:
         break;
@@ -350,22 +573,34 @@ const CommonCard = (props: props) => {
     // if (tokenList.length === 0) fetchTokenList(tokenGroupList);
   };
 
+  const handleTransModal = (isShow: boolean) => setTransModalInfo(isShow);
+
+  const handleRedeemMax = () => {
+    setRedeemMax(true);
+  };
   return (
     <>
-      <div className="network-warning">
-        {accounts.length &&
-        activeNetWork !== "Mainnet" &&
-        activeNetWork !== "Ropsten"
-          ? // && activeNetWork !== "Mainnet"
-            `You are currently connected to the ${activeNetWork} which is not supported.`
-          : ""}
-        {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
-      </div>
+      {accounts.length &&
+      activeNetWork !== "Mainnet" &&
+      activeNetWork !== "Ropsten" ? (
+        <div className="network-warning">
+          {`You are currently connected to the ${activeNetWork} which is not
+          supported.`}
+        </div>
+      ) : (
+        ""
+      )}
       {activeTab && (
         <ContentCard title={`${capitalize(activeTab)}`}>
           <div className="swap-root">
             <FieldCard
-              onF1Change={(e) => setAmount(e.target.value)}
+              onF1Change={(e) => {
+                setAmount(e.target.value);
+                if (redeemMax) {
+                  setRedeemMax(false);
+                }
+              }}
+              onRedeemMax={handleRedeemMax}
               handleModelOpen={() => handleModal(true)}
               fieldLabel="Amount"
               fieldValue={amount}
@@ -383,32 +618,13 @@ const CommonCard = (props: props) => {
             activeCurrency.symbol !== "Select Token" &&
             amount !== "" &&
             parseFloat(amount) > 0 ? (
-              <div className={`${theme} card field-card mt-4`}>
-                <div className="card-body py-2">
-                  <div className="w-100 align-items-center text-center pr-0 mr-0">
-                    {/* <div className="alerticon justify-content-center d-flex w-100">
-                      <img className="icon" src={AlertImg} alt="alert" />
-                    </div> */}
-                    <p className="mb-0 mt-3 warning-lead-text">
-                      The amount you {capitalize(activeTab)}, will be deducted
-                      from your wallet permanently and added to the reward pool.
-                    </p>
-                    <p className="mb-0 mt-3 warning-note-text ">
-                      Please Note: This transaction is irreversible
-                    </p>
-                    <div className="checkbox-custom mt-3 d-flex align-items-center justify-content-center">
-                      <input
-                        type="checkbox"
-                        checked={depositChecked}
-                        onClick={() => {
-                          setDepositChecked(!depositChecked);
-                        }}
-                      />
-                      <label className="warning-note-text">I Understand</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RiskApproval
+                activeTab={activeTab}
+                isChecked={depositChecked}
+                onChecked={() => {
+                  setDepositChecked(!depositChecked);
+                }}
+              />
             ) : (
               ""
             )}
@@ -428,13 +644,8 @@ const CommonCard = (props: props) => {
             />
             {(activeTab === "lend" || activeTab === "redeem") &&
             activeCurrency.symbol !== "Select Token" ? (
-              // ||
-              // activeCurrency.symbol === "ETH"
               <div className="price_head">
                 <div className="price_aa">
-                  {/* <div className="price-list">
-                    Pool percentage <span className="price">-</span>
-                  </div> */}
                   <div className="price-list">
                     <p>Current APY</p>
                     <span className="price">{`${
@@ -442,7 +653,7 @@ const CommonCard = (props: props) => {
                     }/year`}</span>
                   </div>
                   <div className="price-list">
-                    Total Pool Liquidity{" "}
+                    <p>Total Pool Liquidity </p>
                     <span className="price">
                       {poolLiquidity ? (
                         <>
@@ -461,7 +672,7 @@ const CommonCard = (props: props) => {
                     <span></span>
                   </div>
                   <div className="price-list">
-                    Your Pool Share
+                    <p>Your Pool Share</p>
                     <span className="price">
                       {poolPercentage !== "" &&
                       poolLiquidity !== "" &&
@@ -472,9 +683,7 @@ const CommonCard = (props: props) => {
                     </span>
                   </div>
                   <div className="price-list">
-                    Your Liquidity
-                    {/* {" "}
-                      {!poolLoading && poolName ? `(${poolName})` : ""} */}
+                    <p>Your Liquidity</p>
                     <span className="price">
                       {walletConnected && poolTokenBalance !== "" ? (
                         <>
@@ -501,13 +710,13 @@ const CommonCard = (props: props) => {
                 <div className="price_head">
                   <div className="price_aa">
                     <div className="price-list">
-                      Current APY
+                      <p>Current APY</p>
                       <span className="price">{`${
                         currentApy !== "" ? `${currentApy}%` : "-"
                       }/year`}</span>
                     </div>
                     <div className="price-list">
-                      Reward Available
+                      <p>Reward Available</p>
                       <span className="price">
                         {walletConnected && rewardPoolBalance !== "" ? (
                           <>
@@ -525,7 +734,7 @@ const CommonCard = (props: props) => {
                       </span>
                     </div>
                     <div className="price-list">
-                      Reward Rate
+                      <p>Reward Rate</p>
                       <span className="price">{`${
                         rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
                       }/day`}</span>
@@ -557,8 +766,66 @@ const CommonCard = (props: props) => {
           activeTab={activeTab}
         />
       )}
+      {transModalInfo && (
+        <TransactionPopup
+          mode={
+            (activeTab === "lend" &&
+              !depositTransactionHashRecieved &&
+              !depositErrorMessage) ||
+            (activeTab === "reward" &&
+              !donateTransactionHashRecieved &&
+              !donateErrorMessage) ||
+            (activeTab === "redeem" &&
+              !redeemTransactionHashReceived &&
+              !redeemErrorMessage) ||
+            (activeTab === "airdrop" &&
+              !airdropTransactionHashReceived &&
+              !airdropErrorMessage)
+              ? "loading"
+              : (activeTab === "lend" && depositTransactionHashRecieved) ||
+                (activeTab === "reward" && donateTransactionHashRecieved) ||
+                (activeTab === "redeem" && redeemTransactionHashReceived) ||
+                (activeTab === "airdrop" && airdropTransactionHashReceived)
+              ? "success"
+              : "failure"
+          }
+          activeTab={activeTab}
+          handleClose={() => handleTransModal(false)}
+        />
+      )}
+      {alertInfo.show &&
+        activeTab &&
+        getErrorMessage() === "Transaction Failed" && (
+          <AlertToast
+            handleClose={() => {
+              handleToast(false);
+            }}
+            now={progressValue}
+            status="failed"
+            message={getErrorMessage()}
+            activeTab={activeTab}
+          />
+        )}
+      {alertInfo.show &&
+        activeTab &&
+        ((activeTab === "lend" && isDepositSuccess && depositSuccessMessage) ||
+          (activeTab === "reward" && donateSuccessMessage && donateSuccess) ||
+          (activeTab === "redeem" && redeemSuccess && redeemSuccessMessage) ||
+          (activeTab === "airdrop" &&
+            airdropSuccess &&
+            airdropSuccessMessage)) && (
+          <AlertToast
+            handleClose={() => {
+              handleToast(false);
+            }}
+            now={progressValue}
+            status="success"
+            message={getSuccessMessage()}
+            activeTab={activeTab}
+          />
+        )}
     </>
   );
 };
 
-export default CommonCard;
+export default withRouter(CommonCard);

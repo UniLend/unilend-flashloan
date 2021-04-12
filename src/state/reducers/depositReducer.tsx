@@ -8,6 +8,9 @@ interface DepositState {
   depositAllowanceLoading: boolean;
   depositErrorMessage: string;
   depositIsApproving: boolean;
+  depositTransactionHash: any;
+  depositTransactionHashRecieved: boolean;
+  depositSuccessMessage: string;
 }
 
 const initialState = {
@@ -17,6 +20,9 @@ const initialState = {
   depositAllowanceLoading: false,
   depositErrorMessage: "",
   depositIsApproving: false,
+  depositTransactionHash: "",
+  depositTransactionHashRecieved: false,
+  depositSuccessMessage: "",
 };
 
 const DepositReducer = (
@@ -45,11 +51,16 @@ const DepositReducer = (
       return {
         ...state,
         depositIsApproving: false,
+        isDepositApproved: true,
+        depositAllowanceLoading: false,
       };
     case ActionType.DEPOSIT_APPROVE_FAILED:
       return {
         ...state,
         depositIsApproving: false,
+        isDepositApproved: false,
+        depositAllowanceLoading: false,
+        depositErrorMessage: action.message ? action.message : "Approve Failed",
       };
     case ActionType.DEPOSIT_APPROVAL_STATUS:
       return {
@@ -57,20 +68,36 @@ const DepositReducer = (
         isDepositApproved: action.payload,
         depositAllowanceLoading: false,
       };
+    case ActionType.DEPOSIT_TRANSACTION_HASH:
+      return {
+        ...state,
+        depositTransactionHash: action.payload,
+        depositTransactionHashRecieved: true,
+      };
     case ActionType.DEPOSIT_ACTION:
-      return { ...state, depositLoading: true, depositErrorMessage: "" };
+      return {
+        ...state,
+        depositLoading: true,
+        depositTransactionHash: "",
+        depositTransactionHashRecieved: false,
+        depositErrorMessage: "",
+        depositSuccessMessage: "",
+        isDepositSuccess: false,
+      };
     case ActionType.DEPOSIT_SUCCESS:
       return {
         ...state,
         depositLoading: false,
         isDepositSuccess: true,
+        depositSuccessMessage: "Deposited Successfully",
       };
     case ActionType.DEPOSIT_FAILED:
       return {
         ...state,
         depositLoading: false,
         isDepositSuccess: false,
-        depositErrorMessage: action.message || "Deposit Failed",
+        depositErrorMessage: action.message,
+        depositTransactionHashRecieved: false,
       };
     case ActionType.DEPOSIT_MESSAGE_CLEAR:
       return { ...state, depositErrorMessage: "" };

@@ -12,68 +12,39 @@ import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
 // import { useActions } from "hooks/useActions";
-declare const window: any;
+// declare const window: any;
 // interface ProviderMessage {
 //   type: string;
 //   data: unknown;
 // }
 function App() {
   const [loading, setLoading] = useState<Boolean>(true);
+
   const [alertShow, setAlertShow] = useState<Boolean>(true);
+
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  // const { tokenGroupList, tokenList } = useTypedSelector(
-  //   (state) => state.tokenManage
-  // );
-  // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
-  const { handleWalletConnect } = useWalletConnect();
-  // useEffect(() => {
-  //   if (tokenList.payload.length === 0) {
-  //     setLoading(true);
-  //     fetchTokenList(tokenGroupList, networkId, activeTab);
-  //   }
-  //   if (tokenList.payload.length !== 0) {
-  //     setLoading(false);
-  //   }
-  // }, [tokenList, activeTab]);
+
+  const {
+    handleWalletConnect,
+    walletProvider,
+    connectedWallet,
+  } = useWalletConnect();
+
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    dotEnv.config();
-    let connectedWallet = localStorage.getItem("walletConnected");
-
-    if (connectedWallet) {
-      handleWalletConnect(JSON.parse(connectedWallet));
-      if (window && window.ethereum !== undefined && window !== undefined) {
-        // let wallet = localStorage.getItem("wallet");
-        // if (wallet) {
-        //   handleWalletConnect(JSON.parse(wallet));
-        // }
-        //   window.ethereum.on("disconnect", () => {});
-        //   window.ethereum.on("accountsChanged", (accounts: any) => {
-        //     handleWalletConnect();
-        //   });
-
-        window.ethereum.on("chainChanged", (chainId: any) => {
-          window.location.reload();
-        });
-        window.ethereum.on("accountsChanged", function (accounts: string) {
-          handleWalletConnect({
-            id: 1,
-            name: "metamask",
-            icon: "",
-          });
-        });
-        window.ethereum.on("message", (message: any) => {
-          // console.log(message);
-        });
-      }
-    }
     setTimeout(() => {
       setLoading(false);
     }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    dotEnv.config();
+    if (connectedWallet) {
+      handleWalletConnect(JSON.parse(connectedWallet));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletProvider, connectedWallet]);
+
   return (
     <div className={`App ${theme}`}>
       {loading ? (
@@ -109,7 +80,7 @@ function App() {
                   style={{
                     height: "100%",
                     overflow: "auto",
-                    paddingTop: "60px",
+                    // paddingTop: "60px",
                   }}
                 >
                   <Switch>
@@ -124,6 +95,7 @@ function App() {
                   </Switch>
                 </div>
               </div>
+              <div className="version-denote">v 1.0.3</div>
             </div>
           </Layout>
         </>

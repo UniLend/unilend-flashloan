@@ -8,6 +8,10 @@ interface DonateState {
   donateAllowanceLoading: boolean;
   donateApproving: boolean;
   donateSuccess: boolean;
+  donateTransactionHash: string;
+  donateTransactionHashRecieved: boolean;
+  donateErrorMessage: string;
+  donateSuccessMessage: string;
 }
 
 const initialState = {
@@ -17,6 +21,10 @@ const initialState = {
   donateAllowanceLoading: false,
   donateApproving: false,
   donateSuccess: false,
+  donateTransactionHash: "",
+  donateTransactionHashRecieved: false,
+  donateErrorMessage: "",
+  donateSuccessMessage: "",
 };
 
 const DonateReducer = (
@@ -34,16 +42,23 @@ const DonateReducer = (
       return {
         ...state,
         donateApproving: true,
+        donateIsApproved: false,
+        donateAllowanceLoading: false,
       };
     case ActionType.DONATE_APPROVE_FAILED:
       return {
         ...state,
         donateApproving: false,
+
+        donateIsApproved: false,
+        donateAllowanceLoading: false,
       };
     case ActionType.DONATE_APPROVE_SUCCESS:
       return {
         ...state,
         donateApproving: false,
+        donateIsApproved: true,
+        donateAllowanceLoading: false,
       };
     case ActionType.GET_DONATION_CONTRACT:
       return { ...state, donateContractAddress: action.payload };
@@ -52,11 +67,22 @@ const DonateReducer = (
         ...state,
         donateLoading: true,
         donateSuccess: false,
+        donateTransactionHash: "",
+        donateTransactionHashRecieved: false,
+        donateSuccessMessage: "",
+        donateErrorMessage: "",
+      };
+    case ActionType.DONATE_TRANSACTION_HASH:
+      return {
+        ...state,
+        donateTransactionHash: action.payload,
+        donateTransactionHashRecieved: true,
       };
     case ActionType.DONATE_SUCCESS:
       return {
         ...state,
         donateLoading: false,
+        donateSuccessMessage: "Donated Successfully",
         donateSuccess: true,
       };
     case ActionType.DONATE_FAILED:
@@ -64,6 +90,8 @@ const DonateReducer = (
         ...state,
         donateLoading: false,
         donateSuccess: false,
+        donateErrorMessage: action.message,
+        donateTransactionHashRecieved: false,
       };
     case ActionType.DONATE_APPROVAL_STATUS:
       return {

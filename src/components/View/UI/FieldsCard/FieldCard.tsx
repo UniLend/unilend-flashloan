@@ -2,9 +2,11 @@ import React, { FC, useEffect, useRef } from "react";
 import "./FieldCard.scss";
 import dropdown from "../../../../assets/dropdown.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { floatRegExp, toFixed } from "components/Helpers/index";
+import { floatRegExp } from "components/Helpers/index";
 import BigNumber from "bignumber.js";
+// import { useActions } from "hooks/useActions";
 // import useWalletConnect from "hooks/useWalletConnect";
+
 interface Props {
   fieldLabel: String;
   fieldValue: any;
@@ -15,6 +17,7 @@ interface Props {
   setFieldValue: any;
   handleModelOpen: () => void;
   onF1Change: (e: any) => void;
+  onRedeemMax: () => void;
 }
 const FieldCard: FC<Props> = (props) => {
   const field1: any = useRef(null);
@@ -25,6 +28,7 @@ const FieldCard: FC<Props> = (props) => {
   const { theme, activeCurrency, activeTab } = useTypedSelector(
     (state) => state.settings
   );
+  // const { getPooluTokenBalance } = useActions();
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
@@ -68,6 +72,7 @@ const FieldCard: FC<Props> = (props) => {
                       className="btn btn-max"
                       onClick={() => {
                         if (activeTab === "redeem") {
+                          props.onRedeemMax();
                           let bFullAmount = new BigNumber(fullPoolTokenBalance);
                           props.setFieldValue(
                             bFullAmount.toFixed(18, 1).toString()
@@ -75,7 +80,6 @@ const FieldCard: FC<Props> = (props) => {
                         } else {
                           let bFullAmount = new BigNumber(fullUserTokenBalance);
                           props.setFieldValue(
-                            // toFixed(fullUserTokenBalance, 18)
                             bFullAmount.toFixed(18, 1).toString()
                           );
                         }

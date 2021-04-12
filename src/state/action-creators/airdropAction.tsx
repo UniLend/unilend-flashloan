@@ -23,6 +23,7 @@ export const handleAirdrop = (
       amount,
       decimal
     );
+
     await IERC20(currentProvider, reciepentAddress)
       .methods.transfer(
         UnilendFlashLoanCoreContract(currentProvider),
@@ -36,9 +37,17 @@ export const handleAirdrop = (
           type: ActionType.AIRDROP_SUCCESS,
         });
       })
-      .catch((e: any) => {
+      .on("transactionHash", (hash: any) => {
+        dispatch({
+          type: ActionType.AIRDROP_TRANSACTION_HASH,
+          payload: hash,
+        });
+      })
+      .on("error", (err: any, res: any) => {
         dispatch({
           type: ActionType.AIRDROP_FAILED,
+          message:
+            res === undefined ? "Transaction Rejected" : "Transaction Failed",
         });
       });
   };

@@ -19,7 +19,10 @@ export const themeChange = (currTheme: string) => {
         });
       }
     } catch (e) {
-      console.log(e);
+      dispatch({
+        type: ActionType.CURRENT_THEME,
+        payload: "dark",
+      });
     }
   };
 };

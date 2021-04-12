@@ -11,21 +11,28 @@ import { DonateAction } from "state/actions/donateA";
 
 export const getDonationContract = (currentProvider: any) => {
   return async (dispatch: Dispatch<DonateAction>) => {
-    FlashloanLBCore(currentProvider)
-      .methods.donationAddress()
-      .call((error: any, result: any) => {
-        if (!error && result) {
-          dispatch({
-            type: ActionType.GET_DONATION_CONTRACT,
-            payload: result,
-          });
-        } else {
-          dispatch({
-            type: ActionType.GET_DONATION_CONTRACT,
-            payload: "",
-          });
-        }
+    try {
+      FlashloanLBCore(currentProvider)
+        .methods.donationAddress()
+        .call((error: any, result: any) => {
+          if (!error && result) {
+            dispatch({
+              type: ActionType.GET_DONATION_CONTRACT,
+              payload: result,
+            });
+          } else {
+            dispatch({
+              type: ActionType.GET_DONATION_CONTRACT,
+              payload: "",
+            });
+          }
+        });
+    } catch (e) {
+      dispatch({
+        type: ActionType.GET_DONATION_CONTRACT,
+        payload: "",
       });
+    }
   };
 };
 
@@ -55,10 +62,6 @@ export const donateAllowance = (
                 });
               } else {
                 localStorage.setItem("donateApproval", "false");
-                dispatch({
-                  type: ActionType.DONATE_APPROVAL_STATUS,
-                  payload: true, // isApproved
-                });
                 dispatch({
                   type: ActionType.DONATE_APPROVE_SUCCESS,
                 });
@@ -90,13 +93,6 @@ export const donateApprove = (
     });
     try {
       localStorage.setItem("donateApproval", "true");
-      dispatch({
-        type: ActionType.DONATE_APPROVE_ACTION,
-      });
-      dispatch({
-        type: ActionType.DONATE_APPROVAL_STATUS,
-        payload: false,
-      });
       let _IERC20 = IERC20(currentProvider, receipentAddress);
 
       _IERC20.methods
@@ -107,10 +103,6 @@ export const donateApprove = (
         .on("receipt", (res: any) => {
           localStorage.setItem("donateApproval", "false");
           dispatch({
-            type: ActionType.DONATE_APPROVAL_STATUS,
-            payload: true,
-          });
-          dispatch({
             type: ActionType.DONATE_APPROVE_SUCCESS,
           });
         })
@@ -118,10 +110,6 @@ export const donateApprove = (
           localStorage.setItem("donateApproval", "false");
           dispatch({
             type: ActionType.DONATE_APPROVE_FAILED,
-          });
-          dispatch({
-            type: ActionType.DONATE_APPROVAL_STATUS,
-            payload: false,
           });
         });
     } catch (e: any) {
@@ -151,6 +139,7 @@ export const handleDonate = (
         donateAmount,
         decimal
       );
+
       FlashloanLBCore(currentProvider)
         .methods.donationAddress()
         .call((error: any, result: any) => {
@@ -171,23 +160,33 @@ export const handleDonate = (
                   payload: true,
                 });
               })
-              .catch((e: Error) => {
+
+              .on("transactionHash", (hash: any) => {
+                dispatch({
+                  type: ActionType.DONATE_TRANSACTION_HASH,
+                  payload: hash,
+                });
+              })
+              .on("error", (err: any, res: any) => {
                 dispatch({
                   type: ActionType.DONATE_FAILED,
-                  payload: false,
+                  message:
+                    res === undefined
+                      ? "Transaction Rejected"
+                      : "Transaction Failed",
                 });
               });
           } else {
             dispatch({
               type: ActionType.DONATE_FAILED,
-              payload: false,
+              message: "Transaction Failed",
             });
           }
         });
     } catch (e: any) {
       dispatch({
         type: ActionType.DONATE_FAILED,
-        payload: false,
+        message: "Transaction Failed",
       });
     }
   };

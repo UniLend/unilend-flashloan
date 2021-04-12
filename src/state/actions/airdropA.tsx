@@ -10,6 +10,16 @@ interface AirdropSuccess {
 
 interface AirdropFailed {
   type: ActionType.AIRDROP_FAILED;
+  message: string;
 }
 
-export type AirdropAction = _AirdropAction | AirdropSuccess | AirdropFailed;
+interface TransactionHash {
+  type: ActionType.AIRDROP_TRANSACTION_HASH;
+  payload: any;
+}
+
+export type AirdropAction =
+  | _AirdropAction
+  | AirdropSuccess
+  | AirdropFailed
+  | TransactionHash;

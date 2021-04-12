@@ -1,47 +1,44 @@
-import React, { useEffect, useState, Dispatch } from "react";
+import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import logo from "assets/logo.svg";
-import walletlight from "assets/wallet-light.svg";
-import walletdark from "assets/wallet-dark.svg";
-import sun from "assets/sun.svg";
-import moon from "assets/moon.svg";
 // import ethLogo from "assets/ethereum.webp";
 import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
-import { capitalize, shortenAddress } from "components/Helpers";
-import ConnectWalletModal from "../ConnectWalletModal";
-import WalletStateModal from "../WalletStatusModal";
-import { Wallet } from "components/Helpers/Types";
-import SwitchNetWorkModal from "../SwitchNetWorkModal";
+import { shortenAddress } from "components/Helpers";
 import { NETWORKS } from "components/constants";
-interface Props extends RouteComponentProps<any> {}
-interface WalletConnectModal {
-  show: boolean;
-}
-interface WalletInfo {
-  show: boolean;
-  address: string;
+import { WalletInfoProps } from "../../../Helpers/Types";
+import {
+  ThemeButton,
+  AccountBalance,
+  ActiveNetwork,
+  NetworkInfoTab,
+  ConnectWalletButton,
+  AddressTab,
+} from "./Common";
+
+interface Props extends RouteComponentProps<any> {
+  setWalletModalInfo: Dispatch<SetStateAction<boolean>>;
+  setWalletStatusInfo: Dispatch<SetStateAction<WalletInfoProps>>;
+  setSwitchNetworkModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const NavBar: React.FC<Props> = (props) => {
+  const {
+    setWalletModalInfo,
+    setWalletStatusInfo,
+    // setSwitchNetworkModal,
+  } = props;
+
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
   const { selectedNetworkId, activeNetWork } = useTypedSelector(
     (state) => state.connectWallet
   );
-  const { themeChange, setActiveTab, walletDisconnect } = useActions();
-  const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
-    show: false,
-  });
-  const [walletStatusInfo, setWalletStatusInfo] = useState<WalletInfo>({
-    show: false,
-    address: "",
-  });
-  const [switchNetWorkModal, setSwitchNetworkModal] = useState<boolean>(false);
+  const { themeChange, setActiveTab } = useActions();
 
   const dispatch = useDispatch<Dispatch<SettingAction>>();
   const networkInfo = NETWORKS.filter(
@@ -52,7 +49,6 @@ const NavBar: React.FC<Props> = (props) => {
     accounts,
     loading,
     accountBalance,
-    handleWalletConnect,
   } = useWalletConnect();
 
   useEffect(() => {
@@ -75,7 +71,10 @@ const NavBar: React.FC<Props> = (props) => {
               className="d-inline-block align-top"
             />
           </Link>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            className=" float-right top-nav-links"
+            id="navbarSupportedContent"
+          >
             <ul className="navbar-nav me-auto mb-lg-0">
               <li className="nav-item">
                 <Link
@@ -130,115 +129,60 @@ const NavBar: React.FC<Props> = (props) => {
               </li>
             </ul>
           </div>
-          <div
-            className={`d-flex btn ${
-              theme === "dark" && "btn-dark"
-            } btn-custom-secondary btn-round-switch`}
-            style={{ padding: "7px" }}
-          >
-            {activeNetWork}
-          </div>
-          <button
-            className={`d-flex btn ${
-              theme === "dark" && "btn-dark"
-            } btn-custom-secondary btn-round-switch`}
-            onClick={() => {
-              // setSwitchNetworkModal(true)
-            }}
-          >
-            <img
-              src={
-                require(`../../../../assets/${networkInfo.logo}.png`).default
-              }
-              alt={networkInfo.label}
-            />
-            <span>{capitalize(networkInfo.label)}</span>
-          </button>
-          {walletConnected && accounts.length && accountBalance && (
-            <div className={`d-flex btn-custom-secondary acc-balance`}>
-              <span className="mr-1">{accountBalance}</span>
-              <span className="currency">ETH</span>
-            </div>
-          )}
-          {(accounts && accounts.length) || walletConnected ? (
-            <button
-              className={`d-flex btn ${
-                theme === "dark" && "btn-dark"
-              } btn-custom-secondary`}
-              onClick={() =>
-                setWalletStatusInfo({
-                  show: true,
-                  address: shortenAddress(accounts[0]),
-                })
-              }
-            >
-              {shortenAddress(accounts[0])}
-            </button>
-          ) : (
-            <button
-              className={`d-flex btn ${
-                theme === "dark" && "btn-dark"
-              } btn-custom-secondary`}
-              onClick={() => setWalletModalInfo({ show: true })}
-            >
-              {!loading ? (
-                <span>
-                  <img
-                    src={theme === "light" ? walletlight : walletdark}
-                    width="26"
-                    alt="Wallet"
-                    className="d-inline-block px-1"
-                  />
-                  Connect wallet
-                </span>
-              ) : (
-                <div className="spinner-border" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
-              )}
-            </button>
-          )}
-          {walletModalInfo.show && !walletConnected && (
-            <ConnectWalletModal
-              handleClose={() => setWalletModalInfo({ show: false })}
-              handleWalletConnect={(wallet: Wallet) => {
-                handleWalletConnect(wallet);
-              }}
-            />
-          )}
-          {walletStatusInfo.show && walletConnected && (
-            <WalletStateModal
-              handleClose={() => {
-                setWalletStatusInfo({
-                  show: false,
-                  address: "",
-                });
-              }}
-              handleDisconnect={() => {
-                walletDisconnect();
-                setWalletStatusInfo({ ...walletStatusInfo, show: false });
-                setWalletModalInfo({ ...walletModalInfo, show: false });
-              }}
-              address={walletStatusInfo.address}
-            />
-          )}
-          {switchNetWorkModal && (
-            <SwitchNetWorkModal onHide={() => setSwitchNetworkModal(false)} />
-          )}
-          <button
-            onClick={() => handleUpdate()}
-            className={`d-flex ml-3 btn ${
-              theme === "dark" && "btn-dark"
-            } btn-custom-secondary btn-theme-icon`}
-          >
-            {
-              <img
-                width="20"
-                src={theme === "light" ? sun : moon}
-                alt="theme"
+          {/* <div className="collapse navbar-collapse"> */}
+          <div className="app-wallet-details">
+            {walletConnected && !loading ? (
+              <ActiveNetwork
+                theme={theme}
+                activeNetWork={activeNetWork}
+                className="btn-custom-secondary"
               />
-            }
-          </button>
+            ) : (
+              ""
+            )}
+            <NetworkInfoTab
+              theme={theme}
+              logo={networkInfo.logo}
+              label={networkInfo.label}
+              onClick={() => {
+                // setSwitchNetworkModal(true)
+              }}
+            />
+            {walletConnected && accounts.length && accountBalance ? (
+              <AccountBalance
+                theme={theme}
+                accountBalance={accountBalance}
+                tokenType={selectedNetworkId}
+                className="acc-balance-header"
+              />
+            ) : (
+              ""
+            )}
+            {(accounts && accounts.length) || walletConnected ? (
+              <AddressTab
+                theme={theme}
+                onClick={() =>
+                  setWalletStatusInfo({
+                    show: true,
+                    address: shortenAddress(accounts[0]),
+                  })
+                }
+                address={accounts[0]}
+              />
+            ) : (
+              <ConnectWalletButton
+                theme={theme}
+                onClick={() => setWalletModalInfo(true)}
+                loading={loading}
+              />
+            )}
+            <ThemeButton
+              onClick={handleUpdate}
+              theme={theme}
+              dflex={true}
+              className="ml-3 btn-theme-icon-header"
+            />
+          </div>
         </div>
       </nav>
     </>

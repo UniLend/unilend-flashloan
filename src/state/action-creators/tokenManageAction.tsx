@@ -1,6 +1,7 @@
 import axios from "axios";
-import { toFixed } from "components/Helpers";
-import { IERC20 } from "ethereum/contracts/FlashloanLB";
+import { setTimestamp, toFixed } from "components/Helpers";
+import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
+import { BalanceContract } from "ethereum/contracts/FlashloanLB";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
@@ -9,14 +10,15 @@ export const fetchTokenList = (
   tokenList: any,
   networkId: any,
   currentProvider: any,
-  // reciepentAddress: any,
-  accounts: any
+  accounts: any,
+  accountBalance: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let totalTokenList: any = [];
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
+
       _enableChecked
         ? tokenList.forEach((item: any) => {
             if (item.isEnabled) {
@@ -30,34 +32,67 @@ export const fetchTokenList = (
                         return item.chainId == networkId;
                       }
                     );
-                    if (currentProvider && accounts.length > 0) {
-                      tokenList.forEach((item: any) => {
-                        let _IERC20 = IERC20(currentProvider, item.address);
-                        _IERC20.methods
-                          .balanceOf(accounts[0])
-                          .call((e: any, r: any) => {
-                            if (!e) {
-                              let amount = parseFloat(r);
+                    let addresses = tokenList.map((item: any) => {
+                      return item.address;
+                    });
 
-                              let fullAmount = toFixed(
-                                amount / Math.pow(10, item.decimals),
-                                3
-                              );
-                              item["balance"] = fullAmount.toLocaleString();
-                              if (tokenList) totalTokenList.push(item);
-                              dispatch({
-                                type: ActionType.GET_TOKEN_LIST,
-                                payload: [...totalTokenList],
-                              });
-                              return item;
-                            } else {
-                              dispatch({
-                                type: ActionType.GET_TOKEN_LIST,
-                                payload: [...totalTokenList],
-                              });
-                              return item;
-                            }
+                    if (currentProvider) {
+                      let timestamp = setTimestamp();
+                      try {
+                        if (accountBalance > 0) {
+                          BalanceContract(currentProvider)
+                            .methods.getUserBalances(
+                              UnilendFlashLoanCoreContract(currentProvider),
+                              accounts[0],
+                              addresses,
+                              timestamp
+                            )
+                            .call((error: any, result: any) => {
+                              if (!error && result) {
+                                tokenList.forEach((item: any, i: number) => {
+                                  let fullAmount = toFixed(
+                                    result[0][i] / Math.pow(10, item.decimals),
+                                    3
+                                  );
+                                  let underlyingBalance = toFixed(
+                                    result[1][i] / Math.pow(10, item.decimals),
+                                    3
+                                  );
+                                  item["balance"] = fullAmount;
+                                  item["underlyingBalance"] = underlyingBalance;
+                                  totalTokenList.push(item);
+                                  dispatch({
+                                    type: ActionType.GET_TOKEN_LIST,
+                                    payload: [...totalTokenList],
+                                  });
+                                  return item;
+                                });
+                              } else {
+                                dispatch({
+                                  type: ActionType.GET_TOKEN_LIST,
+                                  payload: [],
+                                });
+                              }
+                            });
+                        } else {
+                          tokenList.forEach((item: any, i: number) => {
+                            item["balance"] = "";
+                            totalTokenList.push(item);
+                            dispatch({
+                              type: ActionType.GET_TOKEN_LIST,
+                              payload: [...totalTokenList],
+                            });
                           });
+                        }
+                      } catch (e) {
+                        dispatch({
+                          type: ActionType.GET_TOKEN_LIST,
+                          payload: [...tokenList],
+                        });
+                      }
+                      dispatch({
+                        type: ActionType.GET_TOKEN_LIST,
+                        payload: [...totalTokenList],
                       });
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
@@ -66,6 +101,11 @@ export const fetchTokenList = (
                         payload: [...totalTokenList],
                       });
                     }
+                  } else {
+                    dispatch({
+                      type: ActionType.GET_TOKEN_LIST,
+                      payload: [],
+                    });
                   }
                 })
                 .catch((e: any) => {

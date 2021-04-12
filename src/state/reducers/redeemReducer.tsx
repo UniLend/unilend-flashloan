@@ -5,14 +5,22 @@ interface RedeemState {
   redeemIsApproved: boolean | undefined;
   redeemLoading: boolean;
   redeemTokenBalance: any;
-  redeemSuccess:boolean;
+  redeemSuccess: boolean;
+  redeemTransactionHash: string;
+  redeemTransactionHashReceived: boolean;
+  redeemErrorMessage: string;
+  redeemSuccessMessage: string;
 }
 
 const initialState = {
   redeemIsApproved: undefined,
   redeemLoading: false,
   redeemTokenBalance: "",
-  redeemSuccess:false
+  redeemSuccess: false,
+  redeemTransactionHash: "",
+  redeemTransactionHashReceived: false,
+  redeemErrorMessage: "",
+  redeemSuccessMessage: "",
 };
 
 const RedeemReducer = (
@@ -21,13 +29,40 @@ const RedeemReducer = (
 ): RedeemState => {
   switch (action.type) {
     case ActionType.REDEEM_ACTION:
-      return { ...state, redeemLoading: true, redeemSuccess: false };
+      return {
+        ...state,
+        redeemLoading: true,
+        redeemSuccess: false,
+        redeemTransactionHash: "",
+        redeemTransactionHashReceived: false,
+        redeemErrorMessage: "",
+        redeemSuccessMessage: "",
+      };
     case ActionType.REDEEM_SUCCESS:
-      return { ...state, redeemLoading: false , redeemSuccess: true};
+      return {
+        ...state,
+        redeemLoading: false,
+        redeemSuccess: true,
+        redeemSuccessMessage: "Redeem Successful",
+      };
     case ActionType.REDEEM_FAILED:
-      return { ...state, redeemLoading: false , redeemSuccess: false};
+      return {
+        ...state,
+        redeemLoading: false,
+        redeemSuccess: false,
+        redeemTransactionHash: "",
+        redeemTransactionHashReceived: false,
+        redeemErrorMessage: action.message,
+      };
     case ActionType.REDEEM_TOKEN_BALANCE:
       return { ...state, redeemTokenBalance: action.payload };
+    case ActionType.REDEEM_TRANSACTION_HASH:
+      return {
+        ...state,
+        redeemTransactionHash: action.payload,
+        redeemTransactionHashReceived: true,
+        redeemErrorMessage: "",
+      };
     default:
       return { ...state };
   }

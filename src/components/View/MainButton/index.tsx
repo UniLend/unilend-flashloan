@@ -3,10 +3,8 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { FC, useEffect, useState } from "react";
-import { Alert } from "react-bootstrap";
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from "../UI/ConnectWalletModal";
-import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 
 interface Props {
   isEth: boolean;
@@ -21,9 +19,9 @@ interface WalletConnectModal {
   show: boolean;
 }
 
-interface TransModalInfo {
-  show: boolean;
-}
+// interface TransModalInfo {
+//   show: boolean;
+// }
 
 const MainButton: FC<Props> = ({
   isEth,
@@ -33,48 +31,35 @@ const MainButton: FC<Props> = ({
   decimal,
   isChecked,
 }) => {
-  const {
-    walletConnected,
-    accounts: address,
-    currentProvider,
-    poolTokenBalance,
-    userTokenBalance,
-    fullUserTokenBalance,
-    fullPoolTokenBalance,
-    handleWalletConnect,
-  } = useWalletConnect();
-
-  // const [isApproving, setIsApproving] = useState<string | null>(
-  //   localStorage.getItem("isApproving")
-  // );
-  // const [donateIsApproving, setDonateIsApproving] = useState<string | null>(
-  //   localStorage.getItem("donateApproval")
-  // );
-
-  // function updateApproval() {
-  //   setIsApproving(localStorage.getItem("isApproving"));
-  //   setDonateIsApproving(localStorage.getItem("donateApproval"));
-  // }
-
   const [walletModalInfo, setWalletModalInfo] = useState<WalletConnectModal>({
     show: false,
   });
+
   const decimalLength =
     amount &&
     amount.toString().split(".")[1] &&
     amount.toString().split(".")[1].length;
 
-  const [transModalInfo, setTransModalInfo] = useState<TransModalInfo>({
-    show: false,
-  });
+  const {
+    walletConnected,
+    accounts: address,
+    currentProvider,
+    poolTokenBalance,
+    // userTokenBalance,
+    fullUserTokenBalance,
+    fullPoolTokenBalance,
+    accountBalance,
+    handleWalletConnect,
+  } = useWalletConnect();
 
   const {
     isDepositApproved,
     depositLoading,
-    depositErrorMessage,
+    // depositErrorMessage,
     depositAllowanceLoading,
     depositIsApproving,
   } = useTypedSelector((state) => state.deposit);
+
   const {
     donateIsApproved,
     donateContractAddress,
@@ -82,24 +67,27 @@ const MainButton: FC<Props> = ({
     donateAllowanceLoading,
     donateApproving,
   } = useTypedSelector((state) => state.donate);
+
   const { airdropLoading } = useTypedSelector((state) => state.airdrop);
+
   const { redeemLoading } = useTypedSelector((state) => state.redeem);
+
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
+
   const { assertAddress } = useTypedSelector((state) => state.pool);
+
   const { activeTab, activeCurrency } = useTypedSelector(
     (state) => state.settings
   );
+
   const {
     depositApprove,
     donateApprove,
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
-    clearDepositError,
+    // clearDepositError,
   } = useActions();
-  // useEffect(() => {
-  //   updateApproval();
-  // });
 
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {
@@ -148,8 +136,7 @@ const MainButton: FC<Props> = ({
           //   depositAllowanceLoading ||
           //   donateAllowanceLoading ||
           //   !isChecked ||
-          //   (activeTab === "redeem" && poolTokenBalance === 0)||
-          // (decimalLength>18)
+          //   (activeTab === "redeem" && poolTokenBalance === 0)
           // }
           disabled={
             amount === "" ||
@@ -207,12 +194,12 @@ const MainButton: FC<Props> = ({
           (donateIsApproved === false || donateIsApproved === undefined))) &&
       (actionName === "Deposit" || actionName === "Reward")
     ) {
-      // debugger;
       return (
         <button
           disabled={
             (actionName === "Deposit" && depositIsApproving === true) ||
             (actionName === "Reward" && donateApproving === true) ||
+            parseFloat(accountBalance) <= 0 ||
             decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
@@ -261,18 +248,21 @@ const MainButton: FC<Props> = ({
       show: true,
     });
   }
-  function handleTransClose() {
-    setTransModalInfo({
-      show: false,
-    });
-  }
-  function handleAlertClose() {
-    switch (actionName) {
-      case "Deposit":
-        clearDepositError();
-        break;
-    }
-  }
+
+  // function handleTransClose() {
+  //   setTransModalInfo({
+  //     show: false,
+  //   });
+  // }
+
+  // function handleAlertClose() {
+  //   switch (actionName) {
+  //     case "Deposit":
+  //       clearDepositError();
+  //       break;
+  //   }
+  // }
+
   return (
     <>
       <div className="d-grid py-3">{handleMainButton()}</div>
@@ -283,14 +273,11 @@ const MainButton: FC<Props> = ({
           handleWalletConnect={(wallet: Wallet) => handleWalletConnect(wallet)}
         />
       )}
-      {depositErrorMessage !== "" && (
+      {/* {depositErrorMessage !== "" && (
         <Alert variant="danger" onClose={handleAlertClose} dismissible>
           {depositErrorMessage}
         </Alert>
-      )}
-      {transModalInfo.show && (
-        <TransactionPopup mode="success" handleClose={handleTransClose} />
-      )}
+      )} */}
     </>
   );
 };

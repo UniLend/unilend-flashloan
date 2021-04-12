@@ -43,6 +43,7 @@
 @font-face {
   font-family: "NeueHaasDisplay", serif;
   src: url(./assets//fonts/NeueHaasDisplayRoman.ttf);
+  font-weight: 300;
 }
 @font-face {
   font-family: "NeueHaasDisplay";
@@ -77,6 +78,8 @@
   --theme-modal-bg: #ffffff;
   --theme-wallet-list-border: #3333332e;
   --theme-field-color: #2f4774;
+  --theme-btn-hover-shadow: #33333317 1px 1px 8px 0px;
+  --theme-btn-switch-bg: #e9ecef;
 }
 
 .dark {
@@ -95,4 +98,6 @@
   --theme-modal-bg: #212429;
   --theme-wallet-list-border: #333;
   --theme-field-color: #fff;
+  --theme-btn-hover-shadow: none;
+  --theme-btn-switch-bg: #23272b;
 }

@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { ListGroup, Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
 import Manage from "./Manage";
 import { TokenAction } from "state/actions/tokenManageA";
@@ -59,7 +58,7 @@ const CurrencySelectModel: FC<Props> = ({
     }
     setFilteredList(filteredList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currencyList.currency, searchText, tokenList]);
+  }, [searchText, tokenList]);
 
   const SearchBar = (
     <div style={{ margin: " 15px auto 0 auto" }}>
@@ -86,7 +85,7 @@ const CurrencySelectModel: FC<Props> = ({
   // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
-      {filteredList ? (
+      {filteredList && !tokenList.isRequesting ? (
         <ListGroup>
           {Children.toArray(
             filteredList.map((item: any) => (
@@ -123,23 +122,52 @@ const CurrencySelectModel: FC<Props> = ({
                     </div>
                   </div>
                   <div className="col-3" style={{ alignSelf: "center" }}>
-                    <div
+                    {/* <div
                       className="row"
                       style={{ paddingRight: "15px", float: "right" }}
-                    >
+                    > */}
+                    <div className="row bal-price">
+                      <h6
+                        className="mb-0"
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {item.balance >= 0 ? item.balance : ""}
+                      </h6>
+                    </div>
+                    <div className="row bal-price">
                       <p
                         className="mb-0 list-desc"
                         style={{ textTransform: "capitalize" }}
                       >
-                        {item.balance ? item.balance : ""}
+                        {item.underlyingBalance >= 0
+                          ? item.underlyingBalance
+                          : ""}
                       </p>
                     </div>
+                    {/* <p
+                        className="mb-0 list-desc"
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        {item.balance >= 0 ? item.balance : ""}
+                      </p>
+                      <p>
+                        {item.underlyingBalance >= 0
+                          ? item.underlyingBalance
+                          : ""}
+                      </p> */}
+                    {/* </div> */}
                   </div>
                 </div>
               </ListGroup.Item>
             ))
           )}
         </ListGroup>
+      ) : tokenList.isRequesting ? (
+        <>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </>
       ) : (
         <>
           <p className="no-data">No Data to Show</p>
@@ -201,9 +229,9 @@ const CurrencySelectModel: FC<Props> = ({
               <span className="form-label">
                 {openManage ? "Manage" : "Select a token"}
               </span>
-              <span className={`close-btn ${theme}`}>
+              {/* <span className={`close-btn ${theme}`}>
                 <i className="fa fa-times" aria-hidden="true" />
-              </span>
+              </span> */}
             </div>
           </Modal.Title>
           {!openManage && SearchBar}

@@ -37,10 +37,6 @@ export const checkAllowance = (
               dispatch({
                 type: ActionType.DEPOSIT_APPROVE_SUCCESS,
               });
-              dispatch({
-                type: ActionType.DEPOSIT_APPROVAL_STATUS,
-                payload: true, // isApproved
-              });
             }
           } else {
             dispatch({
@@ -84,21 +80,15 @@ export const depositApprove = (
         .on("receipt", (res: any) => {
           localStorage.setItem("isApproving", "false");
           dispatch({
-            type: ActionType.DEPOSIT_APPROVAL_STATUS,
-            payload: true,
-          });
-          dispatch({
             type: ActionType.DEPOSIT_APPROVE_SUCCESS,
           });
         })
-        .catch((e: Error) => {
-          localStorage.setItem("isApproving", "false");
+        .on("error", (err: any, res: any) => {
           dispatch({
             type: ActionType.DEPOSIT_APPROVE_FAILED,
-          });
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVAL_STATUS,
             payload: false,
+            message:
+              res === undefined ? "Approval Rejected" : "Approval Failed",
           });
         });
     } catch (e) {
@@ -122,18 +112,12 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      // var fullAmount = await web3Service.getValue(
-      //   false,
-      //   currentProvider,
-      //   depositAmount,
-      //   decimal
-      // );
-      let fullAmount = new BigNumber(depositAmount)
-        .multipliedBy(Math.pow(10, decimal))
-        .toString();
-      // portis.onError((error) => {
-      //   console.log("error", error);
-      // });
+      let fullAmount = web3Service.getValue(
+        isEth,
+        currentProvider,
+        depositAmount,
+        decimal
+      );
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({
@@ -146,32 +130,25 @@ export const handleDeposit = (
             payload: true,
           });
         })
-        .on("error", (err: any, res: any) => {
-          if (res === undefined) {
-            dispatch({
-              type: ActionType.DEPOSIT_FAILED,
-              payload: false,
-              message: err.message.split(":")[1],
-            });
-          } else {
-            dispatch({
-              type: ActionType.DEPOSIT_FAILED,
-              payload: false,
-              message: "Transaction Failed: Transaction has been reverted",
-            });
-          }
+        .on("transactionHash", (hash: any) => {
+          dispatch({
+            type: ActionType.DEPOSIT_TRANSACTION_HASH,
+            payload: hash,
+          });
         })
-        .catch((e: any) => {
+        .on("error", (err: any, res: any) => {
           dispatch({
             type: ActionType.DEPOSIT_FAILED,
             payload: false,
-            message: "Deposit Failed",
+            message:
+              res === undefined ? "Transaction Rejected" : "Transaction Failed",
           });
         });
     } catch (e) {
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,
+        message: "Transaction Failed",
       });
     }
   };

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { eToNumber } from "components/Helpers";
 import web3 from "./web3";
 
@@ -14,6 +15,8 @@ export const web3Service = {
   getValue: (isEth: any, currentProvider: any, amount: any, decimal: any) => {
     return isEth
       ? currentProvider.utils.toWei(amount, "ether")
-      : eToNumber(amount * Math.pow(10, decimal));
+      : eToNumber(
+          new BigNumber(amount).multipliedBy(Math.pow(10, decimal)).toString()
+        );
   },
 };

@@ -398,6 +398,14 @@ input[type="number"] {
   flex-direction: column;
 }
 
+.version-denote {
+  position: fixed;
+  font-size: 0.9rem;
+  bottom: 0px;
+  right: 15px;
+  color: #2a6def;
+}
+
 @media only screen and (max-width: 960px) {
   .app-wallet-details-footer {
     display: flex !important;

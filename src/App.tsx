@@ -95,6 +95,7 @@ function App() {
                   </Switch>
                 </div>
               </div>
+              <div className="version-denote">v 1.0.3</div>
             </div>
           </Layout>
         </>

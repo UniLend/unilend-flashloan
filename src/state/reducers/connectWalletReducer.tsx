@@ -112,6 +112,7 @@ const connectWalletReducer = (
         error: null,
       };
     case ActionType.CONNECT_WALLET_ERROR:
+      localStorage.removeItem("walletConnected");
       return {
         ...state,
         loading: false,

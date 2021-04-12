@@ -95,24 +95,32 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
 
 const handleMetamask = (accounts: any, dispatch: any) => {
   if (window && !(window as any).ethereum.selectedAddress) {
-    (window as any).ethereum.enable().then(() => {
-      web3Service
-        .getAccounts()
-        .then((res: any) => {
-          dispatch({
-            type: ActionType.CONNECT_WALLET_SUCCESS,
-            payload: [...res],
+    (window as any).ethereum
+      .enable()
+      .then(() => {
+        web3Service
+          .getAccounts()
+          .then((res: any) => {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...res],
+            });
+            getAccountBalance(res[0]);
+            metamaskEventHandler(dispatch, (window as any).ethereum);
+          })
+          .catch((e: any) => {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_ERROR,
+              payload: e.message,
+            });
           });
-          getAccountBalance(res[0]);
-          metamaskEventHandler(dispatch, (window as any).ethereum);
-        })
-        .catch((e: any) => {
-          dispatch({
-            type: ActionType.CONNECT_WALLET_ERROR,
-            payload: e.message,
-          });
+      })
+      .catch((e: any) => {
+        dispatch({
+          type: ActionType.CONNECT_WALLET_ERROR,
+          payload: e.message,
         });
-    });
+      });
   } else {
     metamaskEventHandler(dispatch, (window as any).ethereum);
     dispatch({
@@ -139,8 +147,12 @@ async function handleWalletConnect(
       case "metamask":
         //// Ethererum ////
         if (networkType === 1) {
-          accounts = await web3Service.getAccounts();
-          handleMetamask(accounts, dispatch);
+          try {
+            accounts = await web3Service.getAccounts();
+            handleMetamask(accounts, dispatch);
+          } catch (e) {
+            console.log(e);
+          }
         } else if (networkType === 2) {
           const provider = (window as any).ethereum;
           if (provider) {

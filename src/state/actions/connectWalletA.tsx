@@ -157,6 +157,11 @@ interface BalanceReset {
   type: ActionType.BALANCE_RESET;
 }
 
+interface FullPoolUTokenBalance {
+  type: ActionType.FULL_POOL_U_TOKEN_BALANCE;
+  payload: any;
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -196,4 +201,5 @@ export type Action =
   | fullUserTokenBalance
   | fullPoolTokenBalance
   | ConnectedWallet
-  | BalanceReset;
+  | BalanceReset
+  | FullPoolUTokenBalance;

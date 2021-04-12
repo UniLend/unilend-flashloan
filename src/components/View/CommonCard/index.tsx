@@ -59,6 +59,7 @@ const CommonCard: FC<Props> = (props) => {
     walletProvider,
     selectedNetworkId,
     connectedWallet,
+    fullPoolUTokenBalance,
     // userTokenBalanceLoading,
     getUserTokenBalance,
     getPoolLiquidity,
@@ -532,7 +533,8 @@ const CommonCard: FC<Props> = (props) => {
           receipentAddress,
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals,
-          redeemMax
+          redeemMax,
+          fullPoolUTokenBalance
         );
         handleTransModal(true);
         break;

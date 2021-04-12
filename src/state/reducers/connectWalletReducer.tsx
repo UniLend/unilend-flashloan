@@ -33,6 +33,7 @@ interface ConnectWalletState {
   fullAccountBalance: any;
   fullUserTokenBalance: any;
   fullPoolTokenBalance: any;
+  fullPoolUTokenBalance: any;
   walletProvider: any;
   connectedWallet: any;
 }
@@ -71,6 +72,7 @@ const initialState = {
   fullAccountBalance: "",
   fullUserTokenBalance: "",
   fullPoolTokenBalance: "",
+  fullPoolUTokenBalance: "",
   walletProvider: (window as any).ethereum,
 };
 
@@ -259,6 +261,8 @@ const connectWalletReducer = (
       return { ...state, fullUserTokenBalance: action.payload };
     case ActionType.FULL_POOL_TOKEN_BALANCE:
       return { ...state, fullPoolTokenBalance: action.payload };
+    case ActionType.FULL_POOL_U_TOKEN_BALANCE:
+      return { ...state, fullPoolUTokenBalance: action.payload };
     case ActionType.CONNECTED_WALLET:
       return { ...state, connectedWallet: action.payload };
     case ActionType.CURRENT_PROVIDER:

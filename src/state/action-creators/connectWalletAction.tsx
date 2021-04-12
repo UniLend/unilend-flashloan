@@ -475,19 +475,19 @@ export const getPooluTokenBalance = (
                 .dividedBy(Math.pow(10, decimal))
                 .toString();
               dispatch({
-                type: ActionType.FULL_POOL_TOKEN_BALANCE,
+                type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
                 payload: fullAmount,
               });
             } else {
               dispatch({
-                type: ActionType.FULL_POOL_TOKEN_BALANCE,
+                type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
                 payload: "",
               });
             }
           });
         } else {
           dispatch({
-            type: ActionType.FULL_POOL_TOKEN_BALANCE,
+            type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
             payload: "",
           });
         }
@@ -524,19 +524,19 @@ export const getPoolTokenBalance = (
               type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: r > 0 ? fullAmount : 0,
             });
-            // dispatch({
-            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
-            //   payload: decimalAmount,
-            // });
+            dispatch({
+              type: ActionType.FULL_POOL_TOKEN_BALANCE,
+              payload: decimalAmount,
+            });
           } else {
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: "",
             });
-            // dispatch({
-            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
-            //   payload: "",
-            // });
+            dispatch({
+              type: ActionType.FULL_POOL_TOKEN_BALANCE,
+              payload: "",
+            });
           }
         });
     } catch (e: any) {

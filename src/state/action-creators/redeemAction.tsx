@@ -11,7 +11,8 @@ export const handleRedeem = (
   receipentAddress: string,
   isEth: boolean,
   decimal: any,
-  isRedeemMax: boolean
+  isRedeemMax: boolean,
+  fullPoolUTokenBalance: any
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
@@ -23,9 +24,15 @@ export const handleRedeem = (
         redeemAmount,
         decimal
       );
+      let uFullAmount = web3Service.getValue(
+        isEth,
+        currentProvider,
+        fullPoolUTokenBalance,
+        decimal
+      );
       if (isRedeemMax) {
         FlashloanLBCore(currentProvider)
-          .methods.redeem(receipentAddress, fullAmount)
+          .methods.redeem(receipentAddress, uFullAmount)
           .send({
             from: accounts,
           })

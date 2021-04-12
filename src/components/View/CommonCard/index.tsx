@@ -533,24 +533,11 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals
         );
         handleTransModal(true);
-
-        // handled
         break;
       default:
         break;
     }
   };
-  // const handleAlertProgress = () => {
-  //   var now = 100;
-  //   const interval = setInterval(() => {
-  //     now--;
-  //     setProgressValue(now);
-  //     if (now === 0) {
-  //       handleToast(false);
-  //       clearInterval(interval);
-  //     }
-  //   }, 100);
-  // };
 
   const handleModal = (show: boolean) => {
     setModalInfo({
@@ -569,7 +556,6 @@ const CommonCard: FC<Props> = (props) => {
         <div className="network-warning">
           {`You are currently connected to the ${activeNetWork} which is not
           supported.`}
-          {/* ${activeNetWork !== "Mainnet" ? "Testnet" : ""} */}
         </div>
       ) : (
         ""
@@ -622,13 +608,8 @@ const CommonCard: FC<Props> = (props) => {
             />
             {(activeTab === "lend" || activeTab === "redeem") &&
             activeCurrency.symbol !== "Select Token" ? (
-              // ||
-              // activeCurrency.symbol === "ETH"
               <div className="price_head">
                 <div className="price_aa">
-                  {/* <div className="price-list">
-                    Pool percentage <span className="price">-</span>
-                  </div> */}
                   <div className="price-list">
                     <p>Current APY</p>
                     <span className="price">{`${
@@ -667,8 +648,6 @@ const CommonCard: FC<Props> = (props) => {
                   </div>
                   <div className="price-list">
                     <p>Your Liquidity</p>
-                    {/* {" "}
-                      {!poolLoading && poolName ? `(${poolName})` : ""} */}
                     <span className="price">
                       {walletConnected && poolTokenBalance !== "" ? (
                         <>

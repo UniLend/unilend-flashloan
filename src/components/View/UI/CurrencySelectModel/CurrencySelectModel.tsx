@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { ListGroup, Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { currencyList } from "ethereum/contracts";
 import { searchWord } from "components/Helpers";
 import Manage from "./Manage";
 import { TokenAction } from "state/actions/tokenManageA";
@@ -59,7 +58,7 @@ const CurrencySelectModel: FC<Props> = ({
     }
     setFilteredList(filteredList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currencyList.currency, searchText, tokenList]);
+  }, [searchText, tokenList]);
 
   const SearchBar = (
     <div style={{ margin: " 15px auto 0 auto" }}>

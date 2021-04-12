@@ -12,64 +12,39 @@ import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
 // import { useActions } from "hooks/useActions";
-declare const window: any;
+// declare const window: any;
 // interface ProviderMessage {
 //   type: string;
 //   data: unknown;
 // }
 function App() {
   const [loading, setLoading] = useState<Boolean>(true);
+
   const [alertShow, setAlertShow] = useState<Boolean>(true);
+
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  // const { tokenGroupList, tokenList } = useTypedSelector(
-  //   (state) => state.tokenManage
-  // );
-  // const { setActiveTab, networkSwitchHandling, fetchTokenList } = useActions();
+
   const {
     handleWalletConnect,
     walletProvider,
     connectedWallet,
   } = useWalletConnect();
-  // const { walletConnected, accounts } = useWalletConnect();
-  // useEffect(() => {
-  //   if (tokenList.payload.length === 0) {
-  //     setLoading(true);
-  //     fetchTokenList(tokenGroupList, networkId, activeTab);
-  //   }
-  //   if (tokenList.payload.length !== 0) {
-  //     setLoading(false);
-  //   }
-  // }, [tokenList, activeTab]);
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
-    // let connectedWallet = localStorage.getItem("walletConnected");
     dotEnv.config();
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
-      // if (walletProvider) {
-      //   walletProvider.on("chainChanged", (chainId: any) => {
-      //     window.location.reload();
-      //   });
-      //   walletProvider.on("accountsChanged", function (accounts: string) {
-      //     handleWalletConnect({
-      //       id: 1,
-      //       name: "metamask",
-      //       icon: "",
-      //     });
-      //   });
-      //   walletProvider.on("message", (message: any) => {
-      //     // console.log(message);
-      //   });
-      //   // }
-      // }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider, connectedWallet]);
+
   return (
     <div className={`App ${theme}`}>
       {loading ? (

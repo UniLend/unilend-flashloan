@@ -1,4 +1,3 @@
-// import { eToNumber } from "components/Helpers";
 import {
   approveTokenMaximumValue,
   UnilendFlashLoanCoreContract,
@@ -36,10 +35,6 @@ export const checkAllowance = (
               localStorage.setItem("isApproving", "false");
               dispatch({
                 type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-              });
-              dispatch({
-                type: ActionType.DEPOSIT_APPROVAL_STATUS,
-                payload: true, // isApproved
               });
             }
           } else {
@@ -84,47 +79,17 @@ export const depositApprove = (
         .on("receipt", (res: any) => {
           localStorage.setItem("isApproving", "false");
           dispatch({
-            type: ActionType.DEPOSIT_APPROVAL_STATUS,
-            payload: true,
-          });
-          dispatch({
             type: ActionType.DEPOSIT_APPROVE_SUCCESS,
           });
         })
         .on("error", (err: any, res: any) => {
-          if (res === undefined) {
-            dispatch({
-              type: ActionType.DEPOSIT_APPROVE_FAILED,
-              payload: false,
-              // message: err.message.split(":")[1],
-              message: "Approval Rejected",
-            });
-            dispatch({
-              type: ActionType.DEPOSIT_APPROVAL_STATUS,
-              payload: false,
-            });
-          } else {
-            dispatch({
-              type: ActionType.DEPOSIT_APPROVE_FAILED,
-              payload: false,
-              message: "Approval Failed",
-            });
-            dispatch({
-              type: ActionType.DEPOSIT_APPROVAL_STATUS,
-              payload: false,
-            });
-          }
+          dispatch({
+            type: ActionType.DEPOSIT_APPROVE_FAILED,
+            payload: false,
+            message:
+              res === undefined ? "Approval Rejected" : "Approval Failed",
+          });
         });
-      // .catch((e: Error) => {
-      //   localStorage.setItem("isApproving", "false");
-      //   dispatch({
-      //     type: ActionType.,
-      //   });
-      //   dispatch({
-      //     type: ActionType.DEPOSIT_APPROVAL_STATUS,
-      //     payload: false,
-      //   });
-      // });
     } catch (e) {
       dispatch({
         type: ActionType.DEPOSIT_APPROVE_FAILED,
@@ -152,8 +117,6 @@ export const handleDeposit = (
         depositAmount,
         decimal
       );
-      // let amount = eToNumber(fullAmount);
-      // console.log("fullAmount", eToNumber(fullAmount));
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({
@@ -172,24 +135,13 @@ export const handleDeposit = (
             payload: hash,
           });
         })
-        // .on("confirmation", function (confirmationNumber: any, receipt: any) {
-        //   console.log(confirmationNumber, receipt);
-        // })
         .on("error", (err: any, res: any) => {
-          if (res === undefined) {
-            dispatch({
-              type: ActionType.DEPOSIT_FAILED,
-              payload: false,
-              // message: err.message.split(":")[1],
-              message: "Transaction Rejected",
-            });
-          } else {
-            dispatch({
-              type: ActionType.DEPOSIT_FAILED,
-              payload: false,
-              message: "Transaction Failed",
-            });
-          }
+          dispatch({
+            type: ActionType.DEPOSIT_FAILED,
+            payload: false,
+            message:
+              res === undefined ? "Transaction Rejected" : "Transaction Failed",
+          });
         });
     } catch (e) {
       dispatch({

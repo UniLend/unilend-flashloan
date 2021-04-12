@@ -42,16 +42,23 @@ const DonateReducer = (
       return {
         ...state,
         donateApproving: true,
+        donateIsApproved: false,
+        donateAllowanceLoading: false,
       };
     case ActionType.DONATE_APPROVE_FAILED:
       return {
         ...state,
         donateApproving: false,
+
+        donateIsApproved: false,
+        donateAllowanceLoading: false,
       };
     case ActionType.DONATE_APPROVE_SUCCESS:
       return {
         ...state,
         donateApproving: false,
+        donateIsApproved: true,
+        donateAllowanceLoading: false,
       };
     case ActionType.GET_DONATION_CONTRACT:
       return { ...state, donateContractAddress: action.payload };

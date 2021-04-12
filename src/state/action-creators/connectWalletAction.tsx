@@ -127,7 +127,6 @@ const handleMetamask = (accounts: any, dispatch: any) => {
       });
   } else {
     metamaskEventHandler(dispatch, (window as any).ethereum);
-    console.log(accounts);
     dispatch({
       type: ActionType.CONNECT_WALLET_SUCCESS,
       payload: [...accounts],
@@ -396,21 +395,15 @@ export const getAccountBalance = (selectedAccount: string, networkId?: any) => {
       let ethBal = web3Service.getWei(balance, "ether");
       let ethBalDeci = toFixed(parseFloat(ethBal), 3);
       dispatch({
-        type: ActionType.ACCOUNT_BALANCE,
+        type: ActionType.ACCOUNT_BALANCE_SUCCESS,
         payload: ethBalDeci,
-      });
-      dispatch({
-        type: ActionType.FULL_AMOUNT_BALANCE,
-        payload: ethBal,
+        fullAccountBalance: ethBal,
       });
     } catch (e) {
       dispatch({
-        type: ActionType.ACCOUNT_BALANCE,
+        type: ActionType.ACCOUNT_BALANCE_SUCCESS,
         payload: "",
-      });
-      dispatch({
-        type: ActionType.FULL_AMOUNT_BALANCE,
-        payload: "",
+        fullAccountBalance: "",
       });
       dispatch({
         type: ActionType.WALLET_DISCONNECT,
@@ -428,16 +421,10 @@ export const getUserTokenBalance = (
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      // let timestamp = new Date().valueOf();
-      // FlashloanLBCore(currentProvider)
-      //   .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
-      //   .call((e: any, r: any) => {
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
         if (!e) {
           let amount = r;
-          // let decimalAmount = amount / Math.pow(10, decimal);
-          // const ten: any = new BigNumber(10);
           const decimalAmount = new BigNumber(amount)
             .dividedBy(Math.pow(10, decimal))
             .toString();
@@ -445,23 +432,17 @@ export const getUserTokenBalance = (
             .toFixed(3, 1)
             .toString();
           dispatch({
-            type: ActionType.USER_TOKEN_BALANCE,
+            type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
             userTokenBalance: fullAmount,
-          });
-          dispatch({
-            type: ActionType.FULL_USER_TOKEN_BALANCE,
-            payload: decimalAmount,
+            fullUserTokenBalance: decimalAmount,
           });
         }
       });
     } catch (e: any) {
       dispatch({
-        type: ActionType.USER_TOKEN_BALANCE,
+        type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
         userTokenBalance: "",
-      });
-      dispatch({
-        type: ActionType.FULL_USER_TOKEN_BALANCE,
-        payload: "",
+        fullUserTokenBalance: "",
       });
     }
   };
@@ -494,7 +475,7 @@ export const getPoolTokenBalance = (
               .toFixed(3, 1)
               .toString();
             dispatch({
-              type: ActionType.POOL_TOKEN_BALANCE,
+              type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: r > 0 ? fullAmount : 0,
             });
             dispatch({
@@ -503,7 +484,7 @@ export const getPoolTokenBalance = (
             });
           } else {
             dispatch({
-              type: ActionType.POOL_TOKEN_BALANCE,
+              type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: "",
             });
             dispatch({
@@ -514,7 +495,7 @@ export const getPoolTokenBalance = (
         });
     } catch (e: any) {
       dispatch({
-        type: ActionType.POOL_TOKEN_BALANCE,
+        type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
         payload: "",
       });
       dispatch({
@@ -539,19 +520,19 @@ export const getRewardPoolBalance = (
           if (!e) {
             let fullAmount = r > 0 ? toFixed(r / Math.pow(10, decimal), 3) : 0;
             dispatch({
-              type: ActionType.REWARD_POOL_BALANCE,
+              type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
               payload: fullAmount,
             });
           } else {
             dispatch({
-              type: ActionType.REWARD_POOL_BALANCE,
+              type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
               payload: "",
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.REWARD_POOL_BALANCE,
+        type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
         payload: "",
       });
     }
@@ -560,36 +541,7 @@ export const getRewardPoolBalance = (
 export const balanceReset = () => {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
-      type: ActionType.REWARD_POOL_BALANCE,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.REWARD_RELEASE_RATE,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.POOL_LIQUIDITY,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.POOL_TOKEN_BALANCE,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.USER_TOKEN_BALANCE,
-      userTokenBalance: "",
-    });
-    dispatch({
-      type: ActionType.TOTAL_DEPOSITION_TOKENS,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
-      payload: "",
-    });
-    dispatch({
-      type: ActionType.CURRENT_APY,
-      payload: "",
+      type: ActionType.BALANCE_RESET,
     });
   };
 };
@@ -623,19 +575,19 @@ export const getCurrentAPY = (
               );
             }
             dispatch({
-              type: ActionType.CURRENT_APY,
+              type: ActionType.CURRENT_APY_SUCCESS,
               payload: fullAmount,
             });
           } else {
             dispatch({
-              type: ActionType.CURRENT_APY,
+              type: ActionType.CURRENT_APY_SUCCESS,
               payload: "",
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.CURRENT_APY,
+        type: ActionType.CURRENT_APY_SUCCESS,
         payload: "",
       });
     }
@@ -653,19 +605,19 @@ export const getTotalDepositedTokens = (
         .call((err: any, res: any) => {
           if (!err) {
             dispatch({
-              type: ActionType.TOTAL_DEPOSITION_TOKENS,
+              type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
               payload: res,
             });
           } else {
             dispatch({
-              type: ActionType.TOTAL_DEPOSITION_TOKENS,
+              type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
               payload: "",
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.TOTAL_DEPOSITION_TOKENS,
+        type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
         payload: "",
       });
     }
@@ -684,19 +636,19 @@ export const getTotalTokensInRewardPool = (
         .call((err: any, res: any) => {
           if (!err) {
             dispatch({
-              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
               payload: res,
             });
           } else {
             dispatch({
-              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
               payload: "",
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL,
+        type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
         payload: "",
       });
     }
@@ -719,19 +671,19 @@ export const getRewardReleaseRatePerDay = (
             let fullAmountPerSec = amount / Math.pow(10, 18);
             let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2);
             dispatch({
-              type: ActionType.REWARD_RELEASE_RATE,
+              type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
               payload: fullAmount,
             });
           } else {
             dispatch({
-              type: ActionType.REWARD_RELEASE_RATE,
+              type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
               payload: "",
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.REWARD_RELEASE_RATE,
+        type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
         payload: "",
       });
     }
@@ -752,13 +704,13 @@ export const getPoolLiquidity = (
           .then((res: any) => {
             let amount = web3Service.getWei(res, "ether");
             dispatch({
-              type: ActionType.POOL_LIQUIDITY,
+              type: ActionType.POOL_LIQUIDITY_SUCCESS,
               payload: amount,
             });
           })
           .catch((e: any) => {
             dispatch({
-              type: ActionType.POOL_LIQUIDITY,
+              type: ActionType.POOL_LIQUIDITY_SUCCESS,
               payload: "",
             });
           });
@@ -772,12 +724,12 @@ export const getPoolLiquidity = (
 
               let fullAmount = toFixed(amount / Math.pow(10, decimal), 3);
               dispatch({
-                type: ActionType.POOL_LIQUIDITY,
+                type: ActionType.POOL_LIQUIDITY_SUCCESS,
                 payload: fullAmount,
               });
             } else {
               dispatch({
-                type: ActionType.POOL_LIQUIDITY,
+                type: ActionType.POOL_LIQUIDITY_SUCCESS,
                 payload: "",
               });
             }
@@ -785,7 +737,7 @@ export const getPoolLiquidity = (
       }
     } catch (e: any) {
       dispatch({
-        type: ActionType.POOL_LIQUIDITY,
+        type: ActionType.POOL_LIQUIDITY_SUCCESS,
         payload: "",
       });
     }

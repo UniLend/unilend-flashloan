@@ -1,4 +1,3 @@
-// import { eToNumber } from "components/Helpers";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
@@ -24,7 +23,6 @@ export const handleAirdrop = (
       amount,
       decimal
     );
-    // let _amount = eToNumber(fullAmount);
 
     await IERC20(currentProvider, reciepentAddress)
       .methods.transfer(
@@ -45,24 +43,12 @@ export const handleAirdrop = (
           payload: hash,
         });
       })
-      // .on("confirmation", function (confirmationNumber: any, receipt: any) {
-      //   console.log(confirmationNumber, receipt);
-      // })
       .on("error", (err: any, res: any) => {
-        if (res === undefined) {
-          dispatch({
-            type: ActionType.AIRDROP_FAILED,
-            // payload: false,
-            // message: err.message.split(":")[1],
-            message: "Transaction Rejected",
-          });
-        } else {
-          dispatch({
-            type: ActionType.AIRDROP_FAILED,
-            // payload: false,
-            message: "Transaction Failed",
-          });
-        }
+        dispatch({
+          type: ActionType.AIRDROP_FAILED,
+          message:
+            res === undefined ? "Transaction Rejected" : "Transaction Failed",
+        });
       });
   };
 };

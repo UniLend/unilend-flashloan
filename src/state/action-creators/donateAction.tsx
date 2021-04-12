@@ -1,4 +1,3 @@
-// import { eToNumber } from "components/Helpers";
 import { approveTokenMaximumValue } from "ethereum/contracts";
 import {
   FlashloanLBCore,
@@ -64,10 +63,6 @@ export const donateAllowance = (
               } else {
                 localStorage.setItem("donateApproval", "false");
                 dispatch({
-                  type: ActionType.DONATE_APPROVAL_STATUS,
-                  payload: true, // isApproved
-                });
-                dispatch({
                   type: ActionType.DONATE_APPROVE_SUCCESS,
                 });
               }
@@ -98,13 +93,6 @@ export const donateApprove = (
     });
     try {
       localStorage.setItem("donateApproval", "true");
-      dispatch({
-        type: ActionType.DONATE_APPROVE_ACTION,
-      });
-      dispatch({
-        type: ActionType.DONATE_APPROVAL_STATUS,
-        payload: false,
-      });
       let _IERC20 = IERC20(currentProvider, receipentAddress);
 
       _IERC20.methods
@@ -115,10 +103,6 @@ export const donateApprove = (
         .on("receipt", (res: any) => {
           localStorage.setItem("donateApproval", "false");
           dispatch({
-            type: ActionType.DONATE_APPROVAL_STATUS,
-            payload: true,
-          });
-          dispatch({
             type: ActionType.DONATE_APPROVE_SUCCESS,
           });
         })
@@ -126,10 +110,6 @@ export const donateApprove = (
           localStorage.setItem("donateApproval", "false");
           dispatch({
             type: ActionType.DONATE_APPROVE_FAILED,
-          });
-          dispatch({
-            type: ActionType.DONATE_APPROVAL_STATUS,
-            payload: false,
           });
         });
     } catch (e: any) {
@@ -159,7 +139,6 @@ export const handleDonate = (
         donateAmount,
         decimal
       );
-      // let amount = eToNumber(fullAmount);
 
       FlashloanLBCore(currentProvider)
         .methods.donationAddress()
@@ -189,18 +168,13 @@ export const handleDonate = (
                 });
               })
               .on("error", (err: any, res: any) => {
-                if (res === undefined) {
-                  dispatch({
-                    type: ActionType.DONATE_FAILED,
-                    // message: err.message.split(":")[1],
-                    message: "Transaction Rejected",
-                  });
-                } else {
-                  dispatch({
-                    type: ActionType.DONATE_FAILED,
-                    message: "Transaction Failed",
-                  });
-                }
+                dispatch({
+                  type: ActionType.DONATE_FAILED,
+                  message:
+                    res === undefined
+                      ? "Transaction Rejected"
+                      : "Transaction Failed",
+                });
               });
           } else {
             dispatch({

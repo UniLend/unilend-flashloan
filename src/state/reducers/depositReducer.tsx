@@ -51,11 +51,15 @@ const DepositReducer = (
       return {
         ...state,
         depositIsApproving: false,
+        isDepositApproved: true,
+        depositAllowanceLoading: false,
       };
     case ActionType.DEPOSIT_APPROVE_FAILED:
       return {
         ...state,
         depositIsApproving: false,
+        isDepositApproved: false,
+        depositAllowanceLoading: false,
         depositErrorMessage: action.message ? action.message : "Approve Failed",
       };
     case ActionType.DEPOSIT_APPROVAL_STATUS:

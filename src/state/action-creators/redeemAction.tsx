@@ -1,8 +1,5 @@
-// import { eToNumber } from "components/Helpers";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
-// import { web3Service } from "ethereum/web3Service";
-// import { portis } from "ethereum/portis";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { RedeemAction } from "state/actions/redeemA";
@@ -19,19 +16,12 @@ export const handleRedeem = (
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
 
     try {
-      // const ten = new BigNumber(10);
-      // const base = 3 * ten.pow(new BigNumber(decimal));
-      // console.log(base);
       let fullAmount = web3Service.getValue(
         isEth,
         currentProvider,
         redeemAmount,
         decimal
       );
-      // let amount = eToNumber(fullAmount);
-      // portis.onError((error) => {
-      //   console.log("error", error);
-      // });
       FlashloanLBCore(currentProvider)
         .methods.redeemUnderlying(receipentAddress, fullAmount)
         .send({
@@ -47,22 +37,12 @@ export const handleRedeem = (
           });
         })
         .on("error", (err: any, res: any) => {
-          if (res === undefined) {
-            dispatch({
-              type: ActionType.REDEEM_FAILED,
-              // message: err.message.split(":")[1],
-              message: "Transaction Rejected",
-            });
-          } else {
-            dispatch({
-              type: ActionType.REDEEM_FAILED,
-              message: "Transaction Failed",
-            });
-          }
+          dispatch({
+            type: ActionType.REDEEM_FAILED,
+            message:
+              res === undefined ? "Transaction Rejected" : "Transaction Failed",
+          });
         });
-      // .catch((e: any) => {
-      //   dispatch({ type: ActionType.REDEEM_FAILED, payload: "failed" });
-      // });
     } catch (e) {
       dispatch({
         type: ActionType.REDEEM_FAILED,

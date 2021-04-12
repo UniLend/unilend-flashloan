@@ -38,7 +38,6 @@ export const fetchTokenList = (
 
                     if (currentProvider) {
                       let timestamp = setTimestamp();
-                      console.log(tokenList);
                       try {
                         if (accountBalance > 0) {
                           BalanceContract(currentProvider)
@@ -50,8 +49,6 @@ export const fetchTokenList = (
                             )
                             .call((error: any, result: any) => {
                               if (!error && result) {
-                                console.log(result);
-
                                 tokenList.forEach((item: any, i: number) => {
                                   let fullAmount = toFixed(
                                     result[0][i] / Math.pow(10, item.decimals),

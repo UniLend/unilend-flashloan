@@ -215,7 +215,9 @@ const connectWalletReducer = (
     case ActionType.USER_TOKEN_BALANCE_FAILED:
       return {
         ...state,
+        userTokenBalance: "",
         userTokenBalanceLoading: false,
+        fullUserTokenBalance: "",
       };
     case ActionType.POOL_TOKEN_BALANCE_FAILED:
       return {

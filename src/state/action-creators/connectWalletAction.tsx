@@ -420,6 +420,9 @@ export const getUserTokenBalance = (
   decimal: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.USER_TOKEN_BALANCE_ACTION,
+    });
     try {
       let _IERC20 = IERC20(currentProvider, reciepentAddress);
       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
@@ -436,6 +439,10 @@ export const getUserTokenBalance = (
             userTokenBalance: fullAmount,
             fullUserTokenBalance: decimalAmount,
           });
+        } else {
+          dispatch({
+            type: ActionType.USER_TOKEN_BALANCE_FAILED,
+          });
         }
       });
     } catch (e: any) {
@@ -447,7 +454,46 @@ export const getUserTokenBalance = (
     }
   };
 };
+export const getPooluTokenBalance = (
+  currentProvider: any,
+  accounts: string,
+  reciepentAddress: string,
+  decimal: any
+) => {
+  return async (dispatch: Dispatch<Action>) => {
+    FlashloanLBCore(currentProvider)
+      .methods.getPools([reciepentAddress])
+      .call((err: any, res: any) => {
+        if (!err && res) {
+          // let assertAddress = res[0];
+          let _IERC20 = IERC20(currentProvider, res[0]);
 
+          _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
+            if (!e) {
+              let amount = r;
+              const fullAmount = new BigNumber(amount)
+                .dividedBy(Math.pow(10, decimal))
+                .toString();
+              dispatch({
+                type: ActionType.FULL_POOL_TOKEN_BALANCE,
+                payload: fullAmount,
+              });
+            } else {
+              dispatch({
+                type: ActionType.FULL_POOL_TOKEN_BALANCE,
+                payload: "",
+              });
+            }
+          });
+        } else {
+          dispatch({
+            type: ActionType.FULL_POOL_TOKEN_BALANCE,
+            payload: "",
+          });
+        }
+      });
+  };
+};
 export const getPoolTokenBalance = (
   currentProvider: any,
   accounts: string,
@@ -478,19 +524,19 @@ export const getPoolTokenBalance = (
               type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: r > 0 ? fullAmount : 0,
             });
-            dispatch({
-              type: ActionType.FULL_POOL_TOKEN_BALANCE,
-              payload: decimalAmount,
-            });
+            // dispatch({
+            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
+            //   payload: decimalAmount,
+            // });
           } else {
             dispatch({
               type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
               payload: "",
             });
-            dispatch({
-              type: ActionType.FULL_POOL_TOKEN_BALANCE,
-              payload: "",
-            });
+            // dispatch({
+            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
+            //   payload: "",
+            // });
           }
         });
     } catch (e: any) {

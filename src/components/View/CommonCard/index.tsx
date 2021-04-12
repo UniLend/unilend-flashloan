@@ -4,7 +4,6 @@ import ContentCard from "../UI/ContentCard/ContentCard";
 import FieldCard from "../UI/FieldsCard/FieldCard";
 import { capitalize, toFixed } from "components/Helpers";
 import CurrencySelectModel from "../UI/CurrencySelectModel/CurrencySelectModel";
-// import { useDispatch } from "react-redux";
 import { useActions } from "hooks/useActions";
 import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
@@ -14,7 +13,6 @@ import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
 import queryString from "query-string";
 import { RiskApproval } from "./RiskApproval";
-// import { AccountBalance } from "../UI/Navbar/Common";
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
@@ -30,6 +28,7 @@ interface AlertType {
 const CommonCard: FC<Props> = (props) => {
   const { activeTab } = props;
   // const dispatch = useDispatch();
+  const [redeemMax, setRedeemMax] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
   const [modalInfo, setModalInfo] = useState<ModalType>({
     show: false,
@@ -60,6 +59,7 @@ const CommonCard: FC<Props> = (props) => {
     walletProvider,
     selectedNetworkId,
     connectedWallet,
+    // userTokenBalanceLoading,
     getUserTokenBalance,
     getPoolLiquidity,
     handleWalletConnect,
@@ -86,6 +86,7 @@ const CommonCard: FC<Props> = (props) => {
     networkSwitchHandling,
     getTotalDepositedTokens,
     getTotalTokensInRewardPool,
+    getPooluTokenBalance,
   } = useActions();
 
   const {
@@ -130,6 +131,14 @@ const CommonCard: FC<Props> = (props) => {
       currentProvider &&
       activeCurrency.symbol !== "Select Token"
     ) {
+      if (activeTab === "redeem") {
+        getPooluTokenBalance(
+          currentProvider,
+          accounts[0],
+          receipentAddress,
+          activeCurrency.decimals
+        );
+      }
       if (activeCurrency.symbol !== "Select Token")
         getPoolTokenBalance(
           currentProvider,
@@ -522,7 +531,8 @@ const CommonCard: FC<Props> = (props) => {
           accounts[0],
           receipentAddress,
           activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          redeemMax
         );
         handleTransModal(true);
         break;
@@ -563,6 +573,9 @@ const CommonCard: FC<Props> = (props) => {
 
   const handleTransModal = (isShow: boolean) => setTransModalInfo(isShow);
 
+  const handleRedeemMax = () => {
+    setRedeemMax(true);
+  };
   return (
     <>
       {accounts.length &&
@@ -579,7 +592,13 @@ const CommonCard: FC<Props> = (props) => {
         <ContentCard title={`${capitalize(activeTab)}`}>
           <div className="swap-root">
             <FieldCard
-              onF1Change={(e) => setAmount(e.target.value)}
+              onF1Change={(e) => {
+                setAmount(e.target.value);
+                if (redeemMax) {
+                  setRedeemMax(false);
+                }
+              }}
+              onRedeemMax={handleRedeemMax}
               handleModelOpen={() => handleModal(true)}
               fieldLabel="Amount"
               fieldValue={amount}

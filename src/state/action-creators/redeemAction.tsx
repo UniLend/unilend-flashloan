@@ -10,7 +10,8 @@ export const handleRedeem = (
   accounts: string,
   receipentAddress: string,
   isEth: boolean,
-  decimal: any
+  decimal: any,
+  isRedeemMax: boolean
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
@@ -22,27 +23,55 @@ export const handleRedeem = (
         redeemAmount,
         decimal
       );
-      FlashloanLBCore(currentProvider)
-        .methods.redeemUnderlying(receipentAddress, fullAmount)
-        .send({
-          from: accounts,
-        })
-        .on("receipt", (res: any) => {
-          dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
-        })
-        .on("transactionHash", (hash: any) => {
-          dispatch({
-            type: ActionType.REDEEM_TRANSACTION_HASH,
-            payload: hash,
+      if (isRedeemMax) {
+        FlashloanLBCore(currentProvider)
+          .methods.redeem(receipentAddress, fullAmount)
+          .send({
+            from: accounts,
+          })
+          .on("receipt", (res: any) => {
+            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+          })
+          .on("transactionHash", (hash: any) => {
+            dispatch({
+              type: ActionType.REDEEM_TRANSACTION_HASH,
+              payload: hash,
+            });
+          })
+          .on("error", (err: any, res: any) => {
+            dispatch({
+              type: ActionType.REDEEM_FAILED,
+              message:
+                res === undefined
+                  ? "Transaction Rejected"
+                  : "Transaction Failed",
+            });
           });
-        })
-        .on("error", (err: any, res: any) => {
-          dispatch({
-            type: ActionType.REDEEM_FAILED,
-            message:
-              res === undefined ? "Transaction Rejected" : "Transaction Failed",
+      } else {
+        FlashloanLBCore(currentProvider)
+          .methods.redeemUnderlying(receipentAddress, fullAmount)
+          .send({
+            from: accounts,
+          })
+          .on("receipt", (res: any) => {
+            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+          })
+          .on("transactionHash", (hash: any) => {
+            dispatch({
+              type: ActionType.REDEEM_TRANSACTION_HASH,
+              payload: hash,
+            });
+          })
+          .on("error", (err: any, res: any) => {
+            dispatch({
+              type: ActionType.REDEEM_FAILED,
+              message:
+                res === undefined
+                  ? "Transaction Rejected"
+                  : "Transaction Failed",
+            });
           });
-        });
+      }
     } catch (e) {
       dispatch({
         type: ActionType.REDEEM_FAILED,

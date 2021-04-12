@@ -130,7 +130,7 @@ const CurrencySelectModel: FC<Props> = ({
                         className="mb-0 list-desc"
                         style={{ textTransform: "capitalize" }}
                       >
-                        {item.balance ? item.balance : "0"}
+                        {item.balance >= 0 ? item.balance : ""}
                       </p>
                     </div>
                   </div>

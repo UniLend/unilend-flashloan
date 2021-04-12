@@ -10,7 +10,8 @@ export const fetchTokenList = (
   tokenList: any,
   networkId: any,
   currentProvider: any,
-  accounts: any
+  accounts: any,
+  accountBalance: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let totalTokenList: any = [];
@@ -35,43 +36,56 @@ export const fetchTokenList = (
                       return item.address;
                     });
 
-                    if (currentProvider && accounts.length > 0) {
+                    if (currentProvider) {
                       let timestamp = setTimestamp();
-
+                      console.log(tokenList);
                       try {
-                        BalanceContract(currentProvider)
-                          .methods.getUserBalances(
-                            UnilendFlashLoanCoreContract(currentProvider),
-                            accounts[0],
-                            addresses,
-                            timestamp
-                          )
-                          .call((error: any, result: any) => {
-                            if (!error && result) {
-                              tokenList.forEach((item: any, i: number) => {
-                                let fullAmount = toFixed(
-                                  result[0][i] / Math.pow(10, item.decimals),
-                                  3
-                                );
-                                item["balance"] = fullAmount;
-                                totalTokenList.push(item);
+                        if (accountBalance > 0) {
+                          BalanceContract(currentProvider)
+                            .methods.getUserBalances(
+                              UnilendFlashLoanCoreContract(currentProvider),
+                              accounts[0],
+                              addresses,
+                              timestamp
+                            )
+                            .call((error: any, result: any) => {
+                              if (!error && result) {
+                                console.log(result);
+
+                                tokenList.forEach((item: any, i: number) => {
+                                  let fullAmount = toFixed(
+                                    result[0][i] / Math.pow(10, item.decimals),
+                                    3
+                                  );
+                                  item["balance"] = fullAmount;
+                                  totalTokenList.push(item);
+                                  dispatch({
+                                    type: ActionType.GET_TOKEN_LIST,
+                                    payload: [...totalTokenList],
+                                  });
+                                  return item;
+                                });
+                              } else {
                                 dispatch({
                                   type: ActionType.GET_TOKEN_LIST,
-                                  payload: [...totalTokenList],
+                                  payload: [],
                                 });
-                                return item;
-                              });
-                            } else {
-                              dispatch({
-                                type: ActionType.GET_TOKEN_LIST,
-                                payload: [],
-                              });
-                            }
+                              }
+                            });
+                        } else {
+                          tokenList.forEach((item: any, i: number) => {
+                            item["balance"] = "";
+                            totalTokenList.push(item);
+                            dispatch({
+                              type: ActionType.GET_TOKEN_LIST,
+                              payload: [...totalTokenList],
+                            });
                           });
+                        }
                       } catch (e) {
                         dispatch({
                           type: ActionType.GET_TOKEN_LIST,
-                          payload: [],
+                          payload: [...tokenList],
                         });
                       }
                       dispatch({
@@ -80,12 +94,17 @@ export const fetchTokenList = (
                       });
                       // console.log(newList);
                       // if (tokenList) totalTokenList.push(...newList);
+                    } else {
+                      if (tokenList) totalTokenList.push(...tokenList);
+                      dispatch({
+                        type: ActionType.GET_TOKEN_LIST,
+                        payload: [...totalTokenList],
+                      });
                     }
                   } else {
-                    if (tokenList) totalTokenList.push(...tokenList);
                     dispatch({
                       type: ActionType.GET_TOKEN_LIST,
-                      payload: [...totalTokenList],
+                      payload: [],
                     });
                   }
                 })

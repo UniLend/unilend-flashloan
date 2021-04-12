@@ -14,6 +14,7 @@ import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
 import queryString from "query-string";
 import { RiskApproval } from "./RiskApproval";
+// import { AccountBalance } from "../UI/Navbar/Common";
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
@@ -53,6 +54,7 @@ const CommonCard: FC<Props> = (props) => {
     activeNetWork,
     networkId,
     currentApy,
+    accountBalance,
     totalDepositedTokens,
     totalTokensInRewardPool,
     walletProvider,
@@ -386,12 +388,18 @@ const CommonCard: FC<Props> = (props) => {
   ]);
 
   useEffect(() => {
-    fetchTokenList(tokenGroupList, networkId, currentProvider, accounts);
+    fetchTokenList(
+      tokenGroupList,
+      networkId,
+      currentProvider,
+      accounts,
+      accountBalance
+    );
     setModalInfo({
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, networkId, currentProvider, accounts]);
+  }, [walletConnected, networkId, currentProvider, accounts, walletConnected]);
 
   useEffect(() => {
     let interval: any;

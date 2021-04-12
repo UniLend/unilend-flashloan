@@ -139,6 +139,7 @@ const connectWalletReducer = (
         userTokenBalance: "",
         poolTokenBalance: "",
         currentProvider: web3,
+        connectedWallet: "",
         walletProvider: (window as any).ethereum,
       };
     default:

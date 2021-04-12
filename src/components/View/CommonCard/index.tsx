@@ -10,10 +10,10 @@ import MainButton from "../MainButton";
 // import ConnectWalletModal from "../UI/ConnectWalletModal";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
-import AlertImg from "assets/warning-standalone.svg";
 import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
 import queryString from "query-string";
+import { RiskApproval } from "./RiskApproval";
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
@@ -93,7 +93,7 @@ const CommonCard: FC<Props> = (props) => {
     depositSuccessMessage,
     depositTransactionHashRecieved,
   } = useTypedSelector((state) => state.deposit);
-  const { activeCurrency, theme } = useTypedSelector((state) => state.settings);
+  const { activeCurrency } = useTypedSelector((state) => state.settings);
   const {
     donateContractAddress,
     donateIsApproved,
@@ -596,32 +596,13 @@ const CommonCard: FC<Props> = (props) => {
             activeCurrency.symbol !== "Select Token" &&
             amount !== "" &&
             parseFloat(amount) > 0 ? (
-              <div className={`${theme} card field-card mt-4`}>
-                <div className="card-body py-2">
-                  <div className="w-100 align-items-center text-center pr-0 mr-0">
-                    <div className="alerticon justify-content-center d-flex w-100">
-                      <img className="icon" src={AlertImg} alt="alert" />
-                    </div>
-                    <p className="mb-0 mt-3 warning-lead-text">
-                      The amount you {capitalize(activeTab)}, will be deducted
-                      from your wallet permanently and added to the reward pool.
-                    </p>
-                    <p className="mb-0 mt-3 warning-note-text ">
-                      Please Note: This transaction is irreversible
-                    </p>
-                    <div className="checkbox-custom mt-3 d-flex align-items-center justify-content-center">
-                      <input
-                        type="checkbox"
-                        checked={depositChecked}
-                        onChange={() => {
-                          setDepositChecked(!depositChecked);
-                        }}
-                      />
-                      <label className="warning-note-text">I Understand</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RiskApproval
+                activeTab={activeTab}
+                isChecked={depositChecked}
+                onChecked={() => {
+                  setDepositChecked(!depositChecked);
+                }}
+              />
             ) : (
               ""
             )}
@@ -753,7 +734,6 @@ const CommonCard: FC<Props> = (props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedAddress: any) => {
-            console.log(selectedAddress);
             await handleModal(false);
             await balanceReset();
             setPoolPercentage(0);

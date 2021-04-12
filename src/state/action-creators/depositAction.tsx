@@ -1,9 +1,10 @@
-import BigNumber from "bignumber.js";
+// import { eToNumber } from "components/Helpers";
 import {
   approveTokenMaximumValue,
   UnilendFlashLoanCoreContract,
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
+import { web3Service } from "ethereum/web3Service";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
@@ -145,9 +146,14 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     });
     try {
-      let fullAmount = new BigNumber(depositAmount)
-        .multipliedBy(Math.pow(10, decimal))
-        .toString();
+      let fullAmount = web3Service.getValue(
+        isEth,
+        currentProvider,
+        depositAmount,
+        decimal
+      );
+      // let amount = eToNumber(fullAmount);
+      // console.log("fullAmount", eToNumber(fullAmount));
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({

@@ -1,3 +1,4 @@
+// import { eToNumber } from "components/Helpers";
 import { approveTokenMaximumValue } from "ethereum/contracts";
 import {
   FlashloanLBCore,
@@ -158,6 +159,8 @@ export const handleDonate = (
         donateAmount,
         decimal
       );
+      // let amount = eToNumber(fullAmount);
+
       FlashloanLBCore(currentProvider)
         .methods.donationAddress()
         .call((error: any, result: any) => {

@@ -1,3 +1,4 @@
+// import { eToNumber } from "components/Helpers";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
@@ -23,6 +24,8 @@ export const handleAirdrop = (
       amount,
       decimal
     );
+    // let _amount = eToNumber(fullAmount);
+
     await IERC20(currentProvider, reciepentAddress)
       .methods.transfer(
         UnilendFlashLoanCoreContract(currentProvider),

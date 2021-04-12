@@ -72,52 +72,56 @@ export const networkSwitchHandling = (currentProvider?: any, id?: any) => {
     }
   };
 };
+
+const metamaskEventHandler = (dispatch: any, provider: any) => {
+  provider.on("chainChanged", (chainId: any) => {
+    window.location.reload();
+  });
+  provider.on("accountsChanged", function (accounts: string) {
+    dispatch({
+      type: ActionType.CONNECT_WALLET_SUCCESS,
+      payload: [accounts[0]],
+    });
+  });
+  provider.on("message", (message: any) => {
+    // console.log(message);
+  });
+  provider.on("disconnect", (code: number, reason: string) => {
+    dispatch({
+      type: ActionType.WALLET_DISCONNECT,
+    });
+  });
+};
+
 const handleMetamask = (accounts: any, dispatch: any) => {
   if (window && !(window as any).ethereum.selectedAddress) {
-    (window as any).ethereum
-      .enable()
-      .then(() => {
-        web3Service.getAccounts().then((res: any) => {
+    (window as any).ethereum.enable().then(() => {
+      web3Service
+        .getAccounts()
+        .then((res: any) => {
           dispatch({
             type: ActionType.CONNECT_WALLET_SUCCESS,
             payload: [...res],
           });
           getAccountBalance(res[0]);
-          (window as any).ethereum.on("chainChanged", (chainId: any) => {
-            window.location.reload();
-          });
-          (window as any).ethereum.on(
-            "accountsChanged",
-            function (accounts: string) {
-              dispatch({
-                type: ActionType.CONNECT_WALLET_SUCCESS,
-                payload: [...res],
-              });
-              // handleWalletConnect({
-              //   id: 1,
-              //   name: "metamask",
-              //   icon: "",
-              // });
-            }
-          );
-          (window as any).ethereum.on("message", (message: any) => {
-            // console.log(message);
+          metamaskEventHandler(dispatch, (window as any).ethereum);
+        })
+        .catch((e: any) => {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: e.message,
           });
         });
-      })
-      .catch((e: any) => {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: e.message,
-        });
-      });
+    });
   } else {
+    metamaskEventHandler(dispatch, (window as any).ethereum);
     dispatch({
       type: ActionType.CONNECT_WALLET_SUCCESS,
       payload: [...accounts],
     });
   }
 };
+
 async function handleWalletConnect(
   networkType: any,
   wallet: Wallet,
@@ -193,21 +197,8 @@ async function handleWalletConnect(
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [accounts],
             });
-            (window as any).BinanceChain.on("chainChanged", (chainId: any) => {
-              window.location.reload();
-            });
-            (window as any).BinanceChain.on(
-              "accountsChanged",
-              function (accounts: string) {
-                dispatch({
-                  type: ActionType.CONNECT_WALLET_SUCCESS,
-                  payload: [accounts],
-                });
-              }
-            );
-            (window as any).BinanceChain.on("message", (message: any) => {
-              // console.log(message);
-            });
+            metamaskEventHandler(dispatch, (window as any).BinanceChain);
+
             getAccountBalance(accounts, 2);
           }
         } catch (e) {
@@ -221,35 +212,7 @@ async function handleWalletConnect(
         try {
           let provider: any = CWweb3.connectWalletProvider;
           await provider.enable().then((response: any) => {
-            CWweb3.connectWalletProvider.on(
-              "accountsChanged",
-              (accounts: string[]) => {
-                dispatch({
-                  type: ActionType.CONNECT_WALLET_SUCCESS,
-                  payload: [...accounts],
-                });
-                getAccountBalance(accounts[0]);
-              }
-            );
-            // Subscribe to chainId change
-            CWweb3.connectWalletProvider.on(
-              "chainChanged",
-              (chainId: number) => {
-                networkSwitchHandling(chainId);
-                window.location.reload();
-              }
-            );
-
-            // Subscribe to session disconnection
-            CWweb3.connectWalletProvider.on(
-              "disconnect",
-              (code: number, reason: string) => {
-                dispatch({
-                  type: ActionType.WALLET_DISCONNECT,
-                });
-                // console.log(code, reason);
-              }
-            );
+            metamaskEventHandler(dispatch, CWweb3.connectWalletProvider);
           });
           await CWweb3.connectWalletWeb3.eth.getAccounts().then((res: any) => {
             dispatch({
@@ -276,26 +239,7 @@ async function handleWalletConnect(
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...accounts],
               });
-              (window as any).ethereum.on("chainChanged", (chainId: any) => {
-                window.location.reload();
-              });
-              (window as any).ethereum.on(
-                "accountsChanged",
-                function (accounts: string) {
-                  dispatch({
-                    type: ActionType.CONNECT_WALLET_SUCCESS,
-                    payload: [accounts],
-                  });
-                  // handleWalletConnect({
-                  //   id: 1,
-                  //   name: "metamask",
-                  //   icon: "",
-                  // });
-                }
-              );
-              (window as any).ethereum.on("message", (message: any) => {
-                // console.log(message);
-              });
+              metamaskEventHandler(dispatch, (window as any).ethereum);
               getAccountBalance(accounts[0]);
             })
             .catch((err) => {
@@ -324,26 +268,7 @@ async function handleWalletConnect(
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...address],
               });
-              (window as any).ethereum.on("chainChanged", (chainId: any) => {
-                window.location.reload();
-              });
-              (window as any).ethereum.on(
-                "accountsChanged",
-                function (accounts: string) {
-                  dispatch({
-                    type: ActionType.CONNECT_WALLET_SUCCESS,
-                    payload: [accounts],
-                  });
-                  // handleWalletConnect({
-                  //   id: 1,
-                  //   name: "metamask",
-                  //   icon: "",
-                  // });
-                }
-              );
-              (window as any).ethereum.on("message", (message: any) => {
-                // console.log(message);
-              });
+              metamaskEventHandler(dispatch, (window as any).ethereum);
               getAccountBalance(address[0]);
             })
             .catch((err: any) => {
@@ -435,7 +360,6 @@ export const getAccountBalance = (selectedAccount: string, networkId?: any) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
       let balance: any;
-      console.log(networkId);
       if (networkId && networkId === 2) {
         balance = await (window as any).BinanceChain.request({
           method: "eth_getBalance",
@@ -815,10 +739,6 @@ export const getPoolLiquidity = (
           });
       } else {
         let timestamp = setTimestamp();
-
-        // let _IERC20 = IERC20(currentProvider, reciepentAddress);
-        // _IERC20.methods
-        //   .balanceOf(UnilendFlashLoanCoreContract(currentProvider))
         FlashloanLBCore(currentProvider)
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
@@ -864,10 +784,11 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
       if (wallet) {
         let currentProvider: any;
         let provider: any;
+        let EthProvider = (window as any).ethereum;
         switch (wallet.name) {
           case "metamask":
             currentProvider = web3;
-            provider = (window as any).ethereum;
+            provider = EthProvider;
             break;
           case "walletConnect":
             currentProvider = CWweb3.connectWalletWeb3;
@@ -875,7 +796,7 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             break;
           case "CoinbaseWallet":
             currentProvider = CoinbaseWeb3;
-            provider = (window as any).ethereum;
+            provider = EthProvider;
             break;
           case "Fortmatic":
             currentProvider = formaticWeb3;
@@ -893,11 +814,11 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             break;
           case "maticWallet":
             currentProvider = maticWeb3;
-            provider = (window as any).ethereum;
+            provider = EthProvider;
             break;
           default:
             currentProvider = web3;
-            provider = (window as any).ethereum;
+            provider = EthProvider;
         }
         dispatch({
           type: ActionType.CURRENT_PROVIDER,

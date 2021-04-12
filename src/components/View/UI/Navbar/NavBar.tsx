@@ -144,7 +144,9 @@ const NavBar: React.FC<Props> = (props) => {
               theme={theme}
               logo={networkInfo.logo}
               label={networkInfo.label}
-              onClick={() => setSwitchNetworkModal(true)}
+              onClick={() => {
+                // setSwitchNetworkModal(true)
+              }}
             />
             {walletConnected && accounts.length && accountBalance ? (
               <AccountBalance

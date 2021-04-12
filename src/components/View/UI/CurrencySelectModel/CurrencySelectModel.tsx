@@ -122,17 +122,40 @@ const CurrencySelectModel: FC<Props> = ({
                     </div>
                   </div>
                   <div className="col-3" style={{ alignSelf: "center" }}>
-                    <div
+                    {/* <div
                       className="row"
                       style={{ paddingRight: "15px", float: "right" }}
-                    >
+                    > */}
+                    <div className="row bal-price">
+                      <h6
+                        className="mb-0"
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {item.balance >= 0 ? item.balance : ""}
+                      </h6>
+                    </div>
+                    <div className="row bal-price">
                       <p
+                        className="mb-0 list-desc"
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        {item.underlyingBalance >= 0
+                          ? item.underlyingBalance
+                          : ""}
+                      </p>
+                    </div>
+                    {/* <p
                         className="mb-0 list-desc"
                         style={{ textTransform: "capitalize" }}
                       >
                         {item.balance >= 0 ? item.balance : ""}
                       </p>
-                    </div>
+                      <p>
+                        {item.underlyingBalance >= 0
+                          ? item.underlyingBalance
+                          : ""}
+                      </p> */}
+                    {/* </div> */}
                   </div>
                 </div>
               </ListGroup.Item>

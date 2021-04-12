@@ -399,7 +399,14 @@ const CommonCard: FC<Props> = (props) => {
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletConnected, networkId, currentProvider, accounts, walletConnected]);
+  }, [
+    walletConnected,
+    networkId,
+    currentProvider,
+    accounts,
+    walletConnected,
+    accountBalance,
+  ]);
 
   useEffect(() => {
     let interval: any;

@@ -54,7 +54,12 @@ export const fetchTokenList = (
                                     result[0][i] / Math.pow(10, item.decimals),
                                     3
                                   );
+                                  let underlyingBalance = toFixed(
+                                    result[1][i] / Math.pow(10, item.decimals),
+                                    3
+                                  );
                                   item["balance"] = fullAmount;
+                                  item["underlyingBalance"] = underlyingBalance;
                                   totalTokenList.push(item);
                                   dispatch({
                                     type: ActionType.GET_TOKEN_LIST,

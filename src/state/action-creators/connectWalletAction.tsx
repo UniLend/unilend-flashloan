@@ -94,7 +94,11 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
 };
 
 const handleMetamask = (accounts: any, dispatch: any) => {
-  if (window && !(window as any).ethereum.selectedAddress) {
+  if (
+    window &&
+    !(window as any).ethereum.selectedAddress &&
+    accounts.length <= 0
+  ) {
     (window as any).ethereum
       .enable()
       .then(() => {
@@ -123,6 +127,7 @@ const handleMetamask = (accounts: any, dispatch: any) => {
       });
   } else {
     metamaskEventHandler(dispatch, (window as any).ethereum);
+    console.log(accounts);
     dispatch({
       type: ActionType.CONNECT_WALLET_SUCCESS,
       payload: [...accounts],
@@ -154,40 +159,48 @@ async function handleWalletConnect(
             console.log(e);
           }
         } else if (networkType === 2) {
-          const provider = (window as any).ethereum;
-          if (provider) {
-            const chainId = 97;
-            try {
-              await provider.request({
-                method: "wallet_addEthereumChain",
-                params: [
-                  {
-                    chainId: `0x${chainId.toString(16)}`,
-                    chainName: "Binance Smart Chain Mainnet",
-                    nativeCurrency: {
-                      name: "BNB",
-                      symbol: "bnb",
-                      decimals: 18,
+          try {
+            const provider = (window as any).ethereum;
+            if (provider && provider.selectedAddress) {
+              const chainId = 97;
+              try {
+                await provider.request({
+                  method: "wallet_addEthereumChain",
+                  params: [
+                    {
+                      chainId: `0x${chainId.toString(16)}`,
+                      chainName: "Binance Smart Chain Mainnet",
+                      nativeCurrency: {
+                        name: "BNB",
+                        symbol: "bnb",
+                        decimals: 18,
+                      },
+                      rpcUrls: [
+                        "https://data-seed-prebsc-1-s1.binance.org:8545/",
+                      ],
+                      blockExplorerUrls: ["https://testnet.bscscan.com/"],
                     },
-                    rpcUrls: [
-                      "https://data-seed-prebsc-1-s1.binance.org:8545/",
-                    ],
-                    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-                  },
-                ],
-              });
-              handleMetamask(accounts, dispatch);
+                  ],
+                });
+                accounts = await web3Service.getAccounts();
 
-              return true;
-            } catch (error) {
-              console.error(error);
+                // if (accounts) {
+                handleMetamask(accounts, dispatch);
+                // }
+
+                return true;
+              } catch (error) {
+                console.error(error);
+                return false;
+              }
+            } else {
+              console.error(
+                "Can't setup the BSC network on metamask because window.ethereum is undefined"
+              );
               return false;
             }
-          } else {
-            console.error(
-              "Can't setup the BSC network on metamask because window.ethereum is undefined"
-            );
-            return false;
+          } catch (e) {
+            console.log(e);
           }
         } else if (networkType === 3) {
           accounts = await web3Service.getAccounts();

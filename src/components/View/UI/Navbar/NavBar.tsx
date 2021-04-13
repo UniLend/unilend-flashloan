@@ -8,7 +8,6 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
-import { shortenAddress } from "components/Helpers";
 import { NETWORKS } from "components/constants";
 import { WalletInfoProps } from "../../../Helpers/Types";
 import {

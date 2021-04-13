@@ -1,6 +1,6 @@
 import { copyToClipboard, shortenAddress } from "components/Helpers";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Card, Container, Modal } from "react-bootstrap";
 import "./index.scss";
 interface Props {
@@ -15,10 +15,6 @@ const WalletStateModal: FC<Props> = ({
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
   const { activeNetWork } = useTypedSelector((state) => state.connectWallet);
-
-  useEffect(() => {
-    console.log(activeNetWork);
-  }, []);
 
   return (
     <>

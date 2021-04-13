@@ -600,6 +600,9 @@ export const getCurrentAPY = (
   totalTokensInRewardPool: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.CURRENT_APY_ACTION,
+    });
     try {
       UnilendFDonation(currentProvider, donateContract)
         .methods.getReleaseRate(reciepentAddress)
@@ -620,21 +623,20 @@ export const getCurrentAPY = (
                 2
               );
             }
+
             dispatch({
               type: ActionType.CURRENT_APY_SUCCESS,
               payload: fullAmount,
             });
           } else {
             dispatch({
-              type: ActionType.CURRENT_APY_SUCCESS,
-              payload: "",
+              type: ActionType.CURRENT_APY_FAILED,
             });
           }
         });
     } catch (e) {
       dispatch({
-        type: ActionType.CURRENT_APY_SUCCESS,
-        payload: "",
+        type: ActionType.CURRENT_APY_FAILED,
       });
     }
   };

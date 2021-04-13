@@ -245,6 +245,7 @@ const connectWalletReducer = (
       return {
         ...state,
         currentApyLoading: false,
+        currentApy: "",
       };
     case ActionType.TOTAL_DEPOSITION_TOKENS_FAILED:
       return {
@@ -296,6 +297,14 @@ const connectWalletReducer = (
         totalDepositedTokens: "",
         totalTokensInRewardPool: "",
         currentApy: "",
+        currentApyLoading: true,
+        rewardPoolBalanceLoading: true,
+        rewardReleaseRateLoading: true,
+        poolLiquidityLoading: true,
+        poolTokenBalanceLoading: true,
+        userTokenBalanceLoading: true,
+        totalDepositedTokensLoading: true,
+        totalTokensInRewardPoolLoading: true,
       };
     case ActionType.WALLET_DISCONNECT:
       localStorage.removeItem("walletconnect");

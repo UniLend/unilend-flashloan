@@ -164,7 +164,7 @@ const NavBar: React.FC<Props> = (props) => {
                 onClick={() =>
                   setWalletStatusInfo({
                     show: true,
-                    address: shortenAddress(accounts[0]),
+                    address: accounts[0],
                   })
                 }
                 address={accounts[0]}

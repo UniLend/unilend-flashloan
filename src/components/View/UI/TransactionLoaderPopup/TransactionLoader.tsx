@@ -19,6 +19,7 @@ const TransactionPopup: FC<Props> = ({
   activeTab,
 }) => {
   const { theme } = useTypedSelector((state) => state.settings);
+  const { activeNetWork } = useTypedSelector((state) => state.connectWallet);
   const { depositTransactionHash } = useTypedSelector((state) => state.deposit);
   const { donateTransactionHash } = useTypedSelector((state) => state.donate);
   const { redeemTransactionHash } = useTypedSelector((state) => state.redeem);
@@ -83,7 +84,11 @@ const TransactionPopup: FC<Props> = ({
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={`https://ropsten.etherscan.io/tx/${getActiveHash()}`}
+                        href={`https://${
+                          activeNetWork === "Mainnet"
+                            ? ""
+                            : activeNetWork.toLowerCase().concat(".")
+                        }etherscan.io/tx/${getActiveHash()}`}
                         className="sc-jKJlTe cEMwVc"
                       >
                         <div className="etherscan-link">View on Etherscan</div>

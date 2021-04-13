@@ -75,3 +75,12 @@ export const setTimestamp = () => {
   var t = new Date();
   return (t.setSeconds(t.getSeconds() - 15) / 1000).toFixed(0);
 };
+
+export const copyToClipboard = (address: string) => {
+  var textField = document.createElement("textarea");
+  textField.innerText = address;
+  document.body.appendChild(textField);
+  textField.select();
+  document.execCommand("copy");
+  textField.remove();
+};

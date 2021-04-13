@@ -66,7 +66,9 @@ const FooterNavBar: React.FC<Props> = (props) => {
           theme={theme}
           logo={networkInfo.logo}
           label={networkInfo.label}
-          onClick={() => setSwitchNetworkModal(true)}
+          onClick={() => {
+            // setSwitchNetworkModal(true);
+          }}
           className="network-info-footer"
         />
         {walletConnected && accounts.length && accountBalance ? (

@@ -43,7 +43,7 @@ const WalletStateModal: FC<Props> = ({
                 </div>
               </Card.Header>
 
-              <Card.Body>
+              <Card.Body className={"pt-0"}>
                 <p>{shortenAddress(address)}</p>
                 <div
                   className="copy_view m-0"
@@ -51,10 +51,11 @@ const WalletStateModal: FC<Props> = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    color: "#2172e5",
                   }}
                 >
                   <span
-                    className="d-flex btn btn-secondary btn-dark btn-theme-icon-header btn"
+                    className="d-flex btn-copy"
                     onClick={() => copyToClipboard(address)}
                   >
                     <svg
@@ -92,8 +93,9 @@ const WalletStateModal: FC<Props> = ({
                       Copy Address
                     </p>
                   </span>
-                  <span className="view_link">
+                  <span>
                     <a
+                      className="view_link"
                       href={`https://${
                         activeNetWork === "Mainnet"
                           ? ""
@@ -122,7 +124,9 @@ const WalletStateModal: FC<Props> = ({
                         <polyline points="15 3 21 3 21 9"></polyline>
                         <line x1="10" y1="14" x2="21" y2="3"></line>
                       </svg>{" "}
-                      View on Ethersacn
+                      <p style={{ margin: 0, paddingLeft: "10px" }}>
+                        View on Etherscan
+                      </p>
                     </a>
                   </span>
                 </div>

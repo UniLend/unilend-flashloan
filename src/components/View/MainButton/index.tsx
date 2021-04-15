@@ -91,7 +91,7 @@ const MainButton: FC<Props> = ({
 
   const handleTokenBalance = () => {
     if (address.length && currentProvider) {
-      getAccountBalance(address[0]);
+      getAccountBalance(address[0], currentProvider);
       getUserTokenBalance(
         currentProvider,
         address[0],

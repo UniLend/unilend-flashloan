@@ -122,7 +122,7 @@ export const handleDeposit = (
         .methods.deposit(recieptAddress, fullAmount)
         .send({
           from: address,
-          value: isEth ? fullAmount : 0,
+          value: 0,
         })
         .on("receipt", (res: any) => {
           dispatch({
@@ -137,6 +137,7 @@ export const handleDeposit = (
           });
         })
         .on("error", (err: any, res: any) => {
+          console.log(err);
           dispatch({
             type: ActionType.DEPOSIT_FAILED,
             payload: false,

@@ -418,7 +418,7 @@ const CommonCard: FC<Props> = (props) => {
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [networkId, currentProvider, accounts, accountBalance]);
+  }, [networkId, activeNetWork, currentProvider, accounts, accountBalance]);
 
   useEffect(() => {
     let interval: any;

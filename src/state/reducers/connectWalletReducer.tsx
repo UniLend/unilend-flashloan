@@ -83,7 +83,7 @@ const connectWalletReducer = (
   switch (action.type) {
     // action
     case ActionType.CONNECT_WALLET:
-      return { ...state, loading: true, walletConnected: false };
+      return { ...state, loading: true };
     case ActionType.ACCOUNT_BALANCE_ACTION:
       return {
         ...state,

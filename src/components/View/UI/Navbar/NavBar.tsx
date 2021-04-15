@@ -29,7 +29,7 @@ const NavBar: React.FC<Props> = (props) => {
   const {
     setWalletModalInfo,
     setWalletStatusInfo,
-    // setSwitchNetworkModal,
+    setSwitchNetworkModal,
   } = props;
 
   const [currentPage, setCurrentPage] = useState("");
@@ -144,7 +144,7 @@ const NavBar: React.FC<Props> = (props) => {
               logo={networkInfo.logo}
               label={networkInfo.label}
               onClick={() => {
-                // setSwitchNetworkModal(true)
+                setSwitchNetworkModal(true);
               }}
             />
             {walletConnected && accounts.length && accountBalance ? (

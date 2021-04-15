@@ -214,7 +214,18 @@ async function handleWalletConnect(
           const bsc = new BscConnector({
             supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
           });
-          await bsc.activate();
+          await bsc.activate().then((res: any) => {
+            res.provider.enable().then((res) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_SUCCESS,
+                payload: [res.account],
+              });
+            });
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [res.account],
+            });
+          });
           let accounts = await bsc.getAccount();
           if (accounts) {
             dispatch({

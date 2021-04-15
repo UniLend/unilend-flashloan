@@ -363,14 +363,19 @@ const CommonCard: FC<Props> = (props) => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenList, currentProvider, walletConnected, walletProvider]);
+  }, [
+    tokenList,
+    currentProvider,
+    walletConnected,
+    walletProvider,
+    selectedNetworkId,
+  ]);
+
   useEffect(() => {
-    // window.location.reload();
-    networkSwitchHandling(currentProvider);
     if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet));
-    // handleTokenBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNetworkId]);
+
   useEffect(() => {
     if (
       accounts.length &&
@@ -413,14 +418,7 @@ const CommonCard: FC<Props> = (props) => {
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    walletConnected,
-    networkId,
-    currentProvider,
-    accounts,
-    walletConnected,
-    accountBalance,
-  ]);
+  }, [networkId, currentProvider, accounts, accountBalance]);
 
   useEffect(() => {
     let interval: any;

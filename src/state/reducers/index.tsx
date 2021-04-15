@@ -11,17 +11,16 @@ import TokenManageReducer from "./tokenManageReducer";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 
-// const persistedReducer = persistReducer<any, any>(persistConfig, reducers);
 const rootPersistConfig = {
   key: "root",
   storage: storage,
   whitelist: ["setting"],
 };
-const settingPersistConfig = {
-  key: "setting",
-  storage,
-};
-const settingsPR = persistReducer(settingPersistConfig, settingsReducer);
+// const settingPersistConfig = {
+//   key: "setting",
+//   storage,
+// };
+// const settingsPR = persistReducer(settingPersistConfig, settingsReducer);
 const reducers = combineReducers({
   connectWallet: connectWalletReducer,
   settings:

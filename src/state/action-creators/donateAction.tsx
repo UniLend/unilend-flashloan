@@ -191,3 +191,11 @@ export const handleDonate = (
     }
   };
 };
+
+export const clearDonateError = () => {
+  return async (dispatch: Dispatch<DonateAction>) => {
+    dispatch({
+      type: ActionType.DONATE_MESSAGE_CLEAR,
+    });
+  };
+};

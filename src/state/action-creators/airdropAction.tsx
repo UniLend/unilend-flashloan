@@ -52,3 +52,10 @@ export const handleAirdrop = (
       });
   };
 };
+export const clearAirdropError = () => {
+  return async (dispatch: Dispatch<AirdropAction>) => {
+    dispatch({
+      type: ActionType.AIRDROP_MESSAGE_CLEAR,
+    });
+  };
+};

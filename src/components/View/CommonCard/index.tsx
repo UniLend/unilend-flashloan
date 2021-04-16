@@ -92,6 +92,10 @@ const CommonCard: FC<Props> = (props) => {
     getTotalDepositedTokens,
     getTotalTokensInRewardPool,
     getPooluTokenBalance,
+    clearDepositError,
+    clearDonateError,
+    clearRedeemError,
+    clearAirdropError,
   } = useActions();
 
   const {
@@ -290,6 +294,10 @@ const CommonCard: FC<Props> = (props) => {
         now--;
         setProgressValue(now);
         if (now === 0) {
+          clearDepositError();
+          clearAirdropError();
+          clearDonateError();
+          clearDonateError();
           handleToast(false);
           clearInterval(interval);
         }
@@ -319,6 +327,10 @@ const CommonCard: FC<Props> = (props) => {
         now--;
         setProgressValue(now);
         if (now === 0) {
+          clearDepositError();
+          clearAirdropError();
+          clearDonateError();
+          clearDonateError();
           handleToast(false);
           clearInterval(interval);
         }

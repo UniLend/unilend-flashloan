@@ -18,8 +18,13 @@ interface TransactionHash {
   payload: any;
 }
 
+interface ErrorClear {
+  type: ActionType.AIRDROP_MESSAGE_CLEAR;
+}
+
 export type AirdropAction =
   | _AirdropAction
   | AirdropSuccess
   | AirdropFailed
-  | TransactionHash;
+  | TransactionHash
+  | ErrorClear;

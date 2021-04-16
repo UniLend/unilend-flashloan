@@ -99,6 +99,8 @@ const DonateReducer = (
         donateIsApproved: action.payload,
         donateAllowanceLoading: false,
       };
+    case ActionType.DONATE_MESSAGE_CLEAR:
+      return { ...state, donateErrorMessage: "", donateSuccessMessage: "" };
     default:
       return { ...state };
   }

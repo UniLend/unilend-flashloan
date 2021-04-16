@@ -53,6 +53,10 @@ interface TransactionHash {
   payload: string;
 }
 
+interface ErrorClear {
+  type: ActionType.DONATE_MESSAGE_CLEAR;
+}
+
 export type DonateAction =
   | _DonateAction
   | DonateSuccess
@@ -65,4 +69,5 @@ export type DonateAction =
   | ApproveAction
   | ApproveSuccess
   | ApproveFailed
-  | TransactionHash;
+  | TransactionHash
+  | ErrorClear;

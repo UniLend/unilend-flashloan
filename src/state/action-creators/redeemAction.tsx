@@ -114,3 +114,11 @@ export const getRedeemTokenBalance = (
     }
   };
 };
+
+export const clearRedeemError = () => {
+  return async (dispatch: Dispatch<RedeemAction>) => {
+    dispatch({
+      type: ActionType.REDEEM_MESSAGE_CLEAR,
+    });
+  };
+};

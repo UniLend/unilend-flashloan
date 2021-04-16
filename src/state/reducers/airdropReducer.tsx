@@ -56,6 +56,8 @@ const AirdropReducer = (
         airdropTransactionHash: action.payload,
         airdropTransactionHashReceived: true,
       };
+    case ActionType.AIRDROP_MESSAGE_CLEAR:
+      return { ...state, airdropErrorMessage: "", airdropSuccessMessage: "" };
     default:
       return { ...state };
   }

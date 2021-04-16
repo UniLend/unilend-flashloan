@@ -63,6 +63,8 @@ const RedeemReducer = (
         redeemTransactionHashReceived: true,
         redeemErrorMessage: "",
       };
+    case ActionType.REDEEM_MESSAGE_CLEAR:
+      return { ...state, redeemErrorMessage: "", redeemSuccessMessage: "" };
     default:
       return { ...state };
   }

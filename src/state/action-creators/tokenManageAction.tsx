@@ -14,6 +14,7 @@ export const fetchTokenList = (
   accountBalance: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
+    let timestamp = setTimestamp();
     let totalTokenList: any = [];
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
@@ -23,15 +24,25 @@ export const fetchTokenList = (
         ? tokenList.forEach((item: any) => {
             if (item.isEnabled) {
               axios
-                .get(item.fetchURI)
+                .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
+                  let tokens = [
+                    ...res.data.tokens,
+                    {
+                      name: "Unilend Finance",
+                      chainId: 97,
+                      symbol: "UFT",
+                      decimals: 18,
+                      address: "0xe9be49144acc5a28c45f162de4eb1f8d38522ac1",
+                      logoURI:
+                        "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
+                    },
+                  ];
                   if (res.data) {
-                    const tokenList: any = res.data.tokens.filter(
-                      (item: any) => {
-                        // eslint-disable-next-line eqeqeq
-                        return item.chainId == networkId;
-                      }
-                    );
+                    const tokenList: any = tokens.filter((item: any) => {
+                      // eslint-disable-next-line eqeqeq
+                      return item.chainId == networkId;
+                    });
                     let addresses = tokenList.map((item: any) => {
                       return item.address;
                     });

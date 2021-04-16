@@ -14,6 +14,7 @@ export const fetchTokenList = (
   accountBalance: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
+    let timestamp = setTimestamp();
     let totalTokenList: any = [];
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
@@ -23,7 +24,7 @@ export const fetchTokenList = (
         ? tokenList.forEach((item: any) => {
             if (item.isEnabled) {
               axios
-                .get(item.fetchURI)
+                .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
                   let tokens = [
                     ...res.data.tokens,

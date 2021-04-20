@@ -1,6 +1,6 @@
 export const UnilendFlashLoanCoreContract = (currentProvider: any) => {
   if (currentProvider === "binanceWallet") {
-    return "0x8b90F6Be5C8fF057d0744fB4D99F7EfFf6889460";
+    return "0x13A145D215182924c89F2aBc7D358DCc72F8F788";
   } else {
     // return "0x186b707bB603c16295eF38EA27a081EBf5b65989"; // old contract address
     return "0x13A145D215182924c89F2aBc7D358DCc72F8F788";

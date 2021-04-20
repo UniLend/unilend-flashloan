@@ -32,3 +32,42 @@
   font-size: 0.825rem;
   padding: 4px 6px;
 }
+.copy_view {
+  .btn-copy {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: rgb(136, 141, 155);
+    flex-shrink: 0;
+    display: flex;
+    text-decoration: none;
+    font-size: 0.825rem;
+    &:hover {
+      color: rgb(195, 197, 203);
+    }
+    &:active {
+      color: rgb(195, 197, 203);
+    }
+    &:focus {
+      color: rgb(195, 197, 203);
+    }
+  }
+}
+.view_link {
+  color: rgb(108, 114, 132);
+  margin-left: 1rem;
+  font-size: 0.825rem;
+  display: flex;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    color: rgb(195, 197, 203);
+  }
+  &:active {
+    color: rgb(195, 197, 203);
+  }
+  &:focus {
+    color: rgb(195, 197, 203);
+  }
+}

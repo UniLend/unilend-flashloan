@@ -8,7 +8,6 @@ import { useActions } from "hooks/useActions";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import useWalletConnect from "hooks/useWalletConnect";
 import { SettingAction } from "state/actions/settingsA";
-import { shortenAddress } from "components/Helpers";
 import { NETWORKS } from "components/constants";
 import { WalletInfoProps } from "../../../Helpers/Types";
 import {
@@ -30,7 +29,7 @@ const NavBar: React.FC<Props> = (props) => {
   const {
     setWalletModalInfo,
     setWalletStatusInfo,
-    // setSwitchNetworkModal,
+    setSwitchNetworkModal,
   } = props;
 
   const [currentPage, setCurrentPage] = useState("");
@@ -145,7 +144,7 @@ const NavBar: React.FC<Props> = (props) => {
               logo={networkInfo.logo}
               label={networkInfo.label}
               onClick={() => {
-                // setSwitchNetworkModal(true)
+                setSwitchNetworkModal(true);
               }}
             />
             {walletConnected && accounts.length && accountBalance ? (

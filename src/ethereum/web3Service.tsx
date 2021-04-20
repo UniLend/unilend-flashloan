@@ -13,6 +13,12 @@ export const web3Service = {
     return web3.utils.fromWei(payload, curr);
   },
   getValue: (isEth: any, currentProvider: any, amount: any, decimal: any) => {
+    console.log(
+      new BigNumber(amount).times(new BigNumber(10).pow(decimal)).toString(),
+      eToNumber(
+        new BigNumber(amount).multipliedBy(Math.pow(10, decimal)).toString()
+      )
+    );
     return isEth
       ? currentProvider.utils.toWei(amount, "ether")
       : eToNumber(

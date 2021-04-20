@@ -23,9 +23,14 @@ interface TransactionHash {
   payload: any;
 }
 
+interface ErrorClear {
+  type: ActionType.REDEEM_MESSAGE_CLEAR;
+}
+
 export type RedeemAction =
   | RedeemSuccess
   | RedeemFailed
   | RedeemTokenBalance
   | TransactionHash
-  | _RedeemAction;
+  | _RedeemAction
+  | ErrorClear;

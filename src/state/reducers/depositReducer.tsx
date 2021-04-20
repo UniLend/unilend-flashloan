@@ -100,7 +100,7 @@ const DepositReducer = (
         depositTransactionHashRecieved: false,
       };
     case ActionType.DEPOSIT_MESSAGE_CLEAR:
-      return { ...state, depositErrorMessage: "" };
+      return { ...state, depositErrorMessage: "", depositSuccessMessage: "" };
     case ActionType.DEPOSIT_STATUS:
       return { ...state, isDepositSuccess: action.payload };
     default:

@@ -8,10 +8,24 @@ import PoolReducer from "./poolReducer";
 import RedeemReducer from "./redeemReducer";
 import settingsReducer from "./settingsReducer";
 import TokenManageReducer from "./tokenManageReducer";
+import storage from "redux-persist/lib/storage";
+import persistReducer from "redux-persist/es/persistReducer";
 
+const rootPersistConfig = {
+  key: "root",
+  storage: storage,
+  whitelist: ["setting"],
+};
+// const settingPersistConfig = {
+//   key: "setting",
+//   storage,
+// };
+// const settingsPR = persistReducer(settingPersistConfig, settingsReducer);
 const reducers = combineReducers({
   connectWallet: connectWalletReducer,
-  settings: settingsReducer,
+  settings:
+    // settingsPR,
+    settingsReducer,
   deposit: DepositReducer,
   donate: DonateReducer,
   redeem: RedeemReducer,
@@ -21,6 +35,6 @@ const reducers = combineReducers({
   pool: PoolReducer,
 });
 
-export default reducers;
+export default persistReducer(rootPersistConfig, reducers);
 
 export type RootState = ReturnType<typeof reducers>;

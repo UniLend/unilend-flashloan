@@ -60,7 +60,11 @@ const CommonCard: FC<Props> = (props) => {
     selectedNetworkId,
     connectedWallet,
     fullPoolUTokenBalance,
-    // userTokenBalanceLoading,
+    currentApyLoading,
+    poolLiquidityLoading,
+    poolTokenBalanceLoading,
+    rewardPoolBalanceLoading,
+    rewardReleaseRateLoading,
     getUserTokenBalance,
     getPoolLiquidity,
     handleWalletConnect,
@@ -88,6 +92,10 @@ const CommonCard: FC<Props> = (props) => {
     getTotalDepositedTokens,
     getTotalTokensInRewardPool,
     getPooluTokenBalance,
+    clearDepositError,
+    clearDonateError,
+    clearRedeemError,
+    clearAirdropError,
   } = useActions();
 
   const {
@@ -286,6 +294,10 @@ const CommonCard: FC<Props> = (props) => {
         now--;
         setProgressValue(now);
         if (now === 0) {
+          clearDepositError();
+          clearAirdropError();
+          clearDonateError();
+          clearDonateError();
           handleToast(false);
           clearInterval(interval);
         }
@@ -315,6 +327,10 @@ const CommonCard: FC<Props> = (props) => {
         now--;
         setProgressValue(now);
         if (now === 0) {
+          clearDepositError();
+          clearAirdropError();
+          clearDonateError();
+          clearDonateError();
           handleToast(false);
           clearInterval(interval);
         }
@@ -359,14 +375,19 @@ const CommonCard: FC<Props> = (props) => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenList, currentProvider, walletConnected, walletProvider]);
+  }, [
+    tokenList,
+    currentProvider,
+    walletConnected,
+    walletProvider,
+    selectedNetworkId,
+  ]);
+
   useEffect(() => {
-    // window.location.reload();
-    networkSwitchHandling(currentProvider);
     if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet));
-    // handleTokenBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNetworkId]);
+
   useEffect(() => {
     if (
       accounts.length &&
@@ -409,7 +430,7 @@ const CommonCard: FC<Props> = (props) => {
       ...modalInfo,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [networkId, accounts, accountBalance]);
+  }, [networkId, activeNetWork, currentProvider, accounts, accountBalance]);
 
   useEffect(() => {
     let interval: any;
@@ -571,6 +592,120 @@ const CommonCard: FC<Props> = (props) => {
   const handleRedeemMax = () => {
     setRedeemMax(true);
   };
+
+  const Loader = () => (
+    <div>
+      <div
+        className="spinner-border spinner-balance approve-loader"
+        role="status"
+      >
+        <span className="sr-only">loading...</span>
+      </div>
+    </div>
+  );
+
+  const CurrentApy = () => (
+    <div className="price-list">
+      <p>Current APY</p>
+      <span className="price">
+        {currentApyLoading ? (
+          <Loader />
+        ) : currentApy !== "" ? (
+          `${currentApy}%/year`
+        ) : (
+          "-/year"
+        )}
+      </span>
+    </div>
+  );
+
+  const TotalPoolLiquidity = () => (
+    <div className="price-list">
+      <p>Total Pool Liquidity </p>
+      <span className="price">
+        {poolLiquidityLoading ? (
+          <Loader />
+        ) : poolLiquidity ? (
+          <>
+            <span>{poolLiquidity.toLocaleString()}</span>
+            <img src={activeCurrency.logoURI} alt="logo" width="13" />
+            <span>{activeCurrency.symbol}</span>
+          </>
+        ) : (
+          "-"
+        )}
+      </span>
+      <span></span>
+    </div>
+  );
+
+  const YourPoolShare = () => (
+    <div className="price-list">
+      <p>Your Pool Share</p>
+      <span className="price">
+        {poolTokenBalanceLoading ? (
+          <Loader />
+        ) : poolPercentage !== "" &&
+          poolLiquidity !== "" &&
+          poolTokenBalance !== "" &&
+          walletConnected ? (
+          `${poolPercentage}%`
+        ) : (
+          "-"
+        )}
+      </span>
+    </div>
+  );
+  const YourLiquidity = () => (
+    <div className="price-list">
+      <p>Your Liquidity</p>
+      <span className="price">
+        {poolTokenBalanceLoading ? (
+          <Loader />
+        ) : walletConnected && poolTokenBalance !== "" ? (
+          <>
+            <span>{poolTokenBalance.toLocaleString()}</span>
+            <img src={activeCurrency.logoURI} alt="logo" width="13" />
+            <span>{activeCurrency.symbol}</span>
+          </>
+        ) : (
+          "-"
+        )}
+      </span>
+    </div>
+  );
+  const RewardAvailable = () => (
+    <div className="price-list">
+      <p>Reward Available</p>
+      <span className="price">
+        {rewardPoolBalanceLoading ? (
+          <Loader />
+        ) : walletConnected && rewardPoolBalance !== "" ? (
+          <>
+            <span>{rewardPoolBalance.toLocaleString()}</span>
+            <img src={activeCurrency.logoURI} alt="logo" width="13" />
+            <span>{activeCurrency.symbol}</span>
+          </>
+        ) : (
+          "-"
+        )}
+      </span>
+    </div>
+  );
+  const RewardRate = () => (
+    <div className="price-list">
+      <p>Reward Rate</p>
+      <span className="price">{`${
+        rewardReleaseRateLoading ? (
+          <Loader />
+        ) : rewardReleaseRate !== "" ? (
+          `${rewardReleaseRate}%`
+        ) : (
+          "-"
+        )
+      }/day`}</span>
+    </div>
+  );
   return (
     <>
       {accounts.length &&
@@ -639,60 +774,10 @@ const CommonCard: FC<Props> = (props) => {
             activeCurrency.symbol !== "Select Token" ? (
               <div className="price_head">
                 <div className="price_aa">
-                  <div className="price-list">
-                    <p>Current APY</p>
-                    <span className="price">{`${
-                      currentApy !== "" ? `${currentApy}%` : "-"
-                    }/year`}</span>
-                  </div>
-                  <div className="price-list">
-                    <p>Total Pool Liquidity </p>
-                    <span className="price">
-                      {poolLiquidity ? (
-                        <>
-                          <span>{poolLiquidity.toLocaleString()}</span>
-                          <img
-                            src={activeCurrency.logoURI}
-                            alt="logo"
-                            width="13"
-                          />
-                          <span>{activeCurrency.symbol}</span>
-                        </>
-                      ) : (
-                        "-"
-                      )}
-                    </span>
-                    <span></span>
-                  </div>
-                  <div className="price-list">
-                    <p>Your Pool Share</p>
-                    <span className="price">
-                      {poolPercentage !== "" &&
-                      poolLiquidity !== "" &&
-                      poolTokenBalance !== "" &&
-                      walletConnected
-                        ? `${poolPercentage}%`
-                        : "-"}
-                    </span>
-                  </div>
-                  <div className="price-list">
-                    <p>Your Liquidity</p>
-                    <span className="price">
-                      {walletConnected && poolTokenBalance !== "" ? (
-                        <>
-                          <span>{poolTokenBalance.toLocaleString()}</span>
-                          <img
-                            src={activeCurrency.logoURI}
-                            alt="logo"
-                            width="13"
-                          />
-                          <span>{activeCurrency.symbol}</span>
-                        </>
-                      ) : (
-                        "-"
-                      )}
-                    </span>
-                  </div>
+                  <CurrentApy />
+                  <TotalPoolLiquidity />
+                  <YourPoolShare />
+                  <YourLiquidity />
                 </div>
               </div>
             ) : (
@@ -702,36 +787,9 @@ const CommonCard: FC<Props> = (props) => {
               activeCurrency.symbol !== "Select Token" && (
                 <div className="price_head">
                   <div className="price_aa">
-                    <div className="price-list">
-                      <p>Current APY</p>
-                      <span className="price">{`${
-                        currentApy !== "" ? `${currentApy}%` : "-"
-                      }/year`}</span>
-                    </div>
-                    <div className="price-list">
-                      <p>Reward Available</p>
-                      <span className="price">
-                        {walletConnected && rewardPoolBalance !== "" ? (
-                          <>
-                            <span>{rewardPoolBalance.toLocaleString()}</span>
-                            <img
-                              src={activeCurrency.logoURI}
-                              alt="logo"
-                              width="13"
-                            />
-                            <span>{activeCurrency.symbol}</span>
-                          </>
-                        ) : (
-                          "-"
-                        )}
-                      </span>
-                    </div>
-                    <div className="price-list">
-                      <p>Reward Rate</p>
-                      <span className="price">{`${
-                        rewardReleaseRate !== "" ? `${rewardReleaseRate}%` : "-"
-                      }/day`}</span>
-                    </div>
+                    <CurrentApy />
+                    <RewardAvailable />
+                    <RewardRate />
                   </div>
                 </div>
               )}

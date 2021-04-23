@@ -73,6 +73,9 @@
   }
   .no-data {
     color: white;
+    display: grid;
+    place-content: center;
+    margin-top: 30px;
   }
   // .modal-body {
   //   border-bottom: 1px solid #2d2f36;

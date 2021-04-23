@@ -71,6 +71,69 @@ const CurrencySelectModel: FC<Props> = ({
       />
     </div>
   );
+
+  const TokenList = filteredList ? (
+    <ListGroup>
+      {Children.toArray(
+        filteredList.map((item: any) => (
+          <ListGroup.Item
+            key={item.id}
+            action
+            onClick={() => handleCurrChange(item)}
+          >
+            <div className="row">
+              <div className="col-2 px-0 curr-list">
+                <img
+                  width="24"
+                  className="list-icon"
+                  src={item.logoURI}
+                  alt=""
+                />
+              </div>
+              <div className="col-7">
+                <div className="row">
+                  <h6 className="mb-0" style={{ textTransform: "uppercase" }}>
+                    {item.symbol}
+                  </h6>
+                </div>
+                <div className="row">
+                  <p
+                    className="mb-0 list-desc"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {item.name}
+                  </p>
+                </div>
+              </div>
+              <div className="col-3" style={{ alignSelf: "center" }}>
+                {/* <div
+                      className="row"
+                      style={{ paddingRight: "15px", float: "right" }}
+                    > */}
+                <div className="row bal-price">
+                  <h6 className="mb-0" style={{ textTransform: "uppercase" }}>
+                    {item.balance >= 0 ? item.balance : ""}
+                  </h6>
+                </div>
+                <div className="row bal-price">
+                  <p
+                    className="mb-0 list-desc"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {item.underlyingBalance >= 0 ? item.underlyingBalance : ""}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </ListGroup.Item>
+        ))
+      )}
+    </ListGroup>
+  ) : (
+    <>
+      <p className="no-data">No Data to Show</p>
+    </>
+  );
   // const ManageButton = (
   //   <div className="manage" onClick={() => setOpenManage(!openManage)}>
   //     <span>
@@ -85,93 +148,12 @@ const CurrencySelectModel: FC<Props> = ({
   // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
-      {filteredList && !tokenList.isRequesting ? (
-        <ListGroup>
-          {Children.toArray(
-            filteredList.map((item: any) => (
-              <ListGroup.Item
-                key={item.id}
-                action
-                onClick={() => handleCurrChange(item)}
-              >
-                <div className="row">
-                  <div className="col-2 px-0 curr-list">
-                    <img
-                      width="24"
-                      className="list-icon"
-                      src={item.logoURI}
-                      alt=""
-                    />
-                  </div>
-                  <div className="col-7">
-                    <div className="row">
-                      <h6
-                        className="mb-0"
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {item.symbol}
-                      </h6>
-                    </div>
-                    <div className="row">
-                      <p
-                        className="mb-0 list-desc"
-                        style={{ textTransform: "capitalize" }}
-                      >
-                        {item.name}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-3" style={{ alignSelf: "center" }}>
-                    {/* <div
-                      className="row"
-                      style={{ paddingRight: "15px", float: "right" }}
-                    > */}
-                    <div className="row bal-price">
-                      <h6
-                        className="mb-0"
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {item.balance >= 0 ? item.balance : ""}
-                      </h6>
-                    </div>
-                    <div className="row bal-price">
-                      <p
-                        className="mb-0 list-desc"
-                        style={{ textTransform: "capitalize" }}
-                      >
-                        {item.underlyingBalance >= 0
-                          ? item.underlyingBalance
-                          : ""}
-                      </p>
-                    </div>
-                    {/* <p
-                        className="mb-0 list-desc"
-                        style={{ textTransform: "capitalize" }}
-                      >
-                        {item.balance >= 0 ? item.balance : ""}
-                      </p>
-                      <p>
-                        {item.underlyingBalance >= 0
-                          ? item.underlyingBalance
-                          : ""}
-                      </p> */}
-                    {/* </div> */}
-                  </div>
-                </div>
-              </ListGroup.Item>
-            ))
-          )}
-        </ListGroup>
-      ) : tokenList.isRequesting ? (
+      {tokenList.isRequesting ? (
         <>
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
+          <div className="no-data">Fetching List</div>
         </>
       ) : (
-        <>
-          <p className="no-data">No Data to Show</p>
-        </>
+        TokenList
       )}
     </div>
   );

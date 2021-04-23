@@ -297,7 +297,7 @@ const CommonCard: FC<Props> = (props) => {
           clearDepositError();
           clearAirdropError();
           clearDonateError();
-          clearDonateError();
+          clearRedeemError();
           handleToast(false);
           clearInterval(interval);
         }
@@ -493,6 +493,11 @@ const CommonCard: FC<Props> = (props) => {
   }, [walletConnected, accounts, currentProvider, activeCurrency]);
   useEffect(() => {
     setAmount("");
+    clearDepositError();
+    clearAirdropError();
+    clearDonateError();
+    clearRedeemError();
+    handleToast(false);
     // if (activeTab === "reward") {
     //   rewardTokenList(tokenList);
     // }

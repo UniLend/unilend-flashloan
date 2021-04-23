@@ -4,6 +4,7 @@ import "./TransactionLoader.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import Loader from "react-loader-spinner";
 import Alert from "assets/error.svg";
+import { getTransactionHashUrl } from "components/Helpers";
 // import ArrowUp from "assets/arrowup.png";
 interface Props {
   handleClose: () => void;
@@ -84,11 +85,10 @@ const TransactionPopup: FC<Props> = ({
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={`https://${
-                          activeNetWork === "Mainnet"
-                            ? ""
-                            : activeNetWork.toLowerCase().concat(".")
-                        }etherscan.io/tx/${getActiveHash()}`}
+                        href={getTransactionHashUrl(
+                          activeNetWork,
+                          getActiveHash()
+                        )}
                         className="sc-jKJlTe cEMwVc"
                       >
                         <div className="etherscan-link">View on Etherscan</div>
@@ -97,7 +97,6 @@ const TransactionPopup: FC<Props> = ({
                       ""
                     )}
                   </div>
-                  {/* <p className="mt-3"> View on Etherscan</p> */}
                   <button
                     className="btn btn-lg btn-custom-primary mt-4"
                     onClick={handleClose}

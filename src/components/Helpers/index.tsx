@@ -84,3 +84,33 @@ export const copyToClipboard = (address: string) => {
   document.execCommand("copy");
   textField.remove();
 };
+
+export const getTransactionHashUrl = (activeNetWork, hash) => {
+  let baseURL = `etherscan.io/tx/${hash}`;
+  let bscBaseURL = `bscscan.com/tx/${hash}`;
+  switch (activeNetWork) {
+    case "Mainnet":
+      return `https://${baseURL}`;
+    case "Binance Testnet":
+      return `https://testnet.${bscBaseURL}`;
+    case "Binance Mainnet":
+      return `https://${bscBaseURL}`;
+    default:
+      return `https://${activeNetWork.toLowerCase()}.${baseURL}`;
+  }
+};
+
+export const getAddressUrl = (activeNetWork, hash) => {
+  let baseURL = `etherscan.io/address/${hash}`;
+  let bscBaseURL = `bscscan.com/address/${hash}`;
+  switch (activeNetWork) {
+    case "Mainnet":
+      return `https://${baseURL}`;
+    case "Binance Testnet":
+      return `https://testnet.${bscBaseURL}`;
+    case "Binance Mainnet":
+      return `https://${bscBaseURL}`;
+    default:
+      return `https://${activeNetWork.toLowerCase()}.${baseURL}`;
+  }
+};

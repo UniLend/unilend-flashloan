@@ -4,6 +4,7 @@ import "./index.scss";
 import TickIcon from "assets/tick.svg";
 import ErrorIcon from "assets/error.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
+import { getTransactionHashUrl } from "components/Helpers";
 interface Props {
   handleClose: () => void;
   message: string;
@@ -37,6 +38,7 @@ const AlertToast: FC<Props> = ({
         return airdropTransactionHash;
     }
   };
+
   return (
     <>
       <Toast
@@ -78,11 +80,7 @@ const AlertToast: FC<Props> = ({
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://${
-                    activeNetWork === "Mainnet"
-                      ? ""
-                      : activeNetWork.toLowerCase().concat(".")
-                  }etherscan.io/tx/${getActiveHash()}`}
+                  href={getTransactionHashUrl(activeNetWork, getActiveHash())}
                 >
                   <div className="etherscan-link">View on Etherscan</div>
                 </a>
@@ -109,11 +107,7 @@ const AlertToast: FC<Props> = ({
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://${
-                    activeNetWork === "Mainnet"
-                      ? ""
-                      : activeNetWork.toLowerCase().concat(".")
-                  }etherscan.io/tx/${getActiveHash()}`}
+                  href={getTransactionHashUrl(activeNetWork, getActiveHash())}
                 >
                   <div className="etherscan-link">View on Etherscan</div>
                 </a>

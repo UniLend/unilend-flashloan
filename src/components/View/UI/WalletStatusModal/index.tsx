@@ -1,4 +1,8 @@
-import { copyToClipboard, shortenAddress } from "components/Helpers";
+import {
+  copyToClipboard,
+  getAddressUrl,
+  shortenAddress,
+} from "components/Helpers";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { FC } from "react";
 import { Card, Container, Modal } from "react-bootstrap";
@@ -94,11 +98,7 @@ const WalletStateModal: FC<Props> = ({
                   </span>
                   <span className="view_link">
                     <a
-                      href={`https://${
-                        activeNetWork === "Mainnet"
-                          ? ""
-                          : activeNetWork.toLowerCase().concat(".")
-                      }etherscan.io/address/${address}`}
+                      href={getAddressUrl(activeNetWork, address)}
                       rel="noreferrer"
                       target="_blank"
                     >

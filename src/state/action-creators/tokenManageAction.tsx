@@ -26,18 +26,7 @@ export const fetchTokenList = (
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
-                  let tokens = [
-                    ...res.data.tokens,
-                    {
-                      name: "Unilend Finance",
-                      chainId: 97,
-                      symbol: "UFT",
-                      decimals: 18,
-                      address: "0xe9be49144acc5a28c45f162de4eb1f8d38522ac1",
-                      logoURI:
-                        "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
-                    },
-                  ];
+                  let tokens = [...res.data.tokens];
                   if (res.data) {
                     const tokenList: any = tokens.filter((item: any) => {
                       // eslint-disable-next-line eqeqeq

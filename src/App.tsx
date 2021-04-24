@@ -11,12 +11,19 @@ import CommonCard from "components/View/CommonCard";
 import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
+import BigNumber from "bignumber.js";
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
 //   type: string;
 //   data: unknown;
 // }
+
+BigNumber.config({
+  EXPONENTIAL_AT: 1000,
+  DECIMAL_PLACES: 80,
+});
+
 function App() {
   const [loading, setLoading] = useState<Boolean>(true);
 

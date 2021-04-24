@@ -18,15 +18,15 @@ export const walletLink = new WalletLink({
 });
 
 // Initialize a Web3 Provider object
-// export const CoinbaseProvider = walletLink.makeWeb3Provider(
-//   ETH_JSONRPC_URL,
-//   CHAIN_ID
-// );
-
 export const CoinbaseProvider = walletLink.makeWeb3Provider(
-  ROP_ETH_JSONRPC_URL,
-  ROP_CHAIN_ID
+  ETH_JSONRPC_URL,
+  CHAIN_ID
 );
+
+// export const CoinbaseProvider = walletLink.makeWeb3Provider(
+//   ROP_ETH_JSONRPC_URL,
+//   ROP_CHAIN_ID
+// );
 
 // Initialize a Web3 object
 export const CoinbaseWeb3 = new Web3(CoinbaseProvider as any);

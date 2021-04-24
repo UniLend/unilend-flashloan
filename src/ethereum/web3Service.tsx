@@ -21,8 +21,6 @@ export const web3Service = {
     );
     return isEth
       ? currentProvider.utils.toWei(amount, "ether")
-      : eToNumber(
-          new BigNumber(amount).multipliedBy(Math.pow(10, decimal)).toString()
-        );
+      : new BigNumber(amount).times(new BigNumber(10).pow(decimal)).toString();
   },
 };

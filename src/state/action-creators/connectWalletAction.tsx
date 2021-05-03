@@ -194,21 +194,80 @@ async function handleWalletConnect(
                 return true;
               } catch (error) {
                 console.error(error);
+
                 return false;
               }
             } else {
               console.error(
                 "Can't setup the BSC network on metamask because window.ethereum is undefined"
               );
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: "Connection Failed",
+              });
               return false;
             }
           } catch (e) {
             console.log(e);
           }
         } else if (networkType === 3) {
-          accounts = await web3Service.getAccounts();
+          try {
+            if (
+              (window as any).ethereum &&
+              (window as any).ethereum.selectedAddress
+            ) {
+              const provider = (window as any).ethereum;
+              const chainId = 80001;
+              try {
+                await provider.request({
+                  method: "wallet_addEthereumChain",
+                  params: [
+                    {
+                      chainId: `0x${chainId.toString(16)}`,
+                      chainName: "Mumbai Testnet",
+                      nativeCurrency: {
+                        name: "Matic",
+                        symbol: "matic",
+                        decimals: 18,
+                      },
+                      rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+                      blockExplorerUrls: [
+                        "https://mumbai-explorer.matic.today",
+                      ],
+                    },
+                  ],
+                });
+                accounts = await web3Service.getAccounts();
 
-          handleMetamask(accounts, dispatch, currentProviders);
+                handleMetamask(accounts, dispatch, currentProviders);
+                return true;
+              } catch (e) {
+                console.error(e);
+                return false;
+              }
+            } else {
+              if ((window as any).ethereum) {
+                accounts = await web3Service.getAccounts();
+
+                // if (accounts) {
+                handleMetamask(accounts, dispatch, currentProviders);
+              }
+              console.error(
+                "Can't setup the Matic network on metamask because window.ethereum is undefined"
+              );
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: "Connection Failed",
+              });
+              return false;
+            }
+          } catch (e) {
+            console.log(e);
+            dispatch({
+              type: ActionType.CONNECT_WALLET_ERROR,
+              payload: e.message,
+            });
+          }
         }
         break;
       case "binanceWallet":
@@ -218,18 +277,26 @@ async function handleWalletConnect(
           const bsc = new BscConnector({
             supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
           });
-          await bsc.activate().then((res: any) => {
-            res.provider.enable().then((res) => {
+          await bsc
+            .activate()
+            .then((res: any) => {
+              res.provider.enable().then((res) => {
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_SUCCESS,
+                  payload: [res.account],
+                });
+              });
               dispatch({
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [res.account],
               });
+            })
+            .catch((e) => {
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: e.message,
+              });
             });
-            dispatch({
-              type: ActionType.CONNECT_WALLET_SUCCESS,
-              payload: [res.account],
-            });
-          });
           let accounts = await bsc.getAccount();
           if (accounts) {
             dispatch({

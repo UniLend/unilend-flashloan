@@ -15,6 +15,8 @@ const activeNetworkBaseCurrency = (selectedNetworkId: any) => {
     return "ETH";
   } else if (selectedNetworkId === 2) {
     return "BNB";
+  } else if (selectedNetworkId === 3) {
+    return "MATIC";
   }
 };
 export const ThemeButton = ({

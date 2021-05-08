@@ -394,7 +394,12 @@ const CommonCard: FC<Props> = (props) => {
       activeCurrency.symbol !== "Select Token" &&
       activeTab === "lend"
     ) {
-      checkAllowance(currentProvider, accounts[0], receipentAddress);
+      checkAllowance(
+        currentProvider,
+        accounts[0],
+        receipentAddress,
+        activeNetWork
+      );
     } else if (
       accounts.length &&
       activeCurrency.symbol !== "Select Token" &&

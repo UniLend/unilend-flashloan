@@ -13,9 +13,11 @@ import { DepositAction } from "state/actions/depositA";
 export const checkAllowance = (
   currentProvider: any,
   address: any,
-  receipentAddress: string
+  receipentAddress: string,
+  activeNetwork
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    // console.log("activeNetwork",activeNetwork);
     dispatch({
       type: ActionType.DEPOSIT_ALLOWANCE_ACTION,
     });
@@ -118,6 +120,7 @@ export const handleDeposit = (
         depositAmount,
         decimal
       );
+      console.log(recieptAddress, address);
       FlashloanLBCore(currentProvider)
         .methods.deposit(recieptAddress, fullAmount)
         .send({

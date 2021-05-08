@@ -172,7 +172,7 @@ async function handleWalletConnect(
                   params: [
                     {
                       chainId: `0x${chainId.toString(16)}`,
-                      chainName: "Binance Smart Chain Mainnet",
+                      chainName: "Smart Chain - Testnet",
                       nativeCurrency: {
                         name: "BNB",
                         symbol: "bnb",
@@ -212,10 +212,7 @@ async function handleWalletConnect(
           }
         } else if (networkType === 3) {
           try {
-            if (
-              (window as any).ethereum &&
-              (window as any).ethereum.selectedAddress
-            ) {
+            if ((window as any).ethereum) {
               const provider = (window as any).ethereum;
               const chainId = 80001;
               try {
@@ -238,7 +235,6 @@ async function handleWalletConnect(
                   ],
                 });
                 accounts = await web3Service.getAccounts();
-
                 handleMetamask(accounts, dispatch, currentProviders);
                 return true;
               } catch (e) {
@@ -272,40 +268,50 @@ async function handleWalletConnect(
         break;
       case "binanceWallet":
         try {
-          // Binance //////
+          if ((window as any).ethereum) {
+            const provider = (window as any).ethereum;
+            const chainId = 97;
+            try {
+              await provider.request({
+                method: "wallet_addEthereumChain",
+                params: [
+                  {
+                    chainId: `0x${chainId.toString(16)}`,
+                    chainName: "Smart Chain - Testnet",
+                    nativeCurrency: {
+                      name: "BNB",
+                      symbol: "bnb",
+                      decimals: 18,
+                    },
+                    rpcUrls: [
+                      "https://data-seed-prebsc-1-s1.binance.org:8545/",
+                    ],
+                    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+                  },
+                ],
+              });
+              accounts = await web3Service.getAccounts();
+              console.log(accounts);
 
-          const bsc = new BscConnector({
-            supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
-          });
-          await bsc
-            .activate()
-            .then((res: any) => {
-              res.provider.enable().then((res) => {
-                dispatch({
-                  type: ActionType.CONNECT_WALLET_SUCCESS,
-                  payload: [res.account],
-                });
-              });
-              dispatch({
-                type: ActionType.CONNECT_WALLET_SUCCESS,
-                payload: [res.account],
-              });
-            })
-            .catch((e) => {
-              dispatch({
-                type: ActionType.CONNECT_WALLET_ERROR,
-                payload: e.message,
-              });
-            });
-          let accounts = await bsc.getAccount();
-          if (accounts) {
+              // if (accounts) {
+              handleMetamask(accounts, dispatch, currentProviders);
+              // }
+
+              return true;
+            } catch (error) {
+              console.error(error);
+
+              return false;
+            }
+          } else {
+            console.error(
+              "Can't setup the BSC network on metamask because window.ethereum is undefined"
+            );
             dispatch({
-              type: ActionType.CONNECT_WALLET_SUCCESS,
-              payload: [accounts],
+              type: ActionType.CONNECT_WALLET_ERROR,
+              payload: "Connection Failed",
             });
-            metamaskEventHandler(dispatch, (window as any).BinanceChain);
-
-            getAccountBalance(accounts, 2);
+            return false;
           }
         } catch (e) {
           dispatch({
@@ -940,8 +946,10 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             // }
             break;
           case "binanceWallet":
-            currentProvider = bscWeb3;
-            provider = (window as any).BinanceChain;
+            // currentProvider = bscWeb3;
+            // provider = (window as any).BinanceChain;
+            currentProvider = web3;
+            provider = EthProvider;
             break;
           case "maticWallet":
             currentProvider = maticWeb3;
@@ -981,7 +989,27 @@ export const walletDisconnect = (walletProvider: any) => {
       "-walletlink:https://www.walletlink.org:session:linked"
     );
     localStorage.removeItem("walletConnected");
-    // if (walletProvider === (window as any).ethereum) walletProvider.disable();
+    // if (walletProvider === (window as any).ethereum) {
+    //   const walletAddress = await walletProvider.request({
+    //     method: "eth_requestAccounts",
+    //     params: [
+    //       {
+    //         eth_accounts: {},
+    //       },
+    //     ],
+    //   });
+
+    //   // if (!walletAddress) {
+    //   await walletProvider.request({
+    //     method: "wallet_requestPermissions",
+    //     params: [
+    //       {
+    //         eth_accounts: {},
+    //       },
+    //     ],
+    //   });
+    //   // }
+    // }
     // await walletProvider.disconnect();
     dispatch({
       type: ActionType.WALLET_DISCONNECT,

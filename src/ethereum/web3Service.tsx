@@ -14,6 +14,8 @@ export const web3Service = {
   },
   getValue: (isEth: any, currentProvider: any, amount: any, decimal: any) => {
     console.log(
+      amount,
+      decimal,
       new BigNumber(amount).times(new BigNumber(10).pow(decimal)).toString(),
       eToNumber(
         new BigNumber(amount).multipliedBy(Math.pow(10, decimal)).toString()

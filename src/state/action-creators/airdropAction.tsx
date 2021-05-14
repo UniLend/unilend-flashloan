@@ -1,6 +1,7 @@
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { IERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
+import { errorHandler } from "index";
 import { Dispatch } from "react";
 import { ActionType } from "state/action-types";
 import { AirdropAction } from "state/actions/airdropA";
@@ -45,6 +46,8 @@ export const handleAirdrop = (
         });
       })
       .on("error", (err: any, res: any) => {
+        errorHandler.report(err);
+
         dispatch({
           type: ActionType.AIRDROP_FAILED,
           message:

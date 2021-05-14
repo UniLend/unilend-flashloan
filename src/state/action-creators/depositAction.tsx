@@ -5,6 +5,7 @@ import {
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
@@ -50,6 +51,7 @@ export const checkAllowance = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
       });
@@ -90,6 +92,8 @@ export const depositApprove = (
           });
         })
         .on("error", (err: any, res: any) => {
+          errorHandler.report(err);
+
           dispatch({
             type: ActionType.DEPOSIT_APPROVE_FAILED,
             payload: false,
@@ -98,6 +102,7 @@ export const depositApprove = (
           });
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_APPROVE_FAILED,
       });
@@ -147,6 +152,8 @@ export const handleDeposit = (
             });
           })
           .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
             console.log(err);
             dispatch({
               type: ActionType.DEPOSIT_FAILED,
@@ -177,6 +184,8 @@ export const handleDeposit = (
             });
           })
           .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
             console.log(err);
             dispatch({
               type: ActionType.DEPOSIT_FAILED,
@@ -189,6 +198,7 @@ export const handleDeposit = (
           });
       }
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

@@ -19,6 +19,7 @@ import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { setTimestamp, toFixed } from "components/Helpers";
 import BigNumber from "bignumber.js";
 import { maticWeb3 } from "ethereum/maticWeb3";
+import { errorHandler } from "index";
 // import { isMobile } from "react-device-detect";
 // import { maticWeb3 } from "ethereum/maticWeb3";
 
@@ -156,6 +157,7 @@ async function handleWalletConnect(
             accounts = await web3Service.getAccounts();
             handleMetamask(accounts, dispatch, currentProviders);
           } catch (e) {
+            errorHandler.report(e);
             console.log(e);
           }
         } else if (networkType === 2) {
@@ -191,6 +193,8 @@ async function handleWalletConnect(
 
                 return true;
               } catch (error) {
+                errorHandler.report(error);
+
                 console.error(error);
 
                 return false;
@@ -206,6 +210,7 @@ async function handleWalletConnect(
               return false;
             }
           } catch (e) {
+            errorHandler.report(e);
             console.log(e);
           }
         } else if (networkType === 3) {
@@ -234,6 +239,7 @@ async function handleWalletConnect(
                 handleMetamask(accounts, dispatch, currentProviders);
                 return true;
               } catch (e) {
+                errorHandler.report(e);
                 console.error(e);
                 return false;
               }
@@ -254,6 +260,7 @@ async function handleWalletConnect(
               return false;
             }
           } catch (e) {
+            errorHandler.report(e);
             console.log(e);
             dispatch({
               type: ActionType.CONNECT_WALLET_ERROR,
@@ -293,6 +300,7 @@ async function handleWalletConnect(
 
               return true;
             } catch (error) {
+              errorHandler.report(error);
               console.error(error);
 
               return false;
@@ -308,6 +316,7 @@ async function handleWalletConnect(
             return false;
           }
         } catch (e) {
+          errorHandler.report(e);
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
             payload: e.message,
@@ -330,6 +339,8 @@ async function handleWalletConnect(
           // const chainId = await web3.eth.chainId();
           // console.log(accounts, networkId, "ss", chainId);
         } catch (err) {
+          errorHandler.report(err);
+
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
             payload: err.message,
@@ -366,12 +377,16 @@ async function handleWalletConnect(
                 });
             })
             .catch((err) => {
+              errorHandler.report(err);
+
               dispatch({
                 type: ActionType.CONNECT_WALLET_ERROR,
                 payload: err.message,
               });
             });
         } catch (err) {
+          errorHandler.report(err);
+
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
             payload: err.message,
@@ -402,6 +417,8 @@ async function handleWalletConnect(
             });
           // );
         } catch (err) {
+          errorHandler.report(err);
+
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
             payload: err.message,
@@ -449,6 +466,7 @@ async function handleWalletConnect(
           //   });
           // }
         } catch (err) {
+          errorHandler.report(err);
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
             payload: err.message,
@@ -472,6 +490,7 @@ async function handleWalletConnect(
         break;
     }
   } catch (e) {
+    errorHandler.report(e);
     dispatch({
       type: ActionType.CONNECT_WALLET_ERROR,
       payload: e.message,
@@ -506,6 +525,7 @@ export const getAccountBalance = (
         fullAccountBalance: ethBal,
       });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.ACCOUNT_BALANCE_SUCCESS,
         payload: "",
@@ -685,6 +705,7 @@ export const getRewardPoolBalance = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
         payload: "",
@@ -743,6 +764,7 @@ export const getCurrentAPY = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.CURRENT_APY_FAILED,
       });
@@ -775,6 +797,7 @@ export const getTotalDepositedTokens = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
         payload: "",
@@ -806,6 +829,7 @@ export const getTotalTokensInRewardPool = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
         payload: "",
@@ -841,6 +865,7 @@ export const getRewardReleaseRatePerDay = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
         payload: "",
@@ -971,6 +996,8 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
         // }
       }
     } catch (err) {
+      errorHandler.report(err);
+
       dispatch({
         type: ActionType.CONNECT_WALLET_ERROR,
         payload: err.message,

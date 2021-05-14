@@ -729,9 +729,7 @@ const CommonCard: FC<Props> = (props) => {
     <>
       {accounts.length &&
       activeNetWork !== "Mainnet" &&
-      activeNetWork !== "Ropsten" &&
-      selectedNetworkId === 3 &&
-      activeNetWork !== "Matic Mainnet" ? (
+      activeNetWork !== "Ropsten" ? (
         <div className="network-warning">
           {`You are currently connected to the ${activeNetWork} which is not
           supported.`}

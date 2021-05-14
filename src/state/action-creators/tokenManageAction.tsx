@@ -2,6 +2,7 @@ import axios from "axios";
 import { setTimestamp, toFixed } from "components/Helpers";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
 import { BalanceContract } from "ethereum/contracts/FlashloanLB";
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
@@ -146,6 +147,8 @@ export const fetchTokenList = (
                           });
                         }
                       } catch (e) {
+                        errorHandler.report(e);
+
                         dispatch({
                           type: ActionType.GET_TOKEN_LIST,
                           payload: [...tokenList],

@@ -1,3 +1,4 @@
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "../action-types";
 import { SettingAction } from "../actions/settingsA";
@@ -19,6 +20,8 @@ export const themeChange = (currTheme: string) => {
         });
       }
     } catch (e) {
+      errorHandler.report(e);
+
       dispatch({
         type: ActionType.CURRENT_THEME,
         payload: "dark",

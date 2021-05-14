@@ -12,6 +12,7 @@ import useWalletConnect from "hooks/useWalletConnect";
 import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
 import BigNumber from "bignumber.js";
+import { errorHandler } from "index";
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
@@ -31,16 +32,18 @@ function App() {
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
 
-  const {
-    handleWalletConnect,
-    walletProvider,
-    connectedWallet,
-  } = useWalletConnect();
+  const { handleWalletConnect, walletProvider, connectedWallet } =
+    useWalletConnect();
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
+    console.log("starting");
+    errorHandler.start({
+      key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
+      projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

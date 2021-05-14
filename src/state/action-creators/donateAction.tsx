@@ -5,6 +5,7 @@ import {
   UnilendFDonation,
 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DonateAction } from "state/actions/donateA";
@@ -31,6 +32,8 @@ export const getDonationContract = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
+
       dispatch({
         type: ActionType.GET_DONATION_CONTRACT,
         payload: "",
@@ -77,6 +80,8 @@ export const donateAllowance = (
           });
       }
     } catch (e) {
+      errorHandler.report(e);
+
       dispatch({
         type: ActionType.DONATE_ALLOWANCE_FAILED,
       });
@@ -171,6 +176,8 @@ export const handleDonate = (
                 });
               })
               .on("error", (err: any, res: any) => {
+                errorHandler.report(err);
+
                 dispatch({
                   type: ActionType.DONATE_FAILED,
                   message:

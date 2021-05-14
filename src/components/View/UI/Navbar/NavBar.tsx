@@ -26,11 +26,8 @@ interface Props extends RouteComponentProps<any> {
 }
 
 const NavBar: React.FC<Props> = (props) => {
-  const {
-    setWalletModalInfo,
-    setWalletStatusInfo,
-    setSwitchNetworkModal,
-  } = props;
+  const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } =
+    props;
 
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
@@ -43,12 +40,8 @@ const NavBar: React.FC<Props> = (props) => {
   const networkInfo = NETWORKS.filter(
     (item) => item.id === selectedNetworkId
   )[0];
-  const {
-    walletConnected,
-    accounts,
-    loading,
-    accountBalance,
-  } = useWalletConnect();
+  const { walletConnected, accounts, loading, accountBalance } =
+    useWalletConnect();
 
   useEffect(() => {
     setCurrentPage(props.location.pathname);
@@ -144,7 +137,7 @@ const NavBar: React.FC<Props> = (props) => {
               logo={networkInfo.logo}
               label={networkInfo.label}
               onClick={() => {
-                setSwitchNetworkModal(true);
+                // setSwitchNetworkModal(true);
               }}
             />
             {walletConnected && accounts.length && accountBalance ? (

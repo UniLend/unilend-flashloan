@@ -50,6 +50,7 @@ const MainButton: FC<Props> = ({
     fullPoolTokenBalance,
     accountBalance,
     selectedNetworkId,
+    fullPoolUTokenBalance,
     handleWalletConnect,
   } = useWalletConnect();
 
@@ -152,6 +153,7 @@ const MainButton: FC<Props> = ({
             airdropLoading ||
             depositAllowanceLoading ||
             donateAllowanceLoading ||
+            (activeTab === "redeem" && fullPoolUTokenBalance === "") ||
             (activeTab === "reward" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||

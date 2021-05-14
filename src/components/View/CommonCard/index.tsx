@@ -140,15 +140,13 @@ const CommonCard: FC<Props> = (props) => {
       currentProvider &&
       activeCurrency.symbol !== "Select Token"
     ) {
-      if (activeTab === "redeem") {
-        getPooluTokenBalance(
-          currentProvider,
-          accounts[0],
-          receipentAddress,
-          activeCurrency.decimals,
-          selectedNetworkId
-        );
-      }
+      getPooluTokenBalance(
+        currentProvider,
+        accounts[0],
+        receipentAddress,
+        activeCurrency.decimals,
+        selectedNetworkId
+      );
       if (activeCurrency.symbol !== "Select Token")
         getPoolTokenBalance(
           currentProvider,

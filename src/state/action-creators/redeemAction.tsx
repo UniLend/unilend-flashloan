@@ -1,6 +1,7 @@
 // import BigNumber from "bignumber.js";
 import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { RedeemAction } from "state/actions/redeemA";
@@ -25,6 +26,7 @@ export const handleRedeem = (
         redeemAmount,
         decimal
       );
+      console.log("fullPoolUTokenBalance", fullPoolUTokenBalance);
       let uFullAmount = web3Service.getValue(
         isEth,
         currentProvider,
@@ -47,6 +49,8 @@ export const handleRedeem = (
             });
           })
           .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
             dispatch({
               type: ActionType.REDEEM_FAILED,
               message:
@@ -71,6 +75,8 @@ export const handleRedeem = (
             });
           })
           .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
             dispatch({
               type: ActionType.REDEEM_FAILED,
               message:
@@ -81,6 +87,8 @@ export const handleRedeem = (
           });
       }
     } catch (e) {
+      errorHandler.report(e);
+
       dispatch({
         type: ActionType.REDEEM_FAILED,
         message: "Transaction Failed",

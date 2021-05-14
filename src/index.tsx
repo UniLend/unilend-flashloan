@@ -10,6 +10,10 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { persistor, store } from "state";
 import { PersistGate } from "redux-persist/integration/react";
+import StackdriverErrorReporter from "stackdriver-errors-js";
+
+export const errorHandler = new StackdriverErrorReporter();
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

@@ -88,6 +88,8 @@ export const copyToClipboard = (address: string) => {
 export const getTransactionHashUrl = (activeNetWork, hash) => {
   let baseURL = `etherscan.io/tx/${hash}`;
   let bscBaseURL = `bscscan.com/tx/${hash}`;
+  let maticURL = `maticvigil.com/tx/${hash}`;
+
   switch (activeNetWork) {
     case "Mainnet":
       return `https://${baseURL}`;
@@ -95,6 +97,10 @@ export const getTransactionHashUrl = (activeNetWork, hash) => {
       return `https://testnet.${bscBaseURL}`;
     case "Binance Mainnet":
       return `https://${bscBaseURL}`;
+    case "Matic Mainnet":
+      return `https://explorer-mainnet.${maticURL}`;
+    case "Mumbai Testnet":
+      return `https://explorer-mumbai.${maticURL}`;
     default:
       return `https://${activeNetWork.toLowerCase()}.${baseURL}`;
   }
@@ -103,6 +109,7 @@ export const getTransactionHashUrl = (activeNetWork, hash) => {
 export const getAddressUrl = (activeNetWork, hash) => {
   let baseURL = `etherscan.io/address/${hash}`;
   let bscBaseURL = `bscscan.com/address/${hash}`;
+  let maticURL = `maticvigil.com/address/${hash}`;
   switch (activeNetWork) {
     case "Mainnet":
       return `https://${baseURL}`;
@@ -110,6 +117,10 @@ export const getAddressUrl = (activeNetWork, hash) => {
       return `https://testnet.${bscBaseURL}`;
     case "Binance Mainnet":
       return `https://${bscBaseURL}`;
+    case "Matic Mainnet":
+      return `https://explorer-mainnet.${maticURL}`;
+    case "Mumbai Testnet":
+      return `https://explorer-mumbai.${maticURL}`;
     default:
       return `https://${activeNetWork.toLowerCase()}.${baseURL}`;
   }

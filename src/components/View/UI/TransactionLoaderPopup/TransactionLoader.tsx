@@ -91,7 +91,7 @@ const TransactionPopup: FC<Props> = ({
                         )}
                         className="sc-jKJlTe cEMwVc"
                       >
-                        <div className="etherscan-link">View on Etherscan</div>
+                        <div className="etherscan-link">View on Explorer</div>
                       </a>
                     ) : (
                       ""

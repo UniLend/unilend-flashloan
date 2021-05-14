@@ -49,6 +49,8 @@ const MainButton: FC<Props> = ({
     fullUserTokenBalance,
     fullPoolTokenBalance,
     accountBalance,
+    selectedNetworkId,
+    fullPoolUTokenBalance,
     handleWalletConnect,
   } = useWalletConnect();
 
@@ -104,7 +106,8 @@ const MainButton: FC<Props> = ({
         address[0],
         assertAddress,
         receipentAddress,
-        decimal
+        decimal,
+        selectedNetworkId
       );
     }
   };
@@ -118,6 +121,7 @@ const MainButton: FC<Props> = ({
       address.length &&
       walletConnected &&
       (activeCurrency.symbol === "Select Token" ||
+        activeCurrency.symbol === "ETH" ||
         depositAllowanceLoading ||
         donateAllowanceLoading ||
         (actionName === "Deposit" && isDepositApproved === true) ||
@@ -149,11 +153,12 @@ const MainButton: FC<Props> = ({
             airdropLoading ||
             depositAllowanceLoading ||
             donateAllowanceLoading ||
+            (activeTab === "redeem" && fullPoolUTokenBalance === "") ||
             (activeTab === "reward" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            (activeTab === "lend" &&
-              parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
+            // (activeTab === "lend" &&
+            //   parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
             (activeTab === "airdrop" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
@@ -190,6 +195,7 @@ const MainButton: FC<Props> = ({
       ((activeCurrency.symbol !== "Select Token" &&
         actionName === "Deposit" &&
         (isDepositApproved === false || isDepositApproved === undefined)) ||
+        activeCurrency.symbol === "ETH" ||
         (actionName === "Reward" &&
           (donateIsApproved === false || donateIsApproved === undefined))) &&
       (actionName === "Deposit" || actionName === "Reward")
@@ -205,7 +211,12 @@ const MainButton: FC<Props> = ({
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === "Deposit") {
-              depositApprove(currentProvider, address[0], receipentAddress);
+              depositApprove(
+                currentProvider,
+                address[0],
+                receipentAddress,
+                selectedNetworkId
+              );
             } else if (actionName === "Reward") {
               donateApprove(
                 currentProvider,

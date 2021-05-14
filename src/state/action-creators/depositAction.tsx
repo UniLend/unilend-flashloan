@@ -5,6 +5,7 @@ import {
 } from "ethereum/contracts";
 import { FlashloanLBCore, IERC20 } from "ethereum/contracts/FlashloanLB";
 import { web3Service } from "ethereum/web3Service";
+import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DepositAction } from "state/actions/depositA";
@@ -13,9 +14,11 @@ import { DepositAction } from "state/actions/depositA";
 export const checkAllowance = (
   currentProvider: any,
   address: any,
-  receipentAddress: string
+  receipentAddress: string,
+  selectedNetworkId: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    // console.log("activeNetwork",activeNetwork);
     dispatch({
       type: ActionType.DEPOSIT_ALLOWANCE_ACTION,
     });
@@ -23,7 +26,10 @@ export const checkAllowance = (
       let allowance;
       let _IERC20 = await IERC20(currentProvider, receipentAddress);
       _IERC20.methods
-        .allowance(address, UnilendFlashLoanCoreContract(currentProvider))
+        .allowance(
+          address,
+          UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId)
+        )
         .call((error: any, result: any) => {
           if (!error && result) {
             allowance = result;
@@ -45,6 +51,7 @@ export const checkAllowance = (
           }
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
       });
@@ -56,7 +63,8 @@ export const checkAllowance = (
 export const depositApprove = (
   currentProvider: any,
   address: any,
-  receipentAddress: string
+  receipentAddress: string,
+  selectedNetworkId: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
@@ -71,7 +79,7 @@ export const depositApprove = (
       });
       _IERC20.methods
         .approve(
-          UnilendFlashLoanCoreContract(currentProvider),
+          UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId),
           approveTokenMaximumValue
         )
         .send({
@@ -84,6 +92,8 @@ export const depositApprove = (
           });
         })
         .on("error", (err: any, res: any) => {
+          errorHandler.report(err);
+
           dispatch({
             type: ActionType.DEPOSIT_APPROVE_FAILED,
             payload: false,
@@ -92,6 +102,7 @@ export const depositApprove = (
           });
         });
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_APPROVE_FAILED,
       });
@@ -105,7 +116,8 @@ export const handleDeposit = (
   address: string,
   recieptAddress: string,
   isEth: boolean,
-  decimal: any
+  decimal: any,
+  currentNetwork: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
@@ -118,34 +130,75 @@ export const handleDeposit = (
         depositAmount,
         decimal
       );
-      FlashloanLBCore(currentProvider)
-        .methods.deposit(recieptAddress, fullAmount)
-        .send({
-          from: address,
-          value: 0,
-        })
-        .on("receipt", (res: any) => {
-          dispatch({
-            type: ActionType.DEPOSIT_SUCCESS,
-            payload: true,
+      if (isEth) {
+        console.log("ISETH", isEth);
+
+        FlashloanLBCore(currentProvider, currentNetwork)
+          .methods.deposit(recieptAddress, fullAmount)
+          .send({
+            from: address,
+            value: fullAmount,
+          })
+          .on("receipt", (res: any) => {
+            dispatch({
+              type: ActionType.DEPOSIT_SUCCESS,
+              payload: true,
+            });
+          })
+          .on("transactionHash", (hash: any) => {
+            dispatch({
+              type: ActionType.DEPOSIT_TRANSACTION_HASH,
+              payload: hash,
+            });
+          })
+          .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
+            console.log(err);
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              message:
+                res === undefined
+                  ? "Transaction Rejected"
+                  : "Transaction Failed",
+            });
           });
-        })
-        .on("transactionHash", (hash: any) => {
-          dispatch({
-            type: ActionType.DEPOSIT_TRANSACTION_HASH,
-            payload: hash,
+      } else {
+        FlashloanLBCore(currentProvider, currentNetwork)
+          .methods.deposit(recieptAddress, fullAmount)
+          .send({
+            from: address,
+            value: 0,
+          })
+          .on("receipt", (res: any) => {
+            dispatch({
+              type: ActionType.DEPOSIT_SUCCESS,
+              payload: true,
+            });
+          })
+          .on("transactionHash", (hash: any) => {
+            dispatch({
+              type: ActionType.DEPOSIT_TRANSACTION_HASH,
+              payload: hash,
+            });
+          })
+          .on("error", (err: any, res: any) => {
+            errorHandler.report(err);
+
+            console.log(err);
+            dispatch({
+              type: ActionType.DEPOSIT_FAILED,
+              payload: false,
+              message:
+                res === undefined
+                  ? "Transaction Rejected"
+                  : "Transaction Failed",
+            });
           });
-        })
-        .on("error", (err: any, res: any) => {
-          console.log(err);
-          dispatch({
-            type: ActionType.DEPOSIT_FAILED,
-            payload: false,
-            message:
-              res === undefined ? "Transaction Rejected" : "Transaction Failed",
-          });
-        });
+      }
     } catch (e) {
+      errorHandler.report(e);
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

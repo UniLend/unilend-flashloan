@@ -11,7 +11,8 @@ export const handleAirdrop = (
   account: any,
   reciepentAddress: string,
   isEth: boolean,
-  decimal: any
+  decimal: any,
+  selectedNetworkId: any
 ) => {
   return async (dispatch: Dispatch<AirdropAction>) => {
     dispatch({
@@ -26,7 +27,7 @@ export const handleAirdrop = (
 
     await IERC20(currentProvider, reciepentAddress)
       .methods.transfer(
-        UnilendFlashLoanCoreContract(currentProvider),
+        UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId),
         fullAmount
       )
       .send({

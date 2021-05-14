@@ -145,7 +145,8 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           accounts[0],
           receipentAddress,
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          selectedNetworkId
         );
       }
       if (activeCurrency.symbol !== "Select Token")
@@ -154,7 +155,8 @@ const CommonCard: FC<Props> = (props) => {
           accounts[0],
           assertAddress,
           receipentAddress,
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          selectedNetworkId
         );
       if (activeCurrency.symbol !== "Select Token")
         getUserTokenBalance(
@@ -166,7 +168,11 @@ const CommonCard: FC<Props> = (props) => {
         );
     }
     if (activeCurrency.symbol !== "Select Token")
-      getTotalDepositedTokens(currentProvider, activeCurrency.address);
+      getTotalDepositedTokens(
+        currentProvider,
+        activeCurrency.address,
+        selectedNetworkId
+      );
     if (donateContractAddress !== "") {
       getTotalTokensInRewardPool(
         currentProvider,
@@ -266,7 +272,7 @@ const CommonCard: FC<Props> = (props) => {
   ]);
 
   useEffect(() => {
-    getDonationContract(currentProvider);
+    getDonationContract(currentProvider, selectedNetworkId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accounts,
@@ -398,7 +404,7 @@ const CommonCard: FC<Props> = (props) => {
         currentProvider,
         accounts[0],
         receipentAddress,
-        activeNetWork
+        selectedNetworkId
       );
     } else if (
       accounts.length &&
@@ -429,7 +435,8 @@ const CommonCard: FC<Props> = (props) => {
       networkId,
       currentProvider,
       accounts,
-      accountBalance
+      accountBalance,
+      selectedNetworkId
     );
     setModalInfo({
       ...modalInfo,
@@ -446,7 +453,8 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           receipentAddress,
           activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          selectedNetworkId
         );
       }
       handleTokenBalance();
@@ -458,6 +466,7 @@ const CommonCard: FC<Props> = (props) => {
     activeTab,
     activeCurrency,
     receipentAddress,
+    selectedNetworkId,
     assertAddress,
     donateContractAddress,
     totalDepositedTokens,
@@ -545,7 +554,8 @@ const CommonCard: FC<Props> = (props) => {
           accounts[0],
           receipentAddress,
           activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
+          activeCurrency.decimals,
+          selectedNetworkId
         );
         handleTransModal(true);
         break;
@@ -568,7 +578,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           receipentAddress,
-          activeCurrency.symbol === "ETH",
+          activeCurrency.symbol === "MATIC",
           activeCurrency.decimals
         );
         handleTransModal(true);
@@ -580,8 +590,9 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           receipentAddress,
-          activeCurrency.symbol === "ETH",
-          activeCurrency.decimals
+          activeCurrency.symbol === "MATIC",
+          activeCurrency.decimals,
+          selectedNetworkId
         );
         handleTransModal(true);
         break;
@@ -720,7 +731,9 @@ const CommonCard: FC<Props> = (props) => {
     <>
       {accounts.length &&
       activeNetWork !== "Mainnet" &&
-      activeNetWork !== "Ropsten" ? (
+      activeNetWork !== "Ropsten" &&
+      selectedNetworkId === 3 &&
+      activeNetWork !== "Matic Mainnet" ? (
         <div className="network-warning">
           {`You are currently connected to the ${activeNetWork} which is not
           supported.`}

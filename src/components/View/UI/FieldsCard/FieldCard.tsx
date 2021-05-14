@@ -96,14 +96,14 @@ const FieldCard: FC<Props> = (props) => {
                     <img
                       className="curr-image"
                       src={props.selectedLogo}
-                      alt="Curr"
+                      alt=""
                     />
                   )}
                   <p className="curr-text">{props.selectValue}</p>
                   <img
                     style={{ paddingLeft: "4px", width: "12px" }}
                     src={dropdown}
-                    alt="Curr"
+                    alt=""
                   />
                 </button>
               </div>

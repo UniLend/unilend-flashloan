@@ -165,23 +165,21 @@ async function handleWalletConnect(
               (window as any).ethereum.selectedAddress
             ) {
               const provider = (window as any).ethereum;
-              const chainId = 97;
+              const chainId = 56;
               try {
                 await provider.request({
                   method: "wallet_addEthereumChain",
                   params: [
                     {
                       chainId: `0x${chainId.toString(16)}`,
-                      chainName: "Smart Chain - Testnet",
+                      chainName: "Smart Chain",
                       nativeCurrency: {
                         name: "BNB",
                         symbol: "bnb",
                         decimals: 18,
                       },
-                      rpcUrls: [
-                        "https://data-seed-prebsc-1-s1.binance.org:8545/",
-                      ],
-                      blockExplorerUrls: ["https://testnet.bscscan.com/"],
+                      rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                      blockExplorerUrls: ["https://bscscan.com/"],
                     },
                   ],
                 });
@@ -214,23 +212,21 @@ async function handleWalletConnect(
           try {
             if ((window as any).ethereum) {
               const provider = (window as any).ethereum;
-              const chainId = 80001;
+              const chainId = 137;
               try {
                 await provider.request({
                   method: "wallet_addEthereumChain",
                   params: [
                     {
                       chainId: `0x${chainId.toString(16)}`,
-                      chainName: "Mumbai Testnet",
+                      chainName: "Matic Mainnet",
                       nativeCurrency: {
                         name: "Matic",
                         symbol: "matic",
                         decimals: 18,
                       },
-                      rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
-                      blockExplorerUrls: [
-                        "https://mumbai-explorer.matic.today",
-                      ],
+                      rpcUrls: ["https://rpc-mainnet.maticvigil.com/"],
+                      blockExplorerUrls: ["https://explorer.matic.network/"],
                     },
                   ],
                 });
@@ -270,23 +266,21 @@ async function handleWalletConnect(
         try {
           if ((window as any).ethereum) {
             const provider = (window as any).ethereum;
-            const chainId = 97;
+            const chainId = 56;
             try {
               await provider.request({
                 method: "wallet_addEthereumChain",
                 params: [
                   {
                     chainId: `0x${chainId.toString(16)}`,
-                    chainName: "Smart Chain - Testnet",
+                    chainName: "Smart Chain",
                     nativeCurrency: {
                       name: "BNB",
                       symbol: "bnb",
                       decimals: 18,
                     },
-                    rpcUrls: [
-                      "https://data-seed-prebsc-1-s1.binance.org:8545/",
-                    ],
-                    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+                    rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                    blockExplorerUrls: ["https://bscscan.com/"],
                   },
                 ],
               });
@@ -570,10 +564,11 @@ export const getPooluTokenBalance = (
   currentProvider: any,
   accounts: string,
   reciepentAddress: string,
-  decimal: any
+  decimal: any,
+  currentNetwork: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    FlashloanLBCore(currentProvider)
+    FlashloanLBCore(currentProvider, currentNetwork)
       .methods.getPools([reciepentAddress])
       .call((err: any, res: any) => {
         if (!err && res) {
@@ -611,7 +606,8 @@ export const getPoolTokenBalance = (
   accounts: string,
   assertAddress: any,
   reciepentAddress: any,
-  decimal: any
+  decimal: any,
+  currentNetwork: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
@@ -619,7 +615,7 @@ export const getPoolTokenBalance = (
 
       // FlashLoanPool(currentProvider, assertAddress)
       //   .methods.balanceOfUnderlying(accounts)
-      FlashloanLBCore(currentProvider)
+      FlashloanLBCore(currentProvider, currentNetwork)
         .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
         .call((e: any, r: any) => {
           if (!e) {
@@ -756,12 +752,15 @@ export const getCurrentAPY = (
 
 export const getTotalDepositedTokens = (
   currentProvider: any,
-  recipientAddress: any
+  recipientAddress: any,
+  selectedNetworkId: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
       IERC20(currentProvider, recipientAddress)
-        .methods.balanceOf(UnilendFlashLoanCoreContract(currentProvider))
+        .methods.balanceOf(
+          UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId)
+        )
         .call((err: any, res: any) => {
           if (!err) {
             dispatch({
@@ -854,13 +853,16 @@ export const getPoolLiquidity = (
   currentProvider: any,
   reciepentAddress: any,
   isEth: boolean,
-  decimal: any
+  decimal: any,
+  currentNetwork: any
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
       if (isEth) {
         web3Service
-          .getBalance(UnilendFlashLoanCoreContract(currentProvider))
+          .getBalance(
+            UnilendFlashLoanCoreContract(currentProvider, currentNetwork)
+          )
           .then((res: any) => {
             let amount = web3Service.getWei(res, "ether");
             dispatch({
@@ -876,7 +878,7 @@ export const getPoolLiquidity = (
           });
       } else {
         let timestamp = setTimestamp();
-        FlashloanLBCore(currentProvider)
+        FlashloanLBCore(currentProvider, currentNetwork)
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
             if (!e) {

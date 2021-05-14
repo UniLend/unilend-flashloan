@@ -8,10 +8,10 @@ import ERC20ABI from "../build/ERC20.json";
 import UFlashLoanPool from "../build/UFlashLoanPool.json";
 import BalanceABI from "../build/balance-abi.json";
 import { bscWeb3 } from "ethereum/bscWeb3";
-export const FlashloanLBCore = (currentProvider: any) => {
+export const FlashloanLBCore = (currentProvider: any, networkId?: any) => {
   return new currentProvider.eth.Contract(
     FlashloanABI.abi,
-    UnilendFlashLoanCoreContract(currentProvider)
+    UnilendFlashLoanCoreContract(currentProvider, networkId)
   );
 };
 export const UnilendFDonation = (

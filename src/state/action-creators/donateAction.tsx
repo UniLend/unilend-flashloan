@@ -9,10 +9,13 @@ import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { DonateAction } from "state/actions/donateA";
 
-export const getDonationContract = (currentProvider: any) => {
+export const getDonationContract = (
+  currentProvider: any,
+  selectedNetwork: any
+) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     try {
-      FlashloanLBCore(currentProvider)
+      FlashloanLBCore(currentProvider, selectedNetwork)
         .methods.donationAddress()
         .call((error: any, result: any) => {
           if (!error && result) {

@@ -82,7 +82,7 @@ const AlertToast: FC<Props> = ({
                   rel="noopener noreferrer"
                   href={getTransactionHashUrl(activeNetWork, getActiveHash())}
                 >
-                  <div className="etherscan-link">View on Etherscan</div>
+                  <div className="etherscan-link">View on Explorer</div>
                 </a>
               </div>
               {/* {headerTitle ? 'Deposit Failed':''} */}
@@ -109,7 +109,7 @@ const AlertToast: FC<Props> = ({
                   rel="noopener noreferrer"
                   href={getTransactionHashUrl(activeNetWork, getActiveHash())}
                 >
-                  <div className="etherscan-link">View on Etherscan</div>
+                  <div className="etherscan-link">View on Explorer</div>
                 </a>
               </div>
             </div>

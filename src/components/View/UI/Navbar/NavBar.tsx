@@ -40,7 +40,7 @@ const NavBar: React.FC<Props> = (props) => {
   const networkInfo = NETWORKS.filter(
     (item) => item.id === selectedNetworkId
   )[0];
-  const { walletConnected, accounts, loading, accountBalance } =
+  const { walletConnected, accounts, loading, accountBalance, networkId } =
     useWalletConnect();
 
   useEffect(() => {
@@ -137,14 +137,17 @@ const NavBar: React.FC<Props> = (props) => {
               logo={networkInfo.logo}
               label={networkInfo.label}
               onClick={() => {
-                setSwitchNetworkModal(true);
+                // setSwitchNetworkModal(true);
               }}
             />
-            {walletConnected && accounts.length && accountBalance ? (
+            {walletConnected &&
+            accounts.length &&
+            accountBalance &&
+            activeNetWork ? (
               <AccountBalance
                 theme={theme}
                 accountBalance={accountBalance}
-                tokenType={selectedNetworkId}
+                tokenType={networkId}
                 className="acc-balance-header"
               />
             ) : (

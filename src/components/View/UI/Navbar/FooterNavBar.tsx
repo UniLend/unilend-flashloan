@@ -22,14 +22,11 @@ interface Props extends RouteComponentProps<any> {
 }
 
 const FooterNavBar: React.FC<Props> = (props) => {
-  const {
-    setWalletModalInfo,
-    setWalletStatusInfo,
-    setSwitchNetworkModal,
-  } = props;
+  const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } =
+    props;
 
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId, activeNetWork } = useTypedSelector(
+  const { selectedNetworkId, activeNetWork, networkId } = useTypedSelector(
     (state) => state.connectWallet
   );
   const networkInfo = NETWORKS.filter(
@@ -41,12 +38,8 @@ const FooterNavBar: React.FC<Props> = (props) => {
     themeChange(theme);
   };
 
-  const {
-    walletConnected,
-    accounts,
-    loading,
-    accountBalance,
-  } = useWalletConnect();
+  const { walletConnected, accounts, loading, accountBalance } =
+    useWalletConnect();
 
   return (
     <nav
@@ -67,14 +60,14 @@ const FooterNavBar: React.FC<Props> = (props) => {
           logo={networkInfo.logo}
           label={networkInfo.label}
           onClick={() => {
-            setSwitchNetworkModal(true);
+            // setSwitchNetworkModal(true);
           }}
           className="network-info-footer"
         />
         {walletConnected && accounts.length && accountBalance ? (
           <AccountBalance
             theme={theme}
-            tokenType={selectedNetworkId}
+            tokenType={networkId}
             accountBalance={accountBalance}
             className="acc-balance-footer"
           />

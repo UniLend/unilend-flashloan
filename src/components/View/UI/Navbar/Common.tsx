@@ -11,12 +11,12 @@ import {
   AddressTabProps,
 } from "../../../Helpers/Types";
 const activeNetworkBaseCurrency = (selectedNetworkId: any) => {
-  if (selectedNetworkId === 1) {
-    return "ETH";
-  } else if (selectedNetworkId === 2) {
+  if (selectedNetworkId === 137 || selectedNetworkId === 80001) {
+    return "MATIC";
+  } else if (selectedNetworkId === 56 || selectedNetworkId === 97) {
     return "BNB";
   } else if (selectedNetworkId === 3) {
-    return "MATIC";
+    return "ETH";
   }
 };
 export const ThemeButton = ({

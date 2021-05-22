@@ -36,6 +36,8 @@ function App() {
     useWalletConnect();
 
   useEffect(() => {
+    dotEnv.config();
+
     setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -48,7 +50,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    dotEnv.config();
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
     }

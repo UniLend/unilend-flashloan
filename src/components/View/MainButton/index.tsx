@@ -157,8 +157,8 @@ const MainButton: FC<Props> = ({
             (activeTab === "reward" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            // (activeTab === "lend" &&
-            //   parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
+            (activeTab === "lend" &&
+              parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
             (activeTab === "airdrop" &&
               (!isChecked ||
                 parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||

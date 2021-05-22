@@ -937,14 +937,6 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
       type: ActionType.CONNECT_WALLET,
     });
     try {
-      // let accounts = await (window as any).BinanceChain.request({
-      //   method: "eth_accounts",
-      // });
-      // dispatch({
-      //   type: ActionType.CONNECT_WALLET_SUCCESS,
-      //   payload: [...accounts],
-      // });
-      // console.log(accounts);
       if (wallet) {
         let currentProvider: any;
         let provider: any;

@@ -15,7 +15,7 @@ const activeNetworkBaseCurrency = (selectedNetworkId: any) => {
     return "MATIC";
   } else if (selectedNetworkId === 56 || selectedNetworkId === 97) {
     return "BNB";
-  } else if (selectedNetworkId === 3) {
+  } else {
     return "ETH";
   }
 };

@@ -8,8 +8,8 @@ import { CoinbaseProvider, CoinbaseWeb3 } from "ethereum/coinbaseWeb3";
 import { fm, formaticWeb3 } from "ethereum/formatic";
 // import { portis, portisWeb3 } from "ethereum/portis";
 import web3 from "ethereum/web3";
-import { bscWeb3 } from "ethereum/bscWeb3";
-import { BscConnector } from "@binance-chain/bsc-connector";
+// import { bscWeb3 } from "ethereum/bscWeb3";
+// import { BscConnector } from "@binance-chain/bsc-connector";
 import {
   FlashloanLBCore,
   IERC20,

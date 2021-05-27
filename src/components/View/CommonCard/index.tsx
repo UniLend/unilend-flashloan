@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useState } from "react";
 import useWalletConnect from "hooks/useWalletConnect";
 import ContentCard from "../UI/ContentCard/ContentCard";
@@ -245,7 +246,6 @@ const CommonCard: FC<Props> = (props) => {
         handleReciepent(filteredToken[0].address);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList]);
   useEffect(() => {
     if (
@@ -271,7 +271,6 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accounts,
     activeTab,
@@ -311,7 +310,6 @@ const CommonCard: FC<Props> = (props) => {
     return () => {
       clearInterval(interval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     depositErrorMessage,
     donateErrorMessage,
@@ -344,8 +342,6 @@ const CommonCard: FC<Props> = (props) => {
     return () => {
       clearInterval(interval);
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isDepositSuccess,
     donateSuccess,
@@ -364,7 +360,6 @@ const CommonCard: FC<Props> = (props) => {
         totalTokensInRewardPool
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeCurrency.decimals,
     currentProvider,
@@ -377,8 +372,6 @@ const CommonCard: FC<Props> = (props) => {
     if (walletConnected) {
       networkSwitchHandling(currentProvider);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     tokenList,
     currentProvider,
@@ -389,7 +382,6 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNetworkId]);
 
   useEffect(() => {
@@ -416,7 +408,6 @@ const CommonCard: FC<Props> = (props) => {
         receipentAddress
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accounts,
     donateContractAddress,
@@ -439,7 +430,6 @@ const CommonCard: FC<Props> = (props) => {
     setModalInfo({
       ...modalInfo,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [networkId, activeNetWork, currentProvider, accounts, accountBalance]);
 
   useEffect(() => {
@@ -458,7 +448,6 @@ const CommonCard: FC<Props> = (props) => {
       handleTokenBalance();
     }, 5000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     accounts,
     activeTab,
@@ -486,7 +475,7 @@ const CommonCard: FC<Props> = (props) => {
   //     handleTokenBalance();
   //   }, 5000);
   //   return () => clearInterval(interval);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //
   // }, [
   //   accounts,
   //   activeTab,
@@ -501,7 +490,6 @@ const CommonCard: FC<Props> = (props) => {
     if (walletConnected && activeCurrency.symbol !== "Select Token") {
       getPool(activeCurrency.address, currentProvider, accounts[0]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletConnected, accounts, currentProvider, activeCurrency]);
   useEffect(() => {
     setAmount("");
@@ -728,8 +716,11 @@ const CommonCard: FC<Props> = (props) => {
   return (
     <>
       {accounts.length &&
-      activeNetWork !== "Mainnet" &&
-      activeNetWork !== "Ropsten" ? (
+      ((selectedNetworkId === 1 &&
+        activeNetWork !== "Mainnet" &&
+        activeNetWork !== "Ropsten") ||
+        (selectedNetworkId === 3 && activeNetWork !== "Matic Mainnet") ||
+        (selectedNetworkId === 2 && activeNetWork !== "Binance Mainnet")) ? (
         <div className="network-warning">
           {`You are currently connected to the ${activeNetWork} which is not
           supported.`}

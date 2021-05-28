@@ -89,7 +89,7 @@ const FieldCard: FC<Props> = (props) => {
                     </button>
                   )}
                 <button
-                  className="btn btn-curr ml-4"
+                  className="btn btn-curr ml-2"
                   onClick={props.handleModelOpen}
                 >
                   {activeCurrency.symbol !== "Select Token" && (

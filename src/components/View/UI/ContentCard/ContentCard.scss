@@ -1,6 +1,6 @@
 .content-card {
   width: 35%;
-  max-width: 412px;
+  max-width: 430px;
   height: auto;
   margin: auto;
   transform: translate(0px, 70px);
@@ -36,13 +36,13 @@
 
 @media (min-width: 769px) {
   .content-card {
-    min-width: 400px;
+    min-width: 430px;
   }
 }
 
 @media (max-width: 768px) {
   .content-card {
-    width: 50%;
+    width: 70%;
     // min-width: 350px;
     margin-bottom: 130px;
 

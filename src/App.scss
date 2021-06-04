@@ -449,10 +449,13 @@ input[type="number"] {
   }
 }
 
-@media only screen and (max-width: 720px) {
+@media only screen and (max-width: 770px) {
   .active-network-footer,
   .network-info-footer {
     display: none !important;
+  }
+  .btn-max {
+    margin: 5px 0;
   }
 }
 
@@ -461,6 +464,9 @@ input[type="number"] {
   .active-network-footer,
   .network-info-footer {
     display: none !important;
+  }
+  .btn-max {
+    margin: 5px 0;
   }
 }
 

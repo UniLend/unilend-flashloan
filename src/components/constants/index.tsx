@@ -1,7 +1,7 @@
 export const NETWORKS: Array<networks> = [
   { id: 1, label: "Ethereum", logo: "ethereum" },
   // { id: 2, label: "Binance", logo: "binance" },
-  { id: 3, label: "Matic", logo: "matic" },
+  { id: 3, label: "Polygon", logo: "matic" },
 ];
 export interface networks {
   id: number;

@@ -663,6 +663,7 @@ const CommonCard: FC<Props> = (props) => {
       </span>
     </div>
   );
+
   const YourLiquidity = () => (
     <div className="price-list">
       <p>Your Liquidity</p>
@@ -681,6 +682,7 @@ const CommonCard: FC<Props> = (props) => {
       </span>
     </div>
   );
+
   const RewardAvailable = () => (
     <div className="price-list">
       <p>Reward Available</p>
@@ -699,6 +701,7 @@ const CommonCard: FC<Props> = (props) => {
       </span>
     </div>
   );
+
   const RewardRate = () => (
     <div className="price-list">
       <p>Reward Rate</p>
@@ -713,9 +716,29 @@ const CommonCard: FC<Props> = (props) => {
       }/day`}</span>
     </div>
   );
+
+  const networkMessage = () => {
+    if (accounts.length) {
+      if (
+        selectedNetworkId === 1 &&
+        activeNetWork !== "Mainnet" &&
+        activeNetWork !== "Ropsten"
+      ) {
+        return `Please switch your Network to Ethereum.`;
+      } else if (selectedNetworkId === 3 && activeNetWork !== "Matic Mainnet") {
+        return `Please switch your Network to Polygen`;
+      } else if (
+        selectedNetworkId === 2 &&
+        activeNetWork !== "Binance Mainnet"
+      ) {
+        return `Please switch your Network to Binance`;
+      }
+    }
+  };
+
   return (
     <>
-      {accounts.length &&
+      {/* {accounts.length &&
       ((selectedNetworkId === 1 &&
         activeNetWork !== "Mainnet" &&
         activeNetWork !== "Ropsten") ||
@@ -727,7 +750,9 @@ const CommonCard: FC<Props> = (props) => {
         </div>
       ) : (
         ""
-      )}
+      )} */}
+      <div className="network-warning">{networkMessage()}</div>
+
       {activeTab && (
         <ContentCard title={`${capitalize(activeTab)}`}>
           <div className="swap-root">

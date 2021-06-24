@@ -28,34 +28,7 @@ export const fetchTokenList = (
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
-                  let tokens = [
-                    // {
-                    //   address: "0xaf9A280DA32D9CaDe09237FBf12F0BdDa05D489a",
-                    //   chainId: 137,
-                    //   decimals: 18,
-                    //   logoURI:
-                    //     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
-                    //   name: "Unilend Finance",
-                    //   symbol: "UFT",
-                    // },
-                    // {
-                    //   address: "0x0000000000000000000000000000000000001010",
-                    //   chainId: 137,
-                    //   decimals: 18,
-                    //   logoURI: "",
-                    //   name: "Matic",
-                    //   symbol: "MATIC",
-                    // },
-                    // {
-                    //   address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-                    //   chainId: 3,
-                    //   decimals: 18,
-                    //   logoURI: "",
-                    //   name: "Eth",
-                    //   symbol: "ETH",
-                    // },
-                    ...res.data.tokens,
-                  ];
+                  let tokens = [...res.data.tokens];
                   if (res.data) {
                     const tokenList: any = tokens.filter((item: any) => {
                       // eslint-disable-next-line eqeqeq
@@ -102,36 +75,7 @@ export const fetchTokenList = (
                               } else {
                                 dispatch({
                                   type: ActionType.GET_TOKEN_LIST,
-                                  payload: [
-                                    // {
-                                    //   address:
-                                    //     "0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1",
-                                    //   chainId: 137,
-                                    //   decimals: 18,
-                                    //   logoURI:
-                                    //     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
-                                    //   name: "Unilend Finance",
-                                    //   symbol: "UFT",
-                                    // },
-                                    // {
-                                    //   address:
-                                    //     "0x0000000000000000000000000000000000001010",
-                                    //   chainId: 137,
-                                    //   decimals: 18,
-                                    //   logoURI: "",
-                                    //   name: "Matic",
-                                    //   symbol: "MATIC",
-                                    // },
-                                    // {
-                                    //   address:
-                                    //     "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-                                    //   chainId: 3,
-                                    //   decimals: 18,
-                                    //   logoURI: "",
-                                    //   name: "Eth",
-                                    //   symbol: "ETH",
-                                    // },
-                                  ],
+                                  payload: [],
                                 });
                               }
                             });

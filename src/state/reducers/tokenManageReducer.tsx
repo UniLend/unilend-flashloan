@@ -34,29 +34,18 @@ const initialState = {
     {
       id: 1,
       name: "Unilend Token List",
-      icon:
-        "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
+      icon: "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
       token: 1,
       fetchURI: "https://unilend.finance/list.json",
       isEnabled: true,
     },
     {
       id: 2,
-      name: "Gemini Token List",
-      icon: "https://gemini.com/static/images/loader.png",
-      token: 21,
-      fetchURI: "https://www.gemini.com/uniswap/manifest.json",
+      name: "CoinGecko",
+      icon: "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
+      token: 4480,
+      fetchURI: "https://tokens.coingecko.com/uniswap/all.json",
       isEnabled: true,
-    },
-    {
-      id: 3,
-      name: "CMC DeFi",
-      icon:
-        "https://cloudflare-ipfs.com/ipfs/QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx/",
-      token: 144,
-      fetchURI:
-        "https://wispy-bird-88a7.uniswap.workers.dev/?url=http://defi.cmc.eth.link",
-      isEnabled: false,
     },
   ],
 };

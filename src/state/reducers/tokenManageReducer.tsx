@@ -46,7 +46,7 @@ const initialState = {
       icon: "https://gemini.com/static/images/loader.png",
       token: 21,
       fetchURI: "https://www.gemini.com/uniswap/manifest.json",
-      isEnabled: false,
+      isEnabled: true,
     },
     {
       id: 3,

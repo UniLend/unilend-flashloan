@@ -45,7 +45,7 @@ const initialState = {
       icon: "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
       token: 4480,
       fetchURI: "https://tokens.coingecko.com/uniswap/all.json",
-      isEnabled: true,
+      isEnabled: false,
     },
   ],
 };

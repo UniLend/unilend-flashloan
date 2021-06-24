@@ -134,18 +134,18 @@ const CurrencySelectModel: FC<Props> = ({
       <p className="no-data">No Data to Show</p>
     </>
   );
-  // const ManageButton = (
-  //   <div className="manage" onClick={() => setOpenManage(!openManage)}>
-  //     <span>
-  //       <i className="fa fa-pencil-square-o cursor-pointer" />
-  //     </span>
-  //     <span className="ml-1 cursor-pointer">
-  //       <img src={EditIcon} alt="Edit" width="15" />
-  //       Manage
-  //     </span>
-  //   </div>
-  // );
-  // const ManageBodyContent = <div></div>;
+  const ManageButton = (
+    <div className="manage" onClick={() => setOpenManage(!openManage)}>
+      <span>
+        <i className="fa fa-pencil-square-o cursor-pointer" />
+      </span>
+      <span className="ml-1 cursor-pointer">
+        {/* <img src={EditIcon} alt="Edit" width="15" /> */}
+        Manage
+      </span>
+    </div>
+  );
+  const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
       {tokenList.isRequesting ? (
@@ -221,7 +221,7 @@ const CurrencySelectModel: FC<Props> = ({
         <Modal.Body className={openManage && "manage"}>
           {openManage ? <Manage /> : MainBodyContent}
         </Modal.Body>
-        {/* {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>} */}
+        {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>}
       </Modal>
     </>
   );

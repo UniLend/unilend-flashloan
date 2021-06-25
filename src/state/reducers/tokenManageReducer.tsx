@@ -14,11 +14,13 @@ interface TokenManageState {
     isRequesting: boolean;
     payload: Array<object> | [];
   };
+  tokenByUrl: any;
   tokenGroupList: any;
   searchedToken: {
     payload: any;
     message: string | null;
   };
+  customTokens: any;
 }
 
 const initialState = {
@@ -30,6 +32,13 @@ const initialState = {
     isRequesting: false,
     payload: [],
   },
+  tokenByUrl: [
+    {
+      url: "https://unilend.finance/list.json",
+      isEnabled: true,
+    },
+    { url: "https://tokens.coingecko.com/uniswap/all.json", isEnabled: false },
+  ],
   tokenGroupList: [
     {
       id: 1,
@@ -39,15 +48,8 @@ const initialState = {
       fetchURI: "https://unilend.finance/list.json",
       isEnabled: true,
     },
-    {
-      id: 2,
-      name: "CoinGecko",
-      icon: "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
-      token: 4480,
-      fetchURI: "https://tokens.coingecko.com/uniswap/all.json",
-      isEnabled: true,
-    },
   ],
+  customTokens: [],
 };
 
 const TokenManageReducer = (
@@ -65,10 +67,34 @@ const TokenManageReducer = (
       };
       break;
     }
+    case ActionType.SET_CUSTOM_TOKENS: {
+      let updatedState;
+      if (action.calc === "add") {
+        updatedState = [...state.customTokens, action.payload];
+        localStorage.setItem("customTokens", JSON.stringify(updatedState));
+      } else if (action.calc === "delete") {
+        let _tokens = [...state.customTokens];
+        updatedState = _tokens.filter(
+          (item) => item.address !== action.payload
+        );
+      }
+      state = {
+        ...state,
+        customTokens: updatedState,
+      };
+      break;
+    }
     case ActionType.SET_TOKEN_PERSIST: {
       state = {
         ...state,
         tokenGroupList: action.payload,
+      };
+      break;
+    }
+    case ActionType.SET_CUSTOM_TOKEN_PERSIST: {
+      state = {
+        ...state,
+        customTokens: action.payload,
       };
       break;
     }
@@ -77,7 +103,9 @@ const TokenManageReducer = (
         ...state,
         tokenList: {
           isRequesting: false,
-          payload: action.payload ? action.payload : [],
+          payload: action.payload
+            ? [...state.customTokens, ...action.payload]
+            : [...state.customTokens],
         },
       };
       break;

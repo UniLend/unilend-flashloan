@@ -4,14 +4,12 @@ import "./SearchTokenCard.scss";
 import tickImg from "assets/tick.svg";
 import cantFind from "assets/cantFind.svg";
 interface Props {
-  name: string;
-  symbol: string;
-  logo: string;
+  token: any;
   handleImport: () => void;
 }
 
-const SearchTokenCard: React.FC<Props> = (props) => {
-  const { name, symbol, logo, handleImport } = props;
+const SearchTokenCard: React.FC<Props> = ({ token, handleImport }) => {
+  const { name, symbol, logo } = token;
   return (
     <Card className={`search-token-card`}>
       <Row className="search-token-row m-0">
@@ -28,9 +26,9 @@ const SearchTokenCard: React.FC<Props> = (props) => {
           <Row className="m-0">
             <Col sm={12} md={12} lg={12} className="p-0">
               <span className="symbol">{symbol}</span>
-              <span className="name">{`${name} Stablecoin`}</span>
+              <span className="name">{`${name}`}</span>
             </Col>
-            <Col sm={12} md={12} lg={12} className="p-0">
+            {/* <Col sm={12} md={12} lg={12} className="p-0">
               <span className="via p-0">via Compound</span>
               <span>
                 <img
@@ -39,7 +37,7 @@ const SearchTokenCard: React.FC<Props> = (props) => {
                   className="detail-img"
                 />
               </span>
-            </Col>
+            </Col> */}
           </Row>
         </Col>
         <Col className="status p-0" sm={3} md={3} lg={3}>

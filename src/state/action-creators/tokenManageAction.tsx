@@ -6,6 +6,7 @@ import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
+import { v4 as uuidv4 } from "uuid";
 
 export const handleTokenListToggle = (id: number) => {
   return async (dispatch: Dispatch<TokenAction>) => {
@@ -131,6 +132,7 @@ export const fetchTokenList = (
                 .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
                   let tokens = [...res.data.tokens];
+
                   if (res.data) {
                     const tokenList: any = tokens.filter((item: any) => {
                       // eslint-disable-next-line eqeqeq
@@ -155,6 +157,7 @@ export const fetchTokenList = (
                               timestamp
                             )
                             .call((error: any, result: any) => {
+                              console.log(error, result);
                               if (!error && result) {
                                 tokenList.forEach((item: any, i: number) => {
                                   let fullAmount = toFixed(
@@ -168,11 +171,15 @@ export const fetchTokenList = (
                                   item["balance"] = fullAmount;
                                   item["underlyingBalance"] = underlyingBalance;
                                   totalTokenList.push(item);
-                                  dispatch({
-                                    type: ActionType.GET_TOKEN_LIST,
-                                    payload: totalTokenList,
-                                  });
-                                  return item;
+                                  console.log(totalTokenList);
+                                  if (i === tokenList.length - 1) {
+                                    console.log("The end", totalTokenList);
+                                    dispatch({
+                                      type: ActionType.GET_TOKEN_LIST,
+                                      payload: totalTokenList,
+                                    });
+                                  }
+                                  return totalTokenList;
                                 });
                               } else {
                                 dispatch({
@@ -182,14 +189,14 @@ export const fetchTokenList = (
                               }
                             });
                         } else {
-                          tokenList.forEach((item: any, i: number) => {
-                            item["balance"] = "";
-                            totalTokenList.push(item);
-
-                            dispatch({
-                              type: ActionType.GET_TOKEN_LIST,
-                              payload: totalTokenList,
-                            });
+                          console.log("else");
+                          // tokenList.forEach((item: any, i: number) => {
+                          //   item["balance"] = "";
+                          //   totalTokenList.push(item);
+                          // });
+                          dispatch({
+                            type: ActionType.GET_TOKEN_LIST,
+                            payload: tokenList,
                           });
                         }
                       } catch (e) {
@@ -197,13 +204,13 @@ export const fetchTokenList = (
 
                         dispatch({
                           type: ActionType.GET_TOKEN_LIST,
-                          payload: [...tokenList],
+                          payload: tokenList,
                         });
                       }
-                      dispatch({
-                        type: ActionType.GET_TOKEN_LIST,
-                        payload: totalTokenList,
-                      });
+                      // dispatch({
+                      //   type: ActionType.GET_TOKEN_LIST,
+                      //   payload: totalTokenList,
+                      // });
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
                       dispatch({
@@ -234,16 +241,73 @@ export const fetchTokenList = (
   };
 };
 
-export const handleTokenPersist = () => {
+export const handleTokenPersist = (token: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
+    let _allToken: any = [];
+
     if (localStorage.getItem("tokenGroup")) {
       let tg: any = localStorage.getItem("tokenGroup");
       let parsed = JSON.parse(tg);
-      console.log(parsed);
+      console.log("parsed", parsed);
       dispatch({
         type: ActionType.SET_TOKEN_PERSIST,
         payload: parsed,
       });
+    } else {
+      // localStorage.getItem("tokenGroup");
+      token.forEach((item) => {
+        axios.get(item.url).then((res) => {
+          console.log("token", res);
+          _allToken.push({
+            id: uuidv4(),
+            name: res.data.name,
+            icon: res.data.logoURI,
+            token: res.data.tokens.length,
+            fetchURI: item.url,
+            isEnabled: item.isEnabled,
+          });
+          dispatch({
+            type: ActionType.SET_TOKEN_PERSIST,
+            payload: _allToken,
+          });
+        });
+      });
     }
+  };
+};
+
+export const handleCustomTokens = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    if (localStorage.getItem("customTokens")) {
+      let _parsed: any = localStorage.getItem("customTokens");
+      console.log("Parsed", _parsed);
+      dispatch({
+        type: ActionType.SET_CUSTOM_TOKEN_PERSIST,
+        payload: JSON.parse(_parsed),
+      });
+    }
+  };
+};
+
+export const setCustomToken = (tokens: any, type: any) => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({
+      type: ActionType.SET_CUSTOM_TOKENS,
+      payload: tokens,
+      calc: type,
+    });
+  };
+};
+
+export const removeCustomToken = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
+};
+
+export const resetCustomToken = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({
+      type: ActionType.SET_CUSTOM_TOKEN_PERSIST,
+      payload: [],
+    });
   };
 };

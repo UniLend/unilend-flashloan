@@ -104,7 +104,7 @@ const CurrencySelectModel: FC<Props> = ({
           </div>
           <div className="col-7">
             <div className="row">
-              <h6 className="mb-0" style={{ textTransform: "uppercase" }}>
+              <h6 className="mb-0" style={{ textTransform: "capitalize" }}>
                 {currency.symbol}
               </h6>
             </div>
@@ -115,6 +115,11 @@ const CurrencySelectModel: FC<Props> = ({
               >
                 {currency.name}
               </p>
+              {currency.isCustomToken && (
+                <div className="list-user-add" style={{ fontSize: 8 }}>
+                  Added by user
+                </div>
+              )}
             </div>
           </div>
           <div className="col-3" style={{ alignSelf: "center" }}>
@@ -152,7 +157,7 @@ const CurrencySelectModel: FC<Props> = ({
           itemData={filteredList}
           height={height}
           // width={300}
-          itemCount={filteredList.length}
+          itemCount={filteredList?.length ? filteredList.length : 0}
           itemSize={60}
         >
           {Row}

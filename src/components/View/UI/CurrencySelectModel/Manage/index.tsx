@@ -9,6 +9,7 @@ import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
 import UFTLogo from "assets/logo.svg";
 import TokenList from "./tokenList";
+import CustomToken from "./customToken";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
@@ -22,12 +23,13 @@ const Manage: FC<Props> = (props) => {
   const { payload: tokenList } = useTypedSelector(
     (state) => state.tokenManage.tokenList
   );
-
+  const { customTokens } = useTypedSelector((state) => state.tokenManage);
   const { payload: searchedToken, message: errorMessage } = useTypedSelector(
     (state) => state.tokenManage.searchedToken
   );
 
-  const { searchToken, createPool } = useActions();
+  const { searchToken, createPool, resetCustomToken, setCustomToken } =
+    useActions();
   useEffect(() => {}, [tokenList]);
 
   useEffect(() => {
@@ -38,6 +40,12 @@ const Manage: FC<Props> = (props) => {
   const handleActiveToggle = () => {
     setActiveSubTab(activeSubTab === "list" ? "token" : "list");
   };
+
+  const handleClearUserToken = () => {
+    localStorage.removeItem("customTokens");
+    resetCustomToken();
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
 
@@ -49,7 +57,15 @@ const Manage: FC<Props> = (props) => {
     // });
   };
   const handleImport = () => {
-    createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
+    setCustomToken(
+      {
+        ...searchedToken,
+        address: searchedTokenText,
+        isCustomToken: true,
+      },
+      "add"
+    );
+    // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };
   return (
     <>
@@ -127,64 +143,24 @@ const Manage: FC<Props> = (props) => {
           {searchedToken && (
             <SearchTokenCard
               handleImport={() => handleImport()}
-              name={searchedToken.name}
-              symbol={searchedToken.symbol}
-              logo={searchedToken.logo}
+              token={searchedToken}
             />
           )}
           <div className="custom-token-list">
             <div className="token-number">
-              <span>1</span> Custom Token
-              <Button variant={theme} className=" clear-btn">
+              <span>{customTokens.length}</span> Custom Token
+              <Button
+                variant={theme}
+                className=" clear-btn"
+                onClick={handleClearUserToken}
+              >
                 Clear all
               </Button>
             </div>
-            <div className="token-list">
-              <div className="details">
-                <img src={UFTLogo} alt="token-logo" />
-                <span>UFT</span>
-              </div>
-              <div className="action">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="delete"
-                >
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://etherscan.io/address/0x70401dFD142A16dC7031c56E862Fc88Cb9537Ce0"
-                  className="sc-eNQAEJ bJDHdm"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    className="view"
-                  >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                </a>
-              </div>
-            </div>
+            {customTokens &&
+              customTokens.map((token) => (
+                <CustomToken key={token.symbol} token={token} />
+              ))}
           </div>
         </>
       )}

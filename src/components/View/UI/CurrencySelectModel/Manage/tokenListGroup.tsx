@@ -11,7 +11,7 @@ const TokenListGroup: FC<Props> = (props) => {
       <div className="list-container">
         <div className="token-group-card">
           {tokenGroupList.map((item) => (
-            <TokenList item={item} />
+            <TokenList key={item.id} item={item} />
           ))}
         </div>
       </div>

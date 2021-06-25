@@ -32,14 +32,15 @@ function App() {
   const [alertShow, setAlertShow] = useState<Boolean>(true);
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-
-  const { handleTokenPersist } = useActions();
+  const { tokenByUrl } = useTypedSelector((state) => state.tokenManage);
+  const { handleTokenPersist, handleCustomTokens } = useActions();
   const { handleWalletConnect, walletProvider, connectedWallet } =
     useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();
-    handleTokenPersist();
+    handleTokenPersist(tokenByUrl);
+    handleCustomTokens();
     setTimeout(() => {
       setLoading(false);
     }, 2000);

@@ -127,7 +127,7 @@ const CommonCard: FC<Props> = (props) => {
     airdropErrorMessage,
     airdropSuccessMessage,
   } = useTypedSelector((state) => state.airdrop);
-  const { tokenGroupList, tokenList } = useTypedSelector(
+  const { tokenGroupList, tokenList, customTokens } = useTypedSelector(
     (state) => state.tokenManage
   );
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
@@ -437,6 +437,7 @@ const CommonCard: FC<Props> = (props) => {
     accounts,
     accountBalance,
     tokenGroupList,
+    customTokens,
   ]);
 
   useEffect(() => {

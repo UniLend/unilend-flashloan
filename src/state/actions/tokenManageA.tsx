@@ -28,10 +28,23 @@ interface setTokenPersist {
   payload: any;
 }
 
+interface setCustomTokens {
+  type: ActionType.SET_CUSTOM_TOKENS;
+  payload: any;
+  calc: any;
+}
+
+interface setCustomTokenPersist {
+  type: ActionType.SET_CUSTOM_TOKEN_PERSIST;
+  payload: any;
+}
+
 export type TokenAction =
   | TokenDetail
   | TokenList
   | TokenListRequest
   | TokenListToggle
   | setSearchedToken
-  | setTokenPersist;
+  | setTokenPersist
+  | setCustomTokens
+  | setCustomTokenPersist;

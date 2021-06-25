@@ -13,6 +13,7 @@ import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
 import BigNumber from "bignumber.js";
 import { errorHandler } from "index";
+import { useActions } from "hooks/useActions";
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
@@ -32,12 +33,13 @@ function App() {
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
 
+  const { handleTokenPersist } = useActions();
   const { handleWalletConnect, walletProvider, connectedWallet } =
     useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();
-
+    handleTokenPersist();
     setTimeout(() => {
       setLoading(false);
     }, 2000);

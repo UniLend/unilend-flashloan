@@ -430,7 +430,14 @@ const CommonCard: FC<Props> = (props) => {
     setModalInfo({
       ...modalInfo,
     });
-  }, [networkId, activeNetWork, currentProvider, accounts, accountBalance]);
+  }, [
+    networkId,
+    activeNetWork,
+    currentProvider,
+    accounts,
+    accountBalance,
+    tokenGroupList,
+  ]);
 
   useEffect(() => {
     let interval: any;

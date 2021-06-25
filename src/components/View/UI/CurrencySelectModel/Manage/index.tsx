@@ -8,6 +8,7 @@ import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
 import UFTLogo from "assets/logo.svg";
+import TokenList from "./tokenList";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
@@ -77,13 +78,31 @@ const Manage: FC<Props> = (props) => {
       {activeSubTab === "list" ? (
         <>
           <div className="list-container">
-            <input
-              type="text"
-              value={searchText}
-              className="form-control model-search-input"
-              placeholder="https:// or ipfs:// or ENS name"
-              onChange={handleSearch}
-            />
+            {/* <div className="list-search-container">
+              <div className="list-search-input">
+                <input
+                  type="text"
+                  value={searchText}
+                  className="form-control model-search-input"
+                  placeholder="https:// or ipfs:// or ENS name"
+                  onChange={handleSearch}
+                />
+              </div>
+              <div className="searched-list">
+                <TokenList
+                  item={{
+                    id: 2,
+                    name: "CoinGecko",
+                    icon: "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
+                    token: 4480,
+                    fetchURI: "https://tokens.coingecko.com/uniswap/all.json",
+                    isEnabled: true,
+                  }}
+                  type="not-exist"
+                />
+              </div>
+            </div> */}
+
             <TokenListGroup />
           </div>
         </>

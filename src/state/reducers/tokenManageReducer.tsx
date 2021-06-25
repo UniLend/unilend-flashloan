@@ -14,7 +14,7 @@ interface TokenManageState {
     isRequesting: boolean;
     payload: Array<object> | [];
   };
-  tokenGroupList: TokenGroupList[];
+  tokenGroupList: any;
   searchedToken: {
     payload: any;
     message: string | null;
@@ -45,7 +45,7 @@ const initialState = {
       icon: "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
       token: 4480,
       fetchURI: "https://tokens.coingecko.com/uniswap/all.json",
-      isEnabled: false,
+      isEnabled: true,
     },
   ],
 };
@@ -62,6 +62,13 @@ const TokenManageReducer = (
           isRequesting: true,
           payload: [],
         },
+      };
+      break;
+    }
+    case ActionType.SET_TOKEN_PERSIST: {
+      state = {
+        ...state,
+        tokenGroupList: action.payload,
       };
       break;
     }
@@ -82,6 +89,7 @@ const TokenManageReducer = (
         }
         return item;
       });
+      localStorage.setItem("tokenGroup", JSON.stringify(array_copy));
       state = {
         ...state,
         tokenGroupList: [...array_copy],

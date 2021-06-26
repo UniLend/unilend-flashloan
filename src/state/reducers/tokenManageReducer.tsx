@@ -77,6 +77,7 @@ const TokenManageReducer = (
         updatedState = _tokens.filter(
           (item) => item.address !== action.payload
         );
+        localStorage.setItem("customTokens", JSON.stringify(updatedState));
       }
       state = {
         ...state,

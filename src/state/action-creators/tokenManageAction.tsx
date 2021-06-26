@@ -31,7 +31,8 @@ export const searchToken = (address: string) => {
         JSON.stringify(data)
       )
       .then((res: any) => {
-        if (res.data.result)
+        console.log(res);
+        if (res?.data?.result)
           dispatch({
             type: ActionType.SET_SEARCHED_TOKEN,
             payload: { data: res.data.result, message: null },

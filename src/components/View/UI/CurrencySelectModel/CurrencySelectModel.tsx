@@ -16,6 +16,9 @@ import { TokenAction } from "state/actions/tokenManageA";
 import { ActionType } from "state/action-types";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { useActions } from "hooks/useActions";
+import SearchTokenCard from "./Manage/SearchTokenCard";
+import cantFind from "assets/cantFind.svg";
 
 // ! Let React Handle Keys
 interface Props {
@@ -31,13 +34,23 @@ const CurrencySelectModel: FC<Props> = ({
   handleCurrChange,
   activeTab,
 }) => {
-  const { theme } = useTypedSelector((state) => state.settings);
-
-  const dispatch = useDispatch<Dispatch<TokenAction>>();
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState([{}]);
   const [openManage, setOpenManage] = useState<Boolean>(false);
-  const { tokenList } = useTypedSelector((state) => state.tokenManage);
+  const [isExist, toggleIsExist] = useState<boolean>(false);
+
+  const dispatch = useDispatch<Dispatch<TokenAction>>();
+
+  const { theme } = useTypedSelector((state) => state.settings);
+  const { tokenList, searchedToken } = useTypedSelector(
+    (state) => state.tokenManage
+  );
+
+  const { searchToken, setCustomToken } = useActions();
+
+  useEffect(() => {
+    console.log("SEAR", searchedToken);
+  }, [searchedToken]);
 
   useEffect(() => {
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
@@ -69,11 +82,20 @@ const CurrencySelectModel: FC<Props> = ({
             searchWord(e.address, searchText)
           );
         });
+      else {
+        searchToken("");
+      }
     }
-    setFilteredList(filteredList);
+    if (filteredList?.length === 0) {
+      searchToken(searchText);
+    } else {
+      setFilteredList(filteredList);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, tokenList]);
-
+  useEffect(() => {
+    searchToken("");
+  }, [openManage]);
   const SearchBar = (
     <div style={{ margin: " 15px auto 0 auto" }}>
       <input
@@ -98,7 +120,7 @@ const CurrencySelectModel: FC<Props> = ({
             <img
               width="24"
               className="list-icon"
-              src={currency.logoURI}
+              src={currency.logoURI !== null ? currency.logoURI : cantFind}
               alt=""
             />
           </div>
@@ -147,6 +169,36 @@ const CurrencySelectModel: FC<Props> = ({
       </button>
     );
   }, []);
+
+  const handleImport = async () => {
+    console.log(searchedToken, searchText);
+    setCustomToken(
+      {
+        ...searchedToken.payload,
+        address: searchText,
+        isCustomToken: true,
+      },
+      "add"
+    );
+    setSearchText("");
+    searchToken("");
+
+    // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
+  };
+  const FetchedToken = (
+    <>
+      {searchedToken && (
+        <div style={{ padding: "0 10px" }}>
+          <SearchTokenCard
+            handleImport={() => handleImport()}
+            token={searchedToken.payload}
+            isExist={isExist}
+          />
+        </div>
+      )}
+    </>
+  );
+
   const TokenList = (
     // filteredList ?
     // <div style={{ flex: "1" }}>
@@ -245,6 +297,8 @@ const CurrencySelectModel: FC<Props> = ({
         <>
           <div className="no-data">Fetching List</div>
         </>
+      ) : searchedToken.payload ? (
+        FetchedToken
       ) : (
         TokenList
       )}

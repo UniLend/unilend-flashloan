@@ -15,7 +15,7 @@ interface Props {}
 const Manage: FC<Props> = (props) => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchedTokenText, setSearchedTokenText] = useState<string>("");
-
+  const [isExist, toggleIsExist] = useState<boolean>(false);
   const [activeSubTab, setActiveSubTab] = useState<string>("list");
   const { currentProvider, accounts } = useWalletConnect();
 
@@ -30,12 +30,24 @@ const Manage: FC<Props> = (props) => {
 
   const { searchToken, createPool, resetCustomToken, setCustomToken } =
     useActions();
-  useEffect(() => {}, [tokenList]);
+  useEffect(() => {
+    console.log("list", tokenList);
+  }, [tokenList]);
 
   useEffect(() => {
-    if (searchedTokenText.length > 0) searchToken(searchedTokenText);
+    if (searchedTokenText.length > 0) {
+      searchToken(searchedTokenText);
+      handleSearchToken();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchedTokenText]);
+
+  const handleSearchToken = async () => {
+    let isAlreadyExist = await tokenList.some((item: any) => {
+      return item.address === searchedTokenText;
+    });
+    toggleIsExist(isAlreadyExist);
+  };
 
   const handleActiveToggle = () => {
     setActiveSubTab(activeSubTab === "list" ? "token" : "list");
@@ -56,15 +68,19 @@ const Manage: FC<Props> = (props) => {
     //   }
     // });
   };
-  const handleImport = () => {
+  const handleImport = async () => {
     setCustomToken(
       {
         ...searchedToken,
+        logoURI: searchedToken.logo,
         address: searchedTokenText,
         isCustomToken: true,
       },
       "add"
     );
+    setSearchedTokenText("");
+    searchToken("");
+
     // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };
   return (
@@ -144,6 +160,7 @@ const Manage: FC<Props> = (props) => {
             <SearchTokenCard
               handleImport={() => handleImport()}
               token={searchedToken}
+              isExist={isExist}
             />
           )}
           <div className="custom-token-list">

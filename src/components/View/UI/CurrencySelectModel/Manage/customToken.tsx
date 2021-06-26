@@ -7,10 +7,10 @@ interface Props {
 }
 
 const CustomToken: FC<Props> = ({ token }) => {
-  const { logo, symbol } = token;
+  const { logo, symbol, address } = token;
   const { setCustomToken } = useActions();
   const handleRemoveToken = () => {
-    setCustomToken(token.address, "delete");
+    setCustomToken(address, "delete");
   };
 
   return (
@@ -40,7 +40,7 @@ const CustomToken: FC<Props> = ({ token }) => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://etherscan.io/address/0x70401dFD142A16dC7031c56E862Fc88Cb9537Ce0"
+            href={`https://etherscan.io/address/${address}`}
             className="sc-eNQAEJ bJDHdm"
           >
             <svg

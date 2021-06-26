@@ -6,18 +6,36 @@ import { PoolAction } from "state/actions/PoolA";
 export const createPool = (
   currentProvider: any,
   _reserve: string,
-  address: string,
-  searchedToken: any
+  address: string
 ) => {
   return async (dispatch: Dispatch<PoolAction>) => {
+    dispatch({
+      type: ActionType.IS_POOL_CREATION_LOADING,
+      payload: true,
+    });
     FlashloanLBCore(currentProvider)
       .methods.createPool(_reserve)
       .send({
         from: address,
       })
-      .on("receipt", (res: any) => {})
+      .on("receipt", (res: any) => {
+        dispatch({
+          type: ActionType.IS_POOL_CREATED,
+          payload: true,
+        });
+        dispatch({
+          type: ActionType.IS_POOL_CREATION_LOADING,
+          payload: false,
+        });
+      })
       .on("PoolCreated", (res: any) => {})
-      .catch((e: any) => console.log("Importing Failed"));
+      .catch((e: any) => {
+        console.log("Importing Failed");
+        dispatch({
+          type: ActionType.IS_POOL_CREATION_LOADING,
+          payload: false,
+        });
+      });
   };
 };
 export const getPool = (address: any, currentProvider: any, accounts: any) => {
@@ -34,7 +52,11 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
             payload: res,
           });
           if (res === "0x0000000000000000000000000000000000000000") {
-            alert("Pool not Created");
+            // alert("Pool not Created");
+            dispatch({
+              type: ActionType.IS_POOL_CREATED,
+              payload: false,
+            });
           } else {
             ERC20(currentProvider, res)
               .methods.symbol()
@@ -43,6 +65,10 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
                   dispatch({
                     type: ActionType.POOL_TOKEN_NAME,
                     payload: res,
+                  });
+                  dispatch({
+                    type: ActionType.IS_POOL_CREATED,
+                    payload: true,
                   });
                 } else {
                   dispatch({

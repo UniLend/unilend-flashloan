@@ -47,6 +47,10 @@ export const searchToken = (address: string) => {
   };
 };
 
+export const searchTokenFromERC = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
+};
+
 export const resetList = () => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
@@ -158,7 +162,6 @@ export const fetchTokenList = (
                               timestamp
                             )
                             .call((error: any, result: any) => {
-                              console.log(error, result);
                               if (!error && result) {
                                 tokenList.forEach((item: any, i: number) => {
                                   let fullAmount = toFixed(
@@ -172,9 +175,7 @@ export const fetchTokenList = (
                                   item["balance"] = fullAmount;
                                   item["underlyingBalance"] = underlyingBalance;
                                   totalTokenList.push(item);
-                                  console.log(totalTokenList);
                                   if (i === tokenList.length - 1) {
-                                    console.log("The end", totalTokenList);
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
                                       payload: totalTokenList,
@@ -190,7 +191,6 @@ export const fetchTokenList = (
                               }
                             });
                         } else {
-                          console.log("else");
                           // tokenList.forEach((item: any, i: number) => {
                           //   item["balance"] = "";
                           //   totalTokenList.push(item);
@@ -249,7 +249,6 @@ export const handleTokenPersist = (token: any) => {
     if (localStorage.getItem("tokenGroup")) {
       let tg: any = localStorage.getItem("tokenGroup");
       let parsed = JSON.parse(tg);
-      console.log("parsed", parsed);
       dispatch({
         type: ActionType.SET_TOKEN_PERSIST,
         payload: parsed,
@@ -258,7 +257,6 @@ export const handleTokenPersist = (token: any) => {
       // localStorage.getItem("tokenGroup");
       token.forEach((item) => {
         axios.get(item.url).then((res) => {
-          console.log("token", res);
           _allToken.push({
             id: uuidv4(),
             name: res.data.name,
@@ -281,7 +279,6 @@ export const handleCustomTokens = () => {
   return async (dispatch: Dispatch<TokenAction>) => {
     if (localStorage.getItem("customTokens")) {
       let _parsed: any = localStorage.getItem("customTokens");
-      console.log("Parsed", _parsed);
       dispatch({
         type: ActionType.SET_CUSTOM_TOKEN_PERSIST,
         payload: JSON.parse(_parsed),

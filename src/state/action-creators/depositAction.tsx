@@ -131,8 +131,6 @@ export const handleDeposit = (
         decimal
       );
       if (isEth) {
-        console.log("ISETH", isEth);
-
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.deposit(recieptAddress, fullAmount)
           .send({

@@ -76,7 +76,8 @@ const MainButton: FC<Props> = ({
 
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
 
-  const { assertAddress } = useTypedSelector((state) => state.pool);
+  const { assertAddress, isPoolCreated, isPoolCreationLoading } =
+    useTypedSelector((state) => state.pool);
 
   const { activeTab, activeCurrency } = useTypedSelector(
     (state) => state.settings
@@ -88,6 +89,7 @@ const MainButton: FC<Props> = ({
     getAccountBalance,
     getPoolTokenBalance,
     getUserTokenBalance,
+    createPool,
     // clearDepositError,
   } = useActions();
 
@@ -115,11 +117,17 @@ const MainButton: FC<Props> = ({
     handleTokenBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [depositLoading, donateLoading, redeemLoading, airdropLoading]);
+
+  const handleCreatePool = () => {
+    createPool(currentProvider, activeCurrency.address, address[0]);
+  };
+
   function handleMainButton() {
     if (
       address &&
       address.length &&
       walletConnected &&
+      (activeCurrency.symbol === "Select Token" || isPoolCreated) &&
       (activeCurrency.symbol === "Select Token" ||
         activeCurrency.symbol === "ETH" ||
         depositAllowanceLoading ||
@@ -129,67 +137,70 @@ const MainButton: FC<Props> = ({
         (actionName !== "Deposit" && actionName !== "Reward"))
     ) {
       return (
-        <button
-          // disabled={
-          //   amount === "" ||
-          //   activeCurrency.symbol === "Select Token" ||
-          //   depositLoading ||
-          //   donateLoading ||
-          //   redeemLoading ||
-          //   airdropLoading ||
-          //   depositAllowanceLoading ||
-          //   donateAllowanceLoading ||
-          //   !isChecked ||
-          //   (activeTab === "redeem" && poolTokenBalance === 0)
-          // }
-          disabled={
-            amount === "" ||
-            parseFloat(amount) <= 0 ||
-            // parseFloat(amount) + poolTokenBalance >= 1_000_000 ||
-            activeCurrency.symbol === "Select Token" ||
-            depositLoading ||
-            donateLoading ||
-            redeemLoading ||
-            airdropLoading ||
-            depositAllowanceLoading ||
-            donateAllowanceLoading ||
-            (activeTab === "redeem" && fullPoolUTokenBalance === "") ||
-            (activeTab === "reward" &&
-              (!isChecked ||
-                parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            (activeTab === "lend" &&
-              parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
-            (activeTab === "airdrop" &&
-              (!isChecked ||
-                parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
-            (activeTab === "redeem" &&
-              (poolTokenBalance === 0 ||
-                parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
-            decimalLength > 18
-          }
-          className="btn btn-lg btn-custom-primary"
-          onClick={() => handleAmount()}
-          type="button"
-        >
-          <div>
-            {actionName}
-            {(depositLoading ||
+        <>
+          <button
+            // disabled={
+            //   amount === "" ||
+            //   activeCurrency.symbol === "Select Token" ||
+            //   depositLoading ||
+            //   donateLoading ||
+            //   redeemLoading ||
+            //   airdropLoading ||
+            //   depositAllowanceLoading ||
+            //   donateAllowanceLoading ||
+            //   !isChecked ||
+            //   (activeTab === "redeem" && poolTokenBalance === 0)
+            // }
+            disabled={
+              amount === "" ||
+              parseFloat(amount) <= 0 ||
+              // parseFloat(amount) + poolTokenBalance >= 1_000_000 ||
+              activeCurrency.symbol === "Select Token" ||
+              depositLoading ||
               donateLoading ||
               redeemLoading ||
               airdropLoading ||
               depositAllowanceLoading ||
-              donateAllowanceLoading) && (
-              <div className="spinner-border approve-loader" role="status">
-                <span className="sr-only">Approving...</span>
-              </div>
-            )}
-          </div>
-        </button>
+              donateAllowanceLoading ||
+              (activeTab === "redeem" && fullPoolUTokenBalance === "") ||
+              (activeTab === "reward" &&
+                (!isChecked ||
+                  parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
+              (activeTab === "lend" &&
+                parseFloat(amount) > parseFloat(fullUserTokenBalance)) ||
+              (activeTab === "airdrop" &&
+                (!isChecked ||
+                  parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
+              (activeTab === "redeem" &&
+                (poolTokenBalance === 0 ||
+                  parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
+              decimalLength > 18
+            }
+            className="btn btn-lg btn-custom-primary"
+            onClick={() => handleAmount()}
+            type="button"
+          >
+            <div>
+              {actionName}
+              {(depositLoading ||
+                donateLoading ||
+                redeemLoading ||
+                airdropLoading ||
+                depositAllowanceLoading ||
+                donateAllowanceLoading) && (
+                <div className="spinner-border approve-loader" role="status">
+                  <span className="sr-only">Approving...</span>
+                </div>
+              )}
+            </div>
+          </button>
+        </>
       );
     } else if (
       address &&
       address.length &&
       walletConnected &&
+      (activeCurrency.symbol === "Select Token" || isPoolCreated) &&
       !depositAllowanceLoading &&
       !donateAllowanceLoading &&
       ((activeCurrency.symbol !== "Select Token" &&
@@ -238,6 +249,31 @@ const MainButton: FC<Props> = ({
             </div>
           ) : (
             "Approve"
+          )}
+        </button>
+      );
+    } else if (
+      address &&
+      address.length &&
+      walletConnected &&
+      !isPoolCreated &&
+      activeCurrency.symbol !== "Select Token"
+    ) {
+      return (
+        <button
+          disabled={isPoolCreationLoading}
+          className="btn btn-lg btn-custom-primary"
+          onClick={handleCreatePool}
+        >
+          {isPoolCreationLoading ? (
+            <div>
+              Creating Pool
+              <div className="spinner-border approve-loader" role="status">
+                <span className="sr-only">Creating Pool...</span>
+              </div>
+            </div>
+          ) : (
+            "Create pool"
           )}
         </button>
       );

@@ -49,10 +49,6 @@ const CurrencySelectModel: FC<Props> = ({
   const { searchToken, setCustomToken } = useActions();
 
   useEffect(() => {
-    console.log("SEAR", searchedToken);
-  }, [searchedToken]);
-
-  useEffect(() => {
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
 
     return () =>
@@ -138,9 +134,7 @@ const CurrencySelectModel: FC<Props> = ({
                 {currency.name}
               </p>
               {currency.isCustomToken && (
-                <div className="list-user-add" style={{ fontSize: 8 }}>
-                  Added by user
-                </div>
+                <div className="list-user-add">Added by user</div>
               )}
             </div>
           </div>
@@ -171,7 +165,6 @@ const CurrencySelectModel: FC<Props> = ({
   }, []);
 
   const handleImport = async () => {
-    console.log(searchedToken, searchText);
     setCustomToken(
       {
         ...searchedToken.payload,

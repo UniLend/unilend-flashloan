@@ -12,9 +12,7 @@ interface Props {
 const SearchTokenCard: React.FC<Props> = ({ token, isExist, handleImport }) => {
   const { name, symbol, logo } = token;
 
-  useEffect(() => {
-    console.log("token", token);
-  }, [token]);
+  useEffect(() => {}, [token]);
   return (
     <Card className={`search-token-card`}>
       <Row className="search-token-row m-0">

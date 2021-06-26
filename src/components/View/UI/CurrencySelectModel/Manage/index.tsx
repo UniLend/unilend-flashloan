@@ -30,9 +30,9 @@ const Manage: FC<Props> = (props) => {
 
   const { searchToken, createPool, resetCustomToken, setCustomToken } =
     useActions();
-  useEffect(() => {
-    console.log("list", tokenList);
-  }, [tokenList]);
+  // useEffect(() => {
+  //   console.log("list", tokenList);
+  // }, [tokenList]);
 
   useEffect(() => {
     if (searchedTokenText.length > 0) {

@@ -438,6 +438,7 @@ const CommonCard: FC<Props> = (props) => {
     accountBalance,
     tokenGroupList,
     customTokens,
+    tokenGroupList,
   ]);
 
   useEffect(() => {
@@ -732,14 +733,14 @@ const CommonCard: FC<Props> = (props) => {
         activeNetWork !== "Mainnet" &&
         activeNetWork !== "Ropsten"
       ) {
-        return `Please switch your Network to Ethereum.`;
+        return `Please switch your Network to Ethereum from your wallet.`;
       } else if (selectedNetworkId === 3 && activeNetWork !== "Matic Mainnet") {
-        return `Please switch your Network to Polygen`;
+        return `Please switch your Network to Polygen from your wallet`;
       } else if (
         selectedNetworkId === 2 &&
         activeNetWork !== "Binance Mainnet"
       ) {
-        return `Please switch your Network to Binance`;
+        return `Please switch your Network to Binance from your wallet`;
       }
     }
   };

@@ -34,12 +34,15 @@ function App() {
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
   const { tokenByUrl } = useTypedSelector((state) => state.tokenManage);
   const { handleTokenPersist, handleCustomTokens } = useActions();
-  const { handleWalletConnect, walletProvider, connectedWallet } =
-    useWalletConnect();
+  const {
+    handleWalletConnect,
+    walletProvider,
+    selectedNetworkId,
+    connectedWallet,
+  } = useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();
-    handleTokenPersist(tokenByUrl);
     handleCustomTokens();
     setTimeout(() => {
       setLoading(false);
@@ -51,6 +54,10 @@ function App() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    handleTokenPersist(tokenByUrl, selectedNetworkId);
+  }, [tokenByUrl, selectedNetworkId]);
 
   useEffect(() => {
     if (connectedWallet) {

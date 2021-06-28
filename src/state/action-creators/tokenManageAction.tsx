@@ -17,7 +17,7 @@ export const handleTokenListToggle = (id: number) => {
   };
 };
 
-export const searchToken = (address: string) => {
+export const searchToken = (address: string, networkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     const data = {
       jsonrpc: "2.0",
@@ -25,25 +25,25 @@ export const searchToken = (address: string) => {
       params: [`${address}`],
       id: 1,
     };
-    axios
-      .post(
-        "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
-        JSON.stringify(data)
-      )
-      .then((res: any) => {
-        console.log(res);
-        if (res?.data?.result)
+    if (address.length)
+      axios
+        .post(
+          "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
+          JSON.stringify(data)
+        )
+        .then((res: any) => {
+          if (res?.data?.result)
+            dispatch({
+              type: ActionType.SET_SEARCHED_TOKEN,
+              payload: { data: res.data.result, message: null },
+            });
+        })
+        .catch((e: any) => {
           dispatch({
             type: ActionType.SET_SEARCHED_TOKEN,
-            payload: { data: res.data.result, message: null },
+            payload: { data: null, message: "Enter valid token address" },
           });
-      })
-      .catch((e: any) => {
-        dispatch({
-          type: ActionType.SET_SEARCHED_TOKEN,
-          payload: { data: null, message: "Enter valid token address" },
         });
-      });
   };
 };
 
@@ -129,9 +129,8 @@ export const fetchTokenList = (
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
-
       _enableChecked
-        ? tokenList.forEach((item: any) => {
+        ? tokenList.forEach((item: any, index: any) => {
             if (item.isEnabled) {
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
@@ -176,12 +175,21 @@ export const fetchTokenList = (
                                   item["underlyingBalance"] = underlyingBalance;
                                   totalTokenList.push(item);
                                   if (i === tokenList.length - 1) {
+                                    totalTokenList.sort(function (a, b) {
+                                      if (a.symbol < b.symbol) {
+                                        return -1;
+                                      }
+                                      if (a.symbol > b.symbol) {
+                                        return 1;
+                                      }
+                                      return 0;
+                                    });
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
                                       payload: totalTokenList,
                                     });
                                   }
-                                  return totalTokenList;
+                                  // return totalTokenList;
                                 });
                               } else {
                                 dispatch({
@@ -191,13 +199,26 @@ export const fetchTokenList = (
                               }
                             });
                         } else {
-                          // tokenList.forEach((item: any, i: number) => {
-                          //   item["balance"] = "";
-                          //   totalTokenList.push(item);
-                          // });
-                          dispatch({
-                            type: ActionType.GET_TOKEN_LIST,
-                            payload: tokenList,
+                          tokenList.forEach((item: any, i: number) => {
+                            item["balance"] = "";
+                            item["underlyingBalance"] = "";
+                            totalTokenList.push(item);
+                            if (i === tokenList.length - 1) {
+                              totalTokenList.sort(function (a, b) {
+                                if (a.symbol < b.symbol) {
+                                  return -1;
+                                }
+                                if (a.symbol > b.symbol) {
+                                  return 1;
+                                }
+                                return 0;
+                              });
+
+                              dispatch({
+                                type: ActionType.GET_TOKEN_LIST,
+                                payload: totalTokenList,
+                              });
+                            }
                           });
                         }
                       } catch (e) {
@@ -241,12 +262,14 @@ export const fetchTokenList = (
     }
   };
 };
-
-export const handleTokenPersist = (token: any) => {
+const getTokenGroup = () => {
+  return localStorage.getItem("tokenGroup");
+};
+export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let _allToken: any = [];
-
-    if (localStorage.getItem("tokenGroup")) {
+    if (getTokenGroup()) {
+      console.log("Loading Catched");
       let tg: any = localStorage.getItem("tokenGroup");
       let parsed = JSON.parse(tg);
       dispatch({
@@ -254,9 +277,12 @@ export const handleTokenPersist = (token: any) => {
         payload: parsed,
       });
     } else {
+      console.log("Loading Default");
       // localStorage.getItem("tokenGroup");
       token.forEach((item) => {
         axios.get(item.url).then((res) => {
+          console.log(selectedNetworkId, res);
+          // if (selectedNetworkId === )
           _allToken.push({
             id: uuidv4(),
             name: res.data.name,

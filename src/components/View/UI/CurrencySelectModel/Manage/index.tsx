@@ -17,7 +17,8 @@ const Manage: FC<Props> = (props) => {
   const [searchedTokenText, setSearchedTokenText] = useState<string>("");
   const [isExist, toggleIsExist] = useState<boolean>(false);
   const [activeSubTab, setActiveSubTab] = useState<string>("list");
-  const { currentProvider, accounts } = useWalletConnect();
+  const { currentProvider, accounts, networkId, selectedNetworkId } =
+    useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
   const { payload: tokenList } = useTypedSelector(
@@ -36,11 +37,11 @@ const Manage: FC<Props> = (props) => {
 
   useEffect(() => {
     if (searchedTokenText.length > 0) {
-      searchToken(searchedTokenText);
+      searchToken(searchedTokenText, selectedNetworkId);
       handleSearchToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchedTokenText]);
+  }, [searchedTokenText, selectedNetworkId]);
 
   const handleSearchToken = async () => {
     let isAlreadyExist = await tokenList.some((item: any) => {
@@ -79,7 +80,7 @@ const Manage: FC<Props> = (props) => {
       "add"
     );
     setSearchedTokenText("");
-    searchToken("");
+    searchToken("", selectedNetworkId);
 
     // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };

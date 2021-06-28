@@ -19,6 +19,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { useActions } from "hooks/useActions";
 import SearchTokenCard from "./Manage/SearchTokenCard";
 import cantFind from "assets/cantFind.svg";
+import useWalletConnect from "hooks/useWalletConnect";
 
 // ! Let React Handle Keys
 interface Props {
@@ -41,10 +42,11 @@ const CurrencySelectModel: FC<Props> = ({
 
   const dispatch = useDispatch<Dispatch<TokenAction>>();
 
+  const { networkId, selectedNetworkId } = useWalletConnect();
+
   const { theme } = useTypedSelector((state) => state.settings);
-  const { tokenList, searchedToken } = useTypedSelector(
-    (state) => state.tokenManage
-  );
+  const { tokenList, tokenByUrl, searchedToken, tokenGroupList } =
+    useTypedSelector((state) => state.tokenManage);
 
   const { searchToken, setCustomToken } = useActions();
 
@@ -79,19 +81,20 @@ const CurrencySelectModel: FC<Props> = ({
           );
         });
       else {
-        searchToken("");
+        searchToken("", selectedNetworkId);
       }
     }
     if (filteredList?.length === 0) {
-      searchToken(searchText);
+      searchToken(searchText, selectedNetworkId);
     } else {
       setFilteredList(filteredList);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, tokenList]);
+  }, [searchText, tokenList, tokenGroupList]);
   useEffect(() => {
-    searchToken("");
+    searchToken("", selectedNetworkId);
   }, [openManage]);
+
   const SearchBar = (
     <div style={{ margin: " 15px auto 0 auto" }}>
       <input
@@ -174,7 +177,7 @@ const CurrencySelectModel: FC<Props> = ({
       "add"
     );
     setSearchText("");
-    searchToken("");
+    searchToken("", selectedNetworkId);
 
     // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };

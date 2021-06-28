@@ -40,14 +40,14 @@ const initialState = {
     { url: "https://tokens.coingecko.com/uniswap/all.json", isEnabled: false },
   ],
   tokenGroupList: [
-    {
-      id: 1,
-      name: "Unilend Token List",
-      icon: "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
-      token: 1,
-      fetchURI: "https://unilend.finance/list.json",
-      isEnabled: true,
-    },
+    // {
+    //   id: 1,
+    //   name: "Unilend Token List",
+    //   icon: "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
+    //   token: 1,
+    //   fetchURI: "https://unilend.finance/list.json",
+    //   isEnabled: true,
+    // },
   ],
   customTokens: [],
 };

@@ -7,18 +7,15 @@ import useWalletConnect from "hooks/useWalletConnect";
 import TokenListGroup from "./tokenListGroup";
 import "./index.scss";
 import SearchTokenCard from "./SearchTokenCard";
-import UFTLogo from "assets/logo.svg";
-import TokenList from "./tokenList";
 import CustomToken from "./customToken";
 interface Props {}
 
 const Manage: FC<Props> = (props) => {
-  const [searchText, setSearchText] = useState<string>("");
+  // const [searchText, setSearchText] = useState<string>("");
   const [searchedTokenText, setSearchedTokenText] = useState<string>("");
   const [isExist, toggleIsExist] = useState<boolean>(false);
   const [activeSubTab, setActiveSubTab] = useState<string>("list");
-  const { currentProvider, accounts, networkId, selectedNetworkId } =
-    useWalletConnect();
+  const { selectedNetworkId } = useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
   const { payload: tokenList } = useTypedSelector(
@@ -29,8 +26,7 @@ const Manage: FC<Props> = (props) => {
     (state) => state.tokenManage.searchedToken
   );
 
-  const { searchToken, createPool, resetCustomToken, setCustomToken } =
-    useActions();
+  const { searchToken, resetCustomToken, setCustomToken } = useActions();
   // useEffect(() => {
   //   console.log("list", tokenList);
   // }, [tokenList]);
@@ -59,16 +55,10 @@ const Manage: FC<Props> = (props) => {
     resetCustomToken();
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchText(e.target.value);
+  // };
 
-    // let IERC = IERC20(currentProvider);
-    // IRC.methods.name(e.target.value).call((err: any, res: any) => {
-    //   if (!err && res) {
-    //     console.log(res);
-    //   }
-    // });
-  };
   const handleImport = async () => {
     setCustomToken(
       {

@@ -1,13 +1,7 @@
-import React, {
-  FC,
-  useState,
-  useEffect,
-  Children,
-  Dispatch,
-  useCallback,
-} from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { FC, useState, useEffect, Dispatch, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { ListGroup, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "./CurrencySelectModel.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import { searchWord } from "components/Helpers";
@@ -38,15 +32,16 @@ const CurrencySelectModel: FC<Props> = ({
   const [searchText, setSearchText] = useState<string>("");
   const [filteredList, setFilteredList] = useState([{}]);
   const [openManage, setOpenManage] = useState<Boolean>(false);
-  const [isExist, toggleIsExist] = useState<boolean>(false);
+  const [isExist] = useState<boolean>(false);
 
   const dispatch = useDispatch<Dispatch<TokenAction>>();
 
-  const { networkId, selectedNetworkId } = useWalletConnect();
+  const { selectedNetworkId } = useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
-  const { tokenList, tokenByUrl, searchedToken, tokenGroupList } =
-    useTypedSelector((state) => state.tokenManage);
+  const { tokenList, searchedToken, tokenGroupList } = useTypedSelector(
+    (state) => state.tokenManage
+  );
 
   const { searchToken, setCustomToken } = useActions();
 
@@ -286,7 +281,7 @@ const CurrencySelectModel: FC<Props> = ({
       </span>
     </div>
   );
-  const ManageBodyContent = <div></div>;
+  // const ManageBodyContent = <div></div>;
   const MainBodyContent = (
     <div className="curr-list-group">
       {tokenList.isRequesting ? (

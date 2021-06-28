@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "./theme.scss";
 import "./App.scss";
@@ -52,7 +53,6 @@ function App() {
       key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
       projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -63,7 +63,6 @@ function App() {
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider, connectedWallet]);
 
   return (

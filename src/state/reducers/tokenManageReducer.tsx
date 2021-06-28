@@ -1,14 +1,15 @@
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
 
-interface TokenGroupList {
-  id: number;
-  name: string;
-  icon: any;
-  token: number;
-  fetchURI: string;
-  isEnabled: boolean;
-}
+// interface TokenGroupList {
+//   id: number;
+//   name: string;
+//   icon: any;
+//   token: number;
+//   fetchURI: string;
+//   isEnabled: boolean;
+// }
+
 interface TokenManageState {
   tokenList: {
     isRequesting: boolean;

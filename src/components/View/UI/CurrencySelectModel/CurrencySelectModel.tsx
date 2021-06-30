@@ -110,7 +110,7 @@ const CurrencySelectModel: FC<Props> = ({
     }
     return (
       <button
-        className="list-group-item"
+        className="list-group-item custom-list-group"
         style={style}
         onClick={() => handleCurrChange(currency)}
       >

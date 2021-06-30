@@ -2,6 +2,12 @@
   border: none;
 }
 
+.custom-list-group {
+  &:hover {
+    filter: brightness(0.93);
+  }
+}
+
 .bal-price {
   justify-content: flex-end;
   padding-right: 13px;

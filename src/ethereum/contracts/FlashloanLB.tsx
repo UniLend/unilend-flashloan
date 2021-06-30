@@ -5,7 +5,6 @@ import FlashloanABI from "../build/FlashLoanABI.json";
 import IERC20ABI from "../build/IERC20.json";
 import BEP20ABI from "../build/IBEP20.json";
 import ERC20ABI from "../build/ERC20.json";
-import MERC20ABI from "../build/MATICERC20.json";
 import SMERC20ABI from "../build/SmartMaticABI.json";
 import UFlashLoanPool from "../build/UFlashLoanPool.json";
 import BalanceABI from "../build/balance-abi.json";

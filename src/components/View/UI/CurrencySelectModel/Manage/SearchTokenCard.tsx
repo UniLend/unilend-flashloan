@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import "./SearchTokenCard.scss";
 import tickImg from "assets/tick.svg";
@@ -10,9 +10,12 @@ interface Props {
 }
 
 const SearchTokenCard: React.FC<Props> = ({ token, isExist, handleImport }) => {
-  const { name, symbol, logo } = token;
+  const { name, symbol, logoURI } = token;
 
-  useEffect(() => {}, [token]);
+  // useEffect(() => {}, [token]);
+  function addDefaultSrc(ev) {
+    ev.target.src = cantFind;
+  }
   return (
     <Card className={`search-token-card`}>
       <Row className="search-token-row m-0">
@@ -23,7 +26,12 @@ const SearchTokenCard: React.FC<Props> = ({ token, isExist, handleImport }) => {
           md={2}
           lg={2}
         >
-          <img src={logo !== null ? logo : cantFind} alt="" className="logo" />
+          <img
+            src={logoURI !== null ? logoURI : cantFind}
+            alt=""
+            className="logo"
+            onError={addDefaultSrc}
+          />
         </Col>
         <Col className="details p-0" sm={7} md={7} lg={7}>
           <Row className="m-0">

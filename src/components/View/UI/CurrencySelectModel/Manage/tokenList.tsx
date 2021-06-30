@@ -18,7 +18,8 @@ const TokenList: FC<Props> = ({ item, type }) => {
   return (
     <>
       {item.name !== "Unilend Token List" &&
-        (item.name === "CoinGecko" && selectedNetworkId) !== 3 && (
+        item.name === "CoinGecko" &&
+        selectedNetworkId !== 3 && (
           <div key={item.id} className="token-list-card">
             <div className="row">
               <div className="col-2 px-0 curr-list">

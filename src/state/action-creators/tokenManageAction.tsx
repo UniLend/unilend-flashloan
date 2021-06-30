@@ -2,7 +2,7 @@
 import axios from "axios";
 import { setTimestamp, toFixed } from "components/Helpers";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
-import { BalanceContract, ERC20, MERC20 } from "ethereum/contracts/FlashloanLB";
+import { BalanceContract } from "ethereum/contracts/FlashloanLB";
 import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
@@ -28,7 +28,6 @@ export const getTokenMetadata = async (
   //   });
 };
 const getDefaultNetwork = (network) => {
-  console.log(network, typeof network);
   if (network === 56 || network === 97) {
     return "56";
   } else if (network === 137 || network === 80001) {
@@ -102,13 +101,17 @@ export const searchToken = (
           }
         })
         .catch((e: any) => {
-          console.log(e);
-
           dispatch({
             type: ActionType.SET_SEARCHED_TOKEN,
             payload: { data: null, message: "Enter valid token address" },
           });
         });
+    else {
+      dispatch({
+        type: ActionType.SET_SEARCHED_TOKEN,
+        payload: { data: null, message: "Enter valid token address" },
+      });
+    }
   };
 };
 
@@ -142,13 +145,11 @@ export const getErcTokenDetail = () => {
 //     let totalTokenList: any = [];
 //     // dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
 //     if (tokenList) {
-//       console.log(tokenList);
 //       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
 
 //       _enableChecked
 //         ? tokenList.forEach((token: any, i: any) => {
 //             if (token.isEnabled) {
-//               console.log(token);
 //               axios.get(`${token.fetchURI}?t=${timestamp}`).then((res) => {
 //                 let tokens = [...res.data.tokens];
 //                 if (res.data) {
@@ -160,7 +161,6 @@ export const getErcTokenDetail = () => {
 //                     return item.address;
 //                   });
 //                   totalTokenList.push(...tokenList);
-//                   console.log(totalTokenList);
 
 //                 }
 //               });
@@ -192,32 +192,32 @@ export const fetchTokenList = (
   return async (dispatch: Dispatch<TokenAction>) => {
     let timestamp = setTimestamp();
     let totalTokenList: any = [];
-    dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
+    // dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
       _enableChecked
         ? tokenList.forEach((item: any, index: any) => {
+            // if (item.name !== "CoinGecko" && selectedNetworkId !== 3)
             if (item.isEnabled) {
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
-                  // console.log(customTokens);
                   let tokens = [...res.data.tokens, ...customTokens];
-                  // console.log(tokens);
-                  if (res.data) {
+                  if (res.data && tokens.length) {
                     const tokenList: any = tokens.filter((item: any) => {
                       if (accounts.length) {
                         // eslint-disable-next-line eqeqeq
                         return item.chainId == networkId;
                       } else {
-                        if (selectedNetworkId === 1) {
-                          return item.chainId == 1;
+                        if (selectedNetworkId === 2) {
+                          return item.chainId == 56;
                         } else if (selectedNetworkId === 3) {
                           return item.chainId == 137;
+                        } else {
+                          return item.chainId == 1;
                         }
                       }
                     });
-                    console.log(tokenList);
                     let addresses = tokenList.map((item: any) => {
                       return item.address;
                     });
@@ -362,7 +362,6 @@ export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let _allToken: any = [];
     if (getTokenGroup()) {
-      console.log("Loading Catched");
       let tg: any = localStorage.getItem("tokenGroup");
       let parsed = JSON.parse(tg);
       dispatch({
@@ -370,7 +369,6 @@ export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
         payload: parsed,
       });
     } else {
-      console.log("Loading Default");
       // localStorage.getItem("tokenGroup");
       token.forEach((item) => {
         axios.get(item.url).then((res) => {

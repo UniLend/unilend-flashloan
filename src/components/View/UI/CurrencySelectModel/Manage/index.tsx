@@ -35,6 +35,11 @@ const Manage: FC<Props> = (props) => {
     if (searchedTokenText.length > 0) {
       searchToken(searchedTokenText, networkId, selectedNetworkId);
       handleSearchToken();
+    } else {
+      searchToken("", networkId, selectedNetworkId);
+    }
+    if (selectedNetworkId === 3 || selectedNetworkId === 2) {
+      setActiveSubTab("token");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchedTokenText, selectedNetworkId]);
@@ -78,26 +83,28 @@ const Manage: FC<Props> = (props) => {
   return (
     <>
       <Container className="p-0">
-        <Button
-          className="my-3 manage-toggle"
-          variant={theme}
-          size="lg"
-          block
-          onClick={handleActiveToggle}
-        >
-          <Row>
-            <Col
-              className={`manage-tab ${activeSubTab === "list" && "active"}`}
-            >
-              List
-            </Col>
-            <Col
-              className={`manage-tab ${activeSubTab === "token" && "active"}`}
-            >
-              Token
-            </Col>
-          </Row>
-        </Button>
+        {selectedNetworkId !== 3 && selectedNetworkId !== 2 && (
+          <Button
+            className="my-3 manage-toggle"
+            variant={theme}
+            size="lg"
+            block
+            onClick={handleActiveToggle}
+          >
+            <Row>
+              <Col
+                className={`manage-tab ${activeSubTab === "list" && "active"}`}
+              >
+                List
+              </Col>
+              <Col
+                className={`manage-tab ${activeSubTab === "token" && "active"}`}
+              >
+                Token
+              </Col>
+            </Row>
+          </Button>
+        )}
       </Container>
       {activeSubTab === "list" ? (
         <>

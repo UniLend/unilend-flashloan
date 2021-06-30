@@ -79,6 +79,8 @@ const CurrencySelectModel: FC<Props> = ({
       else {
         searchToken("", networkId, selectedNetworkId);
       }
+    } else {
+      searchToken(searchText, networkId, selectedNetworkId);
     }
     if (filteredList?.length === 0) {
       getTokenMetadata(currentProvider, searchText);

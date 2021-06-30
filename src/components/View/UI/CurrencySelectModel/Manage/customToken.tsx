@@ -7,10 +7,19 @@ interface Props {
 }
 
 const CustomToken: FC<Props> = ({ token }) => {
-  const { logoURI, symbol, address } = token;
+  const { logoURI, symbol, address, chainId } = token;
   const { setCustomToken } = useActions();
   const handleRemoveToken = () => {
     setCustomToken(address, "delete");
+  };
+  const getDefaultNetwork = (network) => {
+    if (network === 56 || network === 97) {
+      return "Binance";
+    } else if (network === 137 || network === 80001) {
+      return "Polygon";
+    } else {
+      return "Ethereum";
+    }
   };
   function addDefaultSrc(ev) {
     ev.target.src = cantFind;
@@ -27,6 +36,7 @@ const CustomToken: FC<Props> = ({ token }) => {
           <span style={{ paddingLeft: "10px" }}>{symbol}</span>
         </div>
         <div className="action">
+          <div className="list-label">{getDefaultNetwork(chainId)}</div>
           <svg
             onClick={handleRemoveToken}
             xmlns="http://www.w3.org/2000/svg"

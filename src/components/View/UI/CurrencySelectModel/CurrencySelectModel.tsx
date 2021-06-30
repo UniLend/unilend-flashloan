@@ -171,6 +171,7 @@ const CurrencySelectModel: FC<Props> = ({
   }, []);
 
   const handleImport = async () => {
+    // console.log(searchedToken.payload);
     setCustomToken(
       {
         ...searchedToken.payload,

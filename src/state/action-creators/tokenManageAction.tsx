@@ -42,34 +42,13 @@ export const searchToken = (
   selectedNetworkId: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
-    // const data = {
-    //   jsonrpc: "2.0",
-    //   method: "alchemy_getTokenMetadata",
-    //   params: [`${address}`],
-    //   id: 1,
-    // };
-    // if (address.length)
     //   axios
     //     .post(
     //       "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
     //       JSON.stringify(data)
     //     )
-    //     .then((res: any) => {
-    //       if (res?.data?.result)
-    //         dispatch({
-    //           type: ActionType.SET_SEARCHED_TOKEN,
-    //           payload: { data: res.data.result, message: null },
-    //         });
-    //     })
-    //     .catch((e: any) => {
-    //       dispatch({
-    //         type: ActionType.SET_SEARCHED_TOKEN,
-    //         payload: { data: null, message: "Enter valid token address" },
-    //       });
-    //     });
 
     const api = "ckey_86f9398035604a998979408cd03";
-
     var qs = `?key=${api}`;
     var selectedNetwork = getDefaultNetwork(networkId);
     if (address.length)
@@ -131,54 +110,6 @@ export const resetList = () => {
 export const getErcTokenDetail = () => {
   return async (dispatch: Dispatch<TokenAction>) => {};
 };
-
-// export const fetchTokenList = (
-//   tokenList: any,
-//   networkId: any,
-//   currentProvider: any,
-//   accounts: any,
-//   accountBalance: any,
-//   selectedNetworkId: any
-// ) => {
-//   return async (dispatch: Dispatch<TokenAction>) => {
-//     let timestamp = setTimestamp();
-//     let totalTokenList: any = [];
-//     // dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
-//     if (tokenList) {
-//       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
-
-//       _enableChecked
-//         ? tokenList.forEach((token: any, i: any) => {
-//             if (token.isEnabled) {
-//               axios.get(`${token.fetchURI}?t=${timestamp}`).then((res) => {
-//                 let tokens = [...res.data.tokens];
-//                 if (res.data) {
-//                   const tokenList: any = tokens.filter((item: any) => {
-//                     // eslint-disable-next-line eqeqeq
-//                     return item.chainId == networkId;
-//                   });
-//                   let addresses = tokenList.map((item: any) => {
-//                     return item.address;
-//                   });
-//                   totalTokenList.push(...tokenList);
-
-//                 }
-//               });
-//               if (i === tokenList.length - 1) {
-//                 dispatch({
-//                   type: ActionType.GET_TOKEN_LIST,
-//                   payload: totalTokenList,
-//                 });
-//               }
-//             }
-//           })
-//         : dispatch({
-//             type: ActionType.GET_TOKEN_LIST,
-//             payload: [],
-//           });
-//     }
-//   };
-// };
 
 export const fetchTokenList = (
   tokenList: any,
@@ -265,7 +196,6 @@ export const fetchTokenList = (
                                       payload: totalTokenList,
                                     });
                                   }
-                                  // return totalTokenList;
                                 });
                               } else {
                                 tokenList.forEach((item: any, i: number) => {
@@ -322,10 +252,6 @@ export const fetchTokenList = (
                           payload: tokenList,
                         });
                       }
-                      // dispatch({
-                      //   type: ActionType.GET_TOKEN_LIST,
-                      //   payload: totalTokenList,
-                      // });
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
                       dispatch({
@@ -369,10 +295,8 @@ export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
         payload: parsed,
       });
     } else {
-      // localStorage.getItem("tokenGroup");
       token.forEach((item) => {
         axios.get(item.url).then((res) => {
-          // if (selectedNetworkId === )
           _allToken.push({
             id: uuidv4(),
             name: res.data.name,

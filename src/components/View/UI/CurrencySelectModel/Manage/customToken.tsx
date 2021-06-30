@@ -7,17 +7,23 @@ interface Props {
 }
 
 const CustomToken: FC<Props> = ({ token }) => {
-  const { logo, symbol, address } = token;
+  const { logoURI, symbol, address } = token;
   const { setCustomToken } = useActions();
   const handleRemoveToken = () => {
     setCustomToken(address, "delete");
   };
-
+  function addDefaultSrc(ev) {
+    ev.target.src = cantFind;
+  }
   return (
     <>
       <div className="token-list">
         <div className="details">
-          <img src={logo !== null ? logo : cantFind} alt="token-logo" />
+          <img
+            src={logoURI !== null ? logoURI : cantFind}
+            alt=""
+            onError={addDefaultSrc}
+          />
           <span style={{ paddingLeft: "10px" }}>{symbol}</span>
         </div>
         <div className="action">

@@ -425,7 +425,8 @@ const CommonCard: FC<Props> = (props) => {
       currentProvider,
       accounts,
       accountBalance,
-      selectedNetworkId
+      selectedNetworkId,
+      customTokens
     );
     setModalInfo({
       ...modalInfo,
@@ -439,6 +440,7 @@ const CommonCard: FC<Props> = (props) => {
     tokenGroupList,
     customTokens,
     tokenGroupList,
+    selectedNetworkId,
   ]);
 
   useEffect(() => {

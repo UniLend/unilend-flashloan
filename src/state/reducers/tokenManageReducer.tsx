@@ -105,9 +105,7 @@ const TokenManageReducer = (
         ...state,
         tokenList: {
           isRequesting: false,
-          payload: action.payload
-            ? [...state.customTokens, ...action.payload]
-            : [...state.customTokens],
+          payload: action.payload,
         },
       };
       break;

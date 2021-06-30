@@ -14,6 +14,7 @@ import { useActions } from "hooks/useActions";
 import SearchTokenCard from "./Manage/SearchTokenCard";
 import cantFind from "assets/cantFind.svg";
 import useWalletConnect from "hooks/useWalletConnect";
+import { getTokenMetadata } from "state/action-creators";
 
 // ! Let React Handle Keys
 interface Props {
@@ -36,7 +37,7 @@ const CurrencySelectModel: FC<Props> = ({
 
   const dispatch = useDispatch<Dispatch<TokenAction>>();
 
-  const { selectedNetworkId } = useWalletConnect();
+  const { selectedNetworkId, networkId, currentProvider } = useWalletConnect();
 
   const { theme } = useTypedSelector((state) => state.settings);
   const { tokenList, searchedToken, tokenGroupList } = useTypedSelector(
@@ -76,18 +77,19 @@ const CurrencySelectModel: FC<Props> = ({
           );
         });
       else {
-        searchToken("", selectedNetworkId);
+        searchToken("", networkId, selectedNetworkId);
       }
     }
     if (filteredList?.length === 0) {
-      searchToken(searchText, selectedNetworkId);
+      getTokenMetadata(currentProvider, searchText);
+      searchToken(searchText, networkId, selectedNetworkId);
     } else {
       setFilteredList(filteredList);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, tokenList, tokenGroupList]);
   useEffect(() => {
-    searchToken("", selectedNetworkId);
+    searchToken("", networkId, selectedNetworkId);
   }, [openManage]);
 
   const SearchBar = (
@@ -103,6 +105,9 @@ const CurrencySelectModel: FC<Props> = ({
   );
   const Row = useCallback(({ data, index, style }) => {
     const currency = data[index];
+    function addDefaultSrc(ev) {
+      ev.target.src = cantFind;
+    }
     return (
       <button
         className="list-group-item"
@@ -116,6 +121,7 @@ const CurrencySelectModel: FC<Props> = ({
               className="list-icon"
               src={currency.logoURI !== null ? currency.logoURI : cantFind}
               alt=""
+              onError={addDefaultSrc}
             />
           </div>
           <div className="col-7">
@@ -166,13 +172,14 @@ const CurrencySelectModel: FC<Props> = ({
     setCustomToken(
       {
         ...searchedToken.payload,
-        address: searchText,
-        isCustomToken: true,
+        // address: searchText,
+        // isCustomToken: true,
+        // chainId: networkId,
       },
       "add"
     );
     setSearchText("");
-    searchToken("", selectedNetworkId);
+    searchToken("", networkId, selectedNetworkId);
 
     // createPool(currentProvider, searchedTokenText, accounts[0], searchedToken);
   };

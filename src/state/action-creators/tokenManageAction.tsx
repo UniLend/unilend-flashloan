@@ -8,7 +8,7 @@ import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
 import { v4 as uuidv4 } from "uuid";
-
+import _ from "lodash";
 export const handleTokenListToggle = (id: number) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
@@ -191,9 +191,21 @@ export const fetchTokenList = (
                                       }
                                       return 0;
                                     });
+                                    // let uniqTokenList = new Set(totalTokenList);
+                                    let uniqTokenList = _.uniqBy(
+                                      totalTokenList,
+                                      function (e: any) {
+                                        return e.address;
+                                      }
+                                    );
+                                    console.log(
+                                      totalTokenList.length,
+                                      uniqTokenList.length
+                                    );
+
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
-                                      payload: totalTokenList,
+                                      payload: uniqTokenList,
                                     });
                                   }
                                 });
@@ -212,10 +224,19 @@ export const fetchTokenList = (
                                       }
                                       return 0;
                                     });
-
+                                    let uniqTokenList = _.uniqBy(
+                                      totalTokenList,
+                                      function (e: any) {
+                                        return e.address;
+                                      }
+                                    );
+                                    console.log(
+                                      totalTokenList.length,
+                                      uniqTokenList.length
+                                    );
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
-                                      payload: totalTokenList,
+                                      payload: uniqTokenList,
                                     });
                                   }
                                 });
@@ -236,10 +257,20 @@ export const fetchTokenList = (
                                 }
                                 return 0;
                               });
+                              let uniqTokenList = _.uniqBy(
+                                totalTokenList,
+                                function (e: any) {
+                                  return e.address;
+                                }
+                              );
+                              console.log(
+                                totalTokenList.length,
+                                uniqTokenList.length
+                              );
 
                               dispatch({
                                 type: ActionType.GET_TOKEN_LIST,
-                                payload: totalTokenList,
+                                payload: uniqTokenList,
                               });
                             }
                           });
@@ -254,9 +285,15 @@ export const fetchTokenList = (
                       }
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
+                      let uniqTokenList = _.uniqBy(
+                        totalTokenList,
+                        function (e: any) {
+                          return e.address;
+                        }
+                      );
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
-                        payload: totalTokenList,
+                        payload: uniqTokenList,
                       });
                     }
                   } else {

@@ -198,10 +198,6 @@ export const fetchTokenList = (
                                         return e.address;
                                       }
                                     );
-                                    console.log(
-                                      totalTokenList.length,
-                                      uniqTokenList.length
-                                    );
 
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
@@ -229,10 +225,6 @@ export const fetchTokenList = (
                                       function (e: any) {
                                         return e.address;
                                       }
-                                    );
-                                    console.log(
-                                      totalTokenList.length,
-                                      uniqTokenList.length
                                     );
                                     dispatch({
                                       type: ActionType.GET_TOKEN_LIST,
@@ -262,10 +254,6 @@ export const fetchTokenList = (
                                 function (e: any) {
                                   return e.address;
                                 }
-                              );
-                              console.log(
-                                totalTokenList.length,
-                                uniqTokenList.length
                               );
 
                               dispatch({

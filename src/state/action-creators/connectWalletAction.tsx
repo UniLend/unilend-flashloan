@@ -292,7 +292,6 @@ async function handleWalletConnect(
                 ],
               });
               accounts = await web3Service.getAccounts();
-              console.log(accounts);
 
               // if (accounts) {
               handleMetamask(accounts, dispatch, currentProviders);

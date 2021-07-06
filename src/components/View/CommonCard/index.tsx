@@ -127,7 +127,7 @@ const CommonCard: FC<Props> = (props) => {
     airdropErrorMessage,
     airdropSuccessMessage,
   } = useTypedSelector((state) => state.airdrop);
-  const { tokenGroupList, tokenList } = useTypedSelector(
+  const { tokenGroupList, tokenList, customTokens } = useTypedSelector(
     (state) => state.tokenManage
   );
   const { receipentAddress } = useTypedSelector((state) => state.ethereum);
@@ -425,12 +425,23 @@ const CommonCard: FC<Props> = (props) => {
       currentProvider,
       accounts,
       accountBalance,
-      selectedNetworkId
+      selectedNetworkId,
+      customTokens
     );
     setModalInfo({
       ...modalInfo,
     });
-  }, [networkId, activeNetWork, currentProvider, accounts, accountBalance]);
+  }, [
+    networkId,
+    activeNetWork,
+    currentProvider,
+    accounts,
+    accountBalance,
+    tokenGroupList,
+    customTokens,
+    tokenGroupList,
+    selectedNetworkId,
+  ]);
 
   useEffect(() => {
     let interval: any;
@@ -724,14 +735,14 @@ const CommonCard: FC<Props> = (props) => {
         activeNetWork !== "Mainnet" &&
         activeNetWork !== "Ropsten"
       ) {
-        return `Please switch your Network to Ethereum.`;
+        return `Please switch your Network to Ethereum from your wallet.`;
       } else if (selectedNetworkId === 3 && activeNetWork !== "Matic Mainnet") {
-        return `Please switch your Network to Polygen`;
+        return `Please switch your Network to Polygen from your wallet`;
       } else if (
         selectedNetworkId === 2 &&
         activeNetWork !== "Binance Mainnet"
       ) {
-        return `Please switch your Network to Binance`;
+        return `Please switch your Network to Binance from your wallet`;
       }
     }
   };

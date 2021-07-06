@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "./theme.scss";
 import "./App.scss";
@@ -13,6 +14,7 @@ import { Alert } from "react-bootstrap";
 import AlertImg from "assets/warning.svg";
 import BigNumber from "bignumber.js";
 import { errorHandler } from "index";
+import { useActions } from "hooks/useActions";
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
@@ -31,13 +33,18 @@ function App() {
   const [alertShow, setAlertShow] = useState<Boolean>(true);
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-
-  const { handleWalletConnect, walletProvider, connectedWallet } =
-    useWalletConnect();
+  const { tokenByUrl } = useTypedSelector((state) => state.tokenManage);
+  const { handleTokenPersist, handleCustomTokens } = useActions();
+  const {
+    handleWalletConnect,
+    walletProvider,
+    selectedNetworkId,
+    connectedWallet,
+  } = useWalletConnect();
 
   useEffect(() => {
     dotEnv.config();
-
+    handleCustomTokens();
     setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -46,14 +53,16 @@ function App() {
       key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
       projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    handleTokenPersist(tokenByUrl, selectedNetworkId);
+  }, [tokenByUrl, selectedNetworkId]);
 
   useEffect(() => {
     if (connectedWallet) {
       handleWalletConnect(JSON.parse(connectedWallet));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletProvider, connectedWallet]);
 
   return (

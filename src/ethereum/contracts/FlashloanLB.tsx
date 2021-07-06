@@ -5,6 +5,7 @@ import FlashloanABI from "../build/FlashLoanABI.json";
 import IERC20ABI from "../build/IERC20.json";
 import BEP20ABI from "../build/IBEP20.json";
 import ERC20ABI from "../build/ERC20.json";
+import SMERC20ABI from "../build/SmartMaticABI.json";
 import UFlashLoanPool from "../build/UFlashLoanPool.json";
 import BalanceABI from "../build/balance-abi.json";
 import { bscWeb3 } from "ethereum/bscWeb3";
@@ -29,7 +30,11 @@ export const FlashLoanPool = (currentProvider: any, assertAddress: string) => {
 };
 
 export const ERC20 = (currentProvider: any, reciepentAddress: string) => {
-  return new currentProvider.eth.Contract(ERC20ABI.abi, reciepentAddress);
+  return new currentProvider.eth.Contract(ERC20ABI, reciepentAddress);
+};
+
+export const MERC20 = (currentProvider: any, reciepentAddress: string) => {
+  return new currentProvider.eth.Contract(SMERC20ABI, reciepentAddress);
 };
 
 export const IERC20 = (currentProvider: any, reciepentAddress: string) => {

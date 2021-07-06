@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import axios from "axios";
 import { setTimestamp, toFixed } from "components/Helpers";
 import { UnilendFlashLoanCoreContract } from "ethereum/contracts";
@@ -6,6 +7,109 @@ import { errorHandler } from "index";
 import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
+import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
+export const handleTokenListToggle = (id: number) => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({
+      type: ActionType.TOKEN_LIST_TOGGLE,
+      payload: id,
+    });
+  };
+};
+export const getTokenMetadata = async (
+  currentProvider: any,
+  receipentAddress: any
+) => {
+  //   let _ERC20 = MERC20(currentProvider, receipentAddress);
+  //   console.log(_ERC20);
+  //   _ERC20.methods.symbol().call((e: any, r: any) => {
+  //     console.log(e, r);
+  //   });
+};
+const getDefaultNetwork = (network) => {
+  if (network === 56 || network === 97) {
+    return "56";
+  } else if (network === 137 || network === 80001) {
+    return "137";
+  } else {
+    return "1";
+  }
+};
+export const searchToken = (
+  address: string,
+  networkId: any,
+  selectedNetworkId: any
+) => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    //   axios
+    //     .post(
+    //       "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
+    //       JSON.stringify(data)
+    //     )
+
+    const api = "ckey_86f9398035604a998979408cd03";
+    var qs = `?key=${api}`;
+    var selectedNetwork = getDefaultNetwork(networkId);
+    if (address.length)
+      axios
+        .get(
+          `https://api.covalenthq.com/v1/${selectedNetwork}/tokens/${address}/nft_metadata/111/${qs}`
+        )
+        .then((res: any) => {
+          if (res?.data?.data === null)
+            dispatch({
+              type: ActionType.SET_SEARCHED_TOKEN,
+              payload: { data: null, message: null },
+            });
+          else if (res?.data?.data) {
+            let item = res.data.data.items[0];
+            let body = {
+              address: item.contract_address,
+              decimals: item.contract_decimals,
+              logoURI: item.logo_url,
+              name: item.contract_name,
+              symbol: item.contract_ticker_symbol,
+              chainId: networkId,
+              isCustomToken: true,
+            };
+            dispatch({
+              type: ActionType.SET_SEARCHED_TOKEN,
+              payload: { data: body, message: null },
+            });
+          }
+        })
+        .catch((e: any) => {
+          dispatch({
+            type: ActionType.SET_SEARCHED_TOKEN,
+            payload: { data: null, message: "Enter valid token address" },
+          });
+        });
+    else {
+      dispatch({
+        type: ActionType.SET_SEARCHED_TOKEN,
+        payload: { data: null, message: "Enter valid token address" },
+      });
+    }
+  };
+};
+
+export const searchTokenFromERC = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
+};
+
+export const resetList = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    dispatch({
+      type: ActionType.GET_TOKEN_LIST,
+      payload: [],
+    });
+  };
+};
+
+export const getErcTokenDetail = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
+};
 
 export const fetchTokenList = (
   tokenList: any,
@@ -13,53 +117,37 @@ export const fetchTokenList = (
   currentProvider: any,
   accounts: any,
   accountBalance: any,
-  selectedNetworkId: any
+  selectedNetworkId: any,
+  customTokens: any
 ) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let timestamp = setTimestamp();
     let totalTokenList: any = [];
-    dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
+    // dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
-
       _enableChecked
-        ? tokenList.forEach((item: any) => {
+        ? tokenList.forEach((item: any, index: any) => {
+            // if (item.name !== "CoinGecko" && selectedNetworkId !== 3)
             if (item.isEnabled) {
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
                 .then((res) => {
-                  let tokens = [
-                    // {
-                    //   address: "0xaf9A280DA32D9CaDe09237FBf12F0BdDa05D489a",
-                    //   chainId: 137,
-                    //   decimals: 18,
-                    //   logoURI:
-                    //     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
-                    //   name: "Unilend Finance",
-                    //   symbol: "UFT",
-                    // },
-                    // {
-                    //   address: "0x0000000000000000000000000000000000001010",
-                    //   chainId: 137,
-                    //   decimals: 18,
-                    //   logoURI: "",
-                    //   name: "Matic",
-                    //   symbol: "MATIC",
-                    // },
-                    // {
-                    //   address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-                    //   chainId: 3,
-                    //   decimals: 18,
-                    //   logoURI: "",
-                    //   name: "Eth",
-                    //   symbol: "ETH",
-                    // },
-                    ...res.data.tokens,
-                  ];
-                  if (res.data) {
+                  let tokens = [...res.data.tokens, ...customTokens];
+                  if (res.data && tokens.length) {
                     const tokenList: any = tokens.filter((item: any) => {
-                      // eslint-disable-next-line eqeqeq
-                      return item.chainId == networkId;
+                      if (accounts.length) {
+                        // eslint-disable-next-line eqeqeq
+                        return item.chainId == networkId;
+                      } else {
+                        if (selectedNetworkId === 2) {
+                          return item.chainId == 56;
+                        } else if (selectedNetworkId === 3) {
+                          return item.chainId == 137;
+                        } else {
+                          return item.chainId == 1;
+                        }
+                      }
                     });
                     let addresses = tokenList.map((item: any) => {
                       return item.address;
@@ -93,57 +181,86 @@ export const fetchTokenList = (
                                   item["balance"] = fullAmount;
                                   item["underlyingBalance"] = underlyingBalance;
                                   totalTokenList.push(item);
-                                  dispatch({
-                                    type: ActionType.GET_TOKEN_LIST,
-                                    payload: [...totalTokenList],
-                                  });
-                                  return item;
+                                  if (i === tokenList.length - 1) {
+                                    totalTokenList.sort(function (a, b) {
+                                      if (a.symbol < b.symbol) {
+                                        return -1;
+                                      }
+                                      if (a.symbol > b.symbol) {
+                                        return 1;
+                                      }
+                                      return 0;
+                                    });
+                                    // let uniqTokenList = new Set(totalTokenList);
+                                    let uniqTokenList = _.uniqBy(
+                                      totalTokenList,
+                                      function (e: any) {
+                                        return e.address;
+                                      }
+                                    );
+
+                                    dispatch({
+                                      type: ActionType.GET_TOKEN_LIST,
+                                      payload: uniqTokenList,
+                                    });
+                                  }
                                 });
                               } else {
-                                dispatch({
-                                  type: ActionType.GET_TOKEN_LIST,
-                                  payload: [
-                                    // {
-                                    //   address:
-                                    //     "0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1",
-                                    //   chainId: 137,
-                                    //   decimals: 18,
-                                    //   logoURI:
-                                    //     "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png",
-                                    //   name: "Unilend Finance",
-                                    //   symbol: "UFT",
-                                    // },
-                                    // {
-                                    //   address:
-                                    //     "0x0000000000000000000000000000000000001010",
-                                    //   chainId: 137,
-                                    //   decimals: 18,
-                                    //   logoURI: "",
-                                    //   name: "Matic",
-                                    //   symbol: "MATIC",
-                                    // },
-                                    // {
-                                    //   address:
-                                    //     "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-                                    //   chainId: 3,
-                                    //   decimals: 18,
-                                    //   logoURI: "",
-                                    //   name: "Eth",
-                                    //   symbol: "ETH",
-                                    // },
-                                  ],
+                                tokenList.forEach((item: any, i: number) => {
+                                  item["balance"] = "";
+                                  item["underlyingBalance"] = "";
+                                  totalTokenList.push(item);
+                                  if (i === tokenList.length - 1) {
+                                    totalTokenList.sort(function (a, b) {
+                                      if (a.symbol < b.symbol) {
+                                        return -1;
+                                      }
+                                      if (a.symbol > b.symbol) {
+                                        return 1;
+                                      }
+                                      return 0;
+                                    });
+                                    let uniqTokenList = _.uniqBy(
+                                      totalTokenList,
+                                      function (e: any) {
+                                        return e.address;
+                                      }
+                                    );
+                                    dispatch({
+                                      type: ActionType.GET_TOKEN_LIST,
+                                      payload: uniqTokenList,
+                                    });
+                                  }
                                 });
                               }
                             });
                         } else {
                           tokenList.forEach((item: any, i: number) => {
                             item["balance"] = "";
+                            item["underlyingBalance"] = "";
                             totalTokenList.push(item);
+                            if (i === tokenList.length - 1) {
+                              totalTokenList.sort(function (a, b) {
+                                if (a.symbol < b.symbol) {
+                                  return -1;
+                                }
+                                if (a.symbol > b.symbol) {
+                                  return 1;
+                                }
+                                return 0;
+                              });
+                              let uniqTokenList = _.uniqBy(
+                                totalTokenList,
+                                function (e: any) {
+                                  return e.address;
+                                }
+                              );
 
-                            dispatch({
-                              type: ActionType.GET_TOKEN_LIST,
-                              payload: [...totalTokenList],
-                            });
+                              dispatch({
+                                type: ActionType.GET_TOKEN_LIST,
+                                payload: uniqTokenList,
+                              });
+                            }
                           });
                         }
                       } catch (e) {
@@ -151,18 +268,20 @@ export const fetchTokenList = (
 
                         dispatch({
                           type: ActionType.GET_TOKEN_LIST,
-                          payload: [...tokenList],
+                          payload: tokenList,
                         });
                       }
-                      dispatch({
-                        type: ActionType.GET_TOKEN_LIST,
-                        payload: [...totalTokenList],
-                      });
                     } else {
                       if (tokenList) totalTokenList.push(...tokenList);
+                      let uniqTokenList = _.uniqBy(
+                        totalTokenList,
+                        function (e: any) {
+                          return e.address;
+                        }
+                      );
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
-                        payload: [...totalTokenList],
+                        payload: uniqTokenList,
                       });
                     }
                   } else {
@@ -187,54 +306,71 @@ export const fetchTokenList = (
     }
   };
 };
+const getTokenGroup = () => {
+  return localStorage.getItem("tokenGroup");
+};
+export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    let _allToken: any = [];
+    if (getTokenGroup()) {
+      let tg: any = localStorage.getItem("tokenGroup");
+      let parsed = JSON.parse(tg);
+      dispatch({
+        type: ActionType.SET_TOKEN_PERSIST,
+        payload: parsed,
+      });
+    } else {
+      token.forEach((item) => {
+        axios.get(item.url).then((res) => {
+          _allToken.push({
+            id: uuidv4(),
+            name: res.data.name,
+            icon: res.data.logoURI,
+            token: res.data.tokens.length,
+            fetchURI: item.url,
+            isEnabled: item.isEnabled,
+          });
+          dispatch({
+            type: ActionType.SET_TOKEN_PERSIST,
+            payload: _allToken,
+          });
+        });
+      });
+    }
+  };
+};
 
-export const handleTokenListToggle = (id: number) => {
+export const handleCustomTokens = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {
+    if (localStorage.getItem("customTokens")) {
+      let _parsed: any = localStorage.getItem("customTokens");
+      dispatch({
+        type: ActionType.SET_CUSTOM_TOKEN_PERSIST,
+        payload: JSON.parse(_parsed),
+      });
+    }
+  };
+};
+
+export const setCustomToken = (tokens: any, type: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
-      type: ActionType.TOKEN_LIST_TOGGLE,
-      payload: id,
+      type: ActionType.SET_CUSTOM_TOKENS,
+      payload: tokens,
+      calc: type,
     });
   };
 };
 
-export const searchToken = (address: string) => {
-  return async (dispatch: Dispatch<TokenAction>) => {
-    const data = {
-      jsonrpc: "2.0",
-      method: "alchemy_getTokenMetadata",
-      params: [`${address}`],
-      id: 1,
-    };
-    axios
-      .post(
-        "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb",
-        JSON.stringify(data)
-      )
-      .then((res: any) => {
-        if (res.data.result)
-          dispatch({
-            type: ActionType.SET_SEARCHED_TOKEN,
-            payload: { data: res.data.result, message: null },
-          });
-      })
-      .catch((e: any) => {
-        dispatch({
-          type: ActionType.SET_SEARCHED_TOKEN,
-          payload: { data: null, message: "Enter valid token address" },
-        });
-      });
-  };
+export const removeCustomToken = () => {
+  return async (dispatch: Dispatch<TokenAction>) => {};
 };
 
-export const resetList = () => {
+export const resetCustomToken = () => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
-      type: ActionType.GET_TOKEN_LIST,
+      type: ActionType.SET_CUSTOM_TOKEN_PERSIST,
       payload: [],
     });
   };
-};
-
-export const getErcTokenDetail = () => {
-  return async (dispatch: Dispatch<TokenAction>) => {};
 };

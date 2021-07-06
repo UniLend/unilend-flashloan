@@ -1,24 +1,27 @@
 import { ActionType } from "state/action-types";
 import { TokenAction } from "state/actions/tokenManageA";
 
-interface TokenGroupList {
-  id: number;
-  name: string;
-  icon: any;
-  token: number;
-  fetchURI: string;
-  isEnabled: boolean;
-}
+// interface TokenGroupList {
+//   id: number;
+//   name: string;
+//   icon: any;
+//   token: number;
+//   fetchURI: string;
+//   isEnabled: boolean;
+// }
+
 interface TokenManageState {
   tokenList: {
     isRequesting: boolean;
     payload: Array<object> | [];
   };
-  tokenGroupList: TokenGroupList[];
+  tokenByUrl: any;
+  tokenGroupList: any;
   searchedToken: {
     payload: any;
     message: string | null;
   };
+  customTokens: any;
 }
 
 const initialState = {
@@ -30,35 +33,24 @@ const initialState = {
     isRequesting: false,
     payload: [],
   },
-  tokenGroupList: [
+  tokenByUrl: [
     {
-      id: 1,
-      name: "Unilend Token List",
-      icon:
-        "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
-      token: 1,
-      fetchURI: "https://unilend.finance/list.json",
+      url: "https://unilend.finance/list.json",
       isEnabled: true,
     },
-    {
-      id: 2,
-      name: "Gemini Token List",
-      icon: "https://gemini.com/static/images/loader.png",
-      token: 21,
-      fetchURI: "https://www.gemini.com/uniswap/manifest.json",
-      isEnabled: false,
-    },
-    {
-      id: 3,
-      name: "CMC DeFi",
-      icon:
-        "https://cloudflare-ipfs.com/ipfs/QmQAGtNJ2rSGpnP6dh6PPKNSmZL8RTZXmgFwgTdy5Nz5mx/",
-      token: 144,
-      fetchURI:
-        "https://wispy-bird-88a7.uniswap.workers.dev/?url=http://defi.cmc.eth.link",
-      isEnabled: false,
-    },
+    { url: "https://tokens.coingecko.com/uniswap/all.json", isEnabled: false },
   ],
+  tokenGroupList: [
+    // {
+    //   id: 1,
+    //   name: "Unilend Token List",
+    //   icon: "https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png",
+    //   token: 1,
+    //   fetchURI: "https://unilend.finance/list.json",
+    //   isEnabled: true,
+    // },
+  ],
+  customTokens: [],
 };
 
 const TokenManageReducer = (
@@ -76,12 +68,44 @@ const TokenManageReducer = (
       };
       break;
     }
+    case ActionType.SET_CUSTOM_TOKENS: {
+      let updatedState;
+      if (action.calc === "add") {
+        updatedState = [...state.customTokens, action.payload];
+        localStorage.setItem("customTokens", JSON.stringify(updatedState));
+      } else if (action.calc === "delete") {
+        let _tokens = [...state.customTokens];
+        updatedState = _tokens.filter(
+          (item) => item.address !== action.payload
+        );
+        localStorage.setItem("customTokens", JSON.stringify(updatedState));
+      }
+      state = {
+        ...state,
+        customTokens: updatedState,
+      };
+      break;
+    }
+    case ActionType.SET_TOKEN_PERSIST: {
+      state = {
+        ...state,
+        tokenGroupList: action.payload,
+      };
+      break;
+    }
+    case ActionType.SET_CUSTOM_TOKEN_PERSIST: {
+      state = {
+        ...state,
+        customTokens: action.payload,
+      };
+      break;
+    }
     case ActionType.GET_TOKEN_LIST: {
       state = {
         ...state,
         tokenList: {
           isRequesting: false,
-          payload: action.payload ? action.payload : [],
+          payload: action.payload,
         },
       };
       break;
@@ -93,6 +117,7 @@ const TokenManageReducer = (
         }
         return item;
       });
+      localStorage.setItem("tokenGroup", JSON.stringify(array_copy));
       state = {
         ...state,
         tokenGroupList: [...array_copy],

@@ -20,7 +20,23 @@ interface TokenList {
 
 interface setSearchedToken {
   type: ActionType.SET_SEARCHED_TOKEN;
-  payload: { data: any, message: string | null };
+  payload: { data: any; message: string | null };
+}
+
+interface setTokenPersist {
+  type: ActionType.SET_TOKEN_PERSIST;
+  payload: any;
+}
+
+interface setCustomTokens {
+  type: ActionType.SET_CUSTOM_TOKENS;
+  payload: any;
+  calc: any;
+}
+
+interface setCustomTokenPersist {
+  type: ActionType.SET_CUSTOM_TOKEN_PERSIST;
+  payload: any;
 }
 
 export type TokenAction =
@@ -28,4 +44,7 @@ export type TokenAction =
   | TokenList
   | TokenListRequest
   | TokenListToggle
-  | setSearchedToken;
+  | setSearchedToken
+  | setTokenPersist
+  | setCustomTokens
+  | setCustomTokenPersist;

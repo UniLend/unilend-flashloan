@@ -26,7 +26,6 @@ export const handleRedeem = (
         redeemAmount,
         decimal
       );
-      console.log("fullPoolUTokenBalance", fullPoolUTokenBalance);
       let uFullAmount = web3Service.getValue(
         isEth,
         currentProvider,

@@ -25,10 +25,22 @@ interface AssetAddress {
   payload: any;
 }
 
+interface PoolCreationLoading {
+  type: ActionType.IS_POOL_CREATION_LOADING;
+  payload: any;
+}
+
+interface PoolCreatedToggle {
+  type: ActionType.IS_POOL_CREATED;
+  payload: any;
+}
+
 export type PoolAction =
   | CreatePoolSuccess
   | GettingPool
   | PoolSuccess
   | PoolFailed
   | PoolTokenName
-  | AssetAddress;
+  | AssetAddress
+  | PoolCreatedToggle
+  | PoolCreationLoading;

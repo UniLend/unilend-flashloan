@@ -2,6 +2,12 @@
   border: none;
 }
 
+.custom-list-group {
+  &:hover {
+    filter: brightness(0.93);
+  }
+}
+
 .bal-price {
   justify-content: flex-end;
   padding-right: 13px;
@@ -140,7 +146,7 @@
   padding: 0;
 
   &.manage {
-    padding: 0 15px 0 15px;
+    padding: 15px 15px 0 15px;
   }
 }
 .modal-footer {
@@ -249,10 +255,21 @@
 }
 .curr-list-group {
   max-height: 420px;
+  width: 100%;
+  height: 100%;
 }
 .list-desc {
   font-size: smaller;
   color: rgb(136, 141, 155);
+}
+
+.list-user-add {
+  font-size: 10px;
+  display: flex;
+  align-items: flex-end;
+  color: rgb(136, 141, 155);
+  font-size: 10px;
+  padding-left: 10px;
 }
 
 // .footer-btn {
@@ -375,4 +392,10 @@
     opacity: 0.7;
     transition: 0.3s;
   }
+}
+
+.list-row {
+  display: flex;
+  width: 100%;
+  margin: 0;
 }

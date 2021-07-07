@@ -52,39 +52,78 @@ export const searchToken = (
     var qs = `?key=${api}`;
     var selectedNetwork = getDefaultNetwork(networkId);
     if (address.length)
-      axios
-        .get(
-          `https://api.covalenthq.com/v1/${selectedNetwork}/tokens/${address}/nft_metadata/111/${qs}`
-        )
-        .then((res: any) => {
-          if (res?.data?.data === null)
+      if (selectedNetwork === "1") {
+        const data = {
+          jsonrpc: "2.0",
+          method: "alchemy_getTokenMetadata",
+          params: [`${address}`],
+          id: 1,
+        };
+        const _uri =
+          networkId === 3
+            ? "https://eth-ropsten.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb"
+            : "https://eth-mainnet.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb";
+        axios
+          .post(_uri, JSON.stringify(data))
+          .then((res: any) => {
+            if (res.data.result) {
+              let _response = res.data.result;
+              let body = {
+                address: address,
+                decimals: _response.decimals,
+                logoURI: _response.logo,
+                name: _response.name,
+                symbol: _response.symbol,
+                chainId: networkId,
+                isCustomToken: true,
+              };
+              dispatch({
+                type: ActionType.SET_SEARCHED_TOKEN,
+                payload: { data: body, message: null },
+              });
+            }
+          })
+          .catch((e: any) => {
             dispatch({
               type: ActionType.SET_SEARCHED_TOKEN,
-              payload: { data: null, message: null },
+              payload: { data: null, message: "Enter valid token address" },
             });
-          else if (res?.data?.data) {
-            let item = res.data.data.items[0];
-            let body = {
-              address: item.contract_address,
-              decimals: item.contract_decimals,
-              logoURI: item.logo_url,
-              name: item.contract_name,
-              symbol: item.contract_ticker_symbol,
-              chainId: networkId,
-              isCustomToken: true,
-            };
-            dispatch({
-              type: ActionType.SET_SEARCHED_TOKEN,
-              payload: { data: body, message: null },
-            });
-          }
-        })
-        .catch((e: any) => {
-          dispatch({
-            type: ActionType.SET_SEARCHED_TOKEN,
-            payload: { data: null, message: "Enter valid token address" },
           });
-        });
+      } else {
+        axios
+          .get(
+            `https://api.covalenthq.com/v1/${selectedNetwork}/tokens/${address}/nft_metadata/111/${qs}`
+          )
+          .then((res: any) => {
+            if (res?.data?.data === null)
+              dispatch({
+                type: ActionType.SET_SEARCHED_TOKEN,
+                payload: { data: null, message: null },
+              });
+            else if (res?.data?.data) {
+              let item = res.data.data.items[0];
+              let body = {
+                address: item.contract_address,
+                decimals: item.contract_decimals,
+                logoURI: item.logo_url,
+                name: item.contract_name,
+                symbol: item.contract_ticker_symbol,
+                chainId: networkId,
+                isCustomToken: true,
+              };
+              dispatch({
+                type: ActionType.SET_SEARCHED_TOKEN,
+                payload: { data: body, message: null },
+              });
+            }
+          })
+          .catch((e: any) => {
+            dispatch({
+              type: ActionType.SET_SEARCHED_TOKEN,
+              payload: { data: null, message: "Enter valid token address" },
+            });
+          });
+      }
     else {
       dispatch({
         type: ActionType.SET_SEARCHED_TOKEN,

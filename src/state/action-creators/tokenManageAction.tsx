@@ -180,7 +180,13 @@ export const fetchTokenList = (
                                   );
                                   item["balance"] = fullAmount;
                                   item["underlyingBalance"] = underlyingBalance;
-                                  totalTokenList.push(item);
+                                  let exist = totalTokenList.some(
+                                    (t) =>
+                                      t.address.toLowerCase() ===
+                                      item.address.toLowerCase()
+                                  );
+
+                                  if (!exist) totalTokenList.push(item);
                                   if (i === tokenList.length - 1) {
                                     totalTokenList.sort(function (a, b) {
                                       if (a.symbol < b.symbol) {
@@ -209,7 +215,13 @@ export const fetchTokenList = (
                                 tokenList.forEach((item: any, i: number) => {
                                   item["balance"] = "";
                                   item["underlyingBalance"] = "";
-                                  totalTokenList.push(item);
+                                  let exist = totalTokenList.some(
+                                    (t) =>
+                                      t.address.toLowerCase() ===
+                                      item.address.toLowerCase()
+                                  );
+
+                                  if (!exist) totalTokenList.push(item);
                                   if (i === tokenList.length - 1) {
                                     totalTokenList.sort(function (a, b) {
                                       if (a.symbol < b.symbol) {
@@ -238,7 +250,16 @@ export const fetchTokenList = (
                           tokenList.forEach((item: any, i: number) => {
                             item["balance"] = "";
                             item["underlyingBalance"] = "";
-                            totalTokenList.push(item);
+                            // console.log(item.symbol);
+                            let exist = totalTokenList.some((t) => {
+                              return (
+                                t.address.toLowerCase() ===
+                                item.address.toLowerCase()
+                              );
+                            });
+
+                            if (!exist) totalTokenList.push(item);
+
                             if (i === tokenList.length - 1) {
                               totalTokenList.sort(function (a, b) {
                                 if (a.symbol < b.symbol) {
@@ -279,6 +300,7 @@ export const fetchTokenList = (
                           return e.address;
                         }
                       );
+                      console.log(totalTokenList.length, uniqTokenList.length);
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
                         payload: uniqTokenList,

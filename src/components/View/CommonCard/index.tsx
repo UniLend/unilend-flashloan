@@ -269,6 +269,12 @@ const CommonCard: FC<Props> = (props) => {
     airdropSuccess,
   ]);
 
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     removeDuplicateTokens(tokenList);
+  //   }, 5000);
+  // }, []);
+
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId);
   }, [

@@ -5,7 +5,7 @@ import Metamask from "assets/metamask.png";
 import WalletConnectIcon from "assets/walletConnectIcon.svg";
 import CoinbaseWalletIcon from "assets/coinbaseWalletIcon.svg";
 // import PortisIcon from "assets/portisIcon.png";
-import BinanceIcon from "assets/binance.png";
+// import BinanceIcon from "assets/binance.png";
 import "./index.scss";
 import { capitalize } from "components/Helpers";
 import { isMobile } from "react-device-detect";

@@ -75,15 +75,15 @@ const getWalletList = (networkId: number): Wallet[] => {
       link: (window as any).ethereum ? "" : "https://metamask.io/",
     },
     ...(networkId === 1 ? list : []),
-    ...(networkId === 2
-      ? [
-          {
-            id: 6,
-            name: "binanceWallet",
-            icon: BinanceIcon,
-          },
-        ]
-      : []),
+    // ...(networkId === 2
+    //   ? [
+    //       {
+    //         id: 6,
+    //         name: "binanceWallet",
+    //         icon: BinanceIcon,
+    //       },
+    //     ]
+    //   : []),
     // ...(networkId === 3) ? [
     //   {
     //     id:7,

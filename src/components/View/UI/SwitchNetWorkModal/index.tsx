@@ -6,7 +6,7 @@ import SelectedIcon from "assets/circle_done.svg";
 import { NETWORKS } from "components/constants";
 import { capitalize } from "components/Helpers";
 import { useHistory } from "react-router-dom";
-import { setParams } from "state/action-creators";
+// import { setParams } from "state/action-creators";
 interface Props {
   onHide: () => void;
 }

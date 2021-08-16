@@ -12,7 +12,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
-import queryString from "query-string";
+// import queryString from "query-string";
 import { RiskApproval } from "./RiskApproval";
 import { useLocation } from "react-router-dom";
 import { NETWORKS } from "components/constants";

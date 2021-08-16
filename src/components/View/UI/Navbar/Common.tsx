@@ -109,7 +109,7 @@ export const ConnectWalletButton = ({
     <button
       className={`d-flex btn ${
         theme === "dark" && "btn-dark"
-      } btn-custom-secondary`}
+      } btn-custom-wallet-secondary`}
       onClick={onClick}
     >
       {!loading ? (

@@ -2,6 +2,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { FC } from "react";
 import { Button, Col, Container, Modal, Row } from "react-bootstrap";
 import Metamask from "assets/metamask.png";
+import Coin98 from "assets/coin98.png";
 import WalletConnectIcon from "assets/walletConnectIcon.svg";
 import CoinbaseWalletIcon from "assets/coinbaseWalletIcon.svg";
 // import PortisIcon from "assets/portisIcon.png";
@@ -74,6 +75,12 @@ const getWalletList = (networkId: number): Wallet[] => {
       icon: Metamask,
       link: (window as any).ethereum ? "" : "https://metamask.io/",
     },
+    // {
+    //   id: 2,
+    //   name: (window as any).coin98 ? "Coin98" : "Install Coin98",
+    //   icon: Coin98,
+    //   link: (window as any).coin98 ? "" : "https://metamask.io/",
+    // },
     ...(networkId === 1 ? list : []),
     // ...(networkId === 2
     //   ? [

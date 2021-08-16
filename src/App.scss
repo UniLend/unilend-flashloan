@@ -130,6 +130,22 @@
     box-shadow: var(--theme-btn-hover-shadow);
   }
 }
+
+.btn-custom-wallet-secondary {
+  background: #D8353B  !important;
+  color: #fff;
+  font-weight: 900;
+  font-size: smaller;
+  border: none;
+  &:hover,
+  &:active,
+  &:focus {
+    background: #D8353B  !important;
+    box-shadow: #D8353B;
+    color: #fff;
+  }
+}
+
 .btn-theme-icon-header,
 .btn-theme-icon-footer {
   background: transparent !important;

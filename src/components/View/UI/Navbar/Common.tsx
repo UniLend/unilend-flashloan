@@ -115,7 +115,7 @@ export const ConnectWalletButton = ({
       {!loading ? (
         <span>
           <img
-            src={require(`../../../../assets/wallet-${theme}.svg`).default}
+            src={require(`../../../../assets/wallet-dark.svg`).default}
             width="26"
             alt="Wallet"
             className="d-inline-block px-1"

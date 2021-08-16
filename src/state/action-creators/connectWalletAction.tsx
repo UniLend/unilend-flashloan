@@ -20,6 +20,8 @@ import { setTimestamp, toFixed } from "components/Helpers";
 import BigNumber from "bignumber.js";
 import { maticWeb3 } from "ethereum/maticWeb3";
 import { errorHandler } from "index";
+import { bscWeb3 } from "ethereum/bscWeb3";
+import { BscConnector } from "@binance-chain/bsc-connector";
 // import { isMobile } from "react-device-detect";
 // import { maticWeb3 } from "ethereum/maticWeb3";
 
@@ -271,40 +273,55 @@ async function handleWalletConnect(
         break;
       case "binanceWallet":
         try {
-          if ((window as any).ethereum) {
-            const provider = (window as any).ethereum;
-            const chainId = 56;
-            try {
-              await provider.request({
-                method: "wallet_addEthereumChain",
-                params: [
-                  {
-                    chainId: `0x${chainId.toString(16)}`,
-                    chainName: "Smart Chain",
-                    nativeCurrency: {
-                      name: "BNB",
-                      symbol: "bnb",
-                      decimals: 18,
-                    },
-                    rpcUrls: ["https://bsc-dataseed.binance.org/"],
-                    blockExplorerUrls: ["https://bscscan.com/"],
-                  },
-                ],
-              });
-              accounts = await web3Service.getAccounts();
+          if ((window as any).BinanceChain) {
+            const bsc = new BscConnector({
+              supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
+            });
 
-              // if (accounts) {
-              handleMetamask(accounts, dispatch, currentProviders);
-              // }
+            // invoke method on bsc e.g.
+            await bsc.activate();
+            let accounts: any = await bsc.getAccount();
+            console.log(accounts, "accounts");
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [accounts],
+            });
+            await bsc.getChainId();
+          }
+          //   const provider = (window as any).ethereum;
+          //   const chainId = 56;
+          //   try {
+          //     await provider.request({
+          //       method: "wallet_addEthereumChain",
+          //       params: [
+          //         {
+          //           chainId: `0x${chainId.toString(16)}`,
+          //           chainName: "Smart Chain",
+          //           nativeCurrency: {
+          //             name: "BNB",
+          //             symbol: "bnb",
+          //             decimals: 18,
+          //           },
+          //           rpcUrls: ["https://bsc-dataseed.binance.org/"],
+          //           blockExplorerUrls: ["https://bscscan.com/"],
+          //         },
+          //       ],
+          //     });
+          //     accounts = await web3Service.getAccounts();
 
-              return true;
-            } catch (error) {
-              errorHandler.report(error);
-              console.error(error);
+          //     // if (accounts) {
+          //     handleMetamask(accounts, dispatch, currentProviders);
+          //     // }
 
-              return false;
-            }
-          } else {
+          //     return true;
+          // } catch (error) {
+          //   errorHandler.report(error);
+          //   console.error(error);
+
+          //   return false;
+          // }
+          // }
+          else {
             console.error(
               "Can't setup the BSC network on metamask because window.ethereum is undefined"
             );
@@ -964,10 +981,10 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             // }
             break;
           case "binanceWallet":
-            // currentProvider = bscWeb3;
-            // provider = (window as any).BinanceChain;
-            currentProvider = web3;
-            provider = EthProvider;
+            currentProvider = bscWeb3;
+            provider = (window as any).BinanceChain;
+            // currentProvider = web3;
+            // provider = EthProvider;
             break;
           case "maticWallet":
             currentProvider = maticWeb3;

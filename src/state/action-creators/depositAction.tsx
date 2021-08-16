@@ -120,6 +120,7 @@ export const handleDeposit = (
   currentNetwork: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
+    console.log(address);
     dispatch({
       type: ActionType.DEPOSIT_ACTION,
     });
@@ -163,6 +164,7 @@ export const handleDeposit = (
             });
           });
       } else {
+        console.log(address, recieptAddress);
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.deposit(recieptAddress, fullAmount)
           .send({

@@ -15,4 +15,9 @@ interface ActiveCurrency {
   payload: any;
 }
 
-export type SettingAction = Theme | ActiveTab | ActiveCurrency;
+interface Params {
+  type: string;
+  payload: any;
+}
+
+export type SettingAction = Theme | ActiveTab | ActiveCurrency | Params;

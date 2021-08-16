@@ -7,6 +7,7 @@ interface SettingsState {
   theme: string;
   activeTab: string | null;
   activeCurrency: any;
+  params: any;
 }
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
     address: Reciepent,
     decimals: 18,
   },
+  params: {},
 };
 
 const settingsReducer = (
@@ -42,6 +44,8 @@ const settingsReducer = (
       };
     case ActionType.ACTIVE_CURRENCY:
       return { ...state, activeCurrency: action.payload };
+    case ActionType.PARAMS:
+      return { ...state, params: action.payload };
     default:
       return state;
   }

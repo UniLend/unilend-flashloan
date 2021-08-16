@@ -5,14 +5,16 @@ import { Col, Container, Modal, Row } from "react-bootstrap";
 import SelectedIcon from "assets/circle_done.svg";
 import { NETWORKS } from "components/constants";
 import { capitalize } from "components/Helpers";
+import { useHistory } from "react-router-dom";
+import { setParams } from "state/action-creators";
 interface Props {
   onHide: () => void;
 }
 
 const SwitchNetWorkModal: FC<Props> = (props) => {
   const { onHide } = props;
-
-  const { theme } = useTypedSelector((state) => state.settings);
+  const history = useHistory();
+  const { theme, activeTab } = useTypedSelector((state) => state.settings);
   const { selectedNetworkId } = useTypedSelector(
     (state) => state.connectWallet
   );
@@ -38,8 +40,8 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
           <Container>
             <Row>
               {NETWORKS.map((item) => {
-                const logo = require(`../../../../assets/${item.logo}.png`)
-                  .default;
+                const logo =
+                  require(`../../../../assets/${item.logo}.png`).default;
                 return (
                   <Col key={item.id} className="p-3 text-center">
                     <button
@@ -47,6 +49,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                         theme === "dark" && "btn-dark"
                       } btn-custom-secondary btn-switch-pop`}
                       onClick={() => {
+                        history.push(`/${activeTab}`);
                         setSelectedNetworkId(item.id);
                         onHide();
                       }}

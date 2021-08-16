@@ -14,6 +14,8 @@ import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
 import queryString from "query-string";
 import { RiskApproval } from "./RiskApproval";
+import { useLocation } from "react-router-dom";
+import { NETWORKS } from "components/constants";
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
@@ -97,6 +99,8 @@ const CommonCard: FC<Props> = (props) => {
     clearDonateError,
     clearRedeemError,
     clearAirdropError,
+    setParams,
+    setSelectedNetworkId,
   } = useActions();
 
   const {
@@ -106,7 +110,10 @@ const CommonCard: FC<Props> = (props) => {
     depositSuccessMessage,
     depositTransactionHashRecieved,
   } = useTypedSelector((state) => state.deposit);
-  const { activeCurrency } = useTypedSelector((state) => state.settings);
+
+  const { activeCurrency, params } = useTypedSelector(
+    (state) => state.settings
+  );
   const {
     donateContractAddress,
     donateIsApproved,
@@ -228,25 +235,25 @@ const CommonCard: FC<Props> = (props) => {
         return "";
     }
   };
-  useEffect(() => {
-    if (tokenList.payload.length > 0 && props.location.search) {
-      let query: any = queryString.parse(props.location.search);
-      let filteredToken: any = tokenList.payload.filter((item: any) => {
-        return item.address.toLowerCase() === query.token.toLowerCase();
-      });
-      if (filteredToken.length > 0) {
-        setActiveCurrency(filteredToken[0]);
-        networkSwitchHandling(currentProvider);
-        handleModal(false);
-        balanceReset();
-        setPoolPercentage(0);
-        if (accounts.length && currentProvider) {
-          getPool(filteredToken[0].address, currentProvider, accounts[0]);
-        }
-        handleReciepent(filteredToken[0].address);
-      }
-    }
-  }, [tokenList]);
+  // useEffect(() => {
+  //   if (tokenList.payload.length > 0 && props.location.search) {
+  //     let query: any = queryString.parse(props.location.search);
+  //     let filteredToken: any = tokenList.payload.filter((item: any) => {
+  //       return item.address.toLowerCase() === query.token.toLowerCase();
+  //     });
+  //     if (filteredToken.length > 0) {
+  //       setActiveCurrency(filteredToken[0]);
+  //       networkSwitchHandling(currentProvider);
+  //       handleModal(false);
+  //       balanceReset();
+  //       setPoolPercentage(0);
+  //       if (accounts.length && currentProvider) {
+  //         getPool(filteredToken[0].address, currentProvider, accounts[0]);
+  //       }
+  //       handleReciepent(filteredToken[0].address);
+  //     }
+  //   }
+  // }, [tokenList]);
   useEffect(() => {
     if (
       isDepositSuccess ||
@@ -285,6 +292,40 @@ const CommonCard: FC<Props> = (props) => {
     assertAddress,
     donateContractAddress,
   ]);
+  const location = useLocation();
+  useEffect(() => {
+    if (location.search) {
+      let search = location.search;
+      let texts = search.slice(1).split("&");
+      let object = {};
+      texts.forEach((item) => {
+        let sear = item.split("=");
+        if ((sear[0] !== "" && sear[0] === "token") || sear[0] === "network")
+          object[sear[0]] = sear[1];
+      });
+      setParams(object);
+    } else {
+      setParams({});
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (params?.network) {
+      const networkInfo = NETWORKS.filter(
+        (item) => item.label.toLowerCase() === params.network.toLowerCase()
+      )[0];
+      if (networkInfo) setSelectedNetworkId(networkInfo.id);
+    }
+    if (params?.token && tokenList.payload.length) {
+      const token = tokenList.payload.filter((item: any) => {
+        return item.address.toLowerCase() === params.token.toLowerCase();
+      });
+      if (token.length) {
+        setActiveCurrency(token[0]);
+      }
+    }
+  }, [params, tokenList]);
+
   const handleToast = (show: boolean) => {
     setAlertInfo({
       show,

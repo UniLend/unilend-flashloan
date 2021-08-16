@@ -43,3 +43,12 @@ export const setActiveTab = (activeTab: string | null) => ({
   type: ActionType.SET_ACTIVE_TAB,
   payload: activeTab,
 });
+
+export const setParams = (item: any) => {
+  return async (dispatch: Dispatch<SettingAction>) => {
+    dispatch({
+      type: ActionType.PARAMS,
+      payload: item,
+    });
+  };
+};

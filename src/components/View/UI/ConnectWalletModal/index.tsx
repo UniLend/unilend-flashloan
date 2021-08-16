@@ -91,6 +91,15 @@ const getWalletList = (networkId: number): Wallet[] => {
     //       },
     //     ]
     //   : []),
+    ...(networkId === 2
+      ? [
+          // {
+          //   id: 6,
+          //   name: "binanceWallet",
+          //   icon: BinanceIcon,
+          // },
+        ]
+      : []),
     // ...(networkId === 3) ? [
     //   {
     //     id:7,

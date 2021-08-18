@@ -156,122 +156,129 @@ async function handleWalletConnect(
     switch (wallet.name) {
       case "metamask":
         //// Ethererum ////
-        if (networkType === 1) {
-          try {
-            accounts = await web3Service.getAccounts();
-            handleMetamask(accounts, dispatch, currentProviders);
-          } catch (e) {
-            errorHandler.report(e);
-            console.log(e);
-          }
-        } else if (networkType === 2) {
-          try {
-            accounts = await web3Service.getAccounts();
-            if (
-              (window as any).ethereum &&
-              (window as any).ethereum.selectedAddress
-            ) {
-              const provider = (window as any).ethereum;
-              const chainId = 56;
-              try {
-                await provider.request({
-                  method: "wallet_addEthereumChain",
-                  params: [
-                    {
-                      chainId: `0x${chainId.toString(16)}`,
-                      chainName: "Smart Chain",
-                      nativeCurrency: {
-                        name: "BNB",
-                        symbol: "bnb",
-                        decimals: 18,
-                      },
-                      rpcUrls: ["https://bsc-dataseed.binance.org/"],
-                      blockExplorerUrls: ["https://bscscan.com/"],
-                    },
-                  ],
-                });
-                accounts = await web3Service.getAccounts();
-
-                // if (accounts) {
-                handleMetamask(accounts, dispatch, currentProviders);
-                // }
-
-                return true;
-              } catch (error) {
-                errorHandler.report(error);
-
-                console.error(error);
-
-                return false;
-              }
-            } else {
-              console.error(
-                "Can't setup the BSC network on metamask because window.ethereum is undefined"
-              );
-              dispatch({
-                type: ActionType.CONNECT_WALLET_ERROR,
-                payload: "Connection Failed",
-              });
-              return false;
+        if (!(window as any).coin98) {
+          if (networkType === 1) {
+            try {
+              accounts = await web3Service.getAccounts();
+              handleMetamask(accounts, dispatch, currentProviders);
+            } catch (e) {
+              errorHandler.report(e);
+              console.log(e);
             }
-          } catch (e) {
-            errorHandler.report(e);
-            console.log(e);
-          }
-        } else if (networkType === 3) {
-          try {
-            if ((window as any).ethereum) {
-              const provider = (window as any).ethereum;
-              const chainId = 137;
-              try {
-                await provider.request({
-                  method: "wallet_addEthereumChain",
-                  params: [
-                    {
-                      chainId: `0x${chainId.toString(16)}`,
-                      chainName: "Matic Mainnet",
-                      nativeCurrency: {
-                        name: "Matic",
-                        symbol: "matic",
-                        decimals: 18,
+          } else if (networkType === 2) {
+            try {
+              accounts = await web3Service.getAccounts();
+              if (
+                (window as any).ethereum &&
+                (window as any).ethereum.selectedAddress
+              ) {
+                const provider = (window as any).ethereum;
+                const chainId = 56;
+                try {
+                  await provider.request({
+                    method: "wallet_addEthereumChain",
+                    params: [
+                      {
+                        chainId: `0x${chainId.toString(16)}`,
+                        chainName: "Smart Chain",
+                        nativeCurrency: {
+                          name: "BNB",
+                          symbol: "bnb",
+                          decimals: 18,
+                        },
+                        rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                        blockExplorerUrls: ["https://bscscan.com/"],
                       },
-                      rpcUrls: ["https://rpc-mainnet.maticvigil.com/"],
-                      blockExplorerUrls: ["https://explorer.matic.network/"],
-                    },
-                  ],
+                    ],
+                  });
+                  accounts = await web3Service.getAccounts();
+
+                  // if (accounts) {
+                  handleMetamask(accounts, dispatch, currentProviders);
+                  // }
+
+                  return true;
+                } catch (error) {
+                  errorHandler.report(error);
+
+                  console.error(error);
+
+                  return false;
+                }
+              } else {
+                console.error(
+                  "Can't setup the BSC network on metamask because window.ethereum is undefined"
+                );
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_ERROR,
+                  payload: "Connection Failed",
                 });
-                accounts = await web3Service.getAccounts();
-                handleMetamask(accounts, dispatch, currentProviders);
-                return true;
-              } catch (e) {
-                errorHandler.report(e);
-                console.error(e);
                 return false;
               }
-            } else {
+            } catch (e) {
+              errorHandler.report(e);
+              console.log(e);
+            }
+          } else if (networkType === 3) {
+            try {
               if ((window as any).ethereum) {
-                accounts = await web3Service.getAccounts();
+                const provider = (window as any).ethereum;
+                const chainId = 137;
+                try {
+                  await provider.request({
+                    method: "wallet_addEthereumChain",
+                    params: [
+                      {
+                        chainId: `0x${chainId.toString(16)}`,
+                        chainName: "Matic Mainnet",
+                        nativeCurrency: {
+                          name: "Matic",
+                          symbol: "matic",
+                          decimals: 18,
+                        },
+                        rpcUrls: ["https://rpc-mainnet.maticvigil.com/"],
+                        blockExplorerUrls: ["https://explorer.matic.network/"],
+                      },
+                    ],
+                  });
+                  accounts = await web3Service.getAccounts();
+                  handleMetamask(accounts, dispatch, currentProviders);
+                  return true;
+                } catch (e) {
+                  errorHandler.report(e);
+                  console.error(e);
+                  return false;
+                }
+              } else {
+                if ((window as any).ethereum) {
+                  accounts = await web3Service.getAccounts();
 
-                // if (accounts) {
-                handleMetamask(accounts, dispatch, currentProviders);
+                  // if (accounts) {
+                  handleMetamask(accounts, dispatch, currentProviders);
+                }
+                console.error(
+                  "Can't setup the Matic network on metamask because window.ethereum is undefined"
+                );
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_ERROR,
+                  payload: "Connection Failed",
+                });
+                return false;
               }
-              console.error(
-                "Can't setup the Matic network on metamask because window.ethereum is undefined"
-              );
+            } catch (e) {
+              errorHandler.report(e);
+              console.log(e);
               dispatch({
                 type: ActionType.CONNECT_WALLET_ERROR,
-                payload: "Connection Failed",
+                payload: e.message,
               });
-              return false;
             }
-          } catch (e) {
-            errorHandler.report(e);
-            console.log(e);
-            dispatch({
-              type: ActionType.CONNECT_WALLET_ERROR,
-              payload: e.message,
-            });
           }
+        } else {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: "error",
+          });
         }
         break;
       case "binanceWallet":
@@ -493,15 +500,20 @@ async function handleWalletConnect(
         }
         break;
       case "coin98":
-        // if (networkType === 1) {
-        try {
-          accounts = await web3Service.getAccounts();
-          handleMetamask(accounts, dispatch, currentProviders);
-        } catch (e) {
-          errorHandler.report(e);
-          console.log(e);
+        if ((window as any).coin98) {
+          try {
+            accounts = await web3Service.getAccounts();
+            handleMetamask(accounts, dispatch, currentProviders);
+          } catch (e) {
+            errorHandler.report(e);
+            console.log(e);
+          }
+        } else {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: "error",
+          });
         }
-        // }
         break;
       default:
         accounts = await web3Service.getAccounts();

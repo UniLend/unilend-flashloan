@@ -265,6 +265,10 @@ const CommonCard: FC<Props> = (props) => {
   ]);
 
   useEffect(() => {
+    console.log(activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
     function checkTx(tx) {
       return (currentProvider as any).eth
         .getTransactionReceipt(tx)
@@ -852,7 +856,20 @@ const CommonCard: FC<Props> = (props) => {
       }
     }
   };
-
+  const getCardTitle = () => {
+    switch (activeTab) {
+      case "lend":
+        return "Lend";
+      case "redeem":
+        return "Redeem";
+      case "reward":
+        return "Give Reward";
+      case "airdrop":
+        return "Give Airdrop";
+      default:
+        return "Lend";
+    }
+  };
   return (
     <>
       {/* {accounts.length &&
@@ -870,84 +887,79 @@ const CommonCard: FC<Props> = (props) => {
       )} */}
       <div className="network-warning">{networkMessage()}</div>
 
-      {activeTab && (
-        <ContentCard title={`${capitalize(activeTab)}`}>
-          <div className="swap-root">
-            <FieldCard
-              onF1Change={(e) => {
-                setAmount(e.target.value);
-                if (redeemMax) {
-                  setRedeemMax(false);
-                }
-              }}
-              onRedeemMax={handleRedeemMax}
-              handleModelOpen={() => handleModal(true)}
-              fieldLabel="Amount"
-              fieldValue={amount}
-              setFieldValue={setAmount}
-              fieldType="text"
-              selectLabel={
-                activeTab === "redeem" ? poolTokenBalance : userTokenBalance
+      <ContentCard title={`${getCardTitle()}`}>
+        <div className="swap-root">
+          <FieldCard
+            onF1Change={(e) => {
+              setAmount(e.target.value);
+              if (redeemMax) {
+                setRedeemMax(false);
               }
-              selectValue={activeCurrency.symbol ? activeCurrency.symbol : ""}
-              selectedLogo={
-                activeCurrency.logoURI ? activeCurrency.logoURI : ""
-              }
-            />
-            {(activeTab === "reward" || activeTab === "airdrop") &&
-            activeCurrency.symbol !== "Select Token" &&
-            amount !== "" &&
-            parseFloat(amount) > 0 ? (
-              <RiskApproval
-                activeTab={activeTab}
-                isChecked={depositChecked}
-                onChecked={() => {
-                  setDepositChecked(!depositChecked);
-                }}
-              />
-            ) : (
-              ""
-            )}
-            <MainButton
-              isEth={activeCurrency.symbol === "ETH"}
-              decimal={activeCurrency.decimals}
-              amount={amount}
-              actionName={`${
-                activeTab === "lend"
-                  ? capitalize("deposit")
-                  : capitalize(activeTab)
-              }`}
+            }}
+            onRedeemMax={handleRedeemMax}
+            handleModelOpen={() => handleModal(true)}
+            fieldLabel="Amount"
+            fieldValue={amount}
+            setFieldValue={setAmount}
+            fieldType="text"
+            selectLabel={
+              activeTab === "redeem" ? poolTokenBalance : userTokenBalance
+            }
+            selectValue={activeCurrency.symbol ? activeCurrency.symbol : ""}
+            selectedLogo={activeCurrency.logoURI ? activeCurrency.logoURI : ""}
+          />
+          {(activeTab === "reward" || activeTab === "airdrop") &&
+          activeCurrency.symbol !== "Select Token" &&
+          amount !== "" &&
+          parseFloat(amount) > 0 ? (
+            <RiskApproval
+              activeTab={activeTab}
               isChecked={depositChecked}
-              handleAmount={() => {
-                if (activeCurrency.symbol !== "Select Token") handleAmount();
+              onChecked={() => {
+                setDepositChecked(!depositChecked);
               }}
             />
-            {(activeTab === "lend" || activeTab === "redeem") &&
-            activeCurrency.symbol !== "Select Token" ? (
-              <div className="price_head">
-                <div className="price_aa">
-                  <CurrentApy />
-                  <TotalPoolLiquidity />
-                  <YourPoolShare />
-                  <YourLiquidity />
-                </div>
+          ) : (
+            ""
+          )}
+          <MainButton
+            isEth={activeCurrency.symbol === "ETH"}
+            decimal={activeCurrency.decimals}
+            amount={amount}
+            actionName={`${
+              activeTab === "lend"
+                ? capitalize("deposit")
+                : capitalize(activeTab ?? "lend")
+            }`}
+            isChecked={depositChecked}
+            handleAmount={() => {
+              if (activeCurrency.symbol !== "Select Token") handleAmount();
+            }}
+          />
+          {(activeTab === "lend" || activeTab === "redeem") &&
+          activeCurrency.symbol !== "Select Token" ? (
+            <div className="price_head">
+              <div className="price_aa">
+                <CurrentApy />
+                <TotalPoolLiquidity />
+                <YourPoolShare />
+                <YourLiquidity />
               </div>
-            ) : (
-              ""
-            )}
-            {activeTab === "reward" &&
-              activeCurrency.symbol !== "Select Token" && (
-                <div className="price_head">
-                  <div className="price_aa">
-                    <CurrentApy />
-                    <RewardAvailable />
-                    <RewardRate />
-                  </div>
-                </div>
-              )}
-          </div>
-        </ContentCard>
-      )}
+            </div>
+          ) : (
+            ""
+          )}
+          {activeTab === "reward" && activeCurrency.symbol !== "Select Token" && (
+            <div className="price_head">
+              <div className="price_aa">
+                <CurrentApy />
+                <RewardAvailable />
+                <RewardRate />
+              </div>
+            </div>
+          )}
+        </div>
+      </ContentCard>
       {modalInfo.show && activeTab && (
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}

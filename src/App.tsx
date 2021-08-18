@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import "./theme.scss";
 import "./App.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import LoadingPage from "components/View/UI/LoadingPage/LoadingPage";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Layout from "components/Layout/Layout";
 import dotEnv from "dotenv";
 // import useWalletConnect from "hooks/useWalletConnect";
@@ -15,6 +15,8 @@ import AlertImg from "assets/warning.svg";
 import BigNumber from "bignumber.js";
 import { errorHandler } from "index";
 import { useActions } from "hooks/useActions";
+import { SettingAction } from "state/actions/settingsA";
+import { useDispatch } from "react-redux";
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
@@ -31,6 +33,7 @@ function App() {
   const [loading, setLoading] = useState<Boolean>(true);
 
   const [alertShow, setAlertShow] = useState<Boolean>(true);
+  const history = useHistory();
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
   const { tokenByUrl } = useTypedSelector((state) => state.tokenManage);
@@ -41,8 +44,18 @@ function App() {
     selectedNetworkId,
     connectedWallet,
   } = useWalletConnect();
+  const { setActiveTab } = useActions();
+
+  const dispatch = useDispatch<Dispatch<SettingAction>>();
 
   useEffect(() => {
+    dispatch(setActiveTab(history.location.pathname.slice(1)));
+  }, [history]);
+
+  useEffect(() => {
+    if (localStorage.getItem("activeTab")) {
+      dispatch(setActiveTab(localStorage.getItem("activeTab")));
+    }
     dotEnv.config();
     handleCustomTokens();
     setTimeout(() => {

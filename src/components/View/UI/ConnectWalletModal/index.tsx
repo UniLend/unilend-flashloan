@@ -76,14 +76,14 @@ const getWalletList = (networkId: number): Wallet[] => {
       icon: Metamask,
       link: (window as any).ethereum ? "" : "https://metamask.io/",
     },
-    {
-      id: 101,
-      name: "coin98",
-      icon: Coin98,
-      link: (window as any).coin98
-        ? ""
-        : "https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg?hl=en",
-    },
+    // {
+    //   id: 101,
+    //   name: "coin98",
+    //   icon: Coin98,
+    //   link: (window as any).coin98
+    //     ? ""
+    //     : "https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg?hl=en",
+    // },
     // {
     //   id: 2,
     //   name: (window as any).coin98 ? "Coin98" : "Install Coin98",

@@ -106,7 +106,9 @@ const Manage: FC<Props> = (props) => {
           </Button>
         )}
       </Container>
-      {activeSubTab === "list" ? (
+      {activeSubTab === "list" &&
+      selectedNetworkId !== 3 &&
+      selectedNetworkId !== 2 ? (
         <>
           <div className="list-container">
             {/* <div className="list-search-container">

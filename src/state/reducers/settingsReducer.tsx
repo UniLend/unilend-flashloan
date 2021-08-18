@@ -12,9 +12,7 @@ interface SettingsState {
 
 const initialState = {
   theme: localStorage.getItem("theme") || "dark",
-  activeTab: localStorage.getItem("activeTab")
-    ? localStorage.getItem("activeTab")
-    : "lend",
+  activeTab: "lend",
   activeCurrency: {
     name: "Select Token",
     logoURI: icon,

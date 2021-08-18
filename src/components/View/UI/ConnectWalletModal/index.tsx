@@ -2,7 +2,7 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import { FC } from "react";
 import { Button, Col, Container, Modal, Row } from "react-bootstrap";
 import Metamask from "assets/metamask.png";
-// import Coin98 from "assets/coin98.png";
+import Coin98 from "assets/coin98.png";
 import WalletConnectIcon from "assets/walletConnectIcon.svg";
 import CoinbaseWalletIcon from "assets/coinbaseWalletIcon.svg";
 // import PortisIcon from "assets/portisIcon.png";

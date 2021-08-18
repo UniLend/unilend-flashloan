@@ -15,6 +15,8 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { RiskApproval } from "./RiskApproval";
 import { useLocation } from "react-router-dom";
 import { NETWORKS } from "components/constants";
+import cantFind from "assets/cantFind.svg";
+
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null;
 }
@@ -784,7 +786,9 @@ const CommonCard: FC<Props> = (props) => {
       </span>
     </div>
   );
-
+  function addDefaultSrc(ev) {
+    ev.target.src = cantFind;
+  }
   const YourLiquidity = () => (
     <div className="price-list">
       <p>Your Liquidity</p>
@@ -794,7 +798,12 @@ const CommonCard: FC<Props> = (props) => {
         ) : walletConnected && poolTokenBalance !== "" ? (
           <>
             <span>{poolTokenBalance.toLocaleString()}</span>
-            <img src={activeCurrency.logoURI} alt="logo" width="13" />
+            <img
+              src={activeCurrency.logoURI}
+              alt="logo"
+              onError={addDefaultSrc}
+              width="13"
+            />
             <span>{activeCurrency.symbol}</span>
           </>
         ) : (

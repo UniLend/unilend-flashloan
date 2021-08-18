@@ -6,6 +6,7 @@ import { floatRegExp } from "components/Helpers/index";
 import BigNumber from "bignumber.js";
 // import { useActions } from "hooks/useActions";
 // import useWalletConnect from "hooks/useWalletConnect";
+import cantFind from "assets/cantFind.svg";
 
 interface Props {
   fieldLabel: String;
@@ -40,6 +41,9 @@ const FieldCard: FC<Props> = (props) => {
       // setInputValue(inputField);
     }
   };
+  function addDefaultSrc(ev) {
+    ev.target.src = cantFind;
+  }
   return (
     <>
       <div className={`${theme} card field-card`}>
@@ -97,6 +101,7 @@ const FieldCard: FC<Props> = (props) => {
                       className="curr-image"
                       src={props.selectedLogo}
                       alt=""
+                      onError={addDefaultSrc}
                     />
                   )}
                   <p className="curr-text">{props.selectValue}</p>

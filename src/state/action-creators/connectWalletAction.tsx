@@ -168,10 +168,8 @@ async function handleWalletConnect(
           } else if (networkType === 2) {
             try {
               accounts = await web3Service.getAccounts();
-              if (
-                (window as any).ethereum &&
-                (window as any).ethereum.selectedAddress
-              ) {
+              console.log(accounts, (window as any).ethereum);
+              if ((window as any).ethereum) {
                 const provider = (window as any).ethereum;
                 const chainId = 56;
                 try {

@@ -12,7 +12,6 @@ import { useTypedSelector } from "hooks/useTypedSelector";
 import TransactionPopup from "../UI/TransactionLoaderPopup/TransactionLoader";
 import AlertToast from "../UI/AlertToast/AlertToast";
 import { RouteComponentProps, withRouter } from "react-router";
-import queryString from "query-string";
 import { RiskApproval } from "./RiskApproval";
 import { useLocation } from "react-router-dom";
 import { NETWORKS } from "components/constants";
@@ -101,14 +100,18 @@ const CommonCard: FC<Props> = (props) => {
     clearAirdropError,
     setParams,
     setSelectedNetworkId,
+    setDepositSuccess,
+    setDonateSuccess,
+    setRedeemSuccess,
+    setAirdropSuccess,
   } = useActions();
-
   const {
     isDepositApproved: isApproved,
     isDepositSuccess,
     depositErrorMessage,
     depositSuccessMessage,
     depositTransactionHashRecieved,
+    depositTransactionHash,
   } = useTypedSelector((state) => state.deposit);
 
   const { activeCurrency, params } = useTypedSelector(
@@ -121,18 +124,21 @@ const CommonCard: FC<Props> = (props) => {
     donateErrorMessage,
     donateSuccessMessage,
     donateTransactionHashRecieved,
+    donateTransactionHash,
   } = useTypedSelector((state) => state.donate);
   const {
     redeemSuccess,
     redeemErrorMessage,
     redeemTransactionHashReceived,
     redeemSuccessMessage,
+    redeemTransactionHash,
   } = useTypedSelector((state) => state.redeem);
   const {
     airdropSuccess,
     airdropTransactionHashReceived,
     airdropErrorMessage,
     airdropSuccessMessage,
+    airdropTransactionHash,
   } = useTypedSelector((state) => state.airdrop);
   const { tokenGroupList, tokenList, customTokens } = useTypedSelector(
     (state) => state.tokenManage
@@ -151,7 +157,7 @@ const CommonCard: FC<Props> = (props) => {
       getPooluTokenBalance(
         currentProvider,
         accounts[0],
-        receipentAddress,
+        activeCurrency.address,
         activeCurrency.decimals,
         selectedNetworkId
       );
@@ -160,7 +166,7 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           accounts[0],
           assertAddress,
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.decimals,
           selectedNetworkId
         );
@@ -168,7 +174,7 @@ const CommonCard: FC<Props> = (props) => {
         getUserTokenBalance(
           currentProvider,
           accounts[0],
-          receipentAddress,
+          activeCurrency.address,
           assertAddress,
           activeCurrency.decimals
         );
@@ -190,7 +196,7 @@ const CommonCard: FC<Props> = (props) => {
       getRewardReleaseRatePerDay(
         currentProvider,
         donateContractAddress,
-        receipentAddress,
+        activeCurrency.address,
         activeCurrency.decimals
       );
     if (
@@ -201,7 +207,7 @@ const CommonCard: FC<Props> = (props) => {
       getRewardPoolBalance(
         currentProvider,
         donateContractAddress,
-        receipentAddress,
+        activeCurrency.address,
         activeCurrency.decimals
       );
     }
@@ -235,25 +241,7 @@ const CommonCard: FC<Props> = (props) => {
         return "";
     }
   };
-  // useEffect(() => {
-  //   if (tokenList.payload.length > 0 && props.location.search) {
-  //     let query: any = queryString.parse(props.location.search);
-  //     let filteredToken: any = tokenList.payload.filter((item: any) => {
-  //       return item.address.toLowerCase() === query.token.toLowerCase();
-  //     });
-  //     if (filteredToken.length > 0) {
-  //       setActiveCurrency(filteredToken[0]);
-  //       networkSwitchHandling(currentProvider);
-  //       handleModal(false);
-  //       balanceReset();
-  //       setPoolPercentage(0);
-  //       if (accounts.length && currentProvider) {
-  //         getPool(filteredToken[0].address, currentProvider, accounts[0]);
-  //       }
-  //       handleReciepent(filteredToken[0].address);
-  //     }
-  //   }
-  // }, [tokenList]);
+
   useEffect(() => {
     if (
       isDepositSuccess ||
@@ -276,11 +264,80 @@ const CommonCard: FC<Props> = (props) => {
     airdropSuccess,
   ]);
 
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     removeDuplicateTokens(tokenList);
-  //   }, 5000);
-  // }, []);
+  useEffect(() => {
+    function checkTx(tx) {
+      return (currentProvider as any).eth
+        .getTransactionReceipt(tx)
+        .then((res) => {
+          return res;
+        });
+    }
+    if (connectedWallet && JSON.parse(connectedWallet).name === "coin98") {
+      if (activeTab === "lend" && depositTransactionHash) {
+        let interval;
+        if (!isDepositSuccess) {
+          interval = setInterval(async () => {
+            console.log("progressing");
+            let receipt = await checkTx(depositTransactionHash);
+            if (receipt) {
+              setDepositSuccess();
+            }
+          }, 120000);
+        } else {
+          clearTimeout(interval);
+        }
+      }
+      if (activeTab === "reward" && donateTransactionHash) {
+        let interval;
+        if (!donateSuccess) {
+          interval = setInterval(async () => {
+            let receipt = await checkTx(depositTransactionHash);
+            if (receipt) {
+              setDonateSuccess();
+            }
+          }, 120000);
+        } else {
+          clearTimeout(interval);
+        }
+      }
+      if (activeTab === "redeem" && redeemTransactionHash) {
+        let interval;
+        if (!redeemSuccess) {
+          interval = setInterval(async () => {
+            let receipt = await checkTx(redeemTransactionHash);
+            if (receipt) {
+              setRedeemSuccess();
+            }
+          }, 120000);
+        } else {
+          clearTimeout(interval);
+        }
+      }
+      if (activeTab === "airdrop" && airdropTransactionHash) {
+        let interval;
+        if (!airdropSuccess) {
+          interval = setInterval(async () => {
+            let receipt = await checkTx(airdropTransactionHash);
+            if (receipt) {
+              setAirdropSuccess();
+            }
+          }, 120000);
+        } else {
+          clearTimeout(interval);
+        }
+      }
+    }
+  }, [
+    activeTab,
+    depositTransactionHash,
+    donateTransactionHash,
+    redeemTransactionHash,
+    airdropTransactionHash,
+    isDepositSuccess,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ]);
 
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId);
@@ -315,6 +372,7 @@ const CommonCard: FC<Props> = (props) => {
         (item) => item.label.toLowerCase() === params.network.toLowerCase()
       )[0];
       if (networkInfo) setSelectedNetworkId(networkInfo.id);
+      handleTokenBalance();
     }
     if (params?.token && tokenList.payload.length) {
       const token = tokenList.payload.filter((item: any) => {
@@ -323,6 +381,7 @@ const CommonCard: FC<Props> = (props) => {
       if (token.length) {
         setActiveCurrency(token[0]);
       }
+      handleTokenBalance();
     }
   }, [params, tokenList]);
 
@@ -401,7 +460,7 @@ const CommonCard: FC<Props> = (props) => {
       getCurrentAPY(
         currentProvider,
         donateContractAddress,
-        receipentAddress,
+        activeCurrency.address,
         activeCurrency.decimals,
         totalDepositedTokens,
         totalTokensInRewardPool
@@ -440,7 +499,7 @@ const CommonCard: FC<Props> = (props) => {
       checkAllowance(
         currentProvider,
         accounts[0],
-        receipentAddress,
+        activeCurrency.address,
         selectedNetworkId
       );
     } else if (
@@ -452,7 +511,7 @@ const CommonCard: FC<Props> = (props) => {
         currentProvider,
         accounts[0],
         donateContractAddress,
-        receipentAddress
+        activeCurrency.address
       );
     }
   }, [
@@ -497,7 +556,7 @@ const CommonCard: FC<Props> = (props) => {
       if (activeCurrency.symbol !== "Select Token") {
         getPoolLiquidity(
           currentProvider,
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals,
           selectedNetworkId
@@ -596,7 +655,7 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           amount,
           accounts[0],
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals,
           selectedNetworkId
@@ -608,7 +667,7 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           amount,
           accounts[0],
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.symbol === "ETH",
           activeCurrency.decimals,
           redeemMax,
@@ -621,7 +680,7 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           amount,
           accounts[0],
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.symbol === "MATIC",
           activeCurrency.decimals
         );
@@ -633,7 +692,7 @@ const CommonCard: FC<Props> = (props) => {
           currentProvider,
           amount,
           accounts[0],
-          receipentAddress,
+          activeCurrency.address,
           activeCurrency.symbol === "MATIC",
           activeCurrency.decimals,
           selectedNetworkId

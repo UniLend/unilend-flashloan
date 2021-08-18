@@ -6,6 +6,12 @@ import { Dispatch } from "redux";
 import { ActionType } from "state/action-types";
 import { RedeemAction } from "state/actions/redeemA";
 
+export const setRedeemSuccess = () => {
+  return async (dispatch: Dispatch<RedeemAction>) => {
+    dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+  };
+};
+
 export const handleRedeem = (
   currentProvider: any,
   redeemAmount: any,

@@ -6,6 +6,14 @@ import { Dispatch } from "react";
 import { ActionType } from "state/action-types";
 import { AirdropAction } from "state/actions/airdropA";
 
+export const setAirdropSuccess = () => {
+  return async (dispatch: Dispatch<AirdropAction>) => {
+    dispatch({
+      type: ActionType.AIRDROP_SUCCESS,
+    });
+  };
+};
+
 export const handleAirdrop = (
   currentProvider: any,
   amount: any,

@@ -81,10 +81,12 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
     window.location.reload();
   });
   provider.on("accountsChanged", function (accounts: string) {
-    dispatch({
-      type: ActionType.CONNECT_WALLET_SUCCESS,
-      payload: [accounts[0]],
-    });
+    if (accounts) {
+      dispatch({
+        type: ActionType.CONNECT_WALLET_SUCCESS,
+        payload: [accounts[0]],
+      });
+    }
   });
   provider.on("message", (message: any) => {
     // console.log(message);
@@ -164,6 +166,7 @@ async function handleWalletConnect(
           }
         } else if (networkType === 2) {
           try {
+            accounts = await web3Service.getAccounts();
             if (
               (window as any).ethereum &&
               (window as any).ethereum.selectedAddress
@@ -488,6 +491,17 @@ async function handleWalletConnect(
             payload: err.message,
           });
         }
+        break;
+      case "coin98":
+        // if (networkType === 1) {
+        try {
+          accounts = await web3Service.getAccounts();
+          handleMetamask(accounts, dispatch, currentProviders);
+        } catch (e) {
+          errorHandler.report(e);
+          console.log(e);
+        }
+        // }
         break;
       default:
         accounts = await web3Service.getAccounts();
@@ -983,11 +997,13 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
           case "binanceWallet":
             currentProvider = bscWeb3;
             provider = (window as any).BinanceChain;
-            // currentProvider = web3;
-            // provider = EthProvider;
             break;
           case "maticWallet":
             currentProvider = maticWeb3;
+            provider = EthProvider;
+            break;
+          case "coin98":
+            currentProvider = web3;
             provider = EthProvider;
             break;
           default:

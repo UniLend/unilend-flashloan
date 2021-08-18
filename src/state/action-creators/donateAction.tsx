@@ -127,7 +127,14 @@ export const donateApprove = (
     }
   };
 };
-
+export const setDonateSuccess = () => {
+  return async (dispatch: Dispatch<DonateAction>) => {
+    dispatch({
+      type: ActionType.DONATE_SUCCESS,
+      payload: true,
+    });
+  };
+};
 export const handleDonate = (
   currentProvider: any,
   donateAmount: any,

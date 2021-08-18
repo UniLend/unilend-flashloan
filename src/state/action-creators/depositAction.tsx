@@ -109,6 +109,14 @@ export const depositApprove = (
     }
   };
 };
+export const setDepositSuccess = () => {
+  return async (dispatch: Dispatch<DepositAction>) => {
+    dispatch({
+      type: ActionType.DEPOSIT_SUCCESS,
+      payload: true,
+    });
+  };
+};
 
 export const handleDeposit = (
   currentProvider: any,
@@ -178,6 +186,8 @@ export const handleDeposit = (
             });
           })
           .on("transactionHash", (hash: any) => {
+            console.log(hash);
+
             dispatch({
               type: ActionType.DEPOSIT_TRANSACTION_HASH,
               payload: hash,

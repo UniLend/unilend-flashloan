@@ -62,7 +62,7 @@ const initialState = {
   rewardReleaseRate: "",
   rewardReleaseRateLoading: false,
   activeNetWork: "",
-  networkId: "1",
+  networkId: "",
   currentApy: "",
   currentApyLoading: false,
   totalTokensInRewardPool: "",

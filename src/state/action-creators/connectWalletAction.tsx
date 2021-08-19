@@ -168,7 +168,6 @@ async function handleWalletConnect(
           } else if (networkType === 2) {
             try {
               accounts = await web3Service.getAccounts();
-              console.log(accounts, (window as any).ethereum);
               if ((window as any).ethereum) {
                 const provider = (window as any).ethereum;
                 const chainId = 56;
@@ -289,7 +288,6 @@ async function handleWalletConnect(
             // invoke method on bsc e.g.
             await bsc.activate();
             let accounts: any = await bsc.getAccount();
-            console.log(accounts, "accounts");
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [accounts],

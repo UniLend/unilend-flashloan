@@ -162,7 +162,7 @@ export const fetchTokenList = (
   return async (dispatch: Dispatch<TokenAction>) => {
     let timestamp = setTimestamp();
     let totalTokenList: any = [];
-    // dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
+    dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST });
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled);
       _enableChecked
@@ -339,7 +339,6 @@ export const fetchTokenList = (
                           return e.address;
                         }
                       );
-                      console.log(totalTokenList.length, uniqTokenList.length);
                       dispatch({
                         type: ActionType.GET_TOKEN_LIST,
                         payload: uniqTokenList,

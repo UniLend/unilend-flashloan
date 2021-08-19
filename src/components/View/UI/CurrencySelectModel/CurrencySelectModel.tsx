@@ -48,7 +48,6 @@ const CurrencySelectModel: FC<Props> = ({
 
   useEffect(() => {
     // searchToken("0x70401dfd142a16dc7031c56e862fc88cb9537ce0");
-
     return () =>
       dispatch({
         type: ActionType.SET_SEARCHED_TOKEN,

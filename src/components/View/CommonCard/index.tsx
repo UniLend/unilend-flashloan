@@ -267,10 +267,6 @@ const CommonCard: FC<Props> = (props) => {
   ]);
 
   useEffect(() => {
-    console.log(activeTab);
-  }, [activeTab]);
-
-  useEffect(() => {
     function checkTx(tx) {
       return (currentProvider as any).eth
         .getTransactionReceipt(tx)

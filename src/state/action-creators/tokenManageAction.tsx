@@ -28,9 +28,9 @@ export const getTokenMetadata = async (
   //   });
 };
 const getDefaultNetwork = (network) => {
-  if (network === 56 || network === 97) {
+  if (network === 2) {
     return "56";
-  } else if (network === 137 || network === 80001) {
+  } else if (network === 3) {
     return "137";
   } else {
     return "1";
@@ -50,9 +50,15 @@ export const searchToken = (
 
     const api = "ckey_86f9398035604a998979408cd03";
     var qs = `?key=${api}`;
-    var selectedNetwork = getDefaultNetwork(networkId);
+    var selectedNetwork = getDefaultNetwork(selectedNetworkId);
     if (address.length)
-      if (selectedNetwork === "1") {
+      if (selectedNetworkId === 1) {
+        console.log(
+          "selectedNetwork",
+          selectedNetwork,
+          networkId,
+          selectedNetworkId
+        );
         const data = {
           jsonrpc: "2.0",
           method: "alchemy_getTokenMetadata",

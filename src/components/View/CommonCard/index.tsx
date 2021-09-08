@@ -887,19 +887,6 @@ const CommonCard: FC<Props> = (props) => {
   };
   return (
     <>
-      {/* {accounts.length &&
-      ((selectedNetworkId === 1 &&
-        activeNetWork !== "Mainnet" &&
-        activeNetWork !== "Ropsten") ||
-        (selectedNetworkId === 3 && activeNetWork !== "Matic Mainnet") ||
-        (selectedNetworkId === 2 && activeNetWork !== "Binance Mainnet")) ? (
-        <div className="network-warning">
-          {`You are currently connected to the ${activeNetWork} which is not
-          supported.`}
-        </div>
-      ) : (
-        ""
-      )} */}
       <div className="network-warning">{networkMessage()}</div>
 
       <ContentCard title={`${getCardTitle()}`}>

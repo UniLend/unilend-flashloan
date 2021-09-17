@@ -98,8 +98,7 @@ function App() {
                   >
                     {` audited by Certik`}
                   </a>
-                  . However, it is still in beta, use it at your own risk.
-                  Please familiarize yourself with the platform to understand
+                  . Please familiarize yourself with the platform to understand
                   the correct usage and features of the platform.
                 </p>
               </div>

@@ -22,6 +22,7 @@ import { maticWeb3 } from "ethereum/maticWeb3";
 import { errorHandler } from "index";
 import { bscWeb3 } from "ethereum/bscWeb3";
 import { BscConnector } from "@binance-chain/bsc-connector";
+import { IFrameProvider, ledgerWeb3 } from "ethereum/ledgerWeb3";
 // import { isMobile } from "react-device-detect";
 // import { maticWeb3 } from "ethereum/maticWeb3";
 
@@ -262,7 +263,7 @@ async function handleWalletConnect(
                 });
                 return false;
               }
-            } catch (e) {
+            } catch (e: any) {
               errorHandler.report(e);
               console.log(e);
               dispatch({
@@ -337,7 +338,7 @@ async function handleWalletConnect(
             });
             return false;
           }
-        } catch (e) {
+        } catch (e: any) {
           errorHandler.report(e);
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
@@ -360,7 +361,31 @@ async function handleWalletConnect(
 
           // const chainId = await web3.eth.chainId();
           // console.log(accounts, networkId, "ss", chainId);
-        } catch (err) {
+        } catch (err: any) {
+          errorHandler.report(err);
+
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: err.message,
+          });
+        }
+        break;
+      case "ledger":
+        try {
+          let provider: any = IFrameProvider;
+          await provider.enable().then((response: any) => {
+            metamaskEventHandler(dispatch, IFrameProvider);
+          });
+          await ledgerWeb3.eth.getAccounts().then((res: any) => {
+            dispatch({
+              type: ActionType.CONNECT_WALLET_SUCCESS,
+              payload: [...res],
+            });
+          });
+
+          // const chainId = await web3.eth.chainId();
+          // console.log(accounts, networkId, "ss", chainId);
+        } catch (err: any) {
           errorHandler.report(err);
 
           dispatch({
@@ -406,7 +431,7 @@ async function handleWalletConnect(
                 payload: err.message,
               });
             });
-        } catch (err) {
+        } catch (err: any) {
           errorHandler.report(err);
 
           dispatch({
@@ -438,7 +463,7 @@ async function handleWalletConnect(
               });
             });
           // );
-        } catch (err) {
+        } catch (err: any) {
           errorHandler.report(err);
 
           dispatch({
@@ -487,7 +512,7 @@ async function handleWalletConnect(
           //     }
           //   });
           // }
-        } catch (err) {
+        } catch (err: any) {
           errorHandler.report(err);
           dispatch({
             type: ActionType.CONNECT_WALLET_ERROR,
@@ -527,7 +552,7 @@ async function handleWalletConnect(
         }
         break;
     }
-  } catch (e) {
+  } catch (e: any) {
     errorHandler.report(e);
     dispatch({
       type: ActionType.CONNECT_WALLET_ERROR,
@@ -996,6 +1021,10 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             currentProvider = formaticWeb3;
             provider = fm;
             break;
+          case "ledger":
+            currentProvider = ledgerWeb3;
+            provider = IFrameProvider;
+            break;
           case "Portis":
             // if (wallet.name === "Portis" && !isMobile) {
             //   currentProvider = portisWeb3;
@@ -1027,7 +1056,7 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
         handleWalletConnect(currentProvider, networkType, wallet, dispatch);
         // }
       }
-    } catch (err) {
+    } catch (err: any) {
       errorHandler.report(err);
 
       dispatch({

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
+    "@ledgerhq/iframe-provider": "^0.4.2",
     "@portis/web3": "^3.0.8",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",

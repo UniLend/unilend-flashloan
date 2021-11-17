@@ -76,7 +76,7 @@ export const searchToken = (
               let _response = res.data.result;
               let body = {
                 address: address,
-                decimals: _response.decimals,
+                decimals: _response.decimals ?? 18,
                 logoURI: _response.logo,
                 name: _response.name,
                 symbol: _response.symbol,

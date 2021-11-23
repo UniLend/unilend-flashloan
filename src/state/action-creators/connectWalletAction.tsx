@@ -268,6 +268,8 @@ async function handleWalletConnect(
               if ((window as any).ethereum) {
                 const provider = (window as any).ethereum
                 const chainId = 1287
+                // const chainId = 1285
+
                 try {
                   await provider.request({
                     method: 'wallet_addEthereumChain',

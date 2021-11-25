@@ -286,18 +286,58 @@ async function handleWalletConnect(
                         rpcUrls: ['https://rpc.testnet.moonbeam.network'],
                         blockExplorerUrls: ['https://moonbase-blockscout.testnet.moonbeam.network/'],
                       },
-                      //  // ------- mainnet
-                      // {
-                      //   chainId: `0x${chainId.toString(16)}`,
-                      //   chainName: 'Moonriver',
-                      //   nativeCurrency: {
-                      //     name: 'Moonriver',
-                      //     symbol: 'MOVR',
-                      //     decimals: 18,
-                      //   },
-                      //   rpcUrls: ['https://rpc.moonriver.moonbeam.network'],
-                      //   blockExplorerUrls: ['https://blockscout.moonriver.moonbeam.network/'],
-                      // },
+                    ],
+                  })
+                  accounts = await web3Service.getAccounts()
+                  handleMetamask(accounts, dispatch, currentProviders)
+                  return true
+                } catch (e) {
+                  errorHandler.report(e)
+                  console.error(e)
+                  return false
+                }
+              } else {
+                if ((window as any).ethereum) {
+                  accounts = await web3Service.getAccounts()
+                  handleMetamask(accounts, dispatch, currentProviders)
+                }
+                console.error("Can't setup the Moonriver network on metamask because window.ethereum is undefined")
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_ERROR,
+                  payload: 'Connection Failed',
+                })
+                return false
+              }
+            } catch (e: any) {
+              errorHandler.report(e)
+              console.log(e)
+              dispatch({
+                type: ActionType.CONNECT_WALLET_ERROR,
+                payload: e.message,
+              })
+            }
+          } else if (networkType === 5) {
+            try {
+              if ((window as any).ethereum) {
+                const provider = (window as any).ethereum
+                const chainId = 1285
+
+                try {
+                  await provider.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                      // ------- mainnet
+                      {
+                        chainId: `0x${chainId.toString(16)}`,
+                        chainName: 'Moonriver',
+                        nativeCurrency: {
+                          name: 'Moonriver',
+                          symbol: 'MOVR',
+                          decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc.moonriver.moonbeam.network'],
+                        blockExplorerUrls: ['https://blockscout.moonriver.moonbeam.network/'],
+                      },
                     ],
                   })
                   accounts = await web3Service.getAccounts()

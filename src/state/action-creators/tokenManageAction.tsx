@@ -29,7 +29,7 @@ const getDefaultNetwork = (network) => {
     return '56'
   } else if (network === 3) {
     return '137'
-  } else if (network === 4) {
+  } else if (network === 4 || network === 5) {
     return '1285'
   } else {
     return '1'

@@ -333,7 +333,8 @@ input[type="number"] {
   max-width: 171px;
   border-radius: 25px;
   img {
-    width: 90px;
+    width: auto;
+    height: 90px;
     padding: 10px;
   }
   .selected {

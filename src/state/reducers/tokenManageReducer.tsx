@@ -1,5 +1,5 @@
-import { ActionType } from "state/action-types";
-import { TokenAction } from "state/actions/tokenManageA";
+import { ActionType } from 'state/action-types'
+import { TokenAction } from 'state/actions/tokenManageA'
 
 // interface TokenGroupList {
 //   id: number;
@@ -12,20 +12,22 @@ import { TokenAction } from "state/actions/tokenManageA";
 
 interface TokenManageState {
   tokenList: {
-    isRequesting: boolean;
-    payload: Array<object> | [];
-  };
-  tokenByUrl: any;
-  tokenGroupList: any;
+    isRequesting: boolean
+    payload: Array<object> | []
+  }
+  tokenByUrl: any
+  tokenGroupList: any
   searchedToken: {
-    payload: any;
-    message: string | null;
-  };
-  customTokens: any;
+    isRequesting: boolean | any
+    payload: any
+    message: string | null
+  }
+  customTokens: any
 }
 
 const initialState = {
   searchedToken: {
+    isRequesting: false,
     payload: null,
     message: null,
   },
@@ -35,10 +37,10 @@ const initialState = {
   },
   tokenByUrl: [
     {
-      url: "https://unilend.finance/list.json",
+      url: 'https://unilend.finance/list.json',
       isEnabled: true,
     },
-    { url: "https://tokens.coingecko.com/uniswap/all.json", isEnabled: false },
+    { url: 'https://tokens.coingecko.com/uniswap/all.json', isEnabled: false },
   ],
   tokenGroupList: [
     // {
@@ -51,12 +53,9 @@ const initialState = {
     // },
   ],
   customTokens: [],
-};
+}
 
-const TokenManageReducer = (
-  state: TokenManageState = initialState,
-  action: TokenAction
-): TokenManageState => {
+const TokenManageReducer = (state: TokenManageState = initialState, action: TokenAction): TokenManageState => {
   switch (action.type) {
     case ActionType.GET_TOKEN_LIST_REQUEST: {
       state = {
@@ -65,40 +64,38 @@ const TokenManageReducer = (
           isRequesting: true,
           payload: [],
         },
-      };
-      break;
+      }
+      break
     }
     case ActionType.SET_CUSTOM_TOKENS: {
-      let updatedState;
-      if (action.calc === "add") {
-        updatedState = [...state.customTokens, action.payload];
-        localStorage.setItem("customTokens", JSON.stringify(updatedState));
-      } else if (action.calc === "delete") {
-        let _tokens = [...state.customTokens];
-        updatedState = _tokens.filter(
-          (item) => item.address !== action.payload
-        );
-        localStorage.setItem("customTokens", JSON.stringify(updatedState));
+      let updatedState
+      if (action.calc === 'add') {
+        updatedState = [...state.customTokens, action.payload]
+        localStorage.setItem('customTokens', JSON.stringify(updatedState))
+      } else if (action.calc === 'delete') {
+        let _tokens = [...state.customTokens]
+        updatedState = _tokens.filter((item) => item.address !== action.payload)
+        localStorage.setItem('customTokens', JSON.stringify(updatedState))
       }
       state = {
         ...state,
         customTokens: updatedState,
-      };
-      break;
+      }
+      break
     }
     case ActionType.SET_TOKEN_PERSIST: {
       state = {
         ...state,
         tokenGroupList: action.payload,
-      };
-      break;
+      }
+      break
     }
     case ActionType.SET_CUSTOM_TOKEN_PERSIST: {
       state = {
         ...state,
         customTokens: action.payload,
-      };
-      break;
+      }
+      break
     }
     case ActionType.GET_TOKEN_LIST: {
       state = {
@@ -107,39 +104,40 @@ const TokenManageReducer = (
           isRequesting: false,
           payload: action.payload,
         },
-      };
-      break;
+      }
+      break
     }
     case ActionType.TOKEN_LIST_TOGGLE: {
       let array_copy: any = state.tokenGroupList.map((item) => {
         if (item.id === action.payload) {
-          item["isEnabled"] = !item.isEnabled;
+          item['isEnabled'] = !item.isEnabled
         }
-        return item;
-      });
-      localStorage.setItem("tokenGroup", JSON.stringify(array_copy));
+        return item
+      })
+      localStorage.setItem('tokenGroup', JSON.stringify(array_copy))
       state = {
         ...state,
         tokenGroupList: [...array_copy],
-      };
-      break;
+      }
+      break
     }
     case ActionType.SET_SEARCHED_TOKEN: {
-      const { data, message } = action.payload;
+      const { data, message, loading } = action.payload
 
       state = {
         ...state,
         searchedToken: {
+          isRequesting: loading,
           payload: data ? data : null,
           message: message ? message : null,
         },
-      };
-      break;
+      }
+      break
     }
     default:
-      break;
+      break
   }
-  return state;
-};
+  return state
+}
 
-export default TokenManageReducer;
+export default TokenManageReducer

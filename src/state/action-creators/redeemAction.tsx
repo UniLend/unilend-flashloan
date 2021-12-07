@@ -1,16 +1,17 @@
 // import BigNumber from "bignumber.js";
-import { FlashloanLBCore, uUFTIERC20 } from "ethereum/contracts/FlashloanLB";
-import { web3Service } from "ethereum/web3Service";
-import { errorHandler } from "index";
-import { Dispatch } from "redux";
-import { ActionType } from "state/action-types";
-import { RedeemAction } from "state/actions/redeemA";
+import { defaultGasPrice } from 'ethereum/contracts'
+import { FlashloanLBCore, uUFTIERC20 } from 'ethereum/contracts/FlashloanLB'
+import { web3Service } from 'ethereum/web3Service'
+import { errorHandler } from 'index'
+import { Dispatch } from 'redux'
+import { ActionType } from 'state/action-types'
+import { RedeemAction } from 'state/actions/redeemA'
 
 export const setRedeemSuccess = () => {
   return async (dispatch: Dispatch<RedeemAction>) => {
-    dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
-  };
-};
+    dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
+  }
+}
 
 export const handleRedeem = (
   currentProvider: any,
@@ -20,93 +21,75 @@ export const handleRedeem = (
   isEth: boolean,
   decimal: any,
   isRedeemMax: boolean,
-  fullPoolUTokenBalance: any
+  fullPoolUTokenBalance: any,
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
-    dispatch({ type: ActionType.REDEEM_ACTION, payload: "success" });
+    dispatch({ type: ActionType.REDEEM_ACTION, payload: 'success' })
 
     try {
-      let fullAmount = web3Service.getValue(
-        isEth,
-        currentProvider,
-        redeemAmount,
-        decimal
-      );
-      let uFullAmount = web3Service.getValue(
-        isEth,
-        currentProvider,
-        fullPoolUTokenBalance,
-        decimal
-      );
+      let fullAmount = web3Service.getValue(isEth, currentProvider, redeemAmount, decimal)
+      let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
       if (isRedeemMax) {
         FlashloanLBCore(currentProvider)
           .methods.redeem(receipentAddress, uFullAmount)
           .send({
             from: accounts,
+            gasPrice: defaultGasPrice * 1e9,
           })
-          .on("receipt", (res: any) => {
-            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+          .on('receipt', (res: any) => {
+            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
           })
-          .on("transactionHash", (hash: any) => {
+          .on('transactionHash', (hash: any) => {
             dispatch({
               type: ActionType.REDEEM_TRANSACTION_HASH,
               payload: hash,
-            });
+            })
           })
-          .on("error", (err: any, res: any) => {
-            errorHandler.report(err);
+          .on('error', (err: any, res: any) => {
+            errorHandler.report(err)
 
             dispatch({
               type: ActionType.REDEEM_FAILED,
-              message:
-                res === undefined
-                  ? "Transaction Rejected"
-                  : "Transaction Failed",
-            });
-          });
+              message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
+            })
+          })
       } else {
         FlashloanLBCore(currentProvider)
           .methods.redeemUnderlying(receipentAddress, fullAmount)
           .send({
+            gasPrice: defaultGasPrice * 1e9,
             from: accounts,
           })
-          .on("receipt", (res: any) => {
-            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: "success" });
+          .on('receipt', (res: any) => {
+            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
           })
-          .on("transactionHash", (hash: any) => {
+          .on('transactionHash', (hash: any) => {
             dispatch({
               type: ActionType.REDEEM_TRANSACTION_HASH,
               payload: hash,
-            });
+            })
           })
-          .on("error", (err: any, res: any) => {
-            errorHandler.report(err);
+          .on('error', (err: any, res: any) => {
+            errorHandler.report(err)
 
             dispatch({
               type: ActionType.REDEEM_FAILED,
-              message:
-                res === undefined
-                  ? "Transaction Rejected"
-                  : "Transaction Failed",
-            });
-          });
+              message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
+            })
+          })
       }
     } catch (e) {
-      errorHandler.report(e);
+      errorHandler.report(e)
 
       dispatch({
         type: ActionType.REDEEM_FAILED,
-        message: "Transaction Failed",
-      });
+        message: 'Transaction Failed',
+      })
     }
-  };
-};
+  }
+}
 
-export const getRedeemTokenBalance = (
-  currentProvider: any,
-  accounts: string,
-  assertAddress: any
-) => {
+export const getRedeemTokenBalance = (currentProvider: any, accounts: string, assertAddress: any) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     try {
       uUFTIERC20(currentProvider, assertAddress)
@@ -116,22 +99,22 @@ export const getRedeemTokenBalance = (
             dispatch({
               type: ActionType.REDEEM_TOKEN_BALANCE,
               payload: currentProvider.utils.fromWei(r),
-            });
+            })
           }
-        });
+        })
     } catch (e: any) {
       dispatch({
         type: ActionType.REDEEM_TOKEN_BALANCE,
-        payload: "",
-      });
+        payload: '',
+      })
     }
-  };
-};
+  }
+}
 
 export const clearRedeemError = () => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({
       type: ActionType.REDEEM_MESSAGE_CLEAR,
-    });
-  };
-};
+    })
+  }
+}

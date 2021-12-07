@@ -46,6 +46,14 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
     const api = 'ckey_86f9398035604a998979408cd03'
     var qs = `?key=${api}`
     var selectedNetwork = getDefaultNetwork(selectedNetworkId)
+    dispatch({
+      type: ActionType.SET_SEARCHED_TOKEN,
+      payload: {
+        data: null,
+        message: null,
+        loading: true,
+      },
+    })
     if (address.length)
       if (selectedNetworkId === 1) {
         console.log('selectedNetwork', selectedNetwork, networkId, selectedNetworkId)
@@ -55,6 +63,7 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
           params: [`${address}`],
           id: 1,
         }
+
         const _uri =
           networkId === 3
             ? 'https://eth-ropsten.alchemyapi.io/v2/maI7ecducWmnh8z5s2B1H2G4KzHkHMtb'
@@ -75,14 +84,14 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
               }
               dispatch({
                 type: ActionType.SET_SEARCHED_TOKEN,
-                payload: { data: body, message: null },
+                payload: { data: body, message: null, loading: false },
               })
             }
           })
           .catch((e: any) => {
             dispatch({
               type: ActionType.SET_SEARCHED_TOKEN,
-              payload: { data: null, message: 'Enter valid token address' },
+              payload: { data: null, message: 'Enter valid token address', loading: false },
             })
           })
       } else {
@@ -92,7 +101,7 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
             if (res?.data?.data === null)
               dispatch({
                 type: ActionType.SET_SEARCHED_TOKEN,
-                payload: { data: null, message: null },
+                payload: { data: null, message: null, loading: false },
               })
             else if (res?.data?.data) {
               let item = res.data.data.items[0]
@@ -107,21 +116,21 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
               }
               dispatch({
                 type: ActionType.SET_SEARCHED_TOKEN,
-                payload: { data: body, message: null },
+                payload: { data: body, message: null, loading: false },
               })
             }
           })
           .catch((e: any) => {
             dispatch({
               type: ActionType.SET_SEARCHED_TOKEN,
-              payload: { data: null, message: 'Enter valid token address' },
+              payload: { data: null, message: 'Enter valid token address', loading: false },
             })
           })
       }
     else {
       dispatch({
         type: ActionType.SET_SEARCHED_TOKEN,
-        payload: { data: null, message: 'Enter valid token address' },
+        payload: { data: null, message: 'Enter valid token address', loading: false },
       })
     }
   }

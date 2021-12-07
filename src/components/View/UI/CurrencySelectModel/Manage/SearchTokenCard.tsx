@@ -1,37 +1,32 @@
-import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
-import "./SearchTokenCard.scss";
-import tickImg from "assets/tick.svg";
-import cantFind from "assets/cantFind.svg";
+import React from 'react'
+import { Row, Col, Card } from 'react-bootstrap'
+import './SearchTokenCard.scss'
+import tickImg from 'assets/tick.svg'
+import cantFind from 'assets/cantFind.svg'
 interface Props {
-  token: any;
-  isExist: boolean;
-  handleImport: () => void;
+  token: any
+  isExist: boolean
+  loading: boolean
+  handleImport: () => void
 }
 
-const SearchTokenCard: React.FC<Props> = ({ token, isExist, handleImport }) => {
-  const { name, symbol, logoURI } = token;
+const SearchTokenCard: React.FC<Props> = ({ token, isExist, loading, handleImport }) => {
+  const { name, symbol, logoURI } = token
 
   // useEffect(() => {}, [token]);
   function addDefaultSrc(ev) {
-    ev.target.src = cantFind;
+    ev.target.src = cantFind
   }
+
+  if (loading) {
+    return <>Loading</>
+  }
+
   return (
     <Card className={`search-token-card`}>
       <Row className="search-token-row m-0">
-        <Col
-          style={{ textAlign: "center" }}
-          className="p-0"
-          sm={2}
-          md={2}
-          lg={2}
-        >
-          <img
-            src={logoURI !== null ? logoURI : cantFind}
-            alt=""
-            className="logo"
-            onError={addDefaultSrc}
-          />
+        <Col style={{ textAlign: 'center' }} className="p-0" sm={2} md={2} lg={2}>
+          <img src={logoURI !== null ? logoURI : cantFind} alt="" className="logo" onError={addDefaultSrc} />
         </Col>
         <Col className="details p-0" sm={7} md={7} lg={7}>
           <Row className="m-0">
@@ -67,7 +62,7 @@ const SearchTokenCard: React.FC<Props> = ({ token, isExist, handleImport }) => {
         </Col>
       </Row>
     </Card>
-  );
-};
+  )
+}
 
-export default SearchTokenCard;
+export default SearchTokenCard

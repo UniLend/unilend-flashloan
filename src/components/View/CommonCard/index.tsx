@@ -16,7 +16,7 @@ import { RiskApproval } from './RiskApproval'
 import { useLocation } from 'react-router-dom'
 import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
-
+const message = 'UniLend Omnis is coming soon'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
 }
@@ -751,6 +751,11 @@ const CommonCard: FC<Props> = (props) => {
   }
   return (
     <>
+      <div className="new-message">
+        <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
+          {message}
+        </a>
+      </div>
       <div className="network-warning">{networkMessage()}</div>
 
       <ContentCard title={`${getCardTitle()}`}>

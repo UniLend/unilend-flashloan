@@ -32,7 +32,7 @@ BigNumber.config({
 function App() {
   const [loading, setLoading] = useState<Boolean>(true)
 
-  const [alertShow, setAlertShow] = useState<Boolean>(true)
+  const [alertShow, setAlertShow] = useState<Boolean>(false)
   const history = useHistory()
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings)

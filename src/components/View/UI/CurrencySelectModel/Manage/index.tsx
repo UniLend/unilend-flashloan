@@ -79,7 +79,7 @@ const Manage: FC<Props> = (props) => {
   return (
     <>
       <Container className="p-0">
-        {selectedNetworkId !== 3 && selectedNetworkId !== 2 && (
+        {selectedNetworkId !== 3 && selectedNetworkId !== 2 && selectedNetworkId !== 5 && (
           <Button className="my-3 manage-toggle" variant={theme} size="lg" block onClick={handleActiveToggle}>
             <Row>
               <Col className={`manage-tab ${activeSubTab === 'list' && 'active'}`}>List</Col>
@@ -88,7 +88,7 @@ const Manage: FC<Props> = (props) => {
           </Button>
         )}
       </Container>
-      {activeSubTab === 'list' && selectedNetworkId !== 3 && selectedNetworkId !== 2 ? (
+      {activeSubTab === 'list' && selectedNetworkId !== 3 && selectedNetworkId !== 2 && selectedNetworkId !== 5 ? (
         <>
           <div className="list-container">
             {/* <div className="list-search-container">

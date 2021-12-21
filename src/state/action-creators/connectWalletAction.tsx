@@ -631,6 +631,22 @@ async function handleWalletConnect(
           })
         }
         break
+      case 'Onto':
+        if ((window as any).ethereum.isONTO) {
+          try {
+            accounts = await web3Service.getAccounts()
+            handleMetamask(accounts, dispatch, currentProviders)
+          } catch (e) {
+            errorHandler.report(e)
+            console.log(e)
+          }
+        } else {
+          dispatch({
+            type: ActionType.CONNECT_WALLET_ERROR,
+            payload: 'error',
+          })
+        }
+        break
       default:
         accounts = await web3Service.getAccounts()
         if (window && !(window as any).ethereum.selectedAddress) {

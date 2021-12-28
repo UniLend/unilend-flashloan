@@ -16,7 +16,7 @@ import { RiskApproval } from './RiskApproval'
 import { useLocation } from 'react-router-dom'
 import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
-const message = 'UniLend Omnis is coming soon'
+const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
 }

@@ -632,7 +632,7 @@ async function handleWalletConnect(
         }
         break
       case 'Onto':
-        if ((window as any).ethereum.isONTO) {
+        if ((window as any).ethereum && (window as any).ethereum?.isONTO) {
           try {
             accounts = await web3Service.getAccounts()
             handleMetamask(accounts, dispatch, currentProviders)

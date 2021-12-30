@@ -19,6 +19,7 @@ import { errorHandler } from 'index'
 import { bscWeb3 } from 'ethereum/bscWeb3'
 import { BscConnector } from '@binance-chain/bsc-connector'
 import { IFrameProvider, ledgerWeb3 } from 'ethereum/ledgerWeb3'
+import Web3 from 'web3'
 // import { isMobile } from "react-device-detect";
 // import { maticWeb3 } from "ethereum/maticWeb3";
 
@@ -99,12 +100,12 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
   })
 }
 
-const handleMetamask = (accounts: any, dispatch: any, currentProvider: any) => {
-  if (window && !(window as any).ethereum.selectedAddress && accounts.length <= 0) {
-    ;(window as any).ethereum
+const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, provider: any) => {
+  if (window && !provider && accounts.length <= 0) {
+    provider
       .enable()
       .then(() => {
-        web3Service
+        currentProvider.eth
           .getAccounts()
           .then((res: any) => {
             dispatch({
@@ -112,7 +113,7 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any) => {
               payload: [...res],
             })
             getAccountBalance(res[0], currentProvider)
-            metamaskEventHandler(dispatch, (window as any).ethereum)
+            metamaskEventHandler(dispatch, provider)
           })
           .catch((e: any) => {
             dispatch({
@@ -128,7 +129,7 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any) => {
         })
       })
   } else {
-    metamaskEventHandler(dispatch, (window as any).ethereum)
+    metamaskEventHandler(dispatch, provider)
     dispatch({
       type: ActionType.CONNECT_WALLET_SUCCESS,
       payload: [...accounts],
@@ -138,6 +139,7 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any) => {
 
 async function handleWalletConnect(
   currentProviders: any,
+  provider: any,
   networkType: any,
   wallet: Wallet,
   dispatch: Dispatch<Action>,
@@ -157,7 +159,7 @@ async function handleWalletConnect(
           if (networkType === 1) {
             try {
               accounts = await web3Service.getAccounts()
-              handleMetamask(accounts, dispatch, currentProviders)
+              handleMetamask(accounts, dispatch, currentProviders, provider)
             } catch (e) {
               errorHandler.report(e)
               console.log(e)
@@ -188,7 +190,7 @@ async function handleWalletConnect(
                   accounts = await web3Service.getAccounts()
 
                   // if (accounts) {
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                   // }
 
                   return true
@@ -234,7 +236,7 @@ async function handleWalletConnect(
                     ],
                   })
                   accounts = await web3Service.getAccounts()
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
                   errorHandler.report(e)
@@ -246,7 +248,7 @@ async function handleWalletConnect(
                   accounts = await web3Service.getAccounts()
 
                   // if (accounts) {
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                 }
                 console.error("Can't setup the Matic network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -289,7 +291,7 @@ async function handleWalletConnect(
                     ],
                   })
                   accounts = await web3Service.getAccounts()
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
                   errorHandler.report(e)
@@ -299,7 +301,7 @@ async function handleWalletConnect(
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts()
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                 }
                 console.error("Can't setup the Moonriver network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -341,7 +343,7 @@ async function handleWalletConnect(
                     ],
                   })
                   accounts = await web3Service.getAccounts()
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
                   errorHandler.report(e)
@@ -351,7 +353,7 @@ async function handleWalletConnect(
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts()
-                  handleMetamask(accounts, dispatch, currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
                 }
                 console.error("Can't setup the Moonriver network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -391,41 +393,7 @@ async function handleWalletConnect(
               payload: [accounts],
             })
             await bsc.getChainId()
-          }
-          //   const provider = (window as any).ethereum;
-          //   const chainId = 56;
-          //   try {
-          //     await provider.request({
-          //       method: "wallet_addEthereumChain",
-          //       params: [
-          //         {
-          //           chainId: `0x${chainId.toString(16)}`,
-          //           chainName: "Smart Chain",
-          //           nativeCurrency: {
-          //             name: "BNB",
-          //             symbol: "bnb",
-          //             decimals: 18,
-          //           },
-          //           rpcUrls: ["https://bsc-dataseed.binance.org/"],
-          //           blockExplorerUrls: ["https://bscscan.com/"],
-          //         },
-          //       ],
-          //     });
-          //     accounts = await web3Service.getAccounts();
-
-          //     // if (accounts) {
-          //     handleMetamask(accounts, dispatch, currentProviders);
-          //     // }
-
-          //     return true;
-          // } catch (error) {
-          //   errorHandler.report(error);
-          //   console.error(error);
-
-          //   return false;
-          // }
-          // }
-          else {
+          } else {
             console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
             dispatch({
               type: ActionType.CONNECT_WALLET_ERROR,
@@ -498,7 +466,7 @@ async function handleWalletConnect(
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...accounts],
               })
-              metamaskEventHandler(dispatch, (window as any).ethereum)
+              metamaskEventHandler(dispatch, CoinbaseProvider)
               CoinbaseWeb3.eth
                 .getBalance(accounts[0])
                 .then((res: any) => {
@@ -548,7 +516,7 @@ async function handleWalletConnect(
                 type: ActionType.CONNECT_WALLET_SUCCESS,
                 payload: [...address],
               })
-              metamaskEventHandler(dispatch, (window as any).ethereum)
+              metamaskEventHandler(dispatch, provider.getProvider())
               getAccountBalance(address[0], currentProviders)
             })
             .catch((err: any) => {
@@ -619,7 +587,7 @@ async function handleWalletConnect(
         if ((window as any).coin98) {
           try {
             accounts = await web3Service.getAccounts()
-            handleMetamask(accounts, dispatch, currentProviders)
+            handleMetamask(accounts, dispatch, currentProviders, provider)
           } catch (e) {
             errorHandler.report(e)
             console.log(e)
@@ -632,10 +600,10 @@ async function handleWalletConnect(
         }
         break
       case 'Onto':
-        if ((window as any).ethereum && (window as any).ethereum?.isONTO) {
+        if ((window as any).onto) {
           try {
             accounts = await web3Service.getAccounts()
-            handleMetamask(accounts, dispatch, currentProviders)
+            handleMetamask(accounts, dispatch, currentProviders, provider)
           } catch (e) {
             errorHandler.report(e)
             console.log(e)
@@ -1124,6 +1092,10 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             currentProvider = web3
             provider = EthProvider
             break
+          case 'Onto':
+            currentProvider = new Web3((window as any).onto)
+            provider = window as any
+            break
           default:
             currentProvider = web3
             provider = EthProvider
@@ -1134,7 +1106,7 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
           provider: provider,
         })
         // if (walletConnected) {
-        handleWalletConnect(currentProvider, networkType, wallet, dispatch)
+        handleWalletConnect(currentProvider, provider, networkType, wallet, dispatch)
         // }
       }
     } catch (err: any) {

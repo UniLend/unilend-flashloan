@@ -65,7 +65,7 @@ const getWalletList = (networkId: number): Wallet[] => {
       id: 102,
       name: 'Onto',
       icon: OntoLogo,
-      link: (window as any).ethereum?.isONTO
+      link: (window as any).onto
         ? ''
         : 'https://chrome.google.com/webstore/detail/onto-wallet/ifckdpamphokdglkkdomedpdegcjhjdp?hl=en',
     },

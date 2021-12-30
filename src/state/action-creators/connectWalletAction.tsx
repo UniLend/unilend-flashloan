@@ -158,7 +158,7 @@ async function handleWalletConnect(
         if (!(window as any).coin98) {
           if (networkType === 1) {
             try {
-              accounts = await web3Service.getAccounts()
+              accounts = await web3Service.getAccounts(currentProviders)
               handleMetamask(accounts, dispatch, currentProviders, provider)
             } catch (e) {
               errorHandler.report(e)
@@ -166,7 +166,7 @@ async function handleWalletConnect(
             }
           } else if (networkType === 2) {
             try {
-              accounts = await web3Service.getAccounts()
+              accounts = await web3Service.getAccounts(currentProviders)
               if ((window as any).ethereum) {
                 const provider = (window as any).ethereum
                 const chainId = 56
@@ -187,7 +187,7 @@ async function handleWalletConnect(
                       },
                     ],
                   })
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
 
                   // if (accounts) {
                   handleMetamask(accounts, dispatch, currentProviders, provider)
@@ -235,7 +235,7 @@ async function handleWalletConnect(
                       },
                     ],
                   })
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
@@ -245,7 +245,7 @@ async function handleWalletConnect(
                 }
               } else {
                 if ((window as any).ethereum) {
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
 
                   // if (accounts) {
                   handleMetamask(accounts, dispatch, currentProviders, provider)
@@ -290,7 +290,7 @@ async function handleWalletConnect(
                       },
                     ],
                   })
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
@@ -300,7 +300,7 @@ async function handleWalletConnect(
                 }
               } else {
                 if ((window as any).ethereum) {
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
                 }
                 console.error("Can't setup the Moonriver network on metamask because window.ethereum is undefined")
@@ -342,7 +342,7 @@ async function handleWalletConnect(
                       },
                     ],
                   })
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
                   return true
                 } catch (e) {
@@ -352,7 +352,7 @@ async function handleWalletConnect(
                 }
               } else {
                 if ((window as any).ethereum) {
-                  accounts = await web3Service.getAccounts()
+                  accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
                 }
                 console.error("Can't setup the Moonriver network on metamask because window.ethereum is undefined")
@@ -470,7 +470,7 @@ async function handleWalletConnect(
               CoinbaseWeb3.eth
                 .getBalance(accounts[0])
                 .then((res: any) => {
-                  let ethBal = web3Service.getWei(res, 'ether')
+                  let ethBal = web3Service.getWei(res, 'ether', CoinbaseWeb3)
                   let ethBalDeci = toFixed(parseFloat(ethBal), 3)
                   dispatch({
                     type: ActionType.ACCOUNT_BALANCE_SUCCESS,
@@ -586,7 +586,7 @@ async function handleWalletConnect(
       case 'coin98':
         if ((window as any).coin98) {
           try {
-            accounts = await web3Service.getAccounts()
+            accounts = await web3Service.getAccounts(currentProviders)
             handleMetamask(accounts, dispatch, currentProviders, provider)
           } catch (e) {
             errorHandler.report(e)
@@ -602,7 +602,7 @@ async function handleWalletConnect(
       case 'Onto':
         if ((window as any).onto) {
           try {
-            accounts = await web3Service.getAccounts()
+            accounts = await web3Service.getAccounts(currentProviders)
             handleMetamask(accounts, dispatch, currentProviders, provider)
           } catch (e) {
             errorHandler.report(e)
@@ -616,7 +616,7 @@ async function handleWalletConnect(
         }
         break
       default:
-        accounts = await web3Service.getAccounts()
+        accounts = await web3Service.getAccounts(currentProviders)
         if (window && !(window as any).ethereum.selectedAddress) {
           ;(window as any).ethereum.enable()
           dispatch({
@@ -650,12 +650,13 @@ export const getAccountBalance = (selectedAccount: string, currentProvider: any,
           params: [selectedAccount, 'latest'],
         })
       } else {
-        balance = await web3Service.getBalance(selectedAccount)
-        if (currentProvider === CoinbaseWeb3) {
-          balance = await currentProvider.eth.getBalance(selectedAccount)
-        }
+        // console.log('cur prov', currentProvider)
+        // balance = await web3Service.getBalance(selectedAccount)
+        // if (currentProvider === CoinbaseWeb3) {
+        balance = await currentProvider.eth.getBalance(selectedAccount)
+        // }
       }
-      let ethBal = web3Service.getWei(balance, 'ether')
+      let ethBal = web3Service.getWei(balance, 'ether', currentProvider)
       let ethBalDeci = toFixed(parseFloat(ethBal), 3)
       dispatch({
         type: ActionType.ACCOUNT_BALANCE_SUCCESS,
@@ -998,10 +999,10 @@ export const getPoolLiquidity = (
   return async (dispatch: Dispatch<Action>) => {
     try {
       if (isEth) {
-        web3Service
+        currentProvider.eth
           .getBalance(UnilendFlashLoanCoreContract(currentProvider, currentNetwork))
           .then((res: any) => {
-            let amount = web3Service.getWei(res, 'ether')
+            let amount = web3Service.getWei(res, 'ether', currentProvider)
             dispatch({
               type: ActionType.POOL_LIQUIDITY_SUCCESS,
               payload: amount,
@@ -1094,7 +1095,7 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             break
           case 'Onto':
             currentProvider = new Web3((window as any).onto)
-            provider = window as any
+            provider = (window as any).onto
             break
           default:
             currentProvider = web3

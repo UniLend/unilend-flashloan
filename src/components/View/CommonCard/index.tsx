@@ -145,7 +145,7 @@ const CommonCard: FC<Props> = (props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool)
 
   const handleTokenBalance = () => {
-    if (accounts.length && currentProvider) getAccountBalance(accounts[0], selectedNetworkId)
+    if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
     if (accounts.length && currentProvider && activeCurrency.symbol !== 'Select Token') {
       getPooluTokenBalance(
         currentProvider,

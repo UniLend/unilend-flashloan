@@ -602,7 +602,9 @@ async function handleWalletConnect(
       case 'Onto':
         if ((window as any).onto) {
           try {
-            accounts = await web3Service.getAccounts(currentProviders)
+            accounts = await currentProviders.eth.requestAccounts()
+            // .getAccounts(currentProviders)
+            console.log('ACCOCUNTS', accounts)
             handleMetamask(accounts, dispatch, currentProviders, provider)
           } catch (e) {
             errorHandler.report(e)

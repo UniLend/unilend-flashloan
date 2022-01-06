@@ -8,9 +8,10 @@ import CoinbaseWalletIcon from 'assets/coinbaseWalletIcon.svg'
 // import PortisIcon from "assets/portisIcon.png";
 // import BinanceIcon from "assets/binance.png";
 import './index.scss'
-import { capitalize } from 'components/Helpers'
+import { capitalize, iOS } from 'components/Helpers'
 // import { isMobile } from "react-device-detect";
 import OntoLogo from 'assets/onto.png'
+import { isMobile } from 'react-device-detect'
 interface Props {
   handleClose: () => void
   handleWalletConnect: Function
@@ -63,11 +64,15 @@ const getWalletList = (networkId: number): Wallet[] => {
     },
     {
       id: 102,
-      name: 'Onto',
+      name: 'ONTO',
       icon: OntoLogo,
       link: (window as any).onto
         ? ''
-        : 'https://chrome.google.com/webstore/detail/onto-wallet/ifckdpamphokdglkkdomedpdegcjhjdp?hl=en',
+        : isMobile
+        ? iOS()
+          ? 'https://apps.apple.com/us/app/onto-an-ontology-dapp/id1436009823'
+          : 'https://play.google.com/store/apps/details?id=com.github.ontio.onto'
+        : 'https://onto.app/en/download/',
     },
     ...(networkId === 1 ? list : []),
     ...(networkId === 2

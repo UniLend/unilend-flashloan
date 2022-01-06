@@ -599,7 +599,7 @@ async function handleWalletConnect(
           })
         }
         break
-      case 'Onto':
+      case 'ONTO':
         if ((window as any).onto) {
           try {
             accounts = await currentProviders.eth.requestAccounts()

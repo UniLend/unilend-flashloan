@@ -93,6 +93,9 @@ const ConnectWalletModal: FC<Props> = (props) => {
   const { theme } = useTypedSelector((state) => state.settings)
   const { selectedNetworkId } = useTypedSelector((state) => state.connectWallet)
 
+console.log("selectedNetworkId", selectedNetworkId);
+
+
   return (
     <>
       <Modal
@@ -115,14 +118,14 @@ const ConnectWalletModal: FC<Props> = (props) => {
                       <Button
                         className="btn-wallet-list"
                         onClick={() => {
-                          handleWalletConnect(wallet)
+                         handleWalletConnect(wallet)
                         }}
                         style={{
                           color: '#007bff',
                         }}
                         block
                       >
-                        <span className="text">{capitalize(wallet.name)}</span>
+                        <span className="text">{capitalize(wallet.name)}ok</span>
                         <img className="icon" src={wallet.icon} alt="metamask" />
                       </Button>
                     </a>

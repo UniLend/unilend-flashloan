@@ -150,7 +150,6 @@ const NavBar: React.FC<Props> = (props) => {
            
             {walletConnected &&
             accounts.length &&
-            accountBalance &&
             activeNetWork ? (
               <AccountBalance
                 theme={theme}
@@ -161,7 +160,7 @@ const NavBar: React.FC<Props> = (props) => {
             ) : (
               ""
             )}
-            {walletConnected  || networkId? (
+            {(walletConnected  || networkId) && accounts[0] ? (
               <AddressTab
                 theme={theme}
                 onClick={() =>

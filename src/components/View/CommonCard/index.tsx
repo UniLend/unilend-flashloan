@@ -725,6 +725,7 @@ const CommonCard: FC<Props> = (props) => {
   )
 
   const networkMessage = () => {
+    return ''
     if (accounts.length) {
       if (selectedNetworkId === 1 && activeNetWork !== 'Mainnet' && activeNetWork !== 'Ropsten') {
         return `Please switch your Network to Ethereum from your wallet.`

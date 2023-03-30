@@ -108,6 +108,8 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, prov
         currentProvider.eth
           .getAccounts()
           .then((res: any) => {
+            console.log("getAccounts", res);
+            
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],
@@ -157,9 +159,75 @@ async function handleWalletConnect(
         //// Ethererum ////
         if (!(window as any).coin98) {
           if (networkType === 1) {
+            // try {
+            //   accounts = await web3Service.getAccounts(currentProviders)
+            //   handleMetamask(accounts, dispatch, currentProviders, provider)
+            // } catch (e) {
+            //   errorHandler.report(e)
+            //   console.log(e)
+            // }
             try {
               accounts = await web3Service.getAccounts(currentProviders)
-              handleMetamask(accounts, dispatch, currentProviders, provider)
+              if ((window as any).ethereum) {
+                const provider = (window as any).ethereum
+                const chainId = 1
+                try {
+                  await provider.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainId.toString(16)}` }],
+                  });
+                  accounts = await web3Service.getAccounts(currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
+                  return true;
+                } catch (error: any) {
+                  if(error.code == 4902){
+                    try {
+                      await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          {
+                            chainId: `0x${chainId.toString(16)}`,
+                            chainName: 'Ethereum Mainnet',
+                            nativeCurrency: {
+                              name: 'Ether',
+                              symbol: 'ETH',
+                              decimals: 18,
+                            },
+                            rpcUrls: [
+                              'https://mainnet.infura.io/v3/${INFURA_API_KEY}',
+                              'wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}',
+                              'https://api.mycryptoapi.com/eth',
+                              'https://cloudflare-eth.com',
+                            ],
+                            blockExplorerUrls: ['https://etherscan.io'],
+                          },
+                        ],
+                      })
+                      accounts = await web3Service.getAccounts(currentProviders)
+    
+                      // if (accounts) {
+                      handleMetamask(accounts, dispatch, currentProviders, provider)
+                      // }
+    
+                      return true
+                    } catch (error) {
+                      errorHandler.report(error)
+    
+                      console.error(error)
+    
+                      return false
+                    }
+                  }
+                }
+ 
+              } else {
+                console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
+                dispatch({
+                  type: ActionType.CONNECT_WALLET_ERROR,
+                  payload: 'Connection Failed',
+                })
+                return false
+              }
             } catch (e) {
               errorHandler.report(e)
               console.log(e)
@@ -172,35 +240,49 @@ async function handleWalletConnect(
                 const chainId = 56
                 try {
                   await provider.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                      {
-                        chainId: `0x${chainId.toString(16)}`,
-                        chainName: 'Smart Chain',
-                        nativeCurrency: {
-                          name: 'BNB',
-                          symbol: 'bnb',
-                          decimals: 18,
-                        },
-                        rpcUrls: ['https://bsc-dataseed.binance.org/'],
-                        blockExplorerUrls: ['https://bscscan.com/'],
-                      },
-                    ],
-                  })
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainId.toString(16)}` }],
+                  });
+  
                   accounts = await web3Service.getAccounts(currentProviders)
-
-                  // if (accounts) {
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  // }
-
-                  return true
-                } catch (error) {
-                  errorHandler.report(error)
-
-                  console.error(error)
-
-                  return false
+                  return true;
+                } catch (error: any) {
+                  if(error.code == 4902){
+                    try {
+                      await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          {
+                            chainId: `0x${chainId.toString(16)}`,
+                            chainName: 'Smart Chain',
+                            nativeCurrency: {
+                              name: 'BNB',
+                              symbol: 'bnb',
+                              decimals: 18,
+                            },
+                            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                            blockExplorerUrls: ['https://bscscan.com/'],
+                          },
+                        ],
+                      })
+                      accounts = await web3Service.getAccounts(currentProviders)
+    
+                      // if (accounts) {
+                      handleMetamask(accounts, dispatch, currentProviders, provider)
+                      // }
+    
+                      return true
+                    } catch (error) {
+                      errorHandler.report(error)
+    
+                      console.error(error)
+    
+                      return false
+                    }
+                  }
                 }
+ 
               } else {
                 console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -220,29 +302,44 @@ async function handleWalletConnect(
                 const chainId = 137
                 try {
                   await provider.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                      {
-                        chainId: `0x${chainId.toString(16)}`,
-                        chainName: 'Matic Mainnet',
-                        nativeCurrency: {
-                          name: 'Matic',
-                          symbol: 'matic',
-                          decimals: 18,
-                        },
-                        rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
-                        blockExplorerUrls: ['https://explorer.matic.network/'],
-                      },
-                    ],
-                  })
-                  accounts = await web3Service.getAccounts(currentProviders)
-                  handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true
-                } catch (e) {
-                  errorHandler.report(e)
-                  console.error(e)
-                  return false
+                  method: 'wallet_switchEthereumChain',
+                  params: [{ chainId: `0x${chainId.toString(16)}` }],
+                });
+
+                accounts = await web3Service.getAccounts(currentProviders)
+                handleMetamask(accounts, dispatch, currentProviders, provider)
+                return true;
+                } catch (error: any) {
+                  if(error.code == 4902){
+                    try {
+                      await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          {
+                            chainId: `0x${chainId.toString(16)}`,
+                            chainName: 'Matic Mainnet',
+                            nativeCurrency: {
+                              name: 'Matic',
+                              symbol: 'matic',
+                              decimals: 18,
+                            },
+                            rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
+                            blockExplorerUrls: ['https://explorer.matic.network/'],
+                          },
+                        ],
+                      })
+                      accounts = await web3Service.getAccounts(currentProviders)
+                      handleMetamask(accounts, dispatch, currentProviders, provider)
+                      return true
+                    } catch (e) {
+                      errorHandler.report(e)
+                      console.error(e)
+                      return false
+                    }
+                  }
                 }
+
+         
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)
@@ -271,33 +368,46 @@ async function handleWalletConnect(
                 const provider = (window as any).ethereum
                 const chainId = 1287
                 // const chainId = 1285
-
-                try {
+                 try {
                   await provider.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                      // testnet
-                      {
-                        chainId: `0x${chainId.toString(16)}`,
-                        chainName: 'Moonbase Alpha',
-                        nativeCurrency: {
-                          name: 'Moonbase Alpha',
-                          symbol: 'DEV',
-                          decimals: 18,
-                        },
-                        rpcUrls: ['https://rpc.testnet.moonbeam.network'],
-                        blockExplorerUrls: ['https://moonbase-blockscout.testnet.moonbeam.network/'],
-                      },
-                    ],
-                  })
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainId.toString(16)}` }],
+                  });
+  
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true
-                } catch (e) {
-                  errorHandler.report(e)
-                  console.error(e)
-                  return false
-                }
+                  return true;
+                 } catch (error: any) {
+                  if(error.code == 4902){
+                    try {
+                      await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          // testnet
+                          {
+                            chainId: `0x${chainId.toString(16)}`,
+                            chainName: 'Moonbase Alpha',
+                            nativeCurrency: {
+                              name: 'Moonbase Alpha',
+                              symbol: 'DEV',
+                              decimals: 18,
+                            },
+                            rpcUrls: ['https://rpc.testnet.moonbeam.network'],
+                            blockExplorerUrls: ['https://moonbase-blockscout.testnet.moonbeam.network/'],
+                          },
+                        ],
+                      })
+                      accounts = await web3Service.getAccounts(currentProviders)
+                      handleMetamask(accounts, dispatch, currentProviders, provider)
+                      return true
+                    } catch (e) {
+                      errorHandler.report(e)
+                      console.error(e)
+                      return false
+                    }
+                  }
+                 }
+     
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)
@@ -323,33 +433,45 @@ async function handleWalletConnect(
               if ((window as any).ethereum) {
                 const provider = (window as any).ethereum
                 const chainId = 1285
-
                 try {
                   await provider.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                      // ------- mainnet
-                      {
-                        chainId: `0x${chainId.toString(16)}`,
-                        chainName: 'Moonriver',
-                        nativeCurrency: {
-                          name: 'Moonriver',
-                          symbol: 'MOVR',
-                          decimals: 18,
-                        },
-                        rpcUrls: ['https://rpc.moonriver.moonbeam.network'],
-                        blockExplorerUrls: ['https://blockscout.moonriver.moonbeam.network/'],
-                      },
-                    ],
-                  })
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainId.toString(16)}` }],
+                  });
+  
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true
-                } catch (e) {
-                  errorHandler.report(e)
-                  console.error(e)
-                  return false
-                }
+                  return true;
+                 } catch (error: any) {
+                  if(error.code == 4902){
+                    try {
+                      await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                          // ------- mainnet
+                          {
+                            chainId: `0x${chainId.toString(16)}`,
+                            chainName: 'Moonriver',
+                            nativeCurrency: {
+                              name: 'Moonriver',
+                              symbol: 'MOVR',
+                              decimals: 18,
+                            },
+                            rpcUrls: ['https://rpc.moonriver.moonbeam.network'],
+                            blockExplorerUrls: ['https://blockscout.moonriver.moonbeam.network/'],
+                          },
+                        ],
+                      })
+                      accounts = await web3Service.getAccounts(currentProviders)
+                      handleMetamask(accounts, dispatch, currentProviders, provider)
+                      return true
+                    } catch (e) {
+                      errorHandler.report(e)
+                      console.error(e)
+                      return false
+                    }
+                  }}
+
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)

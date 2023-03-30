@@ -31,21 +31,25 @@ const NavBar: React.FC<Props> = (props) => {
 
   const [currentPage, setCurrentPage] = useState("");
   const { theme } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId, activeNetWork } = useTypedSelector(
+  const { selectedNetworkId, activeNetWork, networkId, walletConnected, accounts, loading, accountBalance } = useTypedSelector(
     (state) => state.connectWallet
   );
+  const states = useTypedSelector((state) => state)
   const { themeChange, setActiveTab } = useActions();
+  const [walletConnectedLocal, setWalletConnected] = useState(false)
 
   const dispatch = useDispatch<Dispatch<SettingAction>>();
   const networkInfo = NETWORKS.filter(
-    (item) => item.id === selectedNetworkId
+    (item) => item.networkID === (networkId || 1)
   )[0];
-  const { walletConnected, accounts, loading, accountBalance, networkId } =
-    useWalletConnect();
+  // const { walletConnected, accounts, loading, accountBalance } =
+  //   useWalletConnect();
 
   useEffect(() => {
+    console.log("UserAcount", states);
+    
     setCurrentPage(props.location.pathname);
-  }, [props.location.pathname]);
+  }, [props.location.pathname, states]);
 
   const handleUpdate = () => {
     themeChange(theme);
@@ -123,23 +127,27 @@ const NavBar: React.FC<Props> = (props) => {
           </div>
           {/* <div className="collapse navbar-collapse"> */}
           <div className="app-wallet-details">
-            {walletConnected && !loading ? (
+            {walletConnected  && networkId ? (
+              <>
               <ActiveNetwork
                 theme={theme}
                 activeNetWork={activeNetWork}
                 className="btn-custom-secondary"
               />
-            ) : (
-              ""
-            )}
-            <NetworkInfoTab
+              <NetworkInfoTab
               theme={theme}
               logo={networkInfo.logo}
               label={networkInfo.label}
               onClick={() => {
                 setSwitchNetworkModal(true);
               }}
-            />
+              />
+              </>
+            ) : (
+              ""
+            )}
+       
+           
             {walletConnected &&
             accounts.length &&
             accountBalance &&
@@ -153,7 +161,7 @@ const NavBar: React.FC<Props> = (props) => {
             ) : (
               ""
             )}
-            {(accounts && accounts.length) || walletConnected ? (
+            {walletConnected  || networkId? (
               <AddressTab
                 theme={theme}
                 onClick={() =>

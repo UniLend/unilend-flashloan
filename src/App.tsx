@@ -30,7 +30,7 @@ BigNumber.config({
 })
 
 function App() {
-  const [loading, setLoading] = useState<Boolean>(true)
+  const [loading, setLoading] = useState<Boolean>(false)
 
   const [alertShow, setAlertShow] = useState<Boolean>(false)
   const history = useHistory()

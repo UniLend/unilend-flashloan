@@ -317,6 +317,7 @@ const connectWalletReducer = (state: ConnectWalletState = initialState, action: 
         poolTokenBalance: '',
         currentProvider: web3,
         connectedWallet: '',
+        networkId: '',
         walletProvider: (window as any).ethereum || (window as any).onto,
       }
     default:

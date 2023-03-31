@@ -101,15 +101,14 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
 }
 
 const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, provider: any) => {
-  if (window && !provider && accounts.length <= 0) {
+  if (provider) {
     provider
       .enable()
       .then(() => {
         currentProvider.eth
           .getAccounts()
           .then((res: any) => {
-            console.log("getAccounts", res);
-            
+            console.log("getAccounts", res); 
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],

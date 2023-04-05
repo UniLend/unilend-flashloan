@@ -18,6 +18,7 @@ import {
   ConnectWalletButton,
   AddressTab,
 } from "./Common";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 interface Props extends RouteComponentProps<any> {
   setWalletModalInfo: Dispatch<SetStateAction<boolean>>;
@@ -126,7 +127,7 @@ const NavBar: React.FC<Props> = (props) => {
           </div>
           {/* <div className="collapse navbar-collapse"> */}
           <div className="app-wallet-details">
-            {walletConnected  && networkId ? (
+            {/* {walletConnected  && networkId ? (
               <>
               <ActiveNetwork
                 theme={theme}
@@ -176,7 +177,14 @@ const NavBar: React.FC<Props> = (props) => {
                 onClick={() => setWalletModalInfo(true)}
                 loading={loading}
               />
-            )}
+            )} */}
+            {/* <ConnectWalletButton
+              theme={theme}
+              onClick={() => setWalletModalInfo(true)}
+              loading={loading}
+            /> */}
+
+            <ConnectButton />
             <ThemeButton
               onClick={handleUpdate}
               theme={theme}
@@ -190,3 +198,4 @@ const NavBar: React.FC<Props> = (props) => {
   );
 };
 export default withRouter(NavBar);
+ 

@@ -5,15 +5,15 @@ import { useTypedSelector } from "./useTypedSelector";
 
 export default function useWalletConnect() {
   const {
-    walletConnected,
-    accounts,
-    loading,
+    walletConnected, //
+    accounts, //
+    loading, //
     currentProvider,
-    userTokenBalance,
-    userTokenBalanceLoading,
-    accountBalance,
-    accountBalanceLoading,
-    poolTokenBalance,
+    userTokenBalance, // 
+    userTokenBalanceLoading, //
+    accountBalance, //
+    accountBalanceLoading, //
+    poolTokenBalance,  
     poolTokenBalanceLoading,
     poolLiquidity,
     poolLiquidityLoading,
@@ -23,18 +23,18 @@ export default function useWalletConnect() {
     rewardReleaseRateLoading,
     totalDepositedTokens,
     totalDepositedTokensLoading,
-    walletProvider,
-    connectedWallet,
+    walletProvider, //
+    connectedWallet, //
     totalTokensInRewardPool,
     totalTokensInRewardPoolLoading,
-    selectedNetworkId,
+    selectedNetworkId, //
     fullUserTokenBalance,
     fullPoolTokenBalance,
     fullPoolUTokenBalance,
-    activeNetWork,
+    activeNetWork, //
     currentApy,
     currentApyLoading,
-    networkId,
+    networkId, //
   } = useTypedSelector((state) => state.connectWallet);
 
   const {

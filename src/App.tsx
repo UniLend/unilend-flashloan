@@ -16,7 +16,15 @@ import BigNumber from 'bignumber.js'
 import { errorHandler } from 'index'
 import { useActions } from 'hooks/useActions'
 import { SettingAction } from 'state/actions/settingsA'
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
+
+import "@rainbow-me/rainbowkit/styles.css";
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { configureChains, createClient, WagmiConfig } from "wagmi";
+import {mainnet, polygon, bsc, moonriver} from "wagmi/chains"
+// import { alchemyProvider } from "wagmi/providers/alchemy";
+import { publicProvider } from "wagmi/providers/public";
+// moon river, bse
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
 // interface ProviderMessage {
@@ -42,6 +50,23 @@ function App() {
   const { setActiveTab } = useActions()
 
   const dispatch = useDispatch<Dispatch<SettingAction>>()
+
+  const { chains, provider } = configureChains(
+    // [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum, chain.goerli],
+    [mainnet, polygon, bsc, moonriver],
+    [publicProvider()]
+  );
+  
+  const { connectors } = getDefaultWallets({
+    appName: "unilend-flashloan",
+    chains
+  });
+  
+  const wagmiClient = createClient({
+    autoConnect: true,
+    connectors,
+    provider
+  });
 
   useEffect(() => {
     dispatch(setActiveTab(history.location.pathname.slice(1)))
@@ -74,6 +99,10 @@ function App() {
   }, [walletProvider, connectedWallet])
 
   return (
+    <WagmiConfig client={wagmiClient}>
+    <RainbowKitProvider chains={chains}>
+
+      
     <div className={`App ${theme}`}>
       {loading ? (
         <LoadingPage />
@@ -128,6 +157,8 @@ function App() {
         </>
       )}
     </div>
+    </RainbowKitProvider>
+    </WagmiConfig>
   )
 }
 

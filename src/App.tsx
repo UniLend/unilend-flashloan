@@ -24,6 +24,7 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import {mainnet, polygon, bsc, moonriver} from "wagmi/chains"
 // import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+// import { handleCustomTokens, handleTokenPersist } from 'state/action-creators'
 // moon river, bse
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
@@ -38,9 +39,9 @@ BigNumber.config({
 })
 
 function App() {
-  const [loading, setLoading] = useState<Boolean>(true)
+  const [loading, setLoading] = useState<Boolean>(false)
 
-  const [alertShow, setAlertShow] = useState<Boolean>(false)
+  const [alertShow, setAlertShow] = useState<Boolean>(true)
   const history = useHistory()
 
   const { theme, activeTab } = useTypedSelector((state) => state.settings)
@@ -68,9 +69,9 @@ function App() {
     provider
   });
 
-  useEffect(() => {
-    dispatch(setActiveTab(history.location.pathname.slice(1)))
-  }, [history])
+  // useEffect(() => {
+  //   dispatch(setActiveTab(history.location.pathname.slice(1)))
+  // }, [history])
 
   useEffect(() => {
     if (localStorage.getItem('activeTab')) {
@@ -78,10 +79,10 @@ function App() {
     }
     dotEnv.config()
     handleCustomTokens()
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000)
-    console.log('starting')
+    // setTimeout(() => {
+    //   setLoading(false)
+    // }, 2000)
+    // console.log('starting')
     // errorHandler.start({
     //   key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
     //   projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
@@ -89,14 +90,15 @@ function App() {
   }, [])
 
   useEffect(() => {
+    console.log("tokenByUrl", tokenByUrl);
     handleTokenPersist(tokenByUrl, selectedNetworkId)
   }, [tokenByUrl, selectedNetworkId])
 
-  useEffect(() => {
-    if (connectedWallet) {
-      handleWalletConnect(JSON.parse(connectedWallet))
-    }
-  }, [walletProvider, connectedWallet])
+  // useEffect(() => {
+  //   if (connectedWallet) {
+  //     handleWalletConnect(JSON.parse(connectedWallet))
+  //   }
+  // }, [walletProvider, connectedWallet])
 
   return (
     <WagmiConfig client={wagmiClient}>
@@ -104,32 +106,8 @@ function App() {
 
       
     <div className={`App ${theme}`}>
-      {loading ? (
-        <LoadingPage />
-      ) : (
-        <>
-          {alertShow && (
-            <Alert onClose={() => setAlertShow(false)} dismissible>
-              {/* {/ <Alert.Heading>Oh snap! You got an error!</Alert.Heading> /} */}
-              <div className="alertbody d-flex align-items-center">
-                <img className="icon" src={AlertImg} alt="alert" />
-                <p className="alertext ml-3">
-                  UniLend FlashLoan contract has been
-                  <a
-                    href="https://unilend.finance/docs/unilend_flashloan_audit_report.pdf"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {` audited by Certik`}
-                  </a>
-                  . Please familiarize yourself with the platform to understand the correct usage and features of the
-                  platform.
-                </p>
-              </div>
-            </Alert>
-          )}
           <Layout>
-            <div className={`app-bg ${alertShow ? 'height-92' : 'height-100'}`}>
+            <div className={`app-bg ${false ? 'height-92' : 'height-100'}`}>
               <div className={`bg-vector ${theme}`}>
                 <div
                   className="pt-6"
@@ -139,12 +117,13 @@ function App() {
                     // paddingTop: "60px",
                   }}
                 >
+                  {/* <CommonCard activeTab={activeTab} /> */}
                   <Switch>
                     <Route
                       key={activeTab}
                       path={`/${activeTab}`}
                       exact
-                      render={() => <CommonCard activeTab={activeTab} />}
+                      render={() => <CommonCard activeTab={activeTab || ''} />}
                     />
                     <Redirect from="/" to="/lend" />
                     <Redirect from="**" to="/lend" />
@@ -154,8 +133,6 @@ function App() {
               <div className="version-denote">v 1.0.5</div>
             </div>
           </Layout>
-        </>
-      )}
     </div>
     </RainbowKitProvider>
     </WagmiConfig>

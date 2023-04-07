@@ -162,6 +162,14 @@ export const fetchTokenList = (
   selectedNetworkId: any,
   customTokens: any,
 ) => {
+  console.log("fetchTokenList", {  tokenList,
+    networkId,
+    currentProvider,
+    accounts,
+    accountBalance,
+    selectedNetworkId,
+    customTokens,});
+  
   return async (dispatch: Dispatch<TokenAction>) => {
     let timestamp = setTimestamp()
     let totalTokenList: any = []
@@ -195,7 +203,7 @@ export const fetchTokenList = (
                       return item.address
                     })
 
-                    if (currentProvider) {
+                    if (!currentProvider) {
                       let timestamp = setTimestamp()
                       try {
                         if (accountBalance > 0) {
@@ -246,7 +254,6 @@ export const fetchTokenList = (
                                   let exist = totalTokenList.some(
                                     (t) => t.address.toLowerCase() === item.address.toLowerCase(),
                                   )
-
                                   if (!exist) totalTokenList.push(item)
                                   if (i === tokenList.length - 1) {
                                     totalTokenList.sort(function (a, b) {

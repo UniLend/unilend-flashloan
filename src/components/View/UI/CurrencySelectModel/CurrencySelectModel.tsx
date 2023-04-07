@@ -91,7 +91,7 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
   )
 
   const Row = useCallback(({ data, index, style }) => {
-    const currency = data[index]
+    const currency = data[index];    
     function addDefaultSrc(ev) {
       ev.target.src = cantFind
     }

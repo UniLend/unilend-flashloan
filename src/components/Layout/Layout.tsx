@@ -38,13 +38,13 @@ const Layout: React.FC<Props> = (props) => {
         setWalletStatusInfo={setWalletStatusInfo}
         setSwitchNetworkModal={setSwitchNetworkModal}
       />
-      <FooterNavBar
+      {/* <FooterNavBar
         setWalletModalInfo={setWalletModalInfo}
         setWalletStatusInfo={setWalletStatusInfo}
         setSwitchNetworkModal={setSwitchNetworkModal}
-      />
+      /> */}
       {props.children}
-      {walletModalInfo && !walletConnected && (
+      {/* {walletModalInfo && !walletConnected && (
         <ConnectWalletModal
           handleClose={() => setWalletModalInfo(false)}
           handleWalletConnect={(wallet: Wallet) => {
@@ -70,7 +70,7 @@ const Layout: React.FC<Props> = (props) => {
       )}
       {switchNetWorkModal && (
         <SwitchNetWorkModal onHide={() => setSwitchNetworkModal(false)} />
-      )}
+      )} */}
     </>
   );
 };

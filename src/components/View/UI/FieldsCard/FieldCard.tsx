@@ -33,6 +33,7 @@ const FieldCard: FC<Props> = (props) => {
   useEffect(() => {
     field1.current.value = props.fieldValue;
   }, [props.fieldValue]);
+
   const onHandleTelephoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputField = e.target.value;
     // if value is not blank, then test the regex

@@ -455,6 +455,8 @@ const CommonCard: FC<Props> = (props) => {
     selectedNetworkId,
   ])
 
+  /*
+  // comment to stop the re render at every 5 sec
   useEffect(() => {
     let interval: any
 
@@ -483,6 +485,7 @@ const CommonCard: FC<Props> = (props) => {
     totalTokensInRewardPool,
     tokenList,
   ])
+  */
   // useEffect(() => {
   //   let interval: any;
 

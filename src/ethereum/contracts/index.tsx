@@ -1,6 +1,6 @@
 export const UnilendFlashLoanCoreContract = (currentProvider: any, networkId?: any) => {
-  if (networkId === 3) {
-    return '0x13A145D215182924c89F2aBc7D358DCc72F8F788'
+  if (networkId === 80001) {
+    return '0xb8E3E64a1496006062d2BAfd1556200F015A5236'
   } else {
     // return "0x186b707bB603c16295eF38EA27a081EBf5b65989"; // old contract address
     return '0x13A145D215182924c89F2aBc7D358DCc72F8F788'

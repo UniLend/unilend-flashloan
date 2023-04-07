@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import {mainnet, polygon, bsc, moonriver} from "wagmi/chains"
+import {mainnet, polygon, bsc, moonriver, polygonMumbai} from "wagmi/chains"
 // import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 // moon river, bse
@@ -53,7 +53,7 @@ function App() {
 
   const { chains, provider } = configureChains(
     // [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum, chain.goerli],
-    [mainnet, polygon, bsc, moonriver],
+    [mainnet, polygon, bsc, moonriver, polygonMumbai],
     [publicProvider()]
   );
   

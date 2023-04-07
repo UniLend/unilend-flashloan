@@ -40,14 +40,8 @@ BigNumber.config({
 
 function App() {
   const [loading, setLoading] = useState<Boolean>(false)
-
-  const [alertShow, setAlertShow] = useState<Boolean>(true)
-  const history = useHistory()
-
   const { theme, activeTab } = useTypedSelector((state) => state.settings)
-  const { tokenByUrl } = useTypedSelector((state) => state.tokenManage)
-  const { handleTokenPersist, handleCustomTokens } = useActions()
-  const { handleWalletConnect, walletProvider, selectedNetworkId, connectedWallet } = useWalletConnect()
+
   const { setActiveTab } = useActions()
 
   const dispatch = useDispatch<Dispatch<SettingAction>>()
@@ -78,7 +72,7 @@ function App() {
       dispatch(setActiveTab(localStorage.getItem('activeTab')))
     }
     dotEnv.config()
-    handleCustomTokens()
+    // handleCustomTokens()
     // setTimeout(() => {
     //   setLoading(false)
     // }, 2000)
@@ -89,10 +83,10 @@ function App() {
     // })
   }, [])
 
-  useEffect(() => {
-    console.log("tokenByUrl", tokenByUrl);
-    handleTokenPersist(tokenByUrl, selectedNetworkId)
-  }, [tokenByUrl, selectedNetworkId])
+  // useEffect(() => {
+  //   console.log("tokenByUrl", tokenByUrl);
+  //   handleTokenPersist(tokenByUrl, selectedNetworkId)
+  // }, [tokenByUrl, selectedNetworkId])
 
   // useEffect(() => {
   //   if (connectedWallet) {

@@ -21,91 +21,50 @@ interface Props {
   onRedeemMax: () => void;
 }
 const FieldCard: FC<Props> = (props) => {
-  const field1: any = useRef(null);
-  // const [inputValue, setInputValue] = useState("");
-  const { fullUserTokenBalance, fullPoolTokenBalance } = useTypedSelector(
-    (state) => state.connectWallet
-  );
-  const { theme, activeCurrency, activeTab } = useTypedSelector(
-    (state) => state.settings
-  );
-  // const { getPooluTokenBalance } = useActions();
-  useEffect(() => {
-    field1.current.value = props.fieldValue;
-  }, [props.fieldValue]);
 
-  const onHandleTelephoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let inputField = e.target.value;
-    // if value is not blank, then test the regex
-    if (inputField === "" || floatRegExp.test(inputField)) {
-      props.onF1Change(e);
-      // setInputValue(inputField);
-    }
-  };
-  function addDefaultSrc(ev) {
-    ev.target.src = cantFind;
-  }
   return (
     <>
-      <div className={`${theme} card field-card`}>
+      <div className={`${'dark'} card field-card`}>
         <div className="card-body py-2">
           <div className="row">
             <div className=" col-6 col-md-6">
               <label className="form-label">{props.fieldLabel}</label>
               <input
                 type={props.fieldType}
-                ref={field1}
                 value={props.fieldValue}
                 className="form-control field-input"
                 placeholder="0.0"
-                onChange={(e) => onHandleTelephoneChange(e)}
+                onChange={(e) => {}}
               />
             </div>
             <div className=" col-6 col-md-6">
               <div className="align-end">
                 <label className="form-balance-label">
-                  {props.selectLabel !== "" &&
-                  activeCurrency.symbol !== "Select Token"
-                    ? `Balance: ${props.selectLabel.toLocaleString()}`
-                    : ""}
+                  Selected TokenS
                 </label>
               </div>
               <div className="align-end">
-                {activeCurrency.symbol !== "Select Token" &&
-                  props.selectLabel !== "" && (
+               
                     <button
                       className="btn btn-max"
-                      onClick={() => {
-                        if (activeTab === "redeem") {
-                          props.onRedeemMax();
-                          let bFullAmount = new BigNumber(fullPoolTokenBalance);
-                          props.setFieldValue(
-                            bFullAmount.toFixed(18, 1).toString()
-                          );
-                        } else {
-                          let bFullAmount = new BigNumber(fullUserTokenBalance);
-                          props.setFieldValue(
-                            bFullAmount.toFixed(18, 1).toString()
-                          );
-                        }
-                      }}
+                      onClick={() =>{}}
                     >
                       <p className="max-text">MAX</p>
                     </button>
-                  )}
+                  
                 <button
                   className="btn btn-curr ml-2"
-                  onClick={props.handleModelOpen}
+                  onClick={() =>{}}
                 >
-                  {activeCurrency.symbol !== "Select Token" && (
+                  {/* {activeCurrency.symbol !== "Select Token" && (
                     <img
                       className="curr-image"
                       src={props.selectedLogo}
                       alt=""
                       onError={addDefaultSrc}
                     />
-                  )}
-                  <p className="curr-text">{props.selectValue}</p>
+                  )} */}
+                  <p className="curr-text">Select</p>
                   <img
                     style={{ paddingLeft: "4px", width: "12px" }}
                     src={dropdown}

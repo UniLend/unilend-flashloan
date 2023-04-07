@@ -15,9 +15,9 @@ interface Props extends RouteComponentProps<any> {
 const CommonCard: FC<Props> = ({ activeTab }) => {
   const [amount, setAmount] = useState('')
   const [tokenlistView, setTokenListView] = useState(false)
- const {fetchTokenList, setActiveCurrency} = useActions()
-  const { tokenGroupList, tokenList, customTokens } = useTypedSelector((state) => state.tokenManage)
-  const { activeCurrency, params } = useTypedSelector((state) => state.settings)
+//  const {fetchTokenList, setActiveCurrency} = useActions()
+//   const { tokenGroupList, tokenList, customTokens } = useTypedSelector((state) => state.tokenManage)
+//   const { activeCurrency, params } = useTypedSelector((state) => state.settings)
 
   const getCardTitle = () => {
     switch (activeTab) {
@@ -34,9 +34,9 @@ const CommonCard: FC<Props> = ({ activeTab }) => {
     }
   }
 
-  useEffect(() => {
-    fetchTokenList(tokenGroupList, null, null, [], null, null, [])
-  }, [tokenGroupList])
+  // useEffect(() => {
+  //   fetchTokenList(tokenGroupList, null, null, [], null, null, [])
+  // }, [tokenGroupList])
 
   return (
     <>
@@ -55,16 +55,15 @@ const CommonCard: FC<Props> = ({ activeTab }) => {
             fieldValue={amount}
             setFieldValue={setAmount}
             fieldType="text"
-            selectLabel={'redeem'}
-            selectValue={activeCurrency.symbol ? activeCurrency.symbol : ''}
-            selectedLogo={activeCurrency.logoURI ? activeCurrency.logoURI : ''}
+            selectLabel={'0'}
+            selectValue={ ''}
+            selectedLogo={ ''}
           />
           {tokenlistView && (
             <CurrencySelectModel
-              currFieldName={activeCurrency?.symbol}
+              currFieldName={''}
               handleCurrChange={async (selectedAddress: any) => {
                 console.log(selectedAddress)
-                setActiveCurrency(selectedAddress)
                 setTokenListView(false)
               }}
               handleClose={() => setTokenListView(false)}

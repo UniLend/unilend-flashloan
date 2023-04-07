@@ -32,7 +32,7 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
 
   const dispatch = useDispatch<Dispatch<TokenAction>>()
 
-  const { selectedNetworkId, networkId, currentProvider } = useWalletConnect()
+  // const { selectedNetworkId, networkId, currentProvider } = useWalletConnect()
 
   const { theme } = useTypedSelector((state) => state.settings)
   const { tokenList, searchedToken, tokenGroupList } = useTypedSelector((state) => state.tokenManage)
@@ -60,14 +60,14 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
           return searchWord(e.name, searchText) || searchWord(e.symbol, searchText) || searchWord(e.address, searchText)
         })
       else {
-        searchToken('', networkId, selectedNetworkId)
+        searchToken('', 'networkId', 'selectedNetworkId')
       }
     } else {
-      searchToken(searchText, networkId, selectedNetworkId)
+      searchToken(searchText, 'networkId', 'selectedNetworkId')
     }
     if (filteredList?.length === 0) {
-      getTokenMetadata(currentProvider, searchText)
-      searchToken(searchText, networkId, selectedNetworkId)
+      getTokenMetadata('currentProvider', searchText)
+      searchToken(searchText, 'networkId', 'selectedNetworkId')
     } else {
       setFilteredList(filteredList)
     }
@@ -75,7 +75,7 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
   }, [searchText, tokenList, tokenGroupList])
 
   useEffect(() => {
-    searchToken('', networkId, selectedNetworkId)
+    searchToken('', 'networkId', 'selectedNetworkId')
   }, [openManage])
 
   const SearchBar = (
@@ -145,7 +145,7 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
       'add',
     )
     setSearchText('')
-    searchToken('', networkId, selectedNetworkId)
+    searchToken('', 'networkId', 'selectedNetworkId')
   }
 
   const FetchedToken = (

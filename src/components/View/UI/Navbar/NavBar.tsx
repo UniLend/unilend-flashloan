@@ -26,12 +26,12 @@ interface Props extends RouteComponentProps<any> {
 const NavBar: React.FC<Props> = (props) => {
   const dispatch = useDispatch<Dispatch<SettingAction | Action>>()
 
-  // const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } = props
-  // const { selectedNetworkId, activeNetWork, networkId, walletConnected, accounts, loading, accountBalance } =
-  //   useTypedSelector((state) => state.connectWallet)
-  //   const networkInfo = NETWORKS.filter((item) => item.networkID === (networkId || 1))[0]
-  //   // const { walletConnected, accounts, loading, accountBalance } =
-  //   //   useWalletConnect();
+  const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } = props
+  const { selectedNetworkId, activeNetWork, networkId, walletConnected, accounts, loading, accountBalance } =
+    useTypedSelector((state) => state.connectWallet)
+  const networkInfo = NETWORKS.filter((item) => item.networkID === (networkId || 1))[0]
+  // const { walletConnected, accounts, loading, accountBalance } =
+  //   useWalletConnect();
 
   const [currentPage, setCurrentPage] = useState('')
   const { theme } = useTypedSelector((state) => state.settings)
@@ -42,7 +42,8 @@ const NavBar: React.FC<Props> = (props) => {
   const { address, isConnected } = useAccount()
   const { data } = useBalance({ address })
   const { chain } = useNetwork()
-  // const provider = useProvider()
+  console.log('CHAIN', chain?.name)
+  const provider = useProvider()
   // console.log(provider)
 
   useEffect(() => {
@@ -56,12 +57,17 @@ const NavBar: React.FC<Props> = (props) => {
         payload: data?.formatted,
         fullAccountBalance: data?.formatted,
       })
+      console.log('NAME', chain?.name)
       dispatch({
         type: ActionType.ACTIVE_NETWORK,
         payload: chain?.name,
         networkId: chain?.id,
       })
-      setSelectedNetworkId(chain?.id)
+      setSelectedNetworkId(chain?.id as number)
+      // dispatch({
+      //   type: ActionType.CURRENT_PROVIDER,
+      //   payload: provider,
+      // })
       // dispatch({
       //   type: ActionType.SELECTED_NETWORK_ID,
       //   networkId: chain?.id,
@@ -82,7 +88,7 @@ const NavBar: React.FC<Props> = (props) => {
         networkId: '',
       })
     }
-  }, [isConnected])
+  }, [isConnected, chain])
 
   useEffect(() => {
     console.log('UserAcount', states)
@@ -188,13 +194,62 @@ const NavBar: React.FC<Props> = (props) => {
             ) : (
               <ConnectWalletButton theme={theme} onClick={() => setWalletModalInfo(true)} loading={loading} />
             )} */}
-            {/* <ConnectWalletButton
-              theme={theme}
-              onClick={() => setWalletModalInfo(true)}
-              loading={loading}
-            /> */}
+            {/* <ConnectButton /> */}
 
-            <ConnectButton />
+            <ConnectButton.Custom>
+              {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+                const ready = mounted
+                const connected = ready && account && chain
+
+                return (
+                  <div
+                    {...(!ready && {
+                      'aria-hidden': true,
+                      style: {
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                      },
+                    })}
+                  >
+                    {(() => {
+                      if (!connected) {
+                        return <ConnectWalletButton theme={theme} onClick={openConnectModal} loading={loading} />
+                      }
+
+                      if (chain.unsupported) {
+                        return (
+                          <button onClick={openChainModal} type="button">
+                            Wrong network
+                          </button>
+                        )
+                      }
+
+                      return (
+                        <div className="app-wallet-details">
+                          <ActiveNetwork theme={theme} activeNetWork={activeNetWork} className="btn-custom-secondary" />
+                          <NetworkInfoTab
+                            theme={theme}
+                            logo={networkInfo.logo}
+                            label={networkInfo.label}
+                            onClick={openChainModal}
+                          />
+
+                          <AccountBalance
+                            theme={theme}
+                            accountBalance={accountBalance}
+                            tokenType={networkId}
+                            className="acc-balance-header"
+                          />
+
+                          <AddressTab theme={theme} onClick={openAccountModal} address={accounts[0]} />
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )
+              }}
+            </ConnectButton.Custom>
             <ThemeButton onClick={handleUpdate} theme={theme} dflex={true} className="ml-3 btn-theme-icon-header" />
           </div>
         </div>

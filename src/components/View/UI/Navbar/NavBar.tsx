@@ -42,8 +42,7 @@ const NavBar: React.FC<Props> = (props) => {
   const { address, isConnected } = useAccount()
   const { data } = useBalance({ address })
   const { chain } = useNetwork()
-  console.log('CHAIN', chain?.name)
-  const provider = useProvider()
+  // const provider = useProvider()
   // console.log(provider)
 
   useEffect(() => {

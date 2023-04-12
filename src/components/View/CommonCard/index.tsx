@@ -540,9 +540,9 @@ const CommonCard: FC<Props> = (props) => {
   // ]);
   useEffect(() => {
     if (walletConnected && activeCurrency.symbol !== 'Select Token') {
-      getPool(activeCurrency.address, currentProvider, accounts[0])
+      getPool(activeCurrency.address, currentProvider, accounts[0], flashLoanContract)
     }
-  }, [walletConnected, accounts, currentProvider, activeCurrency])
+  }, [walletConnected, accounts, currentProvider, activeCurrency, flashLoanContract])
 
   useEffect(() => {
     setAmount('')
@@ -866,7 +866,7 @@ const CommonCard: FC<Props> = (props) => {
             setPoolPercentage(0)
             await setActiveCurrency(selectedAddress)
             if (accounts.length && currentProvider) {
-              await getPool(selectedAddress.address, currentProvider, accounts[0])
+              await getPool(selectedAddress.address, currentProvider, accounts[0], flashLoanContract)
             }
             await handleReciepent(selectedAddress.address)
           }}

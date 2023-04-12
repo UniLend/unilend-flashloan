@@ -36,55 +36,95 @@ export const createPool = (currentProvider: any, _reserve: string, address: stri
       })
   }
 }
-export const getPool = (address: any, currentProvider: any, accounts: any) => {
+export const getPool = (address: any, currentProvider: any, accounts: any, flashLoanContract: any) => {
   return async (dispatch: Dispatch<PoolAction>) => {
     dispatch({
       type: ActionType.GETTING_POOL,
     })
-    FlashloanLBCore(currentProvider)
-      .methods.Pools(address)
-      .call((err: any, res: any) => {
-        console.log("FlashloanLBCore", err,  res, address, currentProvider); 
-        if (!err) {
-          dispatch({
-            type: ActionType.ASSERT_ADDRESS,
-            payload: res,
-          })
-          if (res === '0x0000000000000000000000000000000000000000') {
-            // alert("Pool not Created");
-            dispatch({
-              type: ActionType.IS_POOL_CREATED,
-              payload: false,
-            })
-          } else {
-            ERC20(currentProvider, res)
-              .methods.symbol()
-              .call((err: Error, res: any) => {
-                if (!err && res) {
-                  dispatch({
-                    type: ActionType.POOL_TOKEN_NAME,
-                    payload: res,
-                  })
-                  dispatch({
-                    type: ActionType.IS_POOL_CREATED,
-                    payload: true,
-                  })
-                } else {
-                  dispatch({
-                    type: ActionType.POOL_FAILED,
-                  })
-                }
-              })
-          }
-        } else {
-          dispatch({
-            type: ActionType.POOL_FAILED,
-          })
-        }
+
+    try {
+      const res = await flashLoanContract.Pools(address)
+      console.log('FlashloanLBCore', 'Trycatch', res, address, currentProvider)
+      dispatch({
+        type: ActionType.ASSERT_ADDRESS,
+        payload: res,
       })
+
+      if (res === '0x0000000000000000000000000000000000000000') {
+        // alert("Pool not Created");
+        dispatch({
+          type: ActionType.IS_POOL_CREATED,
+          payload: false,
+        })
+      } else {
+        ERC20(currentProvider, res)
+          .methods.symbol()
+          .call((err: Error, res: any) => {
+            if (!err && res) {
+              dispatch({
+                type: ActionType.POOL_TOKEN_NAME,
+                payload: res,
+              })
+              dispatch({
+                type: ActionType.IS_POOL_CREATED,
+                payload: true,
+              })
+            } else {
+              dispatch({
+                type: ActionType.POOL_FAILED,
+              })
+            }
+          })
+      }
+    } catch (error) {
+      dispatch({
+        type: ActionType.POOL_FAILED,
+      })
+    }
+
+    // FlashloanLBCore(currentProvider)
+    //   .methods.Pools(address)
+    //   .call((err: any, res: any) => {
+    //     console.log("FlashloanLBCore", err,  res, address, currentProvider);
+    //     if (!err) {
+    //       dispatch({
+    //         type: ActionType.ASSERT_ADDRESS,
+    //         payload: res,
+    //       })
+    //       if (res === '0x0000000000000000000000000000000000000000') {
+    //         // alert("Pool not Created");
+    //         dispatch({
+    //           type: ActionType.IS_POOL_CREATED,
+    //           payload: false,
+    //         })
+    //       } else {
+    //         ERC20(currentProvider, res)
+    //           .methods.symbol()
+    //           .call((err: Error, res: any) => {
+    //             if (!err && res) {
+    //               dispatch({
+    //                 type: ActionType.POOL_TOKEN_NAME,
+    //                 payload: res,
+    //               })
+    //               dispatch({
+    //                 type: ActionType.IS_POOL_CREATED,
+    //                 payload: true,
+    //               })
+    //             } else {
+    //               dispatch({
+    //                 type: ActionType.POOL_FAILED,
+    //               })
+    //             }
+    //           })
+    //       }
+    //     } else {
+    //       dispatch({
+    //         type: ActionType.POOL_FAILED,
+    //       })
+    //     }
+    //   })
   }
 }
-
 
 export const handleImportAction = (searchedToken: any) => {
   return async (dispatch: Dispatch<PoolAction>) => {

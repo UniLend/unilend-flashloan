@@ -16,6 +16,7 @@ import { RiskApproval } from './RiskApproval'
 import { useLocation } from 'react-router-dom'
 import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
+import { setTimeout } from 'timers'
 const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
@@ -225,114 +226,114 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
-  useEffect(() => {
-    function checkTx(tx) {
-      return (currentProvider as any).eth.getTransactionReceipt(tx).then((res) => {
-        return res
-      })
-    }
-    if (connectedWallet && JSON.parse(connectedWallet).name === 'coin98') {
-      if (activeTab === 'lend' && depositTransactionHash) {
-        let interval
-        if (!isDepositSuccess) {
-          interval = setInterval(async () => {
-            console.log('progressing')
-            let receipt = await checkTx(depositTransactionHash)
-            if (receipt) {
-              setDepositSuccess()
-            }
-          }, 120000)
-        } else {
-          clearTimeout(interval)
-        }
-      }
-      if (activeTab === 'reward' && donateTransactionHash) {
-        let interval
-        if (!donateSuccess) {
-          interval = setInterval(async () => {
-            let receipt = await checkTx(depositTransactionHash)
-            if (receipt) {
-              setDonateSuccess()
-            }
-          }, 120000)
-        } else {
-          clearTimeout(interval)
-        }
-      }
-      if (activeTab === 'redeem' && redeemTransactionHash) {
-        let interval
-        if (!redeemSuccess) {
-          interval = setInterval(async () => {
-            let receipt = await checkTx(redeemTransactionHash)
-            if (receipt) {
-              setRedeemSuccess()
-            }
-          }, 120000)
-        } else {
-          clearTimeout(interval)
-        }
-      }
-      if (activeTab === 'airdrop' && airdropTransactionHash) {
-        let interval
-        if (!airdropSuccess) {
-          interval = setInterval(async () => {
-            let receipt = await checkTx(airdropTransactionHash)
-            if (receipt) {
-              setAirdropSuccess()
-            }
-          }, 120000)
-        } else {
-          clearTimeout(interval)
-        }
-      }
-    }
-  }, [
-    activeTab,
-    depositTransactionHash,
-    donateTransactionHash,
-    redeemTransactionHash,
-    airdropTransactionHash,
-    isDepositSuccess,
-    donateSuccess,
-    redeemSuccess,
-    airdropSuccess,
-  ])
+  // useEffect(() => {
+  //   function checkTx(tx) {
+  //     return (currentProvider as any).eth.getTransactionReceipt(tx).then((res) => {
+  //       return res
+  //     })
+  //   }
+  //   if (connectedWallet && JSON.parse(connectedWallet).name === 'coin98') {
+  //     if (activeTab === 'lend' && depositTransactionHash) {
+  //       let interval
+  //       if (!isDepositSuccess) {
+  //         interval = setInterval(async () => {
+  //           console.log('progressing')
+  //           let receipt = await checkTx(depositTransactionHash)
+  //           if (receipt) {
+  //             setDepositSuccess()
+  //           }
+  //         }, 120000)
+  //       } else {
+  //         clearTimeout(interval)
+  //       }
+  //     }
+  //     if (activeTab === 'reward' && donateTransactionHash) {
+  //       let interval
+  //       if (!donateSuccess) {
+  //         interval = setInterval(async () => {
+  //           let receipt = await checkTx(depositTransactionHash)
+  //           if (receipt) {
+  //             setDonateSuccess()
+  //           }
+  //         }, 120000)
+  //       } else {
+  //         clearTimeout(interval)
+  //       }
+  //     }
+  //     if (activeTab === 'redeem' && redeemTransactionHash) {
+  //       let interval
+  //       if (!redeemSuccess) {
+  //         interval = setInterval(async () => {
+  //           let receipt = await checkTx(redeemTransactionHash)
+  //           if (receipt) {
+  //             setRedeemSuccess()
+  //           }
+  //         }, 120000)
+  //       } else {
+  //         clearTimeout(interval)
+  //       }
+  //     }
+  //     if (activeTab === 'airdrop' && airdropTransactionHash) {
+  //       let interval
+  //       if (!airdropSuccess) {
+  //         interval = setInterval(async () => {
+  //           let receipt = await checkTx(airdropTransactionHash)
+  //           if (receipt) {
+  //             setAirdropSuccess()
+  //           }
+  //         }, 120000)
+  //       } else {
+  //         clearTimeout(interval)
+  //       }
+  //     }
+  //   }
+  // }, [
+  //   activeTab,
+  //   depositTransactionHash,
+  //   donateTransactionHash,
+  //   redeemTransactionHash,
+  //   airdropTransactionHash,
+  //   isDepositSuccess,
+  //   donateSuccess,
+  //   redeemSuccess,
+  //   airdropSuccess,
+  // ])
 
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId)
   }, [accounts, activeTab, activeCurrency, receipentAddress, assertAddress, donateContractAddress])
   const location = useLocation()
-  useEffect(() => {
-    if (location.search) {
-      let search = location.search
-      let texts = search.slice(1).split('&')
-      let object = {}
-      texts.forEach((item) => {
-        let sear = item.split('=')
-        if ((sear[0] !== '' && sear[0] === 'token') || sear[0] === 'network') object[sear[0]] = sear[1]
-      })
-      setParams(object)
-    } else {
-      setParams({})
-    }
-  }, [location])
+  // useEffect(() => {
+  //   if (location.search) {
+  //     let search = location.search
+  //     let texts = search.slice(1).split('&')
+  //     let object = {}
+  //     texts.forEach((item) => {
+  //       let sear = item.split('=')
+  //       if ((sear[0] !== '' && sear[0] === 'token') || sear[0] === 'network') object[sear[0]] = sear[1]
+  //     })
+  //     setParams(object)
+  //   } else {
+  //     setParams({})
+  //   }
+  // }, [location])
 
-  useEffect(() => {
-    if (params?.network) {
-      const networkInfo = NETWORKS.filter((item) => item.label.toLowerCase() === params.network.toLowerCase())[0]
-      if (networkInfo) setSelectedNetworkId(networkInfo.id)
-      handleTokenBalance()
-    }
-    if (params?.token && tokenList.payload.length) {
-      const token = tokenList.payload.filter((item: any) => {
-        return item.address.toLowerCase() === params.token.toLowerCase()
-      })
-      if (token.length) {
-        setActiveCurrency(token[0])
-      }
-      handleTokenBalance()
-    }
-  }, [params, tokenList])
+  // useEffect(() => {
+  //   if (params?.network) {
+  //     const networkInfo = NETWORKS.filter((item) => item.label.toLowerCase() === params.network.toLowerCase())[0]
+  //     if (networkInfo) setSelectedNetworkId(networkInfo.id)
+  //     handleTokenBalance()
+  //   }
+  //   if (params?.token && tokenList.payload.length) {
+  //     const token = tokenList.payload.filter((item: any) => {
+  //       return item.address.toLowerCase() === params.token.toLowerCase()
+  //     })
+  //     if (token.length) {
+  //       setActiveCurrency(token[0])
+  //     }
+  //     handleTokenBalance()
+  //   }
+  // }, [params, tokenList])
 
   const handleToast = (show: boolean) => {
     setAlertInfo({
@@ -366,6 +367,8 @@ const CommonCard: FC<Props> = (props) => {
       clearInterval(interval)
     }
   }, [depositErrorMessage, donateErrorMessage, redeemErrorMessage, airdropErrorMessage])
+
+
   useEffect(() => {
     let interval: any
     if (
@@ -393,44 +396,47 @@ const CommonCard: FC<Props> = (props) => {
       clearInterval(interval)
     }
   }, [isDepositSuccess, donateSuccess, redeemSuccess, airdropSuccess, activeTab])
-  useEffect(() => {
-    if (totalDepositedTokens !== '' && totalTokensInRewardPool !== '') {
-      getCurrentAPY(
-        currentProvider,
-        donateContractAddress,
-        activeCurrency.address,
-        activeCurrency.decimals,
-        totalDepositedTokens,
-        totalTokensInRewardPool,
-      )
-    }
-  }, [
-    activeCurrency.decimals,
-    currentProvider,
-    donateContractAddress,
-    receipentAddress,
-    totalDepositedTokens,
-    totalTokensInRewardPool,
-  ])
-  useEffect(() => {
-    if (walletConnected) {
-      networkSwitchHandling(currentProvider)
-    }
-  }, [tokenList, currentProvider, walletConnected, walletProvider, selectedNetworkId])
 
-  useEffect(() => {
-    if (walletConnected) handleWalletConnect(JSON.parse(connectedWallet))
-  }, [selectedNetworkId])
+  // useEffect(() => {
+  //   if (totalDepositedTokens !== '' && totalTokensInRewardPool !== '') {
+  //     getCurrentAPY(
+  //       currentProvider,
+  //       donateContractAddress,
+  //       activeCurrency.address,
+  //       activeCurrency.decimals,
+  //       totalDepositedTokens,
+  //       totalTokensInRewardPool,
+  //     )
+  //   }
+  // }, [
+  //   activeCurrency.decimals,
+  //   currentProvider,
+  //   donateContractAddress,
+  //   receipentAddress,
+  //   totalDepositedTokens,
+  //   totalTokensInRewardPool,
+  // ])
 
-  useEffect(() => {
+    useEffect(() => {
     if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
       checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId)
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
       donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address)
     }
+
+    getCurrentAPY(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+       18,
+      totalDepositedTokens,
+      totalTokensInRewardPool,
+    )
+
   }, [accounts, donateContractAddress, isApproved, currentProvider, receipentAddress, activeTab, activeCurrency])
 
   useEffect(() => {
+
     fetchTokenList(
       tokenGroupList,
       networkId,
@@ -458,7 +464,7 @@ const CommonCard: FC<Props> = (props) => {
   useEffect(() => {
     let interval: any
 
-    interval = setInterval(() => {
+    interval = setTimeout(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,
@@ -469,7 +475,7 @@ const CommonCard: FC<Props> = (props) => {
         )
       }
       handleTokenBalance()
-    }, 5000)
+    }, 100)
     return () => clearInterval(interval)
   }, [
     accounts,
@@ -498,7 +504,7 @@ const CommonCard: FC<Props> = (props) => {
   //     handleTokenBalance();
   //   }, 5000);
   //   return () => clearInterval(interval);
-  //
+  
   // }, [
   //   accounts,
   //   activeTab,
@@ -514,6 +520,7 @@ const CommonCard: FC<Props> = (props) => {
       getPool(activeCurrency.address, currentProvider, accounts[0])
     }
   }, [walletConnected, accounts, currentProvider, activeCurrency])
+
   useEffect(() => {
     setAmount('')
     clearDepositError()

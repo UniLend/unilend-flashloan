@@ -9,6 +9,7 @@ import { ActionType } from 'state/action-types'
 import { TokenAction } from 'state/actions/tokenManageA'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
+import { mumbaiTokenList } from 'data/tokenList'
 export const handleTokenListToggle = (id: number) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
@@ -166,7 +167,8 @@ export const fetchTokenList = (
     let timestamp = setTimestamp()
     let totalTokenList: any = []
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST })
-    if (tokenList) {
+
+    if (tokenList && networkId && networkId != 80001) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled)
       _enableChecked
         ? tokenList.forEach((item: any, index: any) => {
@@ -338,6 +340,12 @@ export const fetchTokenList = (
             type: ActionType.GET_TOKEN_LIST,
             payload: [],
           })
+    } else if(networkId == 80001) {
+     // alert(networkId)
+      dispatch({
+        type: ActionType.GET_TOKEN_LIST,
+        payload: mumbaiTokenList,
+      })
     }
   }
 }

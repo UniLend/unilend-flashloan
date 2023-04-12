@@ -45,7 +45,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
     <nav
       className={`navbar navbar-expand-sm navbar-${theme} bg-${theme} footer-nav-bar`}
     >
-      <div className="app-wallet-details-footer">
+      {/* <div className="app-wallet-details-footer">
         {walletConnected && !loading ? (
           <ActiveNetwork
             theme={theme}
@@ -57,8 +57,8 @@ const FooterNavBar: React.FC<Props> = (props) => {
         )}
         <NetworkInfoTab
           theme={theme}
-          logo={networkInfo.logo}
-          label={networkInfo.label}
+          logo={networkInfo?.logo || ''}
+          label={networkInfo?.label}
           onClick={() => {
             setSwitchNetworkModal(true);
           }}
@@ -92,7 +92,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
             loading={loading}
           />
         )}
-      </div>
+      </div> */}
       <div className="app-settings-group">
         <ThemeButton
           onClick={handleUpdate}

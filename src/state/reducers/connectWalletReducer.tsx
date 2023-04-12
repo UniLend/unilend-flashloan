@@ -271,17 +271,19 @@ const connectWalletReducer = (state: ConnectWalletState = initialState, action: 
       }
 
     case ActionType.ACTIVE_NETWORK:
+      localStorage.setItem('activeNetworkId', action.networkId.toString())
       return {
         ...state,
         activeNetWork: action.payload,
         networkId: action.networkId,
+        selectedNetworkId: action.networkId
       }
 
     case ActionType.SELECTED_NETWORK_ID:
-      localStorage.setItem('activeNetworkId', action.networkId.toString())
+      // localStorage.setItem('activeNetworkId', action.networkId.toString())
       return {
         ...state,
-        selectedNetworkId: action.networkId ? action.networkId : 1,
+        // selectedNetworkId: action.networkId ? action.networkId : 1,
       }
     case ActionType.BALANCE_RESET:
       return {

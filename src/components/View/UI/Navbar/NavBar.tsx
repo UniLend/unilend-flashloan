@@ -40,10 +40,23 @@ const NavBar: React.FC<Props> = (props) => {
   // const [walletConnectedLocal, setWalletConnected] = useState(false)
 
   const { address, isConnected } = useAccount()
+  const provider = useProvider()
   const { data } = useBalance({ address })
   const { chain } = useNetwork()
   // const provider = useProvider()
   // console.log(provider)
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window?.ethereum?.on && window?.ethereum?.on("chainChanged", async () => {
+        window.location.reload()
+
+      });
+      window?.ethereum?.on && window.ethereum.on("accountsChanged", async () => {
+        window.location.reload()
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (isConnected) {
@@ -61,7 +74,11 @@ const NavBar: React.FC<Props> = (props) => {
         payload: chain?.name,
         networkId: chain?.id,
       })
-      setSelectedNetworkId(chain?.id)
+      // dispatch({
+      //   type: ActionType.CURRENT_PROVIDER,
+      //   payload: provider
+      // })
+      setSelectedNetworkId(chain?.id || 1)
       // dispatch({
       //   type: ActionType.SELECTED_NETWORK_ID,
       //   networkId: chain?.id,

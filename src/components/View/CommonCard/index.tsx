@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom'
 import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
 import { setTimeout } from 'timers'
+import { FlashLoanCore } from 'ethereum/contracts/FlashloanLB'
 const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
@@ -144,7 +145,7 @@ const CommonCard: FC<Props> = (props) => {
   const { tokenGroupList, tokenList, customTokens } = useTypedSelector((state) => state.tokenManage)
   const { receipentAddress } = useTypedSelector((state) => state.ethereum)
   const { assertAddress } = useTypedSelector((state) => state.pool)
-
+  const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
   const handleTokenBalance = () => {
     if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
     if (accounts.length && currentProvider && activeCurrency.symbol !== 'Select Token') {
@@ -226,6 +227,26 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
+
+  useEffect(() => {
+    if(flashLoanContract){
+
+      getPoolData()
+    }
+  }, [flashLoanContract])
+
+  const getPoolData = async () => {
+    console.log("useEffect Data", "contract",flashLoanContract);
+    
+    try {
+      const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')
+      console.log("useEffect Data", data);
+    } catch (error) {
+      console.log("useEffect Data", "error", error);
+    }
+
+  }
+
   // useEffect(() => {
   //   function checkTx(tx) {
   //     return (currentProvider as any).eth.getTransactionReceipt(tx).then((res) => {
@@ -298,6 +319,8 @@ const CommonCard: FC<Props> = (props) => {
   //   redeemSuccess,
   //   airdropSuccess,
   // ])
+
+  
 
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId)

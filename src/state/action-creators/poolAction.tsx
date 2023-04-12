@@ -44,6 +44,7 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
     FlashloanLBCore(currentProvider)
       .methods.Pools(address)
       .call((err: any, res: any) => {
+        console.log("FlashloanLBCore", err,  res, address, currentProvider); 
         if (!err) {
           dispatch({
             type: ActionType.ASSERT_ADDRESS,
@@ -83,6 +84,8 @@ export const getPool = (address: any, currentProvider: any, accounts: any) => {
       })
   }
 }
+
+
 export const handleImportAction = (searchedToken: any) => {
   return async (dispatch: Dispatch<PoolAction>) => {
     var a: any = []

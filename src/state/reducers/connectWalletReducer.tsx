@@ -36,6 +36,7 @@ interface ConnectWalletState {
   fullPoolUTokenBalance: any
   walletProvider: any
   connectedWallet: any
+  flashLoanContract: any
 }
 
 const initialState = {
@@ -74,6 +75,7 @@ const initialState = {
   fullPoolTokenBalance: '',
   fullPoolUTokenBalance: '',
   walletProvider: (window as any).ethereum || (window as any).onto,
+  flashLoanContract : null
 }
 
 const connectWalletReducer = (state: ConnectWalletState = initialState, action: Action): ConnectWalletState => {
@@ -285,6 +287,11 @@ const connectWalletReducer = (state: ConnectWalletState = initialState, action: 
         ...state,
         // selectedNetworkId: action.networkId ? action.networkId : 1,
       }
+      case ActionType.FLASHLOAN_CONTRACT:
+        return {
+          ...state,
+          flashLoanContract: action.payload
+        } 
     case ActionType.BALANCE_RESET:
       return {
         ...state,
@@ -322,6 +329,7 @@ const connectWalletReducer = (state: ConnectWalletState = initialState, action: 
         networkId: '',
         walletProvider: (window as any).ethereum || (window as any).onto,
       }
+
     default:
       return state
   }

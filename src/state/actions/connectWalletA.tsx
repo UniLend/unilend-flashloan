@@ -162,6 +162,11 @@ interface FullPoolUTokenBalance {
   payload: any;
 }
 
+interface flashLoanContract{
+  type: ActionType.FLASHLOAN_CONTRACT;
+  payload:any
+}
+
 export type Action =
   | CurrentProvider
   | ConnectWalletAction
@@ -202,4 +207,5 @@ export type Action =
   | fullPoolTokenBalance
   | ConnectedWallet
   | BalanceReset
+  | flashLoanContract
   | FullPoolUTokenBalance;

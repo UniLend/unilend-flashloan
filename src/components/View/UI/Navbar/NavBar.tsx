@@ -16,6 +16,10 @@ import { useAccount, useBalance, useNetwork, useProvider } from 'wagmi'
 import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
 import { setSelectedNetworkId } from 'state/action-creators'
+import { useContract } from 'wagmi'
+import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
+import FlashloanABI from "ethereum/build/FlashLoanABI.json";
+
 
 interface Props extends RouteComponentProps<any> {
   setWalletModalInfo: Dispatch<SetStateAction<boolean>>
@@ -42,7 +46,14 @@ const NavBar: React.FC<Props> = (props) => {
   const { address, isConnected } = useAccount()
   const provider = useProvider()
   const { data } = useBalance({ address })
-  const { chain } = useNetwork()
+  const { chain } = useNetwork();
+
+  const contract = useContract({
+    address: UnilendFlashLoanCoreContract ('', chain?.id),
+    abi:  FlashloanABI.abi,
+    signerOrProvider: provider
+  })
+
   // const provider = useProvider()
   // console.log(provider)
 
@@ -74,10 +85,10 @@ const NavBar: React.FC<Props> = (props) => {
         payload: chain?.name,
         networkId: chain?.id,
       })
-      // dispatch({
-      //   type: ActionType.CURRENT_PROVIDER,
-      //   payload: provider
-      // })
+      dispatch({
+        type: ActionType.FLASHLOAN_CONTRACT,
+        payload: contract
+      })
       setSelectedNetworkId(chain?.id || 1)
       // dispatch({
       //   type: ActionType.SELECTED_NETWORK_ID,

@@ -12,7 +12,7 @@ import { NETWORKS } from 'components/constants'
 import { WalletInfoProps } from '../../../Helpers/Types'
 import { ThemeButton, AccountBalance, ActiveNetwork, NetworkInfoTab, ConnectWalletButton, AddressTab } from './Common'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount, useBalance, useNetwork, useProvider } from 'wagmi'
+import { useAccount, useBalance, useNetwork, useProvider , useSigner} from 'wagmi'
 import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
 import { setSelectedNetworkId } from 'state/action-creators'
@@ -45,14 +45,16 @@ const NavBar: React.FC<Props> = (props) => {
 
   const { address, isConnected } = useAccount()
   const provider = useProvider()
+  const { data: signer, isError, isLoading } = useSigner()
   const { data } = useBalance({ address })
   const { chain } = useNetwork();
 
   const contract = useContract({
     address: UnilendFlashLoanCoreContract ('', chain?.id),
-    abi:  FlashloanABI.abi,
-    signerOrProvider: provider
+    abi: FlashloanABI.abi,
+    signerOrProvider: signer || provider
   })
+
 
   // const provider = useProvider()
   // console.log(provider)
@@ -68,6 +70,10 @@ const NavBar: React.FC<Props> = (props) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    console.log("isError", isError, isLoading, signer);
+  }, [signer, contract])
 
   useEffect(() => {
     if (isConnected) {
@@ -110,7 +116,7 @@ const NavBar: React.FC<Props> = (props) => {
         networkId: '',
       })
     }
-  }, [isConnected])
+  }, [isConnected, signer, contract, isLoading])
 
   useEffect(() => {
     console.log('UserAcount', states)

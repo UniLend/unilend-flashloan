@@ -93,6 +93,8 @@ export const getTransactionHashUrl = (activeNetWork, hash) => {
       return `https://explorer-mumbai.${maticURL}`
     case 'Moonriver':
       return `https://moonriver.${moonRiverURL}`
+    case 'Polygon Mumbai':
+      return `https://mumbai.polygonscan.com/tx/${hash}`
     default:
       return `https://${activeNetWork.toLowerCase()}.${baseURL}`
   }

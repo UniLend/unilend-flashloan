@@ -608,6 +608,7 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           redeemMax,
           fullPoolUTokenBalance,
+          flashLoanContract
         )
         handleTransModal(true)
         break

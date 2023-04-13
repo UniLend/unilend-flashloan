@@ -6,6 +6,40 @@ import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { DepositAction } from 'state/actions/depositA'
+import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
+import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
+
+export const getContractInstance = async () => {
+  try {
+    const signer = await fetchSigner()
+    const provider = getProvider()
+    const { chain } = getNetwork()
+    const instance = getContract({
+      address: UnilendFlashLoanCoreContract('', chain?.id),
+      abi: FlashloanABI.abi,
+      signerOrProvider: signer || provider,
+    })
+    return instance
+  } catch (error) {
+    throw error
+  }
+}
+
+const checkTxnStatus = async (hash: any) => {
+  try {
+    const receipt = waitForTransaction({
+      hash,
+    })
+
+    if ((await receipt).status == 1) {
+      return true
+    }
+  } catch (error) {
+    setTimeout(async () => {
+      checkTxnStatus(hash)
+    }, 1000)
+  }
+}
 
 // Allowance Should be checked to reveal the approval state of the contract
 export const checkAllowance = (

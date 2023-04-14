@@ -9,21 +9,21 @@ import { DepositAction } from 'state/actions/depositA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
 
-export const getContractInstance = async () => {
-  try {
-    const signer = await fetchSigner()
-    const provider = getProvider()
-    const { chain } = getNetwork()
-    const instance = getContract({
-      address: UnilendFlashLoanCoreContract('', chain?.id),
-      abi: FlashloanABI.abi,
-      signerOrProvider: signer || provider,
-    })
-    return instance
-  } catch (error) {
-    throw error
-  }
-}
+// export const getContractInstance = async () => {
+//   try {
+//     const signer = await fetchSigner()
+//     const provider = getProvider()
+//     const { chain } = getNetwork()
+//     const instance = getContract({
+//       address: UnilendFlashLoanCoreContract('', chain?.id),
+//       abi: FlashloanABI.abi,
+//       signerOrProvider: signer || provider,
+//     })
+//     return instance
+//   } catch (error) {
+//     throw error
+//   }
+// }
 
 const checkTxnStatus = async (hash: any) => {
   try {

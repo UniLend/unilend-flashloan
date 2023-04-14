@@ -138,7 +138,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
               (activeTab === 'airdrop' && (!isChecked || parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
               (activeTab === 'redeem' &&
                 (poolTokenBalance === 0 || parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
-              decimalLength > 18
+              +decimalLength > 18
             }
             className="btn btn-lg btn-custom-primary"
             onClick={() => handleAmount()}
@@ -180,7 +180,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
             (actionName === 'Deposit' && depositIsApproving === true) ||
             (actionName === 'Reward' && donateApproving === true) ||
             parseFloat(accountBalance) <= 0 ||
-            decimalLength > 18
+            +decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
@@ -228,7 +228,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
       )
     } else {
       return (
-        <button disabled={decimalLength > 18} className="btn btn-lg btn-custom-primary" onClick={walletConnect}>
+        <button disabled={+decimalLength > 18} className="btn btn-lg btn-custom-primary" onClick={walletConnect}>
           Connect Wallet
         </button>
       )

@@ -266,7 +266,6 @@ const NavBar: React.FC<Props> = (props) => {
                       return (
                         <div className="app-wallet-details">
                           <ActiveNetwork theme={theme} activeNetWork={activeNetWork} className="btn-custom-secondary" />
-                          {console.log('NETWORK_INFO', networkInfo)}
                           <NetworkInfoTab
                             theme={theme}
                             logo={networkInfo?.logo}

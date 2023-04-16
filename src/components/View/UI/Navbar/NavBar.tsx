@@ -72,10 +72,6 @@ const NavBar: React.FC<Props> = (props) => {
   }, [])
 
   useEffect(() => {
-    console.log('isError', isError, isLoading, signer)
-  }, [signer, contract])
-
-  useEffect(() => {
     let isMounted = true
     if (isMounted) {
       if (isConnected) {
@@ -88,11 +84,14 @@ const NavBar: React.FC<Props> = (props) => {
           payload: data?.formatted,
           fullAccountBalance: data?.formatted,
         })
-        console.log('NAME', chain?.name)
         dispatch({
           type: ActionType.ACTIVE_NETWORK,
           payload: chain?.name,
           networkId: chain?.id,
+        })
+        dispatch({
+          type: ActionType.FLASHLOAN_CONTRACT,
+          payload: contract,
         })
         setSelectedNetworkId(chain?.id as number)
       } else {

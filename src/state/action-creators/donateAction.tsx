@@ -43,6 +43,7 @@ export const donateAllowance = (
   address: string,
   contractAddress: string,
   receipentAddress: string,
+  enteredAmount: any,
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     dispatch({
@@ -55,15 +56,26 @@ export const donateAllowance = (
         _IERC20.methods.allowance(address, contractAddress).call((error: any, result: any) => {
           if (!error && result) {
             allowance = result
-            if (allowance === '0') {
-              dispatch({
-                type: ActionType.DONATE_APPROVAL_STATUS,
-                payload: false, // isApproved
-              })
-            } else {
+            // check user allowan >= entered amount
+            console.log('Allowance', allowance, Number(enteredAmount) * 10 ** 18)
+
+            if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
+              // dispatch({
+              //   type: ActionType.DONATE_APPROVAL_STATUS,
+              //   payload: false, // isApproved
+              // })
               localStorage.setItem('donateApproval', 'false')
               dispatch({
                 type: ActionType.DONATE_APPROVE_SUCCESS,
+              })
+            } else {
+              // localStorage.setItem('donateApproval', 'false')
+              // dispatch({
+              //   type: ActionType.DONATE_APPROVE_SUCCESS,
+              // })
+              dispatch({
+                type: ActionType.DONATE_APPROVAL_STATUS,
+                payload: false, // isApproved
               })
             }
           } else {

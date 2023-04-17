@@ -435,12 +435,6 @@ const CommonCard: FC<Props> = (props) => {
   // ])
 
   useEffect(() => {
-    if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
-      checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId)
-    } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
-      donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address)
-    }
-
     getCurrentAPY(
       currentProvider,
       donateContractAddress,
@@ -450,6 +444,23 @@ const CommonCard: FC<Props> = (props) => {
       totalTokensInRewardPool,
     )
   }, [accounts, donateContractAddress, isApproved, currentProvider, receipentAddress, activeTab, activeCurrency])
+
+  useEffect(() => {
+    if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
+      checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId)
+    } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
+      donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address, amount)
+    }
+  }, [
+    accounts,
+    donateContractAddress,
+    isApproved,
+    currentProvider,
+    receipentAddress,
+    activeTab,
+    activeCurrency,
+    amount,
+  ])
 
   useEffect(() => {
     fetchTokenList(
@@ -479,7 +490,7 @@ const CommonCard: FC<Props> = (props) => {
   useEffect(() => {
     let interval: any
 
-    interval = setInterval(() => {
+    interval = setTimeout(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,

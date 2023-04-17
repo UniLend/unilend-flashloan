@@ -236,7 +236,7 @@ const CommonCard: FC<Props> = (props) => {
   }, [flashLoanContract])
 
   const getPoolData = async () => {
-    console.log("useEffect Data", "contract",flashLoanContract);
+    // console.log("useEffect Data", "contract",flashLoanContract);
     
     try {
       const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')

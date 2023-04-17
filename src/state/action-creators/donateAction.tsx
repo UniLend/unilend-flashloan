@@ -1,10 +1,13 @@
-import { approveTokenMaximumValue, defaultGasPrice } from 'ethereum/contracts'
+import { approveTokenMaximumValue, defaultGasPrice, UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import { FlashloanLBCore, IERC20, UnilendFDonation } from 'ethereum/contracts/FlashloanLB'
 import { web3Service } from 'ethereum/web3Service'
 import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { DonateAction } from 'state/actions/donateA'
+import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
+import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
+import DonationABI from 'ethereum/build/UnilendFDonation.json'
 
 export const getDonationContract = (currentProvider: any, selectedNetwork: any) => {
   return async (dispatch: Dispatch<DonateAction>) => {
@@ -127,6 +130,47 @@ export const setDonateSuccess = () => {
     })
   }
 }
+
+// get contract instance
+export const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
+  try {
+    let signer = signerData
+    if (signer === null) {
+      signer = await fetchSigner()
+    }
+    const provider = getProvider()
+    const instance = getContract({
+      address: contractAddress, //
+      abi, //
+      signerOrProvider: signer || provider,
+    })
+    return instance
+  } catch (error) {
+    throw error
+  }
+}
+
+// check transaction status
+const checkTxnStatus = async (hash: any) => {
+  try {
+    const receipt = waitForTransaction({
+      hash,
+    })
+
+    if ((await receipt).status === 1) {
+      return true
+    } else {
+      setTimeout(async () => {
+        checkTxnStatus(hash)
+      }, 1000)
+    }
+  } catch (error) {
+    setTimeout(async () => {
+      checkTxnStatus(hash)
+    }, 1000)
+  }
+}
+
 export const handleDonate = (
   currentProvider: any,
   donateAmount: any,
@@ -142,46 +186,65 @@ export const handleDonate = (
     try {
       let fullAmount = web3Service.getValue(isEth, currentProvider, donateAmount, decimal)
 
-      FlashloanLBCore(currentProvider)
-        .methods.donationAddress()
-        .call((error: any, result: any) => {
-          if (!error && result) {
-            let contractAddress = result
-            let donationContract = UnilendFDonation(currentProvider, contractAddress)
-            donationContract.methods
-              .donate(receipentAddress, fullAmount)
-              .send({
-                from: address,
-                gasPrice: defaultGasPrice * 1e9,
-              })
-              .on('receipt', (res: any) => {
-                dispatch({
-                  type: ActionType.DONATE_SUCCESS,
-                  payload: true,
-                })
-              })
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const donationAddress = await instance.donationAddress()
+      const donationInstance = await getContractInstance(donationAddress, DonationABI.abi, signer)
+      const txs = await donationInstance.donate(receipentAddress, fullAmount)
 
-              .on('transactionHash', (hash: any) => {
-                dispatch({
-                  type: ActionType.DONATE_TRANSACTION_HASH,
-                  payload: hash,
-                })
-              })
-              .on('error', (err: any, res: any) => {
-                errorHandler.report(err)
+      if (txs.hash) {
+        const status = await checkTxnStatus(txs.hash)
+        if (status) {
+          dispatch({ type: ActionType.DONATE_SUCCESS, payload: true })
+          dispatch({
+            type: ActionType.DONATE_TRANSACTION_HASH,
+            payload: txs.hash,
+          })
+        }
+      }
+      /*
+      // FlashloanLBCore(currentProvider)
+      //   .methods.donationAddress()
+      //   .call((error: any, result: any) => {
+      //     if (!error && result) {
+      //       let contractAddress = result
+      //       let donationContract = UnilendFDonation(currentProvider, contractAddress)
+      //       donationContract.methods
+      //         .donate(receipentAddress, fullAmount)
+      //         .send({
+      //           from: address,
+      //           gasPrice: defaultGasPrice * 1e9,
+      //         })
+      //         .on('receipt', (res: any) => {
+      //           dispatch({
+      //             type: ActionType.DONATE_SUCCESS,
+      //             payload: true,
+      //           })
+      //         })
 
-                dispatch({
-                  type: ActionType.DONATE_FAILED,
-                  message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
-                })
-              })
-          } else {
-            dispatch({
-              type: ActionType.DONATE_FAILED,
-              message: 'Transaction Failed',
-            })
-          }
-        })
+      //         .on('transactionHash', (hash: any) => {
+      //           dispatch({
+      //             type: ActionType.DONATE_TRANSACTION_HASH,
+      //             payload: hash,
+      //           })
+      //         })
+      //         .on('error', (err: any, res: any) => {
+      //           errorHandler.report(err)
+
+      //           dispatch({
+      //             type: ActionType.DONATE_FAILED,
+      //             message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
+      //           })
+      //         })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.DONATE_FAILED,
+      //         message: 'Transaction Failed',
+      //       })
+      //     }
+      //   })
+      */
     } catch (e: any) {
       dispatch({
         type: ActionType.DONATE_FAILED,

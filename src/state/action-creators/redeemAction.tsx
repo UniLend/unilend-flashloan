@@ -85,8 +85,6 @@ export const handleRedeem = (
         //     })
         //   })
       } else {
-       
-      
         const txs = await instance.redeemUnderlying(receipentAddress, fullAmount)
 
         if (txs.hash) {
@@ -97,7 +95,6 @@ export const handleRedeem = (
           const status = await checkTxnStatus(txs.hash)
           if (status) {
             dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
-         
           }
         }
         // FlashloanLBCore(currentProvider)
@@ -140,8 +137,12 @@ const checkTxnStatus = async (hash: any) => {
       hash,
     })
 
-    if ((await receipt).status == 1) {
+    if ((await receipt).status === 1) {
       return true
+    } else {
+      setTimeout(async () => {
+        checkTxnStatus(hash)
+      }, 1000)
     }
   } catch (error) {
     setTimeout(async () => {

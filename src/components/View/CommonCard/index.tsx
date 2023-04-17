@@ -227,25 +227,22 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
+  // useEffect(() => {
+  //   if (flashLoanContract) {
+  //     getPoolData()
+  //   }
+  // }, [flashLoanContract])
 
-  useEffect(() => {
-    if(flashLoanContract){
+  // const getPoolData = async () => {
+  //   console.log('useEffect Data', 'contract', flashLoanContract)
 
-      getPoolData()
-    }
-  }, [flashLoanContract])
-
-  const getPoolData = async () => {
-    console.log("useEffect Data", "contract",flashLoanContract);
-    
-    try {
-      const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')
-      console.log("useEffect Data", data);
-    } catch (error) {
-      console.log("useEffect Data", "error", error);
-    }
-
-  }
+  //   try {
+  //     const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')
+  //     console.log('useEffect Data', data)
+  //   } catch (error) {
+  //     console.log('useEffect Data', 'error', error)
+  //   }
+  // }
 
   // useEffect(() => {
   //   function checkTx(tx) {
@@ -320,12 +317,10 @@ const CommonCard: FC<Props> = (props) => {
   //   airdropSuccess,
   // ])
 
-  
-
   useEffect(() => {
     getDonationContract(currentProvider, selectedNetworkId)
   }, [accounts, activeTab, activeCurrency, receipentAddress, assertAddress, donateContractAddress])
-  const location = useLocation()
+  // const location = useLocation()
   // useEffect(() => {
   //   if (location.search) {
   //     let search = location.search
@@ -391,7 +386,6 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [depositErrorMessage, donateErrorMessage, redeemErrorMessage, airdropErrorMessage])
 
-
   useEffect(() => {
     let interval: any
     if (
@@ -440,7 +434,7 @@ const CommonCard: FC<Props> = (props) => {
   //   totalTokensInRewardPool,
   // ])
 
-    useEffect(() => {
+  useEffect(() => {
     if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
       checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId)
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
@@ -451,15 +445,13 @@ const CommonCard: FC<Props> = (props) => {
       currentProvider,
       donateContractAddress,
       receipentAddress,
-       18,
+      18,
       totalDepositedTokens,
       totalTokensInRewardPool,
     )
-
   }, [accounts, donateContractAddress, isApproved, currentProvider, receipentAddress, activeTab, activeCurrency])
 
   useEffect(() => {
-
     fetchTokenList(
       tokenGroupList,
       networkId,
@@ -487,7 +479,7 @@ const CommonCard: FC<Props> = (props) => {
   useEffect(() => {
     let interval: any
 
-    interval = setTimeout(() => {
+    interval = setInterval(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,
@@ -496,9 +488,17 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
+        // getCurrentAPY(
+        //   currentProvider,
+        //   donateContractAddress,
+        //   receipentAddress,
+        //   18,
+        //   totalDepositedTokens,
+        //   totalTokensInRewardPool,
+        // )
       }
       handleTokenBalance()
-    }, 100)
+    }, 1000)
     return () => clearInterval(interval)
   }, [
     accounts,
@@ -527,7 +527,7 @@ const CommonCard: FC<Props> = (props) => {
   //     handleTokenBalance();
   //   }, 5000);
   //   return () => clearInterval(interval);
-  
+
   // }, [
   //   accounts,
   //   activeTab,
@@ -608,12 +608,13 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           redeemMax,
           fullPoolUTokenBalance,
-          flashLoanContract
+          flashLoanContract,
         )
         handleTransModal(true)
         break
       case 'reward':
         handleDonate(
+          //fix it
           currentProvider,
           amount,
           accounts[0],
@@ -859,17 +860,17 @@ const CommonCard: FC<Props> = (props) => {
       {modalInfo.show && activeTab && (
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
-          handleCurrChange={async (selectedAddress: any) => {
-            console.log("");
-            
+          handleCurrChange={async (selectedToken: any) => {
+            console.log('')
+
             await handleModal(false)
             await balanceReset()
             setPoolPercentage(0)
-            await setActiveCurrency(selectedAddress)
+            await setActiveCurrency(selectedToken)
             if (accounts.length && currentProvider) {
-              await getPool(selectedAddress.address, currentProvider, accounts[0], flashLoanContract)
+              await getPool(selectedToken.address, currentProvider, accounts[0], flashLoanContract)
             }
-            await handleReciepent(selectedAddress.address)
+            await handleReciepent(selectedToken.address)
           }}
           handleClose={() => handleModal(false)}
           activeTab={activeTab}

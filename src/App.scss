@@ -4,7 +4,7 @@
   // animation-duration: 2s;
   // background: var(--theme-page-background);
   color: var(--theme-page-text);
-  font-family: "NeueHaasDisplay";
+  font-family: 'NeueHaasDisplay';
   // position: fixed;
   // width: 100%;
   // height: 100% !important;
@@ -26,12 +26,12 @@
   height: 100%;
 
   &.dark {
-    background-image: url("../src/assets/dark-bg.svg");
+    background-image: url('../src/assets/dark-bg.svg');
     background-repeat: repeat no-repeat;
   }
 
   &.light {
-    background-image: url("../src/assets/light-bg.svg");
+    background-image: url('../src/assets/light-bg.svg');
   }
 }
 
@@ -75,7 +75,6 @@
   display: flex;
 }
 
-
 .network-warning {
   text-align: center;
   font-weight: 500;
@@ -84,9 +83,8 @@
 }
 
 .new-message {
-
   margin: 0;
-  background: #0056FF;
+  background: #0056ff;
   // border-radius: 8px;
   color: white;
 
@@ -104,7 +102,6 @@
       text-decoration: none;
       color: white;
     }
-
   }
 }
 
@@ -175,7 +172,7 @@
 }
 
 .btn-custom-wallet-secondary {
-  background: #D8353B !important;
+  background: #d8353b !important;
   color: #fff;
   font-weight: 900;
   font-size: smaller;
@@ -184,8 +181,8 @@
   &:hover,
   &:active,
   &:focus {
-    background: #D8353B !important;
-    box-shadow: #D8353B;
+    background: #d8353b !important;
+    box-shadow: #d8353b;
     color: #fff;
   }
 }
@@ -251,7 +248,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -278,7 +275,7 @@ input[type="number"] {
   margin-top: 10px;
   text-align: left;
   display: grid;
-  grid-template-areas: "name name name name name price";
+  grid-template-areas: 'name name name name name price';
 
   p {
     letter-spacing: 0.1px;
@@ -342,7 +339,7 @@ input[type="number"] {
 }
 
 .checkbox-custom {
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     height: 25px;
     width: 25px;
   }
@@ -382,7 +379,6 @@ input[type="number"] {
 }
 
 .modal-switch {
-
   // .modal-dialog {
   //   margin: 25% auto;
   // }
@@ -460,7 +456,7 @@ input[type="number"] {
   letter-spacing: 0.75px;
 }
 
-.checkbox-custom input[type="checkbox"] {
+.checkbox-custom input[type='checkbox'] {
   height: 15px;
   width: 15px;
 }
@@ -485,6 +481,8 @@ input[type="number"] {
   position: fixed;
   bottom: 0;
   height: 55.6px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .navbar-nav {
@@ -544,7 +542,6 @@ input[type="number"] {
 }
 
 @media only screen and (max-width: 770px) {
-
   .active-network-footer,
   .network-info-footer {
     display: none !important;
@@ -556,7 +553,6 @@ input[type="number"] {
 }
 
 @media only screen and (max-width: 500px) {
-
   .acc-balance-footer,
   .active-network-footer,
   .network-info-footer {

@@ -5,6 +5,7 @@ import useWalletConnect from 'hooks/useWalletConnect'
 import { FC, useEffect, useState } from 'react'
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from '../UI/ConnectWalletModal'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 interface Props {
   isEth: boolean
@@ -138,7 +139,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
               (activeTab === 'airdrop' && (!isChecked || parseFloat(amount) > parseFloat(fullUserTokenBalance))) ||
               (activeTab === 'redeem' &&
                 (poolTokenBalance === 0 || parseFloat(amount) > parseFloat(fullPoolTokenBalance))) ||
-              decimalLength > 18
+              +decimalLength > 18
             }
             className="btn btn-lg btn-custom-primary"
             onClick={() => handleAmount()}
@@ -180,7 +181,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
             (actionName === 'Deposit' && depositIsApproving === true) ||
             (actionName === 'Reward' && donateApproving === true) ||
             parseFloat(accountBalance) <= 0 ||
-            decimalLength > 18
+            +decimalLength > 18
           }
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
@@ -228,9 +229,52 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
       )
     } else {
       return (
-        <button disabled={decimalLength > 18} className="btn btn-lg btn-custom-primary" onClick={walletConnect}>
-          Connect Wallet
-        </button>
+        // <button disabled={+decimalLength > 18} className="btn btn-lg btn-custom-primary" onClick={walletConnect}>
+        //   Connect Wallet
+        // </button>
+        <ConnectButton.Custom>
+          {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+            const ready = mounted
+            const connected = ready && account && chain
+
+            return (
+              <div
+                {...(!ready && {
+                  'aria-hidden': true,
+                  style: {
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                  },
+                })}
+              >
+                {(() => {
+                  if (!connected) {
+                    return (
+                      <button
+                        disabled={+decimalLength > 18}
+                        className="btn btn-lg btn-custom-primary"
+                        onClick={openConnectModal}
+                      >
+                        Connect Wallet
+                      </button>
+                    )
+                  }
+
+                  if (chain.unsupported) {
+                    return (
+                      <button onClick={openChainModal} type="button">
+                        Wrong network
+                      </button>
+                    )
+                  }
+
+                  return
+                })()}
+              </div>
+            )
+          }}
+        </ConnectButton.Custom>
       )
     }
   }

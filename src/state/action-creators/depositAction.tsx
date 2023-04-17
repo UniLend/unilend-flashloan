@@ -47,6 +47,7 @@ export const checkAllowance = (
   address: any,
   receipentAddress: string,
   selectedNetworkId: any,
+  enteredAmount: any,
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     // console.log("activeNetwork",activeNetwork);
@@ -61,15 +62,15 @@ export const checkAllowance = (
         .call((error: any, result: any) => {
           if (!error && result) {
             allowance = result
-            if (allowance === '0') {
-              dispatch({
-                type: ActionType.DEPOSIT_APPROVAL_STATUS,
-                payload: false, // isApproved
-              })
-            } else {
+            if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
               localStorage.setItem('isApproving', 'false')
               dispatch({
                 type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+              })
+            } else {
+              dispatch({
+                type: ActionType.DEPOSIT_APPROVAL_STATUS,
+                payload: false, // isApproved
               })
             }
           } else {

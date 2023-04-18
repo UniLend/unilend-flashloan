@@ -567,24 +567,25 @@ const CommonCard: FC<Props> = (props) => {
     // }
   }, [activeTab])
 
-  // useEffect(() => {
-  //   if (
-  //     isDepositSuccess ||
-  //     donateIsApproved ||
-  //     donateSuccess ||
-  //     redeemSuccess ||
-  //     airdropSuccess
-  //   ) {
-  //     setAmount("");
-  //   }
-  // }, [
-  //   activeTab,
-  //   donateIsApproved,
-  //   isDepositSuccess,
-  //   donateSuccess,
-  //   redeemSuccess,
-  //   airdropSuccess,
-  // ]);
+  useEffect(() => {
+    if (
+      isDepositSuccess ||
+      donateIsApproved ||
+      donateSuccess ||
+      redeemSuccess ||
+      airdropSuccess
+    ) {
+      setAmount("");
+      handleTransModal(false)
+    }
+  }, [
+    activeTab,
+    donateIsApproved,
+    isDepositSuccess,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ]);
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
@@ -595,9 +596,12 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [poolLiquidity, poolTokenBalance])
 
+
+
   const handleAmount = async () => {
     switch (activeTab) {
       case 'lend':
+        handleTransModal(true)
         await handleDeposit(
           currentProvider,
           amount,
@@ -607,7 +611,6 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        handleTransModal(true)
         break
       case 'redeem':
         handleRedeem(

@@ -51,14 +51,14 @@ const CommonCard: FC<Props> = (props) => {
     accounts,
     walletConnected,
     currentProvider,
-    userTokenBalance, // update
-    poolTokenBalance, // update yourLiquidity, YourPoolShare
-    poolLiquidity, // update YourPoolShare TotalPoolLiquidity
-    rewardPoolBalance, // update RewardAvailable
-    rewardReleaseRate, //update RewardRate
+    userTokenBalance,
+    poolTokenBalance,
+    poolLiquidity,
+    rewardPoolBalance,
+    rewardReleaseRate,
     activeNetWork,
     networkId,
-    currentApy, // update CurrentApy
+    currentApy,
     accountBalance,
     totalDepositedTokens,
     totalTokensInRewardPool,
@@ -71,8 +71,8 @@ const CommonCard: FC<Props> = (props) => {
     poolTokenBalanceLoading,
     rewardPoolBalanceLoading,
     rewardReleaseRateLoading,
-    getUserTokenBalance, // update on success
-    getPoolLiquidity, // update on success
+    getUserTokenBalance,
+    getPoolLiquidity,
     handleWalletConnect,
   } = useWalletConnect()
 
@@ -86,15 +86,15 @@ const CommonCard: FC<Props> = (props) => {
     donateAllowance,
     fetchTokenList,
     getPool,
-    getPoolTokenBalance, // update on success
+    getPoolTokenBalance,
     handleAirdrop,
     getAccountBalance,
     handleReciepent,
     setActiveCurrency,
     getDonationContract,
-    getRewardPoolBalance, // update on success
-    getCurrentAPY, // update on success
-    getRewardReleaseRatePerDay, // update on success
+    getRewardPoolBalance,
+    getCurrentAPY,
+    getRewardReleaseRatePerDay,
     balanceReset,
     networkSwitchHandling,
     getTotalDepositedTokens,
@@ -613,24 +613,11 @@ const CommonCard: FC<Props> = (props) => {
   }, [activeTab])
 
   useEffect(() => {
-    if (
-      isDepositSuccess ||
-      donateIsApproved ||
-      donateSuccess ||
-      redeemSuccess ||
-      airdropSuccess
-    ) {
-      setAmount("");
+    if (isDepositSuccess || donateIsApproved || donateSuccess || redeemSuccess || airdropSuccess) {
+      setAmount('')
       handleTransModal(false)
     }
-  }, [
-    activeTab,
-    donateIsApproved,
-    isDepositSuccess,
-    donateSuccess,
-    redeemSuccess,
-    airdropSuccess,
-  ]);
+  }, [activeTab, donateIsApproved, isDepositSuccess, donateSuccess, redeemSuccess, airdropSuccess])
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
@@ -640,8 +627,6 @@ const CommonCard: FC<Props> = (props) => {
       setPoolPercentage(0)
     }
   }, [poolLiquidity, poolTokenBalance])
-
-
 
   const handleAmount = async () => {
     switch (activeTab) {

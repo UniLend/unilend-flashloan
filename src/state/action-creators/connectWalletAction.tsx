@@ -1120,6 +1120,7 @@ export const getPoolLiquidity = (
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
+  
     try {
       if (isEth) {
         currentProvider.eth
@@ -1142,6 +1143,8 @@ export const getPoolLiquidity = (
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
+          
+            
             if (!e) {
               let amount = r
 
@@ -1150,6 +1153,7 @@ export const getPoolLiquidity = (
                 type: ActionType.POOL_LIQUIDITY_SUCCESS,
                 payload: fullAmount,
               })
+              console.log('activeCurrency', 'call', fullAmount);
             } else {
               dispatch({
                 type: ActionType.POOL_LIQUIDITY_SUCCESS,

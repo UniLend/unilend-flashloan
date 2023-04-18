@@ -29,7 +29,6 @@ export const getDonationContract = (currentProvider: any, selectedNetwork: any) 
         })
     } catch (e) {
       errorHandler.report(e)
-
       dispatch({
         type: ActionType.GET_DONATION_CONTRACT,
         payload: '',
@@ -87,7 +86,6 @@ export const donateAllowance = (
       }
     } catch (e) {
       errorHandler.report(e)
-
       dispatch({
         type: ActionType.DONATE_ALLOWANCE_FAILED,
       })

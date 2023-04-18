@@ -375,6 +375,7 @@ const CommonCard: FC<Props> = (props) => {
           clearAirdropError()
           clearDonateError()
           clearRedeemError()
+          setTransModalInfo(false)
           handleToast(false)
           clearInterval(interval)
         }
@@ -403,6 +404,7 @@ const CommonCard: FC<Props> = (props) => {
           clearAirdropError()
           clearDonateError()
           clearDonateError()
+          setTransModalInfo(false)
           handleToast(false)
           clearInterval(interval)
         }
@@ -561,6 +563,7 @@ const CommonCard: FC<Props> = (props) => {
     clearAirdropError()
     clearDonateError()
     clearRedeemError()
+    setTransModalInfo(false)
     handleToast(false)
     // if (activeTab === "reward") {
     //   rewardTokenList(tokenList);

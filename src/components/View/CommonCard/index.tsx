@@ -447,7 +447,7 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
-      checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId)
+      checkAllowance(currentProvider, accounts[0], activeCurrency.address, selectedNetworkId, amount)
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
       donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address, amount)
     }

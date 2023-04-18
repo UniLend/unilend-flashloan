@@ -14,8 +14,7 @@ export const mumbaiTokenList = [
     balance: '10',
     chainId: 1,
     decimals: 18,
-    logoURI:
-      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1/logo.png',
+    logoURI: 'https://i.imgur.com/1gvlSeH.png',
     name: 'Unilend Finance Token',
     symbol: 'UFT',
     underlyingBalance: '',

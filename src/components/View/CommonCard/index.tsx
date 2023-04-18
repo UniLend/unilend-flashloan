@@ -227,6 +227,7 @@ const CommonCard: FC<Props> = (props) => {
     if (isDepositSuccess || donateIsApproved || isApproved || donateSuccess || redeemSuccess || airdropSuccess) {
       setAmount('')
       setDepositChecked(false)
+      balanceReset()
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
@@ -468,6 +469,14 @@ const CommonCard: FC<Props> = (props) => {
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
       donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address, amount)
     }
+    getCurrentAPY(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+      18,
+      totalDepositedTokens,
+      totalTokensInRewardPool,
+    )
   }, [
     accounts,
     donateContractAddress,
@@ -515,17 +524,17 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        // getCurrentAPY(
-        //   currentProvider,
-        //   donateContractAddress,
-        //   receipentAddress,
-        //   18,
-        //   totalDepositedTokens,
-        //   totalTokensInRewardPool,
-        // )
+        getCurrentAPY(
+          currentProvider,
+          donateContractAddress,
+          receipentAddress,
+          18,
+          totalDepositedTokens,
+          totalTokensInRewardPool,
+        )
       }
       handleTokenBalance()
-    }, 4000)
+    }, 1000)
     return () => clearInterval(interval)
   }, [
     accounts,

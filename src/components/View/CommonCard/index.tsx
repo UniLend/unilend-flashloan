@@ -76,8 +76,6 @@ const CommonCard: FC<Props> = (props) => {
     handleWalletConnect,
   } = useWalletConnect()
 
-  console.log('BALANCE', poolLiquidity)
-
   const {
     handleDeposit,
     handleRedeem,

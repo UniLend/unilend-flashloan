@@ -51,14 +51,14 @@ const CommonCard: FC<Props> = (props) => {
     accounts,
     walletConnected,
     currentProvider,
-    userTokenBalance,
-    poolTokenBalance,
-    poolLiquidity,
-    rewardPoolBalance,
-    rewardReleaseRate,
+    userTokenBalance, // update
+    poolTokenBalance, // update yourLiquidity, YourPoolShare
+    poolLiquidity, // update YourPoolShare TotalPoolLiquidity
+    rewardPoolBalance, // update RewardAvailable
+    rewardReleaseRate, //update RewardRate
     activeNetWork,
     networkId,
-    currentApy,
+    currentApy, // update CurrentApy
     accountBalance,
     totalDepositedTokens,
     totalTokensInRewardPool,
@@ -71,10 +71,12 @@ const CommonCard: FC<Props> = (props) => {
     poolTokenBalanceLoading,
     rewardPoolBalanceLoading,
     rewardReleaseRateLoading,
-    getUserTokenBalance,
-    getPoolLiquidity,
+    getUserTokenBalance, // update on success
+    getPoolLiquidity, // update on success
     handleWalletConnect,
   } = useWalletConnect()
+
+  console.log('BALANCE', poolLiquidity)
 
   const {
     handleDeposit,
@@ -84,15 +86,15 @@ const CommonCard: FC<Props> = (props) => {
     donateAllowance,
     fetchTokenList,
     getPool,
-    getPoolTokenBalance,
+    getPoolTokenBalance, // update on success
     handleAirdrop,
     getAccountBalance,
     handleReciepent,
     setActiveCurrency,
     getDonationContract,
-    getRewardPoolBalance,
-    getCurrentAPY,
-    getRewardReleaseRatePerDay,
+    getRewardPoolBalance, // update on success
+    getCurrentAPY, // update on success
+    getRewardReleaseRatePerDay, // update on success
     balanceReset,
     networkSwitchHandling,
     getTotalDepositedTokens,
@@ -146,6 +148,45 @@ const CommonCard: FC<Props> = (props) => {
   const { receipentAddress } = useTypedSelector((state) => state.ethereum)
   const { assertAddress } = useTypedSelector((state) => state.pool)
   const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
+
+  useEffect(() => {
+    getUserTokenBalance(currentProvider, accounts[0], activeCurrency.address, assertAddress, activeCurrency.decimals)
+    getPoolLiquidity(
+      currentProvider,
+      activeCurrency.address,
+      activeCurrency.symbol === 'ETH',
+      activeCurrency.decimals,
+      selectedNetworkId,
+    )
+    getPoolTokenBalance(
+      currentProvider,
+      accounts[0],
+      assertAddress,
+      activeCurrency.address,
+      activeCurrency.decimals,
+      selectedNetworkId,
+    )
+    getRewardPoolBalance(currentProvider, donateContractAddress, activeCurrency.address, activeCurrency.decimals)
+    getCurrentAPY(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+      18,
+      totalDepositedTokens,
+      totalTokensInRewardPool,
+    )
+    getRewardReleaseRatePerDay(currentProvider, donateContractAddress, activeCurrency.address, activeCurrency.decimals)
+  }, [
+    isDepositSuccess,
+    depositSuccessMessage,
+    donateSuccess,
+    donateSuccessMessage,
+    redeemSuccess,
+    redeemSuccessMessage,
+    airdropSuccess,
+    airdropSuccessMessage,
+  ])
+
   const handleTokenBalance = () => {
     if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
     if (accounts.length && currentProvider && activeCurrency.symbol !== 'Select Token') {
@@ -224,6 +265,7 @@ const CommonCard: FC<Props> = (props) => {
     if (isDepositSuccess || donateIsApproved || isApproved || donateSuccess || redeemSuccess || airdropSuccess) {
       setAmount('')
       setDepositChecked(false)
+      // handleTokenBalance()
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 

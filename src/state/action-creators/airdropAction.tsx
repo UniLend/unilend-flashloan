@@ -27,33 +27,40 @@ export const handleAirdrop = (
     dispatch({
       type: ActionType.AIRDROP_ACTION,
     })
-    var fullAmount = web3Service.getValue(isEth, currentProvider, amount, decimal)
+    try {
+      var fullAmount = web3Service.getValue(isEth, currentProvider, amount, decimal)
 
-    await IERC20(currentProvider, reciepentAddress)
-      .methods.transfer(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), fullAmount)
-      .send({
-        from: account,
-        gasPrice: defaultGasPrice * 1e9,
-      })
-      .on('receipt', (res: any) => {
-        dispatch({
-          type: ActionType.AIRDROP_SUCCESS,
+      await IERC20(currentProvider, reciepentAddress)
+        .methods.transfer(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), fullAmount)
+        .send({
+          from: account,
+          gasPrice: defaultGasPrice * 1e9,
         })
-      })
-      .on('transactionHash', (hash: any) => {
-        dispatch({
-          type: ActionType.AIRDROP_TRANSACTION_HASH,
-          payload: hash,
+        .on('receipt', (res: any) => {
+          dispatch({
+            type: ActionType.AIRDROP_SUCCESS,
+          })
         })
-      })
-      .on('error', (err: any, res: any) => {
-        errorHandler.report(err)
+        .on('transactionHash', (hash: any) => {
+          dispatch({
+            type: ActionType.AIRDROP_TRANSACTION_HASH,
+            payload: hash,
+          })
+        })
+        .on('error', (err: any, res: any) => {
+          errorHandler.report(err)
 
-        dispatch({
-          type: ActionType.AIRDROP_FAILED,
-          message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
+          dispatch({
+            type: ActionType.AIRDROP_FAILED,
+            message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
+          })
         })
+    } catch (error) {
+      dispatch({
+        type: ActionType.AIRDROP_FAILED,
+        message: 'Transaction Failed',
       })
+    }
   }
 }
 export const clearAirdropError = () => {

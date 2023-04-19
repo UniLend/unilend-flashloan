@@ -130,7 +130,6 @@ const NavBar: React.FC<Props> = (props) => {
   }, [isConnected])
 
   useEffect(() => {
-    console.log('UserAcount', states)
     setCurrentPage(props.location.pathname)
   }, [props.location.pathname])
 

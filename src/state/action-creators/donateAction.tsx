@@ -56,8 +56,6 @@ export const donateAllowance = (
           if (!error && result) {
             allowance = result
             // check user allowan >= entered amount
-            console.log('Allowance', allowance, Number(enteredAmount) * 10 ** 18)
-
             if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
               // dispatch({
               //   type: ActionType.DONATE_APPROVAL_STATUS,

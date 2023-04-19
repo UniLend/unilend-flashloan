@@ -90,9 +90,7 @@ const metamaskEventHandler = (dispatch: any, provider: any) => {
       })
     }
   })
-  provider.on('message', (message: any) => {
-    // console.log(message);
-  })
+  provider.on('message', (message: any) => {})
   provider.on('disconnect', (code: number, reason: string) => {
     dispatch({
       type: ActionType.WALLET_DISCONNECT,
@@ -108,7 +106,6 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, prov
         currentProvider.eth
           .getAccounts()
           .then((res: any) => {
-            console.log("getAccounts", res); 
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],
@@ -203,22 +200,17 @@ async function handleWalletConnect(
   //                       ],
   //                     })
   //                     accounts = await web3Service.getAccounts(currentProviders)
-    
   //                     // if (accounts) {
   //                     handleMetamask(accounts, dispatch, currentProviders, provider)
   //                     // }
-    
   //                     return true
   //                   } catch (error) {
   //                     errorHandler.report(error)
-    
   //                     console.error(error)
-    
   //                     return false
   //                   }
   //                 }
   //               }
- 
   //             } else {
   //               console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
   //               dispatch({
@@ -242,7 +234,6 @@ async function handleWalletConnect(
   //                   method: 'wallet_switchEthereumChain',
   //                   params: [{ chainId: `0x${chainId.toString(16)}` }],
   //                 });
-  
   //                 accounts = await web3Service.getAccounts(currentProviders)
   //                 handleMetamask(accounts, dispatch, currentProviders, provider)
   //                 return true;
@@ -266,22 +257,17 @@ async function handleWalletConnect(
   //                       ],
   //                     })
   //                     accounts = await web3Service.getAccounts(currentProviders)
-    
   //                     // if (accounts) {
   //                     handleMetamask(accounts, dispatch, currentProviders, provider)
   //                     // }
-    
   //                     return true
   //                   } catch (error) {
   //                     errorHandler.report(error)
-    
   //                     console.error(error)
-    
   //                     return false
   //                   }
   //                 }
   //               }
- 
   //             } else {
   //               console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
   //               dispatch({
@@ -304,7 +290,6 @@ async function handleWalletConnect(
   //                 method: 'wallet_switchEthereumChain',
   //                 params: [{ chainId: `0x${chainId.toString(16)}` }],
   //               });
-
   //               accounts = await web3Service.getAccounts(currentProviders)
   //               handleMetamask(accounts, dispatch, currentProviders, provider)
   //               return true;
@@ -337,12 +322,9 @@ async function handleWalletConnect(
   //                   }
   //                 }
   //               }
-
-         
   //             } else {
   //               if ((window as any).ethereum) {
   //                 accounts = await web3Service.getAccounts(currentProviders)
-
   //                 // if (accounts) {
   //                 handleMetamask(accounts, dispatch, currentProviders, provider)
   //               }
@@ -372,7 +354,6 @@ async function handleWalletConnect(
   //                   method: 'wallet_switchEthereumChain',
   //                   params: [{ chainId: `0x${chainId.toString(16)}` }],
   //                 });
-  
   //                 accounts = await web3Service.getAccounts(currentProviders)
   //                 handleMetamask(accounts, dispatch, currentProviders, provider)
   //                 return true;
@@ -406,7 +387,6 @@ async function handleWalletConnect(
   //                   }
   //                 }
   //                }
-     
   //             } else {
   //               if ((window as any).ethereum) {
   //                 accounts = await web3Service.getAccounts(currentProviders)
@@ -437,7 +417,6 @@ async function handleWalletConnect(
   //                   method: 'wallet_switchEthereumChain',
   //                   params: [{ chainId: `0x${chainId.toString(16)}` }],
   //                 });
-  
   //                 accounts = await web3Service.getAccounts(currentProviders)
   //                 handleMetamask(accounts, dispatch, currentProviders, provider)
   //                 return true;
@@ -470,7 +449,6 @@ async function handleWalletConnect(
   //                     return false
   //                   }
   //                 }}
-
   //             } else {
   //               if ((window as any).ethereum) {
   //                 accounts = await web3Service.getAccounts(currentProviders)
@@ -505,7 +483,6 @@ async function handleWalletConnect(
   //           const bsc = new BscConnector({
   //             supportedChainIds: [56, 97], // later on 1 ethereum mainnet and 3 ethereum ropsten will be supported
   //           })
-
   //           // invoke method on bsc e.g.
   //           await bsc.activate()
   //           let accounts: any = await bsc.getAccount()
@@ -542,12 +519,10 @@ async function handleWalletConnect(
   //             payload: [...res],
   //           })
   //         })
-
   //         // const chainId = await web3.eth.chainId();
   //         // console.log(accounts, networkId, "ss", chainId);
   //       } catch (err: any) {
   //         errorHandler.report(err)
-
   //         dispatch({
   //           type: ActionType.CONNECT_WALLET_ERROR,
   //           payload: err.message,
@@ -566,12 +541,10 @@ async function handleWalletConnect(
   //             payload: [...res],
   //           })
   //         })
-
   //         // const chainId = await web3.eth.chainId();
   //         // console.log(accounts, networkId, "ss", chainId);
   //       } catch (err: any) {
   //         errorHandler.report(err)
-
   //         dispatch({
   //           type: ActionType.CONNECT_WALLET_ERROR,
   //           payload: err.message,
@@ -609,7 +582,6 @@ async function handleWalletConnect(
   //           })
   //           .catch((err) => {
   //             errorHandler.report(err)
-
   //             dispatch({
   //               type: ActionType.CONNECT_WALLET_ERROR,
   //               payload: err.message,
@@ -617,7 +589,6 @@ async function handleWalletConnect(
   //           })
   //       } catch (err: any) {
   //         errorHandler.report(err)
-
   //         dispatch({
   //           type: ActionType.CONNECT_WALLET_ERROR,
   //           payload: err.message,
@@ -649,7 +620,6 @@ async function handleWalletConnect(
   //         // );
   //       } catch (err: any) {
   //         errorHandler.report(err)
-
   //         dispatch({
   //           type: ActionType.CONNECT_WALLET_ERROR,
   //           payload: err.message,
@@ -1120,7 +1090,6 @@ export const getPoolLiquidity = (
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-  
     try {
       if (isEth) {
         currentProvider.eth
@@ -1143,8 +1112,6 @@ export const getPoolLiquidity = (
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
-          
-            
             if (!e) {
               let amount = r
 
@@ -1153,7 +1120,7 @@ export const getPoolLiquidity = (
                 type: ActionType.POOL_LIQUIDITY_SUCCESS,
                 payload: fullAmount,
               })
-              console.log('activeCurrency', 'call', fullAmount);
+              console.log('activeCurrency', 'call', fullAmount)
             } else {
               // dispatch({
               //   type: ActionType.POOL_LIQUIDITY_SUCCESS,

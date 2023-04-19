@@ -44,7 +44,6 @@ export const getPool = (address: any, currentProvider: any, accounts: any, flash
 
     try {
       const res = await flashLoanContract.Pools(address)
-      console.log('FlashloanLBCore', 'Trycatch', res, address, currentProvider)
       dispatch({
         type: ActionType.ASSERT_ADDRESS,
         payload: res,

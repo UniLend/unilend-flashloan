@@ -913,8 +913,6 @@ const CommonCard: FC<Props> = (props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedToken: any) => {
-            console.log('')
-
             await handleModal(false)
             await balanceReset()
             setPoolPercentage(0)

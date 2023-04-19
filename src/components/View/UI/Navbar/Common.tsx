@@ -42,7 +42,7 @@ export const AccountBalance = ({ accountBalance, tokenType, className, theme }: 
         className ? className : ''
       }`}
     >
-      <span className="mr-1">{accountBalance}</span>
+      <span className="mr-1">{isNaN(Number(accountBalance)) ? 0.0 : Number(accountBalance).toFixed(3)}</span>
       <span className="currency">{activeNetworkBaseCurrency(tokenType)}</span>
     </button>
   )

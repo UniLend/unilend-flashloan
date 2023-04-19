@@ -23,9 +23,6 @@ const Manage: FC<Props> = (props) => {
   const { payload: searchedToken, message: errorMessage } = useTypedSelector((state) => state.tokenManage.searchedToken)
 
   const { searchToken, resetCustomToken, setCustomToken } = useActions()
-  // useEffect(() => {
-  //   console.log("list", tokenList);
-  // }, [tokenList]);
 
   useEffect(() => {
     if (searchedTokenText.length > 0) {

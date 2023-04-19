@@ -18,7 +18,7 @@ import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
 import { setTimeout } from 'timers'
 import { FlashLoanCore } from 'ethereum/contracts/FlashloanLB'
-const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
+const message = 'Stay updated about the launch of our new Versions, UniLend V2'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
 }
@@ -146,8 +146,6 @@ const CommonCard: FC<Props> = (props) => {
   const { receipentAddress } = useTypedSelector((state) => state.ethereum)
   const { assertAddress } = useTypedSelector((state) => state.pool)
   const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
-
-
 
   const handleTokenBalance = () => {
     if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
@@ -526,7 +524,7 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        getCurrentAPY( 
+        getCurrentAPY(
           currentProvider,
           donateContractAddress,
           receipentAddress,
@@ -586,7 +584,19 @@ const CommonCard: FC<Props> = (props) => {
     if (walletConnected && activeCurrency.symbol !== 'Select Token') {
       getPool(activeCurrency.address, currentProvider, accounts[0], flashLoanContract)
     }
-  }, [walletConnected, accounts, currentProvider, activeCurrency, flashLoanContract, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
+  }, [
+    walletConnected,
+    accounts,
+    currentProvider,
+    activeCurrency,
+    flashLoanContract,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   useEffect(() => {
     setAmount('')
@@ -615,7 +625,16 @@ const CommonCard: FC<Props> = (props) => {
     } else {
       setPoolPercentage(0)
     }
-  }, [poolLiquidity, poolTokenBalance, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
+  }, [
+    poolLiquidity,
+    poolTokenBalance,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   const handleAmount = async () => {
     switch (activeTab) {
@@ -818,7 +837,7 @@ const CommonCard: FC<Props> = (props) => {
   return (
     <>
       <div className="new-message">
-        <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
+        <a href="https://unilend.finance" rel="noreferrer" target="_blank">
           {message}
         </a>
       </div>
@@ -894,8 +913,6 @@ const CommonCard: FC<Props> = (props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedToken: any) => {
-            console.log('')
-
             await handleModal(false)
             await balanceReset()
             setPoolPercentage(0)

@@ -120,7 +120,8 @@ const FooterNavBar: React.FC<Props> = (props) => {
                       theme={theme}
                       logo={networkInfo?.logo}
                       label={networkInfo?.label}
-                      onClick={openChainModal}
+                      // onClick={openChainModal}
+                      onClick={() => setSwitchNetworkModal(true)}
                       className="network-info-footer"
                     />
 

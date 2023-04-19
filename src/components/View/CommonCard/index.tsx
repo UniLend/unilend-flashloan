@@ -18,7 +18,7 @@ import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
 import { setTimeout } from 'timers'
 import { FlashLoanCore } from 'ethereum/contracts/FlashloanLB'
-const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
+const message = 'Stay updated about the launch of our new Versions, UniLend V2'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
 }
@@ -837,7 +837,7 @@ const CommonCard: FC<Props> = (props) => {
   return (
     <>
       <div className="new-message">
-        <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
+        <a href="https://unilend.finance" rel="noreferrer" target="_blank">
           {message}
         </a>
       </div>

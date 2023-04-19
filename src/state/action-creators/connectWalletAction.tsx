@@ -862,17 +862,17 @@ export const getPooluTokenBalance = (
                 payload: fullAmount,
               })
             } else {
-              dispatch({
-                type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
-                payload: '',
-              })
+              // dispatch({
+              //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+              //   payload: '',
+              // })
             }
           })
         } else {
-          dispatch({
-            type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
-            payload: '',
-          })
+          // dispatch({
+          //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+          //   payload: '',
+          // })
         }
       })
   }
@@ -909,14 +909,14 @@ export const getPoolTokenBalance = (
               payload: decimalAmount,
             })
           } else {
-            dispatch({
-              type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
-              payload: '',
-            })
-            dispatch({
-              type: ActionType.FULL_POOL_TOKEN_BALANCE,
-              payload: '',
-            })
+            // dispatch({
+            //   type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
+            //   payload: '',
+            // })
+            // dispatch({
+            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
+            //   payload: '',
+            // })
           }
         })
     } catch (e: any) {
@@ -981,9 +981,9 @@ export const getCurrentAPY = (
   totalTokensInRewardPool: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    dispatch({
-      type: ActionType.CURRENT_APY_ACTION,
-    })
+    // dispatch({
+    //   type: ActionType.CURRENT_APY_ACTION,
+    // })
     try {
       UnilendFDonation(currentProvider, donateContract)
         .methods.getReleaseRate(reciepentAddress)
@@ -1012,7 +1012,7 @@ export const getCurrentAPY = (
           }
         })
     } catch (e) {
-      errorHandler.report(e)
+      // errorHandler.report(e)
       dispatch({
         type: ActionType.CURRENT_APY_FAILED,
       })
@@ -1120,6 +1120,7 @@ export const getPoolLiquidity = (
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
+  
     try {
       if (isEth) {
         currentProvider.eth
@@ -1132,16 +1133,18 @@ export const getPoolLiquidity = (
             })
           })
           .catch((e: any) => {
-            dispatch({
-              type: ActionType.POOL_LIQUIDITY_SUCCESS,
-              payload: '',
-            })
+            // dispatch({
+            //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
+            //   payload: '',
+            // })
           })
       } else {
         let timestamp = setTimestamp()
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
           .call((e: any, r: any) => {
+          
+            
             if (!e) {
               let amount = r
 
@@ -1150,11 +1153,12 @@ export const getPoolLiquidity = (
                 type: ActionType.POOL_LIQUIDITY_SUCCESS,
                 payload: fullAmount,
               })
+              console.log('activeCurrency', 'call', fullAmount);
             } else {
-              dispatch({
-                type: ActionType.POOL_LIQUIDITY_SUCCESS,
-                payload: '',
-              })
+              // dispatch({
+              //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
+              //   payload: '',
+              // })
             }
           })
       }

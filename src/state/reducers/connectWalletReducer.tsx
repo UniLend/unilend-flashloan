@@ -244,7 +244,7 @@ const connectWalletReducer = (state: ConnectWalletState = initialState, action: 
       return {
         ...state,
         currentApyLoading: false,
-        currentApy: '',
+        // currentApy: '',
       }
     case ActionType.TOTAL_DEPOSITION_TOKENS_FAILED:
       return {

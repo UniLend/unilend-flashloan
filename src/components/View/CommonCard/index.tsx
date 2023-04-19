@@ -147,44 +147,6 @@ const CommonCard: FC<Props> = (props) => {
   const { assertAddress } = useTypedSelector((state) => state.pool)
   const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
 
-  useEffect(() => {
-    getUserTokenBalance(currentProvider, accounts[0], activeCurrency.address, assertAddress, activeCurrency.decimals)
-    getPoolLiquidity(
-      currentProvider,
-      activeCurrency.address,
-      activeCurrency.symbol === 'ETH',
-      activeCurrency.decimals,
-      selectedNetworkId,
-    )
-    getPoolTokenBalance(
-      currentProvider,
-      accounts[0],
-      assertAddress,
-      activeCurrency.address,
-      activeCurrency.decimals,
-      selectedNetworkId,
-    )
-    getRewardPoolBalance(currentProvider, donateContractAddress, activeCurrency.address, activeCurrency.decimals)
-    getCurrentAPY(
-      currentProvider,
-      donateContractAddress,
-      receipentAddress,
-      18,
-      totalDepositedTokens,
-      totalTokensInRewardPool,
-    )
-    getRewardReleaseRatePerDay(currentProvider, donateContractAddress, activeCurrency.address, activeCurrency.decimals)
-  }, [
-    isDepositSuccess,
-    depositSuccessMessage,
-    donateSuccess,
-    donateSuccessMessage,
-    redeemSuccess,
-    redeemSuccessMessage,
-    airdropSuccess,
-    airdropSuccessMessage,
-  ])
-
   const handleTokenBalance = () => {
     if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
     if (accounts.length && currentProvider && activeCurrency.symbol !== 'Select Token') {
@@ -263,7 +225,7 @@ const CommonCard: FC<Props> = (props) => {
     if (isDepositSuccess || donateIsApproved || isApproved || donateSuccess || redeemSuccess || airdropSuccess) {
       setAmount('')
       setDepositChecked(false)
-      // handleTokenBalance()
+      balanceReset()
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
@@ -485,7 +447,21 @@ const CommonCard: FC<Props> = (props) => {
       totalDepositedTokens,
       totalTokensInRewardPool,
     )
-  }, [accounts, donateContractAddress, isApproved, currentProvider, receipentAddress, activeTab, activeCurrency])
+  }, [
+    accounts,
+    donateContractAddress,
+    isApproved,
+    currentProvider,
+    receipentAddress,
+    activeTab,
+    activeCurrency,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   useEffect(() => {
     if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
@@ -493,6 +469,14 @@ const CommonCard: FC<Props> = (props) => {
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
       donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address, amount)
     }
+    getCurrentAPY(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+      18,
+      totalDepositedTokens,
+      totalTokensInRewardPool,
+    )
   }, [
     accounts,
     donateContractAddress,
@@ -531,8 +515,7 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     let interval: any
-
-    interval = setTimeout(() => {
+    interval = setInterval(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,
@@ -541,14 +524,14 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        // getCurrentAPY(
-        //   currentProvider,
-        //   donateContractAddress,
-        //   receipentAddress,
-        //   18,
-        //   totalDepositedTokens,
-        //   totalTokensInRewardPool,
-        // )
+        getCurrentAPY(
+          currentProvider,
+          donateContractAddress,
+          receipentAddress,
+          18,
+          totalDepositedTokens,
+          totalTokensInRewardPool,
+        )
       }
       handleTokenBalance()
     }, 1000)
@@ -564,6 +547,12 @@ const CommonCard: FC<Props> = (props) => {
     totalDepositedTokens,
     totalTokensInRewardPool,
     tokenList,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
   ])
   // useEffect(() => {
   //   let interval: any;
@@ -595,7 +584,19 @@ const CommonCard: FC<Props> = (props) => {
     if (walletConnected && activeCurrency.symbol !== 'Select Token') {
       getPool(activeCurrency.address, currentProvider, accounts[0], flashLoanContract)
     }
-  }, [walletConnected, accounts, currentProvider, activeCurrency, flashLoanContract])
+  }, [
+    walletConnected,
+    accounts,
+    currentProvider,
+    activeCurrency,
+    flashLoanContract,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   useEffect(() => {
     setAmount('')
@@ -624,7 +625,16 @@ const CommonCard: FC<Props> = (props) => {
     } else {
       setPoolPercentage(0)
     }
-  }, [poolLiquidity, poolTokenBalance])
+  }, [
+    poolLiquidity,
+    poolTokenBalance,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   const handleAmount = async () => {
     switch (activeTab) {

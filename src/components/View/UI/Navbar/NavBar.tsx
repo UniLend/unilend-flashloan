@@ -10,7 +10,15 @@ import { useTypedSelector } from 'hooks/useTypedSelector'
 import { SettingAction } from 'state/actions/settingsA'
 import { NETWORKS } from 'components/constants'
 import { WalletInfoProps } from '../../../Helpers/Types'
-import { ThemeButton, AccountBalance, ActiveNetwork, NetworkInfoTab, ConnectWalletButton, AddressTab } from './Common'
+import {
+  ThemeButton,
+  AccountBalance,
+  ActiveNetwork,
+  NetworkInfoTab,
+  ConnectWalletButton,
+  AddressTab,
+  WrongNetwork,
+} from './Common'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount, useBalance, useNetwork, useProvider, useSigner } from 'wagmi'
 import { ActionType } from 'state/action-types'
@@ -263,11 +271,7 @@ const NavBar: React.FC<Props> = (props) => {
                       }
 
                       if (chain.unsupported) {
-                        return (
-                          <button onClick={openChainModal} type="button">
-                            Wrong network
-                          </button>
-                        )
+                        return <WrongNetwork theme={theme} onClick={() => setSwitchNetworkModal(true)} />
                       }
 
                       return (

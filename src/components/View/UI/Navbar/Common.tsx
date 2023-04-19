@@ -112,3 +112,11 @@ export const AddressTab = ({ theme, onClick, address }: AddressTabProps) => {
     </button>
   )
 }
+
+export const WrongNetwork = ({ theme, onClick }: any) => {
+  return (
+    <button className={`d-flex btn  btn-custom-secondary ${theme === 'dark' && 'btn-dark'}`} onClick={onClick}>
+      Wrong Network
+    </button>
+  )
+}

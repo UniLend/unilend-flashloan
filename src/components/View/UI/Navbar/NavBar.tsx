@@ -121,6 +121,15 @@ const NavBar: React.FC<Props> = (props) => {
   }, [isConnected, signer, contract, isLoading, checkWalletConnect])
 
   useEffect(() => {
+    if (isConnected) {
+      setWalletStatusInfo({
+        show: false,
+        address: '',
+      })
+    }
+  }, [isConnected])
+
+  useEffect(() => {
     console.log('UserAcount', states)
     setCurrentPage(props.location.pathname)
   }, [props.location.pathname])
@@ -269,7 +278,6 @@ const NavBar: React.FC<Props> = (props) => {
                             theme={theme}
                             logo={networkInfo?.logo}
                             label={networkInfo?.label}
-                            // onClick={openChainModal}
                             onClick={() => setSwitchNetworkModal(true)}
                           />
 
@@ -280,7 +288,16 @@ const NavBar: React.FC<Props> = (props) => {
                             className="acc-balance-header"
                           />
 
-                          <AddressTab theme={theme} onClick={openAccountModal} address={accounts[0]} />
+                          <AddressTab
+                            theme={theme}
+                            onClick={() =>
+                              setWalletStatusInfo({
+                                show: true,
+                                address: accounts[0],
+                              })
+                            }
+                            address={accounts[0]}
+                          />
                         </div>
                       )
                     })()}

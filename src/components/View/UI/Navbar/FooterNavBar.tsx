@@ -132,7 +132,16 @@ const FooterNavBar: React.FC<Props> = (props) => {
                       className="acc-balance-footer"
                     />
 
-                    <AddressTab theme={theme} onClick={openAccountModal} address={accounts[0]} />
+                    <AddressTab
+                      theme={theme}
+                      onClick={() =>
+                        setWalletStatusInfo({
+                          show: true,
+                          address: accounts[0],
+                        })
+                      }
+                      address={accounts[0]}
+                    />
                   </div>
                 )
               })()}

@@ -524,7 +524,7 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        getCurrentAPY(
+        getCurrentAPY( 
           currentProvider,
           donateContractAddress,
           receipentAddress,

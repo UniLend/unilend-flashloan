@@ -31,7 +31,8 @@ const WalletStateModal: FC<Props> = ({ handleClose, address, handleDisconnect })
             <Card className="m-3 status-card">
               <Card.Header>
                 <div className="card-header-custom">
-                  <p className="float-left">Connected to MetaMask</p>
+                  {/* TODO: replace dynamic wallet name */}
+                  <p className="float-left">Connected to Wallet</p>
                   <button
                     className="float-right disconnectBtn"
                     // onClick={handleDisconnect}

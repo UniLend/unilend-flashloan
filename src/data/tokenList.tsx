@@ -29,4 +29,14 @@ export const mumbaiTokenList = [
     symbol: 'LINK',
     underlyingBalance: '',
   },
+  {
+    address: '0x3167C03E094a951Da7AE6abFACf83705a3096b9f',
+    balance: '',
+    chainId: 80001,
+    decimals: 18,
+    logoURI: 'https://assets.coingecko.com/coins/images/14243/small/aUSDT.78f5faae.png?1615528400',
+    name: 'USDT',
+    symbol: 'USDT',
+    underlyingBalance: '',
+  },
 ]

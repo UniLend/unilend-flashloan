@@ -144,7 +144,7 @@ const CommonCard: FC<Props> = (props) => {
   } = useTypedSelector((state) => state.airdrop)
   const { tokenGroupList, tokenList, customTokens } = useTypedSelector((state) => state.tokenManage)
   const { receipentAddress } = useTypedSelector((state) => state.ethereum)
-  const { assertAddress } = useTypedSelector((state) => state.pool)
+  const { assertAddress, isPoolCreated } = useTypedSelector((state) => state.pool)
   const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
 
   const handleTokenBalance = () => {
@@ -229,22 +229,22 @@ const CommonCard: FC<Props> = (props) => {
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
-  // useEffect(() => {
-  //   if (flashLoanContract) {
-  //     getPoolData()
-  //   }
-  // }, [flashLoanContract])
+  useEffect(() => {
+    if (flashLoanContract) {
+      getPoolData()
+    }
+  }, [flashLoanContract])
 
-  // const getPoolData = async () => {
-  //   console.log('useEffect Data', 'contract', flashLoanContract)
+  const getPoolData = async () => {
+    console.log('useEffect Data', 'contract', flashLoanContract)
 
-  //   try {
-  //     const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')
-  //     console.log('useEffect Data', data)
-  //   } catch (error) {
-  //     console.log('useEffect Data', 'error', error)
-  //   }
-  // }
+    try {
+      const data = await flashLoanContract.Pools('0xbcC80cCbDe188d34D35018602dC3f56766bA377D')
+      console.log('useEffect Data', data)
+    } catch (error) {
+      console.log('useEffect Data', 'error', error)
+    }
+  }
 
   // useEffect(() => {
   //   function checkTx(tx) {
@@ -596,6 +596,7 @@ const CommonCard: FC<Props> = (props) => {
     donateSuccess,
     redeemSuccess,
     airdropSuccess,
+    isPoolCreated
   ])
 
   useEffect(() => {

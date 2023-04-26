@@ -44,7 +44,6 @@ export const handleRedeem = (
 ) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     dispatch({ type: ActionType.REDEEM_ACTION, payload: 'success' })
-    // console.log('redeemUnderlying', receipentAddress)
     try {
       let fullAmount = web3Service.getValue(isEth, currentProvider, redeemAmount, decimal)
       let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
@@ -122,7 +121,6 @@ export const handleRedeem = (
         //   })
       }
     } catch (e) {
-      // errorHandler.report(e)
       dispatch({
         type: ActionType.REDEEM_FAILED,
         message: 'Transaction Failed',

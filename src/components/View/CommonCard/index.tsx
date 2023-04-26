@@ -534,7 +534,7 @@ const CommonCard: FC<Props> = (props) => {
         )
       }
       handleTokenBalance()
-    }, 1000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [
     accounts,
@@ -596,7 +596,7 @@ const CommonCard: FC<Props> = (props) => {
     donateSuccess,
     redeemSuccess,
     airdropSuccess,
-    isPoolCreated
+    isPoolCreated,
   ])
 
   useEffect(() => {

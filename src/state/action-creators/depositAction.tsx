@@ -166,16 +166,16 @@ export const handleDeposit = (
       const instance = await getContractInstanceDeposite()
       if (isEth) {
         const txs = await instance.deposit(recieptAddress, fullAmount, {
-          value: fullAmount
+          value: fullAmount,
         })
         if (txs?.hash) {
-           dispatch({
-              type: ActionType.DEPOSIT_TRANSACTION_HASH,
-              payload: txs.hash,
-            })
+          dispatch({
+            type: ActionType.DEPOSIT_TRANSACTION_HASH,
+            payload: txs.hash,
+          })
           const status = await checkTxnStatus(txs.hash)
           if (status) {
-                  dispatch({
+            dispatch({
               type: ActionType.DEPOSIT_SUCCESS,
               payload: true,
             })
@@ -211,15 +211,15 @@ export const handleDeposit = (
         //     })
         //   })
       } else {
-         const txs = await instance.deposit(recieptAddress, fullAmount)
+        const txs = await instance.deposit(recieptAddress, fullAmount)
         if (txs?.hash) {
-           dispatch({
-              type: ActionType.DEPOSIT_TRANSACTION_HASH,
-              payload: txs.hash,
-            })
+          dispatch({
+            type: ActionType.DEPOSIT_TRANSACTION_HASH,
+            payload: txs.hash,
+          })
           const status = await checkTxnStatus(txs.hash)
           if (status) {
-                dispatch({
+            dispatch({
               type: ActionType.DEPOSIT_SUCCESS,
               payload: true,
             })
@@ -255,16 +255,12 @@ export const handleDeposit = (
         //     })
         //   })
       }
-
     } catch (e) {
-      // errorHandler.report(e)
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,
         message: 'Transaction Failed',
       })
-      console.log("DEPOSIT_FAILED","catch", e);
-      
     }
   }
 }

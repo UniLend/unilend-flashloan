@@ -16,7 +16,7 @@ export const setAirdropSuccess = () => {
   }
 }
 
-const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
+const getContractInstanceAirdrop = async (contractAddress: any, abi: any, signerData: any) => {
   try {
     let signer = signerData
     if (signer === null) {
@@ -70,7 +70,7 @@ export const handleAirdrop = (
       var fullAmount = web3Service.getValue(isEth, currentProvider, amount, decimal)
       const { chain } = getNetwork()
       const signer = await fetchSigner()
-      const instance = await getContractInstance(tokenAddress, IERC20ABI.abi, signer)
+      const instance = await getContractInstanceAirdrop(tokenAddress, IERC20ABI.abi, signer)
       const txs = await instance.transfer(UnilendFlashLoanCoreContract('', chain?.id), fullAmount)
 
       if (txs.hash) {

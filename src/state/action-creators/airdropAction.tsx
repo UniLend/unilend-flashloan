@@ -70,15 +70,8 @@ export const handleAirdrop = (
       var fullAmount = web3Service.getValue(isEth, currentProvider, amount, decimal)
       const { chain } = getNetwork()
       const signer = await fetchSigner()
-      // const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), IERC20ABI.abi, signer)
-      console.log('TOKEN_ADDRESS', tokenAddress)
-      console.log('FLASH_LOAN_ADDRESS', UnilendFlashLoanCoreContract('', chain?.id))
-      const instance = await getContractInstance(tokenAddress, IERC20ABI.abi, signer) // ER20 instance
-      // tokenAddress : check is it Token Address?
-      console.log('TSX_INSTANCE', instance)
+      const instance = await getContractInstance(tokenAddress, IERC20ABI.abi, signer)
       const txs = await instance.transfer(UnilendFlashLoanCoreContract('', chain?.id), fullAmount)
-      // const txs = await instance.transfer(reciepentAddress, fullAmount)
-      console.log('TSX', txs)
 
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)
@@ -119,7 +112,6 @@ export const handleAirdrop = (
       //     })
       //   })
     } catch (error) {
-      console.log('CATCH_ERROR', error)
       dispatch({
         type: ActionType.AIRDROP_FAILED,
         message: 'Transaction Failed',

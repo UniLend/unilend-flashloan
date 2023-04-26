@@ -53,13 +53,13 @@ export const handleRedeem = (
         const txs = await instance.redeem(receipentAddress, uFullAmount)
 
         if (txs.hash) {
+          dispatch({
+            type: ActionType.REDEEM_TRANSACTION_HASH,
+            payload: txs.hash,
+          })
           const status = await checkTxnStatus(txs.hash)
           if (status) {
             dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
-            dispatch({
-              type: ActionType.REDEEM_TRANSACTION_HASH,
-              payload: txs.hash,
-            })
           }
         }
         // FlashloanLBCore(currentProvider)

@@ -95,8 +95,9 @@ export const donateAllowance = (
       if (receipentAddress) {
         const signer = await fetchSigner()
         const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
-        const allowance = await instance.allowance(address, contractAddress)
-        if (allowance !== 0 && allowance >= ethers.utils.parseEther(enteredAmount)) {
+        let allowance = await instance.allowance(address, contractAddress)
+        allowance = ethers.utils.formatUnits(allowance, 18)
+        if (allowance !== 0 && allowance >= Number(enteredAmount)) {
           localStorage.setItem('donateApproval', 'false')
           dispatch({
             type: ActionType.DONATE_APPROVE_SUCCESS,
@@ -104,16 +105,15 @@ export const donateAllowance = (
         } else {
           dispatch({
             type: ActionType.DONATE_APPROVAL_STATUS,
-            payload: false, // isApproved
+            payload: false,
           })
         }
-        // ethers.utils.parseEther(enteredAmount)
+
         // let _IERC20 = IERC20(currentProvider, receipentAddress)
         // let allowance
         // _IERC20.methods.allowance(address, contractAddress).call((error: any, result: any) => {
         //   if (!error && result) {
         //     allowance = result
-        //     console.log('ALLOWANCE', allowance) // 2800000000000000000
         //     if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
         //       localStorage.setItem('donateApproval', 'false')
         //       dispatch({
@@ -125,11 +125,12 @@ export const donateAllowance = (
         //         payload: false, // isApproved
         //       })
         //     }
-        //   } else {
-        //     dispatch({
-        //       type: ActionType.DONATE_ALLOWANCE_FAILED,
-        //     })
         //   }
+        //  else {
+        //   dispatch({
+        //     type: ActionType.DONATE_ALLOWANCE_FAILED,
+        //   })
+        // }
         // })
       }
     } catch (e) {
@@ -151,13 +152,11 @@ export const donateApprove = (
     dispatch({
       type: ActionType.DONATE_APPROVE_ACTION,
     })
-
     try {
       localStorage.setItem('donateApproval', 'true')
       const signer = await fetchSigner()
       const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
       const txs = await instance.approve(contractAddress, approveTokenMaximumValue)
-      console.log('DONATE_TXS', txs)
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)
         if (status) {
@@ -167,7 +166,6 @@ export const donateApprove = (
           })
         }
       }
-
       // let _IERC20 = IERC20(currentProvider, receipentAddress)
 
       // _IERC20.methods
@@ -259,7 +257,6 @@ export const handleDonate = (
       //             payload: true,
       //           })
       //         })
-
       //         .on('transactionHash', (hash: any) => {
       //           dispatch({
       //             type: ActionType.DONATE_TRANSACTION_HASH,
@@ -268,7 +265,6 @@ export const handleDonate = (
       //         })
       //         .on('error', (err: any, res: any) => {
       //           errorHandler.report(err)
-
       //           dispatch({
       //             type: ActionType.DONATE_FAILED,
       //             message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',

@@ -140,7 +140,7 @@ export const setDonateSuccess = () => {
 }
 
 // get contract instance
-export const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
+export const getContractInstanceDonate = async (contractAddress: any, abi: any, signerData: any) => {
   try {
     let signer = signerData
     if (signer === null) {
@@ -196,9 +196,9 @@ export const handleDonate = (
 
       const { chain } = getNetwork()
       const signer = await fetchSigner()
-      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const instance = await getContractInstanceDonate(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
       const donationAddress = await instance.donationAddress()
-      const donationInstance = await getContractInstance(donationAddress, DonationABI.abi, signer)
+      const donationInstance = await getContractInstanceDonate(donationAddress, DonationABI.abi, signer)
       const txs = await donationInstance.donate(receipentAddress, fullAmount)
 
       if (txs.hash) {

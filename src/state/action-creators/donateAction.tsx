@@ -8,6 +8,49 @@ import { DonateAction } from 'state/actions/donateA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
 import DonationABI from 'ethereum/build/UnilendFDonation.json'
+import IERC20ABI from 'ethereum/build/IERC20.json'
+
+const { ethers } = require('ethers')
+
+// get contract instance
+export const getContractInstanceDonate = async (contractAddress: any, abi: any, signerData: any) => {
+  try {
+    let signer = signerData
+    if (signer === null) {
+      signer = await fetchSigner()
+    }
+    const provider = getProvider()
+    const instance = getContract({
+      address: contractAddress, //
+      abi,
+      signerOrProvider: signer || provider,
+    })
+    return instance
+  } catch (error) {
+    throw error
+  }
+}
+
+// check transaction status
+const checkTxnStatus = async (hash: any) => {
+  try {
+    const receipt = waitForTransaction({
+      hash,
+    })
+
+    if ((await receipt).status === 1) {
+      return true
+    } else {
+      setTimeout(async () => {
+        checkTxnStatus(hash)
+      }, 1000)
+    }
+  } catch (error) {
+    setTimeout(async () => {
+      checkTxnStatus(hash)
+    }, 1000)
+  }
+}
 
 export const getDonationContract = (currentProvider: any, selectedNetwork: any) => {
   return async (dispatch: Dispatch<DonateAction>) => {
@@ -50,37 +93,44 @@ export const donateAllowance = (
     })
     try {
       if (receipentAddress) {
-        let _IERC20 = IERC20(currentProvider, receipentAddress)
-        let allowance
-        _IERC20.methods.allowance(address, contractAddress).call((error: any, result: any) => {
-          if (!error && result) {
-            allowance = result
-            // check user allowan >= entered amount
-            if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
-              // dispatch({
-              //   type: ActionType.DONATE_APPROVAL_STATUS,
-              //   payload: false, // isApproved
-              // })
-              localStorage.setItem('donateApproval', 'false')
-              dispatch({
-                type: ActionType.DONATE_APPROVE_SUCCESS,
-              })
-            } else {
-              // localStorage.setItem('donateApproval', 'false')
-              // dispatch({
-              //   type: ActionType.DONATE_APPROVE_SUCCESS,
-              // })
-              dispatch({
-                type: ActionType.DONATE_APPROVAL_STATUS,
-                payload: false, // isApproved
-              })
-            }
-          } else {
-            dispatch({
-              type: ActionType.DONATE_ALLOWANCE_FAILED,
-            })
-          }
-        })
+        const signer = await fetchSigner()
+        const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
+        const allowance = await instance.allowance(address, contractAddress)
+        if (allowance !== 0 && allowance >= ethers.utils.parseEther(enteredAmount)) {
+          localStorage.setItem('donateApproval', 'false')
+          dispatch({
+            type: ActionType.DONATE_APPROVE_SUCCESS,
+          })
+        } else {
+          dispatch({
+            type: ActionType.DONATE_APPROVAL_STATUS,
+            payload: false, // isApproved
+          })
+        }
+        // ethers.utils.parseEther(enteredAmount)
+        // let _IERC20 = IERC20(currentProvider, receipentAddress)
+        // let allowance
+        // _IERC20.methods.allowance(address, contractAddress).call((error: any, result: any) => {
+        //   if (!error && result) {
+        //     allowance = result
+        //     console.log('ALLOWANCE', allowance) // 2800000000000000000
+        //     if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
+        //       localStorage.setItem('donateApproval', 'false')
+        //       dispatch({
+        //         type: ActionType.DONATE_APPROVE_SUCCESS,
+        //       })
+        //     } else {
+        //       dispatch({
+        //         type: ActionType.DONATE_APPROVAL_STATUS,
+        //         payload: false, // isApproved
+        //       })
+        //     }
+        //   } else {
+        //     dispatch({
+        //       type: ActionType.DONATE_ALLOWANCE_FAILED,
+        //     })
+        //   }
+        // })
       }
     } catch (e) {
       errorHandler.report(e)
@@ -101,28 +151,43 @@ export const donateApprove = (
     dispatch({
       type: ActionType.DONATE_APPROVE_ACTION,
     })
+
     try {
       localStorage.setItem('donateApproval', 'true')
-      let _IERC20 = IERC20(currentProvider, receipentAddress)
-
-      _IERC20.methods
-        .approve(contractAddress, approveTokenMaximumValue)
-        .send({
-          from: address,
-          gasPrice: defaultGasPrice * 1e9,
-        })
-        .on('receipt', (res: any) => {
+      const signer = await fetchSigner()
+      const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
+      const txs = await instance.approve(contractAddress, approveTokenMaximumValue)
+      console.log('DONATE_TXS', txs)
+      if (txs.hash) {
+        const status = await checkTxnStatus(txs.hash)
+        if (status) {
           localStorage.setItem('donateApproval', 'false')
           dispatch({
             type: ActionType.DONATE_APPROVE_SUCCESS,
           })
-        })
-        .catch((err: Error) => {
-          localStorage.setItem('donateApproval', 'false')
-          dispatch({
-            type: ActionType.DONATE_APPROVE_FAILED,
-          })
-        })
+        }
+      }
+
+      // let _IERC20 = IERC20(currentProvider, receipentAddress)
+
+      // _IERC20.methods
+      //   .approve(contractAddress, approveTokenMaximumValue)
+      //   .send({
+      //     from: address,
+      //     gasPrice: defaultGasPrice * 1e9,
+      //   })
+      //   .on('receipt', (res: any) => {
+      //     localStorage.setItem('donateApproval', 'false')
+      //     dispatch({
+      //       type: ActionType.DONATE_APPROVE_SUCCESS,
+      //     })
+      //   })
+      //   .catch((err: Error) => {
+      //     localStorage.setItem('donateApproval', 'false')
+      //     dispatch({
+      //       type: ActionType.DONATE_APPROVE_FAILED,
+      //     })
+      //   })
     } catch (e: any) {
       dispatch({
         type: ActionType.DONATE_APPROVE_FAILED,
@@ -136,46 +201,6 @@ export const setDonateSuccess = () => {
       type: ActionType.DONATE_SUCCESS,
       payload: true,
     })
-  }
-}
-
-// get contract instance
-export const getContractInstanceDonate = async (contractAddress: any, abi: any, signerData: any) => {
-  try {
-    let signer = signerData
-    if (signer === null) {
-      signer = await fetchSigner()
-    }
-    const provider = getProvider()
-    const instance = getContract({
-      address: contractAddress, //
-      abi,
-      signerOrProvider: signer || provider,
-    })
-    return instance
-  } catch (error) {
-    throw error
-  }
-}
-
-// check transaction status
-const checkTxnStatus = async (hash: any) => {
-  try {
-    const receipt = waitForTransaction({
-      hash,
-    })
-
-    if ((await receipt).status === 1) {
-      return true
-    } else {
-      setTimeout(async () => {
-        checkTxnStatus(hash)
-      }, 1000)
-    }
-  } catch (error) {
-    setTimeout(async () => {
-      checkTxnStatus(hash)
-    }, 1000)
   }
 }
 

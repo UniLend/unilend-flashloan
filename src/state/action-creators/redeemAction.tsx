@@ -35,7 +35,7 @@ export const handleRedeem = (
   currentProvider: any,
   redeemAmount: any,
   accounts: string,
-  receipentAddress: string,
+  tokenAddress: string,
   isEth: boolean,
   decimal: any,
   isRedeemMax: boolean,
@@ -49,7 +49,7 @@ export const handleRedeem = (
       let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
       const instance = await getContractInstance()
       if (isRedeemMax) {
-        const txs = await instance.redeem(receipentAddress, uFullAmount)
+        const txs = await instance.redeem(tokenAddress, uFullAmount)
 
         if (txs.hash) {
           dispatch({
@@ -62,7 +62,7 @@ export const handleRedeem = (
           }
         }
         // FlashloanLBCore(currentProvider)
-        //   .methods.redeem(receipentAddress, uFullAmount)
+        //   .methods.redeem(tokenAddress, uFullAmount)
         //   .send({
         //     from: accounts,
         //     gasPrice: defaultGasPrice * 1e9,
@@ -84,7 +84,7 @@ export const handleRedeem = (
         //     })
         //   })
       } else {
-        const txs = await instance.redeemUnderlying(receipentAddress, fullAmount)
+        const txs = await instance.redeemUnderlying(tokenAddress, fullAmount)
 
         if (txs.hash) {
           dispatch({
@@ -97,7 +97,7 @@ export const handleRedeem = (
           }
         }
         // FlashloanLBCore(currentProvider)
-        //   .methods.redeemUnderlying(receipentAddress, fullAmount)
+        //   .methods.redeemUnderlying(tokenAddress, fullAmount)
         //   .send({
         //     gasPrice: defaultGasPrice * 1e9,
         //     from: accounts,

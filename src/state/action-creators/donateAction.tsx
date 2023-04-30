@@ -21,7 +21,7 @@ export const getContractInstanceDonate = async (contractAddress: any, abi: any, 
     }
     const provider = getProvider()
     const instance = getContract({
-      address: contractAddress, //
+      address: contractAddress,
       abi,
       signerOrProvider: signer || provider,
     })
@@ -84,7 +84,7 @@ export const donateAllowance = (
   currentProvider: any,
   address: string,
   contractAddress: string,
-  receipentAddress: string,
+  tokenAddress: string,
   enteredAmount: any,
 ) => {
   return async (dispatch: Dispatch<DonateAction>) => {
@@ -92,11 +92,11 @@ export const donateAllowance = (
       type: ActionType.DONATE_ALLOWANCE_ACTION,
     })
     try {
-      if (receipentAddress) {
+      if (tokenAddress) {
         const signer = await fetchSigner()
-        const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
+        const instance = await getContractInstanceDonate(tokenAddress, IERC20ABI.abi, signer)
         let allowance = await instance.allowance(address, contractAddress)
-        allowance = ethers.utils.formatUnits(allowance, 18)
+        allowance = Number(ethers.utils.formatUnits(allowance, 18))
         if (allowance !== 0 && allowance >= Number(enteredAmount)) {
           localStorage.setItem('donateApproval', 'false')
           dispatch({
@@ -109,7 +109,7 @@ export const donateAllowance = (
           })
         }
 
-        // let _IERC20 = IERC20(currentProvider, receipentAddress)
+        // let _IERC20 = IERC20(currentProvider, tokenAddress)
         // let allowance
         // _IERC20.methods.allowance(address, contractAddress).call((error: any, result: any) => {
         //   if (!error && result) {
@@ -142,12 +142,7 @@ export const donateAllowance = (
   }
 }
 
-export const donateApprove = (
-  currentProvider: any,
-  address: string,
-  contractAddress: string,
-  receipentAddress: string,
-) => {
+export const donateApprove = (currentProvider: any, address: string, contractAddress: string, tokenAddress: string) => {
   return async (dispatch: Dispatch<DonateAction>) => {
     dispatch({
       type: ActionType.DONATE_APPROVE_ACTION,
@@ -155,7 +150,7 @@ export const donateApprove = (
     try {
       localStorage.setItem('donateApproval', 'true')
       const signer = await fetchSigner()
-      const instance = await getContractInstanceDonate(receipentAddress, IERC20ABI.abi, signer)
+      const instance = await getContractInstanceDonate(tokenAddress, IERC20ABI.abi, signer)
       const txs = await instance.approve(contractAddress, approveTokenMaximumValue)
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)
@@ -166,7 +161,7 @@ export const donateApprove = (
           })
         }
       }
-      // let _IERC20 = IERC20(currentProvider, receipentAddress)
+      // let _IERC20 = IERC20(currentProvider, tokenAddress)
 
       // _IERC20.methods
       //   .approve(contractAddress, approveTokenMaximumValue)
@@ -206,7 +201,7 @@ export const handleDonate = (
   currentProvider: any,
   donateAmount: any,
   address: string,
-  receipentAddress: string,
+  tokenAddress: string,
   isEth: boolean,
   decimal: any,
 ) => {
@@ -226,7 +221,7 @@ export const handleDonate = (
       )
       const donationAddress = await instance.donationAddress()
       const donationInstance = await getContractInstanceDonate(donationAddress, DonationABI.abi, signer)
-      const txs = await donationInstance.donate(receipentAddress, fullAmount)
+      const txs = await donationInstance.donate(tokenAddress, fullAmount)
 
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)
@@ -246,7 +241,7 @@ export const handleDonate = (
       //       let contractAddress = result
       //       let donationContract = UnilendFDonation(currentProvider, contractAddress)
       //       donationContract.methods
-      //         .donate(receipentAddress, fullAmount)
+      //         .donate(tokenAddress, fullAmount)
       //         .send({
       //           from: address,
       //           gasPrice: defaultGasPrice * 1e9,

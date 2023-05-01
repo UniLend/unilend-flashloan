@@ -8,25 +8,10 @@ import { ActionType } from 'state/action-types'
 import { DepositAction } from 'state/actions/depositA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
-import IERC20ABI from 'ethereum/build/IERC20.json'
+import { getERC20abi } from './connectWalletAction'
 
 const { ethers } = require('ethers')
 
-// export const getContractInstanceDeposite = async () => {
-//   try {
-//     const signer = await fetchSigner()
-//     const provider = getProvider()
-//     const { chain } = getNetwork()
-//     const instance = getContract({
-//       address: UnilendFlashLoanCoreContract('', chain?.id),
-//       abi: FlashloanABI.abi,
-//       signerOrProvider: signer || provider,
-//     })
-//     return instance
-//   } catch (error) {
-//     throw error
-//   }
-// }
 const getContractInstanceDeposite = async (contractAddress: any, abi: any, signerData: any) => {
   try {
     let signer = signerData
@@ -82,7 +67,7 @@ export const checkAllowance = (
       if (tokenAddress) {
         const { chain } = getNetwork()
         const signer = await fetchSigner()
-        const instance = await getContractInstanceDeposite(tokenAddress, IERC20ABI.abi, signer)
+        const instance = await getContractInstanceDeposite(tokenAddress, getERC20abi(), signer)
         let allowance = await instance.allowance(address, UnilendFlashLoanCoreContract('', chain?.id))
         allowance = Number(ethers.utils.formatUnits(allowance, 18))
         if (allowance !== '0' && allowance >= Number(enteredAmount)) {
@@ -144,7 +129,7 @@ export const depositApprove = (currentProvider: any, address: any, tokenAddress:
       })
       const signer = await fetchSigner()
       const { chain } = getNetwork()
-      const instance = await getContractInstanceDeposite(tokenAddress, IERC20ABI.abi, signer)
+      const instance = await getContractInstanceDeposite(tokenAddress, getERC20abi(), signer)
       const txs = await instance.approve(UnilendFlashLoanCoreContract('', chain?.id), approveTokenMaximumValue)
       console.log('APPROVE_DEPOSITE', txs)
       if (txs.hash) {

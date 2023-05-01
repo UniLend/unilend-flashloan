@@ -8,7 +8,7 @@ import { DonateAction } from 'state/actions/donateA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
 import DonationABI from 'ethereum/build/UnilendFDonation.json'
-import IERC20ABI from 'ethereum/build/IERC20.json'
+import { getERC20abi } from './connectWalletAction'
 
 const { ethers } = require('ethers')
 
@@ -94,7 +94,7 @@ export const donateAllowance = (
     try {
       if (tokenAddress) {
         const signer = await fetchSigner()
-        const instance = await getContractInstanceDonate(tokenAddress, IERC20ABI.abi, signer)
+        const instance = await getContractInstanceDonate(tokenAddress, getERC20abi(), signer)
         let allowance = await instance.allowance(address, contractAddress)
         allowance = Number(ethers.utils.formatUnits(allowance, 18))
         if (allowance !== 0 && allowance >= Number(enteredAmount)) {
@@ -150,7 +150,7 @@ export const donateApprove = (currentProvider: any, address: string, contractAdd
     try {
       localStorage.setItem('donateApproval', 'true')
       const signer = await fetchSigner()
-      const instance = await getContractInstanceDonate(tokenAddress, IERC20ABI.abi, signer)
+      const instance = await getContractInstanceDonate(tokenAddress, getERC20abi(), signer)
       const txs = await instance.approve(contractAddress, approveTokenMaximumValue)
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)

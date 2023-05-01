@@ -8,6 +8,9 @@ import { ActionType } from 'state/action-types'
 import { RedeemAction } from 'state/actions/redeemA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
+import { getERC20abi } from './connectWalletAction'
+
+const { ethers } = require('ethers')
 
 export const setRedeemSuccess = () => {
   return async (dispatch: Dispatch<RedeemAction>) => {
@@ -15,14 +18,16 @@ export const setRedeemSuccess = () => {
   }
 }
 
-export const getContractInstance = async () => {
+const getContractInstanceRedeem = async (contractAddress: any, abi: any, signerData: any) => {
   try {
-    const signer = await fetchSigner()
+    let signer = signerData
+    if (signer === null) {
+      signer = await fetchSigner()
+    }
     const provider = getProvider()
-    const { chain } = getNetwork()
     const instance = getContract({
-      address: UnilendFlashLoanCoreContract('', chain?.id),
-      abi: FlashloanABI.abi,
+      address: contractAddress,
+      abi,
       signerOrProvider: signer || provider,
     })
     return instance
@@ -47,7 +52,13 @@ export const handleRedeem = (
     try {
       let fullAmount = web3Service.getValue(isEth, currentProvider, redeemAmount, decimal)
       let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
-      const instance = await getContractInstance()
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstanceRedeem(
+        UnilendFlashLoanCoreContract('', chain?.id),
+        FlashloanABI.abi,
+        signer,
+      )
       if (isRedeemMax) {
         const txs = await instance.redeem(tokenAddress, uFullAmount)
 
@@ -152,6 +163,16 @@ const checkTxnStatus = async (hash: any) => {
 export const getRedeemTokenBalance = (currentProvider: any, accounts: string, assertAddress: any) => {
   return async (dispatch: Dispatch<RedeemAction>) => {
     try {
+      // const signer = await fetchSigner()
+      // const instance = await getContractInstanceRedeem(assertAddress, getERC20abi(), signer)
+      // const balance = await instance.balanceOf(accounts)
+      // const redeemTokenBalance = ethers.utils.formatEther(balance, 18)
+      // if (balance) {
+      //   dispatch({
+      //     type: ActionType.REDEEM_TOKEN_BALANCE,
+      //     payload: redeemTokenBalance,
+      //   })
+      // }
       uUFTIERC20(currentProvider, assertAddress)
         .methods.balanceOf(accounts)
         .call((e: any, r: any) => {

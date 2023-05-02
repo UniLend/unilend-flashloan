@@ -1,29 +1,23 @@
-import {
-  copyToClipboard,
-  getAddressUrl,
-  shortenAddress,
-} from "components/Helpers";
-import { useTypedSelector } from "hooks/useTypedSelector";
-import { FC } from "react";
-import { Card, Container, Modal } from "react-bootstrap";
-import "./index.scss";
+import { copyToClipboard, getAddressUrl, shortenAddress } from 'components/Helpers'
+import { useTypedSelector } from 'hooks/useTypedSelector'
+import { FC } from 'react'
+import { Card, Container, Modal } from 'react-bootstrap'
+import './index.scss'
+import { useDisconnect } from 'wagmi'
 interface Props {
-  handleClose: () => void;
-  handleDisconnect: () => void;
-  address: string;
+  handleClose: () => void
+  handleDisconnect: () => void
+  address: string
 }
-const WalletStateModal: FC<Props> = ({
-  handleClose,
-  address,
-  handleDisconnect,
-}) => {
-  const { theme } = useTypedSelector((state) => state.settings);
-  const { activeNetWork } = useTypedSelector((state) => state.connectWallet);
+const WalletStateModal: FC<Props> = ({ handleClose, address, handleDisconnect }) => {
+  const { theme } = useTypedSelector((state) => state.settings)
+  const { activeNetWork } = useTypedSelector((state) => state.connectWallet)
+  const { disconnect } = useDisconnect()
 
   return (
     <>
       <Modal
-        className={`modal-theme ${theme === "dark" ? "dark" : "light"}`}
+        className={`modal-theme ${theme === 'dark' ? 'dark' : 'light'}`}
         animation={false}
         size="sm"
         show={true}
@@ -37,10 +31,12 @@ const WalletStateModal: FC<Props> = ({
             <Card className="m-3 status-card">
               <Card.Header>
                 <div className="card-header-custom">
-                  <p className="float-left">Connected to MetaMask</p>
+                  {/* TODO: replace dynamic wallet name */}
+                  <p className="float-left">Connected to Wallet</p>
                   <button
                     className="float-right disconnectBtn"
-                    onClick={handleDisconnect}
+                    // onClick={handleDisconnect}
+                    onClick={() => disconnect()}
                   >
                     Disconnect
                   </button>
@@ -52,9 +48,9 @@ const WalletStateModal: FC<Props> = ({
                 <div
                   className="copy_view m-0"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
                 >
                   <span
@@ -72,36 +68,25 @@ const WalletStateModal: FC<Props> = ({
                       // stroke-linecap="round"
                       // stroke-linejoin="round"
                       style={{
-                        strokeLinecap: "round",
-                        strokeLinejoin: "round",
-                        strokeWidth: "2",
+                        strokeLinecap: 'round',
+                        strokeLinejoin: 'round',
+                        strokeWidth: '2',
                       }}
                     >
-                      <rect
-                        x="9"
-                        y="9"
-                        width="13"
-                        height="13"
-                        rx="2"
-                        ry="2"
-                      ></rect>
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>{" "}
+                    </svg>{' '}
                     <p
                       style={{
-                        margin: "0",
-                        paddingLeft: "10px",
+                        margin: '0',
+                        paddingLeft: '10px',
                       }}
                     >
                       Copy Address
                     </p>
                   </span>
                   <span className="view_link">
-                    <a
-                      href={getAddressUrl(activeNetWork, address)}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
+                    <a href={getAddressUrl(activeNetWork, address)} rel="noreferrer" target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -113,16 +98,16 @@ const WalletStateModal: FC<Props> = ({
                         // stroke-linecap="round"
                         // stroke-linejoin="round"
                         style={{
-                          strokeLinecap: "round",
-                          strokeLinejoin: "round",
-                          strokeWidth: "2",
+                          strokeLinecap: 'round',
+                          strokeLinejoin: 'round',
+                          strokeWidth: '2',
                         }}
                       >
                         <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                         <polyline points="15 3 21 3 21 9"></polyline>
                         <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>{" "}
-                      <p style={{ display: "inline" }}>View on Explorer</p>
+                      </svg>{' '}
+                      <p style={{ display: 'inline' }}>View on Explorer</p>
                     </a>
                   </span>
                 </div>
@@ -132,7 +117,7 @@ const WalletStateModal: FC<Props> = ({
         </Modal.Body>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default WalletStateModal;
+export default WalletStateModal

@@ -42,7 +42,7 @@ export const AccountBalance = ({ accountBalance, tokenType, className, theme }: 
         className ? className : ''
       }`}
     >
-      <span className="mr-1">{accountBalance}</span>
+      <span className="mr-1">{isNaN(Number(accountBalance)) ? 0.0 : Number(accountBalance).toFixed(3)}</span>
       <span className="currency">{activeNetworkBaseCurrency(tokenType)}</span>
     </button>
   )
@@ -109,6 +109,14 @@ export const AddressTab = ({ theme, onClick, address }: AddressTabProps) => {
   return (
     <button className={`d-flex btn  btn-custom-secondary ${theme === 'dark' && 'btn-dark'}`} onClick={onClick}>
       {shortenAddress(address)}
+    </button>
+  )
+}
+
+export const WrongNetwork = ({ theme, onClick }: any) => {
+  return (
+    <button className={`d-flex btn  btn-custom-secondary ${theme === 'dark' && 'btn-dark'}`} onClick={onClick}>
+      Wrong Network
     </button>
   )
 }

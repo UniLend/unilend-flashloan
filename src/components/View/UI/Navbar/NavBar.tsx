@@ -10,7 +10,15 @@ import { useTypedSelector } from 'hooks/useTypedSelector'
 import { SettingAction } from 'state/actions/settingsA'
 import { NETWORKS } from 'components/constants'
 import { WalletInfoProps } from '../../../Helpers/Types'
-import { ThemeButton, AccountBalance, ActiveNetwork, NetworkInfoTab, ConnectWalletButton, AddressTab } from './Common'
+import {
+  ThemeButton,
+  AccountBalance,
+  ActiveNetwork,
+  NetworkInfoTab,
+  ConnectWalletButton,
+  AddressTab,
+  WrongNetwork,
+} from './Common'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount, useBalance, useNetwork, useProvider, useSigner } from 'wagmi'
 import { ActionType } from 'state/action-types'
@@ -19,7 +27,7 @@ import { setSelectedNetworkId } from 'state/action-creators'
 import { useContract } from 'wagmi'
 import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
-
+import { useSwitchNetwork } from 'wagmi'
 interface Props extends RouteComponentProps<any> {
   setWalletModalInfo: Dispatch<SetStateAction<boolean>>
   setWalletStatusInfo: Dispatch<SetStateAction<WalletInfoProps>>
@@ -29,7 +37,7 @@ interface Props extends RouteComponentProps<any> {
 const NavBar: React.FC<Props> = (props) => {
   const dispatch = useDispatch<Dispatch<SettingAction | Action>>()
 
-  // const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } = props
+  const { setWalletModalInfo, setWalletStatusInfo, setSwitchNetworkModal } = props
   const { selectedNetworkId, activeNetWork, networkId, walletConnected, accounts, loading, accountBalance } =
     useTypedSelector((state) => state.connectWallet)
   const networkInfo = NETWORKS.filter((item) => item.networkID === (networkId || 1))[0]
@@ -121,7 +129,15 @@ const NavBar: React.FC<Props> = (props) => {
   }, [isConnected, signer, contract, isLoading, checkWalletConnect])
 
   useEffect(() => {
-    console.log('UserAcount', states)
+    if (isConnected) {
+      setWalletStatusInfo({
+        show: false,
+        address: '',
+      })
+    }
+  }, [isConnected])
+
+  useEffect(() => {
     setCurrentPage(props.location.pathname)
   }, [props.location.pathname])
 
@@ -255,11 +271,7 @@ const NavBar: React.FC<Props> = (props) => {
                       }
 
                       if (chain.unsupported) {
-                        return (
-                          <button onClick={openChainModal} type="button">
-                            Wrong network
-                          </button>
-                        )
+                        return <WrongNetwork theme={theme} onClick={() => setSwitchNetworkModal(true)} />
                       }
 
                       return (
@@ -269,7 +281,7 @@ const NavBar: React.FC<Props> = (props) => {
                             theme={theme}
                             logo={networkInfo?.logo}
                             label={networkInfo?.label}
-                            onClick={openChainModal}
+                            onClick={() => setSwitchNetworkModal(true)}
                           />
 
                           <AccountBalance
@@ -279,7 +291,16 @@ const NavBar: React.FC<Props> = (props) => {
                             className="acc-balance-header"
                           />
 
-                          <AddressTab theme={theme} onClick={openAccountModal} address={accounts[0]} />
+                          <AddressTab
+                            theme={theme}
+                            onClick={() =>
+                              setWalletStatusInfo({
+                                show: true,
+                                address: accounts[0],
+                              })
+                            }
+                            address={accounts[0]}
+                          />
                         </div>
                       )
                     })()}

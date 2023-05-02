@@ -84,7 +84,6 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
     }
   }
   useEffect(() => {
-    console.log('CURR PROVIDER', currentProvider)
     handleTokenBalance()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [depositLoading, donateLoading, redeemLoading, airdropLoading, currentProvider, address])

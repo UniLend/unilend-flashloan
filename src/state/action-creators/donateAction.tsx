@@ -29,7 +29,6 @@ export const getDonationContract = (currentProvider: any, selectedNetwork: any) 
         })
     } catch (e) {
       errorHandler.report(e)
-
       dispatch({
         type: ActionType.GET_DONATION_CONTRACT,
         payload: '',
@@ -57,8 +56,6 @@ export const donateAllowance = (
           if (!error && result) {
             allowance = result
             // check user allowan >= entered amount
-            console.log('Allowance', allowance, Number(enteredAmount) * 10 ** 18)
-
             if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
               // dispatch({
               //   type: ActionType.DONATE_APPROVAL_STATUS,
@@ -87,7 +84,6 @@ export const donateAllowance = (
       }
     } catch (e) {
       errorHandler.report(e)
-
       dispatch({
         type: ActionType.DONATE_ALLOWANCE_FAILED,
       })
@@ -144,7 +140,7 @@ export const setDonateSuccess = () => {
 }
 
 // get contract instance
-export const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
+export const getContractInstanceDonate = async (contractAddress: any, abi: any, signerData: any) => {
   try {
     let signer = signerData
     if (signer === null) {
@@ -153,7 +149,7 @@ export const getContractInstance = async (contractAddress: any, abi: any, signer
     const provider = getProvider()
     const instance = getContract({
       address: contractAddress, //
-      abi, //
+      abi,
       signerOrProvider: signer || provider,
     })
     return instance
@@ -200,9 +196,13 @@ export const handleDonate = (
 
       const { chain } = getNetwork()
       const signer = await fetchSigner()
-      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const instance = await getContractInstanceDonate(
+        UnilendFlashLoanCoreContract('', chain?.id),
+        FlashloanABI.abi,
+        signer,
+      )
       const donationAddress = await instance.donationAddress()
-      const donationInstance = await getContractInstance(donationAddress, DonationABI.abi, signer)
+      const donationInstance = await getContractInstanceDonate(donationAddress, DonationABI.abi, signer)
       const txs = await donationInstance.donate(receipentAddress, fullAmount)
 
       if (txs.hash) {

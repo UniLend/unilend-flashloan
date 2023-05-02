@@ -2,7 +2,15 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { useActions } from 'hooks/useActions'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { useTypedSelector } from 'hooks/useTypedSelector'
-import { ThemeButton, AccountBalance, ActiveNetwork, NetworkInfoTab, ConnectWalletButton, AddressTab } from './Common'
+import {
+  ThemeButton,
+  AccountBalance,
+  ActiveNetwork,
+  NetworkInfoTab,
+  ConnectWalletButton,
+  AddressTab,
+  WrongNetwork,
+} from './Common'
 import useWalletConnect from 'hooks/useWalletConnect'
 import { NETWORKS } from 'components/constants'
 import { shortenAddress } from 'components/Helpers'
@@ -101,11 +109,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
                 }
 
                 if (chain.unsupported) {
-                  return (
-                    <button onClick={openChainModal} type="button">
-                      Wrong network
-                    </button>
-                  )
+                  return <WrongNetwork theme={theme} onClick={() => setSwitchNetworkModal(true)} />
                 }
 
                 return (
@@ -120,7 +124,8 @@ const FooterNavBar: React.FC<Props> = (props) => {
                       theme={theme}
                       logo={networkInfo?.logo}
                       label={networkInfo?.label}
-                      onClick={openChainModal}
+                      // onClick={openChainModal}
+                      onClick={() => setSwitchNetworkModal(true)}
                       className="network-info-footer"
                     />
 
@@ -131,7 +136,16 @@ const FooterNavBar: React.FC<Props> = (props) => {
                       className="acc-balance-footer"
                     />
 
-                    <AddressTab theme={theme} onClick={openAccountModal} address={accounts[0]} />
+                    <AddressTab
+                      theme={theme}
+                      onClick={() =>
+                        setWalletStatusInfo({
+                          show: true,
+                          address: accounts[0],
+                        })
+                      }
+                      address={accounts[0]}
+                    />
                   </div>
                 )
               })()}

@@ -18,7 +18,7 @@ import { NETWORKS } from 'components/constants'
 import cantFind from 'assets/cantFind.svg'
 import { setTimeout } from 'timers'
 import { FlashLoanCore } from 'ethereum/contracts/FlashloanLB'
-const message = 'Stay updated about the launch of our new Versions, UniLend Omnis'
+const message = 'Stay updated about the launch of our new Versions, UniLend V2'
 interface Props extends RouteComponentProps<any> {
   activeTab: string | null
 }
@@ -144,8 +144,9 @@ const CommonCard: FC<Props> = (props) => {
   } = useTypedSelector((state) => state.airdrop)
   const { tokenGroupList, tokenList, customTokens } = useTypedSelector((state) => state.tokenManage)
   const { receipentAddress } = useTypedSelector((state) => state.ethereum)
-  const { assertAddress } = useTypedSelector((state) => state.pool)
+  const { assertAddress, isPoolCreated } = useTypedSelector((state) => state.pool)
   const { flashLoanContract } = useTypedSelector((state) => state.connectWallet)
+
   const handleTokenBalance = () => {
     if (accounts.length && currentProvider) getAccountBalance(accounts[0], currentProvider, selectedNetworkId)
     if (accounts.length && currentProvider && activeCurrency.symbol !== 'Select Token') {
@@ -224,25 +225,26 @@ const CommonCard: FC<Props> = (props) => {
     if (isDepositSuccess || donateIsApproved || isApproved || donateSuccess || redeemSuccess || airdropSuccess) {
       setAmount('')
       setDepositChecked(false)
+      balanceReset()
     }
   }, [activeTab, donateIsApproved, isDepositSuccess, isApproved, donateSuccess, redeemSuccess, airdropSuccess])
 
-  // useEffect(() => {
-  //   if (flashLoanContract) {
-  //     getPoolData()
-  //   }
-  // }, [flashLoanContract])
+  useEffect(() => {
+    if (flashLoanContract) {
+      getPoolData()
+    }
+  }, [flashLoanContract])
 
-  // const getPoolData = async () => {
-  //   console.log('useEffect Data', 'contract', flashLoanContract)
+  const getPoolData = async () => {
+    console.log('useEffect Data', 'contract', flashLoanContract)
 
-  //   try {
-  //     const data = await flashLoanContract.Pools('0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3')
-  //     console.log('useEffect Data', data)
-  //   } catch (error) {
-  //     console.log('useEffect Data', 'error', error)
-  //   }
-  // }
+    try {
+      const data = await flashLoanContract.Pools('0xbcC80cCbDe188d34D35018602dC3f56766bA377D')
+      console.log('useEffect Data', data)
+    } catch (error) {
+      console.log('useEffect Data', 'error', error)
+    }
+  }
 
   // useEffect(() => {
   //   function checkTx(tx) {
@@ -375,6 +377,7 @@ const CommonCard: FC<Props> = (props) => {
           clearAirdropError()
           clearDonateError()
           clearRedeemError()
+          setTransModalInfo(false)
           handleToast(false)
           clearInterval(interval)
         }
@@ -403,6 +406,7 @@ const CommonCard: FC<Props> = (props) => {
           clearAirdropError()
           clearDonateError()
           clearDonateError()
+          setTransModalInfo(false)
           handleToast(false)
           clearInterval(interval)
         }
@@ -443,7 +447,21 @@ const CommonCard: FC<Props> = (props) => {
       totalDepositedTokens,
       totalTokensInRewardPool,
     )
-  }, [accounts, donateContractAddress, isApproved, currentProvider, receipentAddress, activeTab, activeCurrency])
+  }, [
+    accounts,
+    donateContractAddress,
+    isApproved,
+    currentProvider,
+    receipentAddress,
+    activeTab,
+    activeCurrency,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   useEffect(() => {
     if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'lend') {
@@ -451,6 +469,14 @@ const CommonCard: FC<Props> = (props) => {
     } else if (accounts.length && activeCurrency.symbol !== 'Select Token' && activeTab === 'reward') {
       donateAllowance(currentProvider, accounts[0], donateContractAddress, activeCurrency.address, amount)
     }
+    getCurrentAPY(
+      currentProvider,
+      donateContractAddress,
+      receipentAddress,
+      18,
+      totalDepositedTokens,
+      totalTokensInRewardPool,
+    )
   }, [
     accounts,
     donateContractAddress,
@@ -489,8 +515,7 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     let interval: any
-
-    interval = setTimeout(() => {
+    interval = setInterval(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,
@@ -499,17 +524,17 @@ const CommonCard: FC<Props> = (props) => {
           activeCurrency.decimals,
           selectedNetworkId,
         )
-        // getCurrentAPY(
-        //   currentProvider,
-        //   donateContractAddress,
-        //   receipentAddress,
-        //   18,
-        //   totalDepositedTokens,
-        //   totalTokensInRewardPool,
-        // )
+        getCurrentAPY(
+          currentProvider,
+          donateContractAddress,
+          receipentAddress,
+          18,
+          totalDepositedTokens,
+          totalTokensInRewardPool,
+        )
       }
       handleTokenBalance()
-    }, 1000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [
     accounts,
@@ -522,6 +547,12 @@ const CommonCard: FC<Props> = (props) => {
     totalDepositedTokens,
     totalTokensInRewardPool,
     tokenList,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
   ])
   // useEffect(() => {
   //   let interval: any;
@@ -553,7 +584,20 @@ const CommonCard: FC<Props> = (props) => {
     if (walletConnected && activeCurrency.symbol !== 'Select Token') {
       getPool(activeCurrency.address, currentProvider, accounts[0], flashLoanContract)
     }
-  }, [walletConnected, accounts, currentProvider, activeCurrency, flashLoanContract])
+  }, [
+    walletConnected,
+    accounts,
+    currentProvider,
+    activeCurrency,
+    flashLoanContract,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+    isPoolCreated,
+  ])
 
   useEffect(() => {
     setAmount('')
@@ -561,6 +605,7 @@ const CommonCard: FC<Props> = (props) => {
     clearAirdropError()
     clearDonateError()
     clearRedeemError()
+    setTransModalInfo(false)
     handleToast(false)
     // if (activeTab === "reward") {
     //   rewardTokenList(tokenList);
@@ -568,24 +613,11 @@ const CommonCard: FC<Props> = (props) => {
   }, [activeTab])
 
   useEffect(() => {
-    if (
-      isDepositSuccess ||
-      donateIsApproved ||
-      donateSuccess ||
-      redeemSuccess ||
-      airdropSuccess
-    ) {
-      setAmount("");
+    if (isDepositSuccess || donateIsApproved || donateSuccess || redeemSuccess || airdropSuccess) {
+      setAmount('')
       handleTransModal(false)
     }
-  }, [
-    activeTab,
-    donateIsApproved,
-    isDepositSuccess,
-    donateSuccess,
-    redeemSuccess,
-    airdropSuccess,
-  ]);
+  }, [activeTab, donateIsApproved, isDepositSuccess, donateSuccess, redeemSuccess, airdropSuccess])
 
   useEffect(() => {
     if (poolTokenBalance > 0 && poolLiquidity > 0) {
@@ -594,9 +626,16 @@ const CommonCard: FC<Props> = (props) => {
     } else {
       setPoolPercentage(0)
     }
-  }, [poolLiquidity, poolTokenBalance])
-
-
+  }, [
+    poolLiquidity,
+    poolTokenBalance,
+    donateIsApproved,
+    isDepositSuccess,
+    isApproved,
+    donateSuccess,
+    redeemSuccess,
+    airdropSuccess,
+  ])
 
   const handleAmount = async () => {
     switch (activeTab) {
@@ -799,7 +838,7 @@ const CommonCard: FC<Props> = (props) => {
   return (
     <>
       <div className="new-message">
-        <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
+        <a href="https://unilend.finance" rel="noreferrer" target="_blank">
           {message}
         </a>
       </div>
@@ -875,8 +914,6 @@ const CommonCard: FC<Props> = (props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedToken: any) => {
-            console.log('')
-
             await handleModal(false)
             await balanceReset()
             setPoolPercentage(0)

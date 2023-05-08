@@ -20,8 +20,16 @@ import { bscWeb3 } from 'ethereum/bscWeb3'
 import { BscConnector } from '@binance-chain/bsc-connector'
 import { IFrameProvider, ledgerWeb3 } from 'ethereum/ledgerWeb3'
 import Web3 from 'web3'
+import { fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/dist/actions'
+import IERC20ABI from 'ethereum/build/IERC20.json'
+import BEP20ABI from 'ethereum/build/IBEP20.json'
+import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
+// import FlashLoanPoolABI from 'ethereum/build/UFlashLoanPool.json'
+import UnilendFDonationABI from 'ethereum/build/UnilendFDonation.json'
 // import { isMobile } from "react-device-detect";
 // import { maticWeb3 } from "ethereum/maticWeb3";
+
+const { ethers } = require('ethers')
 
 export const setSelectedNetworkId = (selectedNetworkId: number) => ({
   type: ActionType.SELECTED_NETWORK_ID,
@@ -54,6 +62,33 @@ export const checkNet = (net: any) => {
       return 'Moonbase Alpha'
     default:
       return 'Localhost'
+  }
+}
+
+export const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
+  try {
+    let signer = signerData
+    if (signer === null) {
+      signer = await fetchSigner()
+    }
+    const provider = getProvider()
+    const instance = getContract({
+      address: contractAddress,
+      abi,
+      signerOrProvider: signer || provider,
+    })
+    return instance
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getERC20abi = () => {
+  const { chain } = getNetwork()
+  if (chain?.id === 56 || chain?.id === 97) {
+    return BEP20ABI
+  } else {
+    return IERC20ABI.abi
   }
 }
 
@@ -737,20 +772,38 @@ export const getAccountBalance = (selectedAccount: string, currentProvider: any,
   return async (dispatch: Dispatch<Action>) => {
     try {
       let balance: any
-      if (networkId && networkId === 2) {
-        balance = await (window as any).BinanceChain.request({
-          method: 'eth_getBalance',
-          params: [selectedAccount, 'latest'],
-        })
-      } else {
-        // console.log('cur prov', currentProvider)
-        // balance = await web3Service.getBalance(selectedAccount)
-        // if (currentProvider === CoinbaseWeb3) {
-        balance = await currentProvider.eth.getBalance(selectedAccount)
-        // }
-      }
-      let ethBal = web3Service.getWei(balance, 'ether', currentProvider)
+      // const { chain } = getNetwork()
+      // console.log('getAccountBalance', chain)
+      // if (chain?.id === 56) {
+      //   console.log('getAccountBalance_IF')
+      //   // balance = await (window as any).BinanceChain.request({
+      //   //   method: 'eth_getBalance',
+      //   //   params: [selectedAccount, 'latest'],
+      //   // })
+      //   const provider = getProvider()
+      //   balance = await provider.getBalance(selectedAccount)
+      //   console.log('getAccountBalance_IF', ethers.utils.formatEther(balance))
+      // } else {
+      const provider = getProvider()
+      balance = await provider.getBalance(selectedAccount)
+      // }
+      let ethBal = ethers.utils.formatEther(balance)
       let ethBalDeci = toFixed(parseFloat(ethBal), 3)
+
+      // if (networkId && networkId === 2) {
+      //   balance = await (window as any).BinanceChain.request({
+      //     method: 'eth_getBalance',
+      //     params: [selectedAccount, 'latest'],
+      //   })
+      //   console.log('getAccountBalance_IF', balance)
+      // } else {
+      //   // balance = await web3Service.getBalance(selectedAccount)
+      //   // if (currentProvider === CoinbaseWeb3) {
+      //   balance = await currentProvider.eth.getBalance(selectedAccount)
+      //   // }
+      // }
+      // let ethBal = web3Service.getWei(balance, 'ether', currentProvider)
+      // let ethBalDeci = toFixed(parseFloat(ethBal), 3)
       dispatch({
         type: ActionType.ACCOUNT_BALANCE_SUCCESS,
         payload: ethBalDeci,
@@ -773,7 +826,7 @@ export const getAccountBalance = (selectedAccount: string, currentProvider: any,
 export const getUserTokenBalance = (
   currentProvider: any,
   accounts: any,
-  reciepentAddress: string,
+  tokenAddress: string,
   assertAddress: string,
   decimal: any,
 ) => {
@@ -782,23 +835,41 @@ export const getUserTokenBalance = (
       type: ActionType.USER_TOKEN_BALANCE_ACTION,
     })
     try {
-      let _IERC20 = IERC20(currentProvider, reciepentAddress)
-      _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
-        if (!e) {
-          let amount = r
-          const decimalAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
-          let fullAmount = new BigNumber(decimalAmount).toFixed(3, 1).toString()
-          dispatch({
-            type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
-            userTokenBalance: fullAmount,
-            fullUserTokenBalance: decimalAmount,
-          })
-        } else {
-          dispatch({
-            type: ActionType.USER_TOKEN_BALANCE_FAILED,
-          })
-        }
-      })
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(tokenAddress, getERC20abi(), signer)
+      const balance = await instance.balanceOf(accounts)
+      if (balance) {
+        dispatch({
+          type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
+          userTokenBalance: Number(ethers.utils.formatEther(balance)).toFixed(3).toString(),
+          fullUserTokenBalance: ethers.utils.formatEther(balance),
+        })
+      } else {
+        dispatch({
+          type: ActionType.USER_TOKEN_BALANCE_FAILED,
+        })
+      }
+      // let _IERC20 = IERC20(currentProvider, tokenAddress)
+      // _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
+      //   if (!e) {
+      //     let amount = r
+
+      //     const decimalAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
+      //     console.log('BALANCE_A_2', decimalAmount)
+      //     let fullAmount = new BigNumber(decimalAmount).toFixed(3, 1).toString()
+      //     console.log('BALANCE_A_3', fullAmount)
+
+      //     dispatch({
+      //       type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
+      //       userTokenBalance: fullAmount,
+      //       fullUserTokenBalance: decimalAmount,
+      //     })
+      //   } else {
+      //     dispatch({
+      //       type: ActionType.USER_TOKEN_BALANCE_FAILED,
+      //     })
+      //   }
+      // })
     } catch (e: any) {
       dispatch({
         type: ActionType.USER_TOKEN_BALANCE_SUCCESS,
@@ -808,87 +879,119 @@ export const getUserTokenBalance = (
     }
   }
 }
+
 export const getPooluTokenBalance = (
   currentProvider: any,
   accounts: string,
-  reciepentAddress: string,
+  tokenAddress: string,
   decimal: any,
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
-    FlashloanLBCore(currentProvider, currentNetwork)
-      .methods.getPools([reciepentAddress])
-      .call((err: any, res: any) => {
-        if (!err && res) {
-          // let assertAddress = res[0];
-          let _IERC20 = IERC20(currentProvider, res[0])
-
-          _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
-            if (!e) {
-              let amount = r
-              const fullAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
-              dispatch({
-                type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
-                payload: fullAmount,
-              })
-            } else {
-              // dispatch({
-              //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
-              //   payload: '',
-              // })
-            }
-          })
-        } else {
-          // dispatch({
-          //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
-          //   payload: '',
-          // })
-        }
+    try {
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const response = await instance.getPools([tokenAddress])
+      if (response) {
+        const ERCInstance = await getContractInstance(response[0], getERC20abi(), signer)
+        const balance = await ERCInstance.balanceOf(accounts)
+        dispatch({
+          type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+          payload: ethers.utils.formatEther(balance),
+        })
+      }
+    } catch (e) {
+      dispatch({
+        type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+        payload: '',
       })
+    }
+    // FlashloanLBCore(currentProvider, currentNetwork)
+    //   .methods.getPools([tokenAddress])
+    //   .call((err: any, res: any) => {
+    //     if (!err && res) {
+    //       // let assertAddress = res[0];
+    //       let _IERC20 = IERC20(currentProvider, res[0])
+
+    //       _IERC20.methods.balanceOf(accounts).call((e: any, r: any) => {
+    //         if (!e) {
+    //           let amount = r
+    //           const fullAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
+    //           dispatch({
+    //             type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+    //             payload: fullAmount,
+    //           })
+    //         } else {
+    //           // dispatch({
+    //           //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+    //           //   payload: '',
+    //           // })
+    //         }
+    //       })
+    //     } else {
+    //       // dispatch({
+    //       //   type: ActionType.FULL_POOL_U_TOKEN_BALANCE,
+    //       //   payload: '',
+    //       // })
+    //     }
+    //   })
   }
 }
+
 export const getPoolTokenBalance = (
   currentProvider: any,
   accounts: string,
   assertAddress: any,
-  reciepentAddress: any,
+  tokenAddress: any,
   decimal: any,
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
       let timestamp = setTimestamp()
-
-      // FlashLoanPool(currentProvider, assertAddress)
-      //   .methods.balanceOfUnderlying(accounts)
-      FlashloanLBCore(currentProvider, currentNetwork)
-        .methods.balanceOfUnderlying(reciepentAddress, accounts, timestamp)
-        .call((e: any, r: any) => {
-          if (!e) {
-            let amount = r
-            // let decimalAmount = amount / Math.pow(10, decimal);
-            // const ten: any = new BigNumber(10);
-            const decimalAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
-            let fullAmount = new BigNumber(decimalAmount).toFixed(3, 1).toString()
-            dispatch({
-              type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
-              payload: r > 0 ? fullAmount : 0,
-            })
-            dispatch({
-              type: ActionType.FULL_POOL_TOKEN_BALANCE,
-              payload: decimalAmount,
-            })
-          } else {
-            // dispatch({
-            //   type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
-            //   payload: '',
-            // })
-            // dispatch({
-            //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
-            //   payload: '',
-            // })
-          }
-        })
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const balance = await instance.balanceOfUnderlying(tokenAddress, accounts, timestamp)
+      dispatch({
+        type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
+        payload: balance > 0 ? Number(ethers.utils.formatEther(balance)).toFixed(3).toString() : 0,
+      })
+      dispatch({
+        type: ActionType.FULL_POOL_TOKEN_BALANCE,
+        payload: ethers.utils.formatEther(balance),
+      })
+      // // FlashLoanPool(currentProvider, assertAddress)
+      // //   .methods.balanceOfUnderlying(accounts)
+      // FlashloanLBCore(currentProvider, currentNetwork)
+      //   .methods.balanceOfUnderlying(tokenAddress, accounts, timestamp)
+      //   .call((e: any, r: any) => {
+      //     if (!e) {
+      //       let amount = r
+      //       // let decimalAmount = amount / Math.pow(10, decimal);
+      //       // const ten: any = new BigNumber(10);
+      //       const decimalAmount = new BigNumber(amount).dividedBy(Math.pow(10, decimal)).toString()
+      //       let fullAmount = new BigNumber(decimalAmount).toFixed(3, 1).toString()
+      //       dispatch({
+      //         type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
+      //         payload: r > 0 ? fullAmount : 0,
+      //       })
+      //       dispatch({
+      //         type: ActionType.FULL_POOL_TOKEN_BALANCE,
+      //         payload: decimalAmount,
+      //       })
+      //     } else {
+      //       // dispatch({
+      //       //   type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
+      //       //   payload: '',
+      //       // })
+      //       // dispatch({
+      //       //   type: ActionType.FULL_POOL_TOKEN_BALANCE,
+      //       //   payload: '',
+      //       // })
+      //     }
+      //   })
     } catch (e: any) {
       dispatch({
         type: ActionType.POOL_TOKEN_BALANCE_SUCCESS,
@@ -905,27 +1008,35 @@ export const getPoolTokenBalance = (
 export const getRewardPoolBalance = (
   currentProvider: any,
   donateContract: string,
-  reciepentAddress: string,
+  tokenAddress: string,
   decimal: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      UnilendFDonation(currentProvider, donateContract)
-        .methods.balanceOfToken(reciepentAddress)
-        .call((e: any, r: any) => {
-          if (!e) {
-            let fullAmount = r > 0 ? toFixed(r / Math.pow(10, decimal), 3) : 0
-            dispatch({
-              type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
-              payload: fullAmount,
-            })
-          } else {
-            dispatch({
-              type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
-              payload: '',
-            })
-          }
-        })
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(donateContract, UnilendFDonationABI.abi, signer)
+      const balance = await instance.balanceOfToken(tokenAddress)
+      dispatch({
+        type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
+        payload: balance > 0 ? Number(ethers.utils.formatEther(balance)).toFixed(3) : 0,
+      })
+
+      // UnilendFDonation(currentProvider, donateContract)
+      //   .methods.balanceOfToken(tokenAddress)
+      //   .call((e: any, r: any) => {
+      //     if (!e) {
+      //       let fullAmount = r > 0 ? toFixed(r / Math.pow(10, decimal), 3) : 0
+      //       dispatch({
+      //         type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
+      //         payload: fullAmount,
+      //       })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.REWARD_POOL_BALANCE_SUCCESS,
+      //         payload: '',
+      //       })
+      //     }
+      //   })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -942,10 +1053,11 @@ export const balanceReset = () => {
     })
   }
 }
+
 export const getCurrentAPY = (
   currentProvider: any,
   donateContract: string,
-  reciepentAddress: string,
+  tokenAddress: string,
   decimal: any,
   totalDepositedTokens: any,
   totalTokensInRewardPool: any,
@@ -955,32 +1067,46 @@ export const getCurrentAPY = (
     //   type: ActionType.CURRENT_APY_ACTION,
     // })
     try {
-      UnilendFDonation(currentProvider, donateContract)
-        .methods.getReleaseRate(reciepentAddress)
-        .call((e: any, r: any) => {
-          if (!e) {
-            let amount = parseFloat(r)
-            let fullAmountPerSec = amount / Math.pow(10, 18)
-            let _totalTokenInRewardPool = totalTokensInRewardPool / Math.pow(10, decimal)
-            let _totalDepositedToken = totalDepositedTokens / Math.pow(10, decimal)
-            let fullAmount: any = 0
-            if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
-              fullAmount = toFixed(
-                fullAmountPerSec * (60 * 60 * 24 * 365.25) * (_totalTokenInRewardPool / _totalDepositedToken),
-                2,
-              )
-            }
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(donateContract, UnilendFDonationABI.abi, signer)
+      const releaseRate = await instance.getReleaseRate(tokenAddress)
 
-            dispatch({
-              type: ActionType.CURRENT_APY_SUCCESS,
-              payload: fullAmount,
-            })
-          } else {
-            dispatch({
-              type: ActionType.CURRENT_APY_FAILED,
-            })
-          }
-        })
+      let _totalTokenInRewardPool = totalTokensInRewardPool / Math.pow(10, decimal)
+      let _totalDepositedToken = totalDepositedTokens / Math.pow(10, decimal)
+      let fullAmount: any = 0
+      if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
+        fullAmount = releaseRate * (60 * 60 * 24 * 365.25) * (_totalTokenInRewardPool / _totalDepositedToken)
+      }
+      dispatch({
+        type: ActionType.CURRENT_APY_SUCCESS,
+        payload: fullAmount > 0 ? (fullAmount / 10 ** 18).toFixed(2) : 0,
+      })
+
+      // UnilendFDonation(currentProvider, donateContract)
+      //   .methods.getReleaseRate(tokenAddress)
+      //   .call((e: any, r: any) => {
+      //     if (!e) {
+      //       let amount = parseFloat(r)
+      //       let fullAmountPerSec = amount / Math.pow(10, 18)
+      //       let _totalTokenInRewardPool = totalTokensInRewardPool / Math.pow(10, decimal)
+      //       let _totalDepositedToken = totalDepositedTokens / Math.pow(10, decimal)
+      //       let fullAmount: any = 0
+      //       if (_totalDepositedToken > 0 && _totalTokenInRewardPool > 0) {
+      //         fullAmount = toFixed(
+      //           fullAmountPerSec * (60 * 60 * 24 * 365.25) * (_totalTokenInRewardPool / _totalDepositedToken),
+      //           2,
+      //         )
+      //       }
+      //       dispatch({
+      //         type: ActionType.CURRENT_APY_SUCCESS,
+      //         payload: fullAmount,
+      //       })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.CURRENT_APY_FAILED,
+      //       })
+      //     }
+      //   })
     } catch (e) {
       // errorHandler.report(e)
       dispatch({
@@ -990,24 +1116,32 @@ export const getCurrentAPY = (
   }
 }
 
-export const getTotalDepositedTokens = (currentProvider: any, recipientAddress: any, selectedNetworkId: any) => {
+export const getTotalDepositedTokens = (currentProvider: any, tokenAddress: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      IERC20(currentProvider, recipientAddress)
-        .methods.balanceOf(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
-        .call((err: any, res: any) => {
-          if (!err) {
-            dispatch({
-              type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
-              payload: res,
-            })
-          } else {
-            dispatch({
-              type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
-              payload: '',
-            })
-          }
-        })
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(tokenAddress, getERC20abi(), signer)
+      const balance = await instance.balanceOf(UnilendFlashLoanCoreContract('', chain?.id))
+      dispatch({
+        type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
+        payload: Number(ethers.utils.formatEther(balance)) * 10 ** 18,
+      })
+      // IERC20(currentProvider, tokenAddress)
+      //   .methods.balanceOf(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
+      //   .call((err: any, res: any) => {
+      //     if (!err) {
+      //       dispatch({
+      //         type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
+      //         payload: res,
+      //       })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.TOTAL_DEPOSITION_TOKENS_SUCCESS,
+      //         payload: '',
+      //       })
+      //     }
+      //   })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -1018,24 +1152,32 @@ export const getTotalDepositedTokens = (currentProvider: any, recipientAddress: 
   }
 }
 
-export const getTotalTokensInRewardPool = (currentProvider: any, recipientAddress: any, donationAddress: any) => {
+export const getTotalTokensInRewardPool = (currentProvider: any, tokenAddress: any, donationAddress: any) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      IERC20(currentProvider, recipientAddress)
-        .methods.balanceOf(donationAddress)
-        .call((err: any, res: any) => {
-          if (!err) {
-            dispatch({
-              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
-              payload: res,
-            })
-          } else {
-            dispatch({
-              type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
-              payload: '',
-            })
-          }
-        })
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(tokenAddress, getERC20abi(), signer)
+      const balance = await instance.balanceOf(donationAddress)
+      dispatch({
+        type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
+        payload: Number(ethers.utils.formatEther(balance)) * 10 ** 18,
+      })
+
+      // IERC20(currentProvider, tokenAddress)
+      //   .methods.balanceOf(donationAddress)
+      //   .call((err: any, res: any) => {
+      //     if (!err) {
+      //       dispatch({
+      //         type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
+      //         payload: res,
+      //       })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.TOTAL_TOKENS_IN_REWARD_POOL_SUCCESS,
+      //         payload: '',
+      //       })
+      //     }
+      //   })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -1045,33 +1187,44 @@ export const getTotalTokensInRewardPool = (currentProvider: any, recipientAddres
     }
   }
 }
+//update
 export const getRewardReleaseRatePerDay = (
   currentProvider: any,
   donateContract: string,
-  reciepentAddress: string,
+  tokenAddress: string,
   decimal: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
     try {
-      UnilendFDonation(currentProvider, donateContract)
-        .methods.getReleaseRate(reciepentAddress)
-        .call((e: any, r: any) => {
-          if (!e) {
-            let amount = parseFloat(r)
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(donateContract, UnilendFDonationABI.abi, signer)
+      const releaseRate = await instance.getReleaseRate(tokenAddress)
+      let fullAmount = toFixed(Number(ethers.utils.formatEther(releaseRate)) * (60 * 60 * 24), 2)
+      dispatch({
+        type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
+        payload: fullAmount,
+      })
 
-            let fullAmountPerSec = amount / Math.pow(10, 18)
-            let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2)
-            dispatch({
-              type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
-              payload: fullAmount,
-            })
-          } else {
-            dispatch({
-              type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
-              payload: '',
-            })
-          }
-        })
+      // UnilendFDonation(currentProvider, donateContract)
+      //   .methods.getReleaseRate(tokenAddress)
+      //   .call((e: any, r: any) => {
+      //     if (!e) {
+      //       let amount = parseFloat(r)
+
+      //       let fullAmountPerSec = amount / Math.pow(10, 18)
+      //       let fullAmount = toFixed(fullAmountPerSec * (60 * 60 * 24), 2)
+      //       console.log('RRY', fullAmount)
+      //       dispatch({
+      //         type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
+      //         payload: fullAmount,
+      //       })
+      //     } else {
+      //       dispatch({
+      //         type: ActionType.REWARD_RELEASE_RATE_SUCCESS,
+      //         payload: '',
+      //       })
+      //     }
+      //   })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -1084,50 +1237,69 @@ export const getRewardReleaseRatePerDay = (
 
 export const getPoolLiquidity = (
   currentProvider: any,
-  reciepentAddress: any,
+  tokenAddress: any,
   isEth: boolean,
   decimal: any,
   currentNetwork: any,
 ) => {
   return async (dispatch: Dispatch<Action>) => {
+    // console.log('POOL_DATA')
     try {
+      const { chain } = getNetwork()
+      const signer = await fetchSigner()
+      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
       if (isEth) {
-        currentProvider.eth
-          .getBalance(UnilendFlashLoanCoreContract(currentProvider, currentNetwork))
-          .then((res: any) => {
-            let amount = web3Service.getWei(res, 'ether', currentProvider)
-            dispatch({
-              type: ActionType.POOL_LIQUIDITY_SUCCESS,
-              payload: amount,
-            })
-          })
-          .catch((e: any) => {
-            // dispatch({
-            //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
-            //   payload: '',
-            // })
-          })
+        const { chain } = getNetwork()
+        const provider = getProvider()
+        const balance = await provider.getBalance(UnilendFlashLoanCoreContract('', chain?.id))
+        dispatch({
+          type: ActionType.POOL_LIQUIDITY_SUCCESS,
+          payload: Number(ethers.utils.formatEther(balance)).toFixed(3),
+        })
+
+        // currentProvider.eth
+        //   .getBalance(UnilendFlashLoanCoreContract(currentProvider, currentNetwork))
+        //   .then((res: any) => {
+        //     let amount = web3Service.getWei(res, 'ether', currentProvider)
+        //     // console.log('POOL_DATA_IF', amount)
+        //     dispatch({
+        //       type: ActionType.POOL_LIQUIDITY_SUCCESS,
+        //       payload: amount,
+        //     })
+        //   })
+        //   .catch((e: any) => {
+        //     // dispatch({
+        //     //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
+        //     //   payload: '',
+        //     // })
+        //   })
       } else {
         let timestamp = setTimestamp()
-        FlashloanLBCore(currentProvider, currentNetwork)
-          .methods.poolBalanceOfUnderlying(reciepentAddress, timestamp)
-          .call((e: any, r: any) => {
-            if (!e) {
-              let amount = r
+        const balance = await instance.poolBalanceOfUnderlying(tokenAddress, timestamp)
+        dispatch({
+          type: ActionType.POOL_LIQUIDITY_SUCCESS,
+          payload: Number(ethers.utils.formatEther(balance)).toFixed(3),
+        })
 
-              let fullAmount = toFixed(amount / Math.pow(10, decimal), 3)
-              dispatch({
-                type: ActionType.POOL_LIQUIDITY_SUCCESS,
-                payload: fullAmount,
-              })
-              console.log('activeCurrency', 'call', fullAmount)
-            } else {
-              // dispatch({
-              //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
-              //   payload: '',
-              // })
-            }
-          })
+        // FlashloanLBCore(currentProvider, currentNetwork)
+        //   .methods.poolBalanceOfUnderlying(tokenAddress, timestamp)
+        //   .call((e: any, r: any) => {
+        //     if (!e) {
+        //       let amount = r
+        //       let fullAmount = toFixed(amount / Math.pow(10, decimal), 3)
+        //       console.log('ASD', fullAmount)
+        //       dispatch({
+        //         type: ActionType.POOL_LIQUIDITY_SUCCESS,
+        //         payload: fullAmount,
+        //       })
+        //       console.log('activeCurrency', 'call', fullAmount)
+        //     } else {
+        //       // dispatch({
+        //       //   type: ActionType.POOL_LIQUIDITY_SUCCESS,
+        //       //   payload: '',
+        //       // })
+        //     }
+        //   })
       }
     } catch (e: any) {
       dispatch({

@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 import axios from 'axios'
 import { setTimestamp, toFixed } from 'components/Helpers'
-import { BalanceContractAddress, UnilendFlashLoanCoreContract } from 'ethereum/contracts'
+import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import { BalanceContract } from 'ethereum/contracts/FlashloanLB'
 import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
@@ -10,11 +10,6 @@ import { TokenAction } from 'state/actions/tokenManageA'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 import { mumbaiTokenList } from 'data/tokenList'
-import { fetchSigner, getNetwork } from 'wagmi/dist/actions'
-import { getContractInstance } from './connectWalletAction'
-import BalanceABI from 'ethereum/build/balance-abi.json'
-
-const { ethers } = require('ethers')
 export const handleTokenListToggle = (id: number) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     dispatch({
@@ -181,7 +176,7 @@ export const fetchTokenList = (
             if (item.isEnabled) {
               axios
                 .get(`${item.fetchURI}?t=${timestamp}`)
-                .then(async (res) => {
+                .then((res) => {
                   let tokens = [...res.data.tokens, ...customTokens]
                   if (res.data && tokens.length) {
                     const tokenList: any = tokens.filter((item: any) => {
@@ -201,126 +196,86 @@ export const fetchTokenList = (
                     let addresses = tokenList.map((item: any) => {
                       return item.address
                     })
+
                     if (currentProvider) {
                       let timestamp = setTimestamp()
                       try {
-                        const { chain } = getNetwork()
-                        const signer = await fetchSigner()
-                        const instance = await getContractInstance(BalanceContractAddress, BalanceABI, signer)
-                        const balance = await instance.getUserBalances(
-                          UnilendFlashLoanCoreContract('', chain?.id),
-                          accounts[0],
-                          addresses,
-                          timestamp,
-                        )
                         if (accountBalance > 0) {
-                          tokenList.forEach((item: any, i: number) => {
-                            let fullAmount = toFixed(Number(ethers.utils.formatEther(balance[0][i])), 3)
-                            let underlyingBalance = toFixed(Number(ethers.utils.formatEther(balance[1][i])), 3)
-                            item['balance'] = fullAmount
-                            item['underlyingBalance'] = underlyingBalance
-                            let exist = totalTokenList.some(
-                              (t) => t.address.toLowerCase() === item.address.toLowerCase(),
+                          BalanceContract(currentProvider)
+                            .methods.getUserBalances(
+                              UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId),
+                              accounts[0],
+                              addresses,
+                              timestamp,
                             )
-                            if (!exist) totalTokenList.push(item)
-                            if (i === tokenList.length - 1) {
-                              totalTokenList.sort(function (a, b) {
-                                if (a.symbol < b.symbol) {
-                                  return -1
-                                }
-                                if (a.symbol > b.symbol) {
-                                  return 1
-                                }
-                                return 0
-                              })
-                              let uniqTokenList = _.uniqBy(totalTokenList, function (e: any) {
-                                return e.address
-                              })
+                            .call((error: any, result: any) => {
+                              if (!error && result) {
+                                tokenList.forEach((item: any, i: number) => {
+                                  let fullAmount = toFixed(result[0][i] / Math.pow(10, item.decimals), 3)
+                                  let underlyingBalance = toFixed(result[1][i] / Math.pow(10, item.decimals), 3)
+                                  item['balance'] = fullAmount
+                                  item['underlyingBalance'] = underlyingBalance
+                                  let exist = totalTokenList.some(
+                                    (t) => t.address.toLowerCase() === item.address.toLowerCase(),
+                                  )
 
-                              dispatch({
-                                type: ActionType.GET_TOKEN_LIST,
-                                payload: uniqTokenList,
-                              })
-                            }
-                          })
+                                  if (!exist) totalTokenList.push(item)
+                                  if (i === tokenList.length - 1) {
+                                    totalTokenList.sort(function (a, b) {
+                                      if (a.symbol < b.symbol) {
+                                        return -1
+                                      }
+                                      if (a.symbol > b.symbol) {
+                                        return 1
+                                      }
+                                      return 0
+                                    })
+                                    // let uniqTokenList = new Set(totalTokenList);
+                                    let uniqTokenList = _.uniqBy(totalTokenList, function (e: any) {
+                                      return e.address
+                                    })
 
-                          // BalanceContract(currentProvider)
-                          //   .methods.getUserBalances(
-                          //     UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId),
-                          //     accounts[0],
-                          //     addresses,
-                          //     timestamp,
-                          //   )
-                          //   .call((error: any, result: any) => {
-                          //     console.log('MANAGEA_IF_RESULT_2', result)
-                          //     if (!error && result) {
-                          //       tokenList.forEach((item: any, i: number) => {
-                          //         let fullAmount = toFixed(result[0][i] / Math.pow(10, item.decimals), 3)
-                          //         let underlyingBalance = toFixed(result[1][i] / Math.pow(10, item.decimals), 3)
-                          //         item['balance'] = fullAmount
-                          //         item['underlyingBalance'] = underlyingBalance
+                                    dispatch({
+                                      type: ActionType.GET_TOKEN_LIST,
+                                      payload: uniqTokenList,
+                                    })
+                                  }
+                                })
+                              } else {
+                                tokenList.forEach((item: any, i: number) => {
+                                  item['balance'] = ''
+                                  item['underlyingBalance'] = ''
+                                  let exist = totalTokenList.some(
+                                    (t) => t.address.toLowerCase() === item.address.toLowerCase(),
+                                  )
 
-                          //         let exist = totalTokenList.some(
-                          //           (t) => t.address.toLowerCase() === item.address.toLowerCase(),
-                          //         )
-
-                          //         if (!exist) totalTokenList.push(item)
-                          //         if (i === tokenList.length - 1) {
-                          //           totalTokenList.sort(function (a, b) {
-                          //             if (a.symbol < b.symbol) {
-                          //               return -1
-                          //             }
-                          //             if (a.symbol > b.symbol) {
-                          //               return 1
-                          //             }
-                          //             return 0
-                          //           })
-                          //           // let uniqTokenList = new Set(totalTokenList);
-                          //           let uniqTokenList = _.uniqBy(totalTokenList, function (e: any) {
-                          //             return e.address
-                          //           })
-
-                          //           dispatch({
-                          //             type: ActionType.GET_TOKEN_LIST,
-                          //             payload: uniqTokenList,
-                          //           })
-                          //         }
-                          //       })
-                          //     } else {
-                          //       console.log('MANAGEA_IF_ELSE', '300')
-                          //       tokenList.forEach((item: any, i: number) => {
-                          //         item['balance'] = ''
-                          //         item['underlyingBalance'] = ''
-                          //         let exist = totalTokenList.some(
-                          //           (t) => t.address.toLowerCase() === item.address.toLowerCase(),
-                          //         )
-
-                          //         if (!exist) totalTokenList.push(item)
-                          //         if (i === tokenList.length - 1) {
-                          //           totalTokenList.sort(function (a, b) {
-                          //             if (a.symbol < b.symbol) {
-                          //               return -1
-                          //             }
-                          //             if (a.symbol > b.symbol) {
-                          //               return 1
-                          //             }
-                          //             return 0
-                          //           })
-                          //           let uniqTokenList = _.uniqBy(totalTokenList, function (e: any) {
-                          //             return e.address
-                          //           })
-                          //           dispatch({
-                          //             type: ActionType.GET_TOKEN_LIST,
-                          //             payload: uniqTokenList,
-                          //           })
-                          //         }
-                          //       })
-                          //     }
-                          //   })
+                                  if (!exist) totalTokenList.push(item)
+                                  if (i === tokenList.length - 1) {
+                                    totalTokenList.sort(function (a, b) {
+                                      if (a.symbol < b.symbol) {
+                                        return -1
+                                      }
+                                      if (a.symbol > b.symbol) {
+                                        return 1
+                                      }
+                                      return 0
+                                    })
+                                    let uniqTokenList = _.uniqBy(totalTokenList, function (e: any) {
+                                      return e.address
+                                    })
+                                    dispatch({
+                                      type: ActionType.GET_TOKEN_LIST,
+                                      payload: uniqTokenList,
+                                    })
+                                  }
+                                })
+                              }
+                            })
                         } else {
                           tokenList.forEach((item: any, i: number) => {
                             item['balance'] = ''
                             item['underlyingBalance'] = ''
+                            // console.log(item.symbol);
                             let exist = totalTokenList.some((t) => {
                               return t.address.toLowerCase() === item.address.toLowerCase()
                             })
@@ -350,6 +305,7 @@ export const fetchTokenList = (
                         }
                       } catch (e) {
                         errorHandler.report(e)
+
                         dispatch({
                           type: ActionType.GET_TOKEN_LIST,
                           payload: tokenList,
@@ -384,8 +340,8 @@ export const fetchTokenList = (
             type: ActionType.GET_TOKEN_LIST,
             payload: [],
           })
-    } else if (networkId == 80001) {
-      // alert(networkId)
+    } else if(networkId == 80001) {
+     // alert(networkId)
       dispatch({
         type: ActionType.GET_TOKEN_LIST,
         payload: mumbaiTokenList,

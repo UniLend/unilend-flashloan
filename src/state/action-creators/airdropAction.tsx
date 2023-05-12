@@ -6,7 +6,7 @@ import { Dispatch } from 'react'
 import { ActionType } from 'state/action-types'
 import { AirdropAction } from 'state/actions/airdropA'
 import { fetchSigner, getContract, getNetwork, getProvider, waitForTransaction } from 'wagmi/dist/actions'
-import { getERC20abi } from './connectWalletAction'
+import IERC20ABI from 'ethereum/build/IERC20.json'
 
 export const setAirdropSuccess = () => {
   return async (dispatch: Dispatch<AirdropAction>) => {
@@ -70,7 +70,7 @@ export const handleAirdrop = (
       var fullAmount = web3Service.getValue(isEth, currentProvider, amount, decimal)
       const { chain } = getNetwork()
       const signer = await fetchSigner()
-      const instance = await getContractInstanceAirdrop(tokenAddress, getERC20abi(), signer)
+      const instance = await getContractInstanceAirdrop(tokenAddress, IERC20ABI.abi, signer)
       const txs = await instance.transfer(UnilendFlashLoanCoreContract('', chain?.id), fullAmount)
 
       if (txs.hash) {

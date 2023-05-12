@@ -8,20 +8,15 @@ import { ActionType } from 'state/action-types'
 import { DepositAction } from 'state/actions/depositA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
-import { getERC20abi } from './connectWalletAction'
 
-const { ethers } = require('ethers')
-
-const getContractInstanceDeposite = async (contractAddress: any, abi: any, signerData: any) => {
+export const getContractInstanceDeposite = async () => {
   try {
-    let signer = signerData
-    if (signer === null) {
-      signer = await fetchSigner()
-    }
+    const signer = await fetchSigner()
     const provider = getProvider()
+    const { chain } = getNetwork()
     const instance = getContract({
-      address: contractAddress,
-      abi,
+      address: UnilendFlashLoanCoreContract('', chain?.id),
+      abi: FlashloanABI.abi,
       signerOrProvider: signer || provider,
     })
     return instance
@@ -54,7 +49,7 @@ const checkTxnStatus = async (hash: any) => {
 export const checkAllowance = (
   currentProvider: any,
   address: any,
-  tokenAddress: string,
+  receipentAddress: string,
   selectedNetworkId: any,
   enteredAmount: any,
 ) => {
@@ -64,48 +59,30 @@ export const checkAllowance = (
       type: ActionType.DEPOSIT_ALLOWANCE_ACTION,
     })
     try {
-      if (tokenAddress) {
-        const { chain } = getNetwork()
-        const signer = await fetchSigner()
-        const instance = await getContractInstanceDeposite(tokenAddress, getERC20abi(), signer)
-        let allowance = await instance.allowance(address, UnilendFlashLoanCoreContract('', chain?.id))
-        allowance = Number(ethers.utils.formatUnits(allowance, 18))
-        if (allowance !== '0' && allowance >= Number(enteredAmount)) {
-          localStorage.setItem('isApproving', 'false')
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-          })
-        } else {
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVAL_STATUS,
-            payload: false, // isApproved
-          })
-        }
-      }
-      // let allowance
-      // let _IERC20 = await IERC20(currentProvider, tokenAddress)
-      // _IERC20.methods
-      //   .allowance(address, UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
-      //   .call((error: any, result: any) => {
-      //     if (!error && result) {
-      //       allowance = result
-      //       if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
-      //         localStorage.setItem('isApproving', 'false')
-      //         dispatch({
-      //           type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-      //         })
-      //       } else {
-      //         dispatch({
-      //           type: ActionType.DEPOSIT_APPROVAL_STATUS,
-      //           payload: false, // isApproved
-      //         })
-      //       }
-      //     } else {
-      //       dispatch({
-      //         type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
-      //       })
-      //     }
-      //   })
+      let allowance
+      let _IERC20 = await IERC20(currentProvider, receipentAddress)
+      _IERC20.methods
+        .allowance(address, UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
+        .call((error: any, result: any) => {
+          if (!error && result) {
+            allowance = result
+            if (allowance !== '0' && allowance >= Number(enteredAmount) * 10 ** 18) {
+              localStorage.setItem('isApproving', 'false')
+              dispatch({
+                type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+              })
+            } else {
+              dispatch({
+                type: ActionType.DEPOSIT_APPROVAL_STATUS,
+                payload: false, // isApproved
+              })
+            }
+          } else {
+            dispatch({
+              type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
+            })
+          }
+        })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -116,57 +93,44 @@ export const checkAllowance = (
 }
 
 // On Approve Action
-export const depositApprove = (currentProvider: any, address: any, tokenAddress: string, selectedNetworkId: any) => {
+export const depositApprove = (
+  currentProvider: any,
+  address: any,
+  receipentAddress: string,
+  selectedNetworkId: any,
+) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
       type: ActionType.DEPOSIT_APPROVE_ACTION,
     })
     try {
+      let _IERC20 = await IERC20(currentProvider, receipentAddress)
       localStorage.setItem('isApproving', 'true')
       dispatch({
         type: ActionType.DEPOSIT_APPROVAL_STATUS,
         payload: false,
       })
-      const signer = await fetchSigner()
-      const { chain } = getNetwork()
-      const instance = await getContractInstanceDeposite(tokenAddress, getERC20abi(), signer)
-      const txs = await instance.approve(UnilendFlashLoanCoreContract('', chain?.id), approveTokenMaximumValue)
-      console.log('APPROVE_DEPOSITE', txs)
-      if (txs.hash) {
-        const status = await checkTxnStatus(txs.hash)
-        if (status) {
+      _IERC20.methods
+        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
+        .send({
+          from: address,
+          gasPrice: defaultGasPrice * 1e9,
+        })
+        .on('receipt', (res: any) => {
           localStorage.setItem('isApproving', 'false')
           dispatch({
             type: ActionType.DEPOSIT_APPROVE_SUCCESS,
           })
-        }
-      }
-      // let _IERC20 = await IERC20(currentProvider, tokenAddress)
-      // dispatch({
-      //   type: ActionType.DEPOSIT_APPROVAL_STATUS,
-      //   payload: false,
-      // })
-      // _IERC20.methods
-      //   .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
-      //   .send({
-      //     from: address,
-      //     gasPrice: defaultGasPrice * 1e9,
-      //   })
-      //   .on('receipt', (res: any) => {
-      //     localStorage.setItem('isApproving', 'false')
-      //     dispatch({
-      //       type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-      //     })
-      //   })
-      //   .on('error', (err: any, res: any) => {
-      //     errorHandler.report(err)
+        })
+        .on('error', (err: any, res: any) => {
+          errorHandler.report(err)
 
-      //     dispatch({
-      //       type: ActionType.DEPOSIT_APPROVE_FAILED,
-      //       payload: false,
-      //       message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
-      //     })
-      //   })
+          dispatch({
+            type: ActionType.DEPOSIT_APPROVE_FAILED,
+            payload: false,
+            message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
+          })
+        })
     } catch (e) {
       errorHandler.report(e)
       dispatch({
@@ -199,13 +163,7 @@ export const handleDeposit = (
     })
     try {
       let fullAmount = web3Service.getValue(isEth, currentProvider, depositAmount, decimal)
-      const { chain } = getNetwork()
-      const signer = await fetchSigner()
-      const instance = await getContractInstanceDeposite(
-        UnilendFlashLoanCoreContract('', chain?.id),
-        FlashloanABI.abi,
-        signer,
-      )
+      const instance = await getContractInstanceDeposite()
       if (isEth) {
         const txs = await instance.deposit(recieptAddress, fullAmount, {
           value: fullAmount,

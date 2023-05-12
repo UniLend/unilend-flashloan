@@ -17,14 +17,27 @@ import { errorHandler } from 'index'
 import { useActions } from 'hooks/useActions'
 import { SettingAction } from 'state/actions/settingsA'
 import { useDispatch } from 'react-redux'
+import {
+  injectedWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  metaMaskWallet,
+  argentWallet,
+  ledgerWallet,
+  omniWallet,
 
+} from '@rainbow-me/rainbowkit/wallets';
 import '@rainbow-me/rainbowkit/styles.css'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { getDefaultWallets, RainbowKitProvider, connectorsForWallets, Wallet, WalletList } from '@rainbow-me/rainbowkit'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { mainnet, polygon, bsc, moonriver, polygonMumbai } from 'wagmi/chains'
+import { InjectedConnector } from "@wagmi/core/connectors/injected";
+
 // import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
+import WalletLink from 'walletlink'
+
 // moon river, bse
 // import { useActions } from "hooks/useActions";
 // declare const window: any;
@@ -58,14 +71,34 @@ function App() {
     [publicProvider(), infuraProvider({ apiKey: process.env.REACT_APP_INFURA_ID as string })],
   )
 
-  const { connectors } = getDefaultWallets({
-    appName: 'unilend-flashloan',
-    chains,
-  })
+  const connectors = connectorsForWallets([{
+    groupName: 'Recommended',
+    wallets: [
+      //metaMaskWallet({chains}),
+      injectedWallet({ chains }),
+      rainbowWallet({ chains }),
+      walletConnectWallet({ chains }),
+    ],
+  },
+  // {
+  //   groupName:'More',
+  //   wallets:[
+  //     argentWallet({chains}),
+  //     ledgerWallet({chains}),
+  //     omniWallet({chains})
+  //   ]
+  // }
+
+])
+
+  // const { connectors } = getDefaultWallets({
+  //   appName: 'unilend-flashloan',
+  //   chains,
+  // })
 
   const wagmiClient = createClient({
     autoConnect: true,
-    connectors,
+    connectors: [new InjectedConnector({chains}),...connectors()],
     provider,
   })
 

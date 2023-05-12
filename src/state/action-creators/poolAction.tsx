@@ -1,40 +1,19 @@
-import { UnilendFlashLoanCoreContract, defaultGasPrice } from 'ethereum/contracts'
+import { defaultGasPrice } from 'ethereum/contracts'
 import { ERC20, FlashloanLBCore } from 'ethereum/contracts/FlashloanLB'
 import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { PoolAction } from 'state/actions/PoolA'
-import { fetchSigner, getContract, getNetwork, getProvider, waitForTransaction } from 'wagmi/actions'
-import ERC20ABI from 'ethereum/build/ERC20.json'
-import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
-
-const getContractInstance = async (contractAddress: any, abi: any, signerData: any) => {
-  try {
-    let signer = signerData
-    if (signer === null) {
-      signer = await fetchSigner()
-    }
-    const provider = getProvider()
-    const instance = getContract({
-      address: contractAddress,
-      abi,
-      signerOrProvider: signer || provider,
-    })
-    return instance
-  } catch (error) {
-    throw error
-  }
-}
-
+import { getContractInstance } from './redeemAction'
+import {  waitForTransaction } from 'wagmi/actions'
 export const createPool = (currentProvider: any, _reserve: string, address: string) => {
   return async (dispatch: Dispatch<PoolAction>) => {
     dispatch({
       type: ActionType.IS_POOL_CREATION_LOADING,
       payload: true,
     })
+    console.log('createPool', _reserve, address)
     try {
-      const { chain } = getNetwork()
-      const signer = await fetchSigner()
-      const instance = await getContractInstance(UnilendFlashLoanCoreContract('', chain?.id), FlashloanABI.abi, signer)
+      const instance = await getContractInstance()
       const txs = await instance.createPool(_reserve)
       if (txs.hash) {
         const status = await checkTxnStatus(txs.hash)
@@ -51,10 +30,10 @@ export const createPool = (currentProvider: any, _reserve: string, address: stri
         window.location.reload()
       }
     } catch (error) {
-      dispatch({
-        type: ActionType.IS_POOL_CREATION_LOADING,
-        payload: false,
-      })
+           dispatch({
+          type: ActionType.IS_POOL_CREATION_LOADING,
+          payload: false,
+        })
     }
     // FlashloanLBCore(currentProvider)
     //   .methods.createPool(_reserve)
@@ -122,35 +101,24 @@ export const getPool = (address: any, currentProvider: any, accounts: any, flash
           payload: false,
         })
       } else {
-        const signer = await fetchSigner()
-        const instance = await getContractInstance(res, ERC20ABI, signer)
-        const symbol = await instance.symbol()
-        dispatch({
-          type: ActionType.POOL_TOKEN_NAME,
-          payload: symbol,
-        })
-        dispatch({
-          type: ActionType.IS_POOL_CREATED,
-          payload: true,
-        })
-        // ERC20(currentProvider, res)
-        //   .methods.symbol()
-        //   .call((err: Error, res: any) => {
-        //     if (!err && res) {
-        //       dispatch({
-        //         type: ActionType.POOL_TOKEN_NAME,
-        //         payload: res,
-        //       })
-        //       dispatch({
-        //         type: ActionType.IS_POOL_CREATED,
-        //         payload: true,
-        //       })
-        //     } else {
-        //       dispatch({
-        //         type: ActionType.POOL_FAILED,
-        //       })
-        //     }
-        //   })
+        ERC20(currentProvider, res)
+          .methods.symbol()
+          .call((err: Error, res: any) => {
+            if (!err && res) {
+              dispatch({
+                type: ActionType.POOL_TOKEN_NAME,
+                payload: res,
+              })
+              dispatch({
+                type: ActionType.IS_POOL_CREATED,
+                payload: true,
+              })
+            } else {
+              dispatch({
+                type: ActionType.POOL_FAILED,
+              })
+            }
+          })
       }
     } catch (error) {
       dispatch({

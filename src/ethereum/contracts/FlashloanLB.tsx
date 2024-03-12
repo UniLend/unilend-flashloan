@@ -10,6 +10,8 @@ import UFlashLoanPool from '../build/UFlashLoanPool.json'
 import BalanceABI from '../build/balance-abi.json'
 import { bscWeb3 } from 'ethereum/bscWeb3'
 import { useContract } from 'wagmi'
+import { getContractInstance } from 'state/action-creators/redeemAction'
+import { getEtherContract } from 'state/action-creators'
 
 export const FlashloanLBCore = (currentProvider: any, networkId?: any) => {
   return new currentProvider.eth.Contract(FlashloanABI.abi, UnilendFlashLoanCoreContract(currentProvider, networkId))
@@ -44,6 +46,14 @@ export const IERC20 = (currentProvider: any, reciepentAddress: string) => {
     return new currentProvider.eth.Contract(BEP20ABI, reciepentAddress)
   } else {
     return new currentProvider.eth.Contract(IERC20ABI.abi, reciepentAddress)
+  }
+}
+
+export const EtherIERC20 = async (currentProvider: any, reciepentAddress: string) => {
+  if (currentProvider === bscWeb3) {
+    return await getEtherContract(BEP20ABI, reciepentAddress)
+  } else {
+    return await getEtherContract(IERC20ABI.abi, reciepentAddress)
   }
 }
 

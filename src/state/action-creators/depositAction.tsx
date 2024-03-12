@@ -1,6 +1,6 @@
 // import BigNumber from "bignumber.js";
 import { approveTokenMaximumValue, defaultGasPrice, UnilendFlashLoanCoreContract } from 'ethereum/contracts'
-import { FlashloanLBCore, IERC20 } from 'ethereum/contracts/FlashloanLB'
+import { EtherIERC20, FlashloanLBCore, IERC20 } from 'ethereum/contracts/FlashloanLB'
 import { web3Service } from 'ethereum/web3Service'
 import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
@@ -17,6 +17,23 @@ export const getContractInstanceDeposite = async () => {
     const instance = getContract({
       address: UnilendFlashLoanCoreContract('', chain?.id),
       abi: FlashloanABI.abi,
+      signerOrProvider: signer || provider,
+    })
+    return instance
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export const getEtherContract = async (address: any, abi: any) => {
+  try {
+    const signer = await fetchSigner()
+    const provider = getProvider()
+    const { chain } = getNetwork()
+    const instance = getContract({
+      address: address,
+      abi: abi,
       signerOrProvider: signer || provider,
     })
     return instance
@@ -91,18 +108,25 @@ export const checkAllowance = (
     }
   }
 }
+export function fixed2Decimals(amount: any, decimals = 18) {
+  const amt = amount?._hex ? amount?._hex : amount;
+  const dec = decimals;
 
+  return (Number(amt) * 10 ** Number(dec)).toString();
+}
 // On Approve Action
 export const depositApprove = (
   currentProvider: any,
   address: any,
   receipentAddress: string,
   selectedNetworkId: any,
+  amount: any,
+  decimal: any
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
       type: ActionType.DEPOSIT_APPROVE_ACTION,
-    })
+    }) 
     try {
       let _IERC20 = await IERC20(currentProvider, receipentAddress)
       localStorage.setItem('isApproving', 'true')
@@ -111,7 +135,7 @@ export const depositApprove = (
         payload: false,
       })
       _IERC20.methods
-        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
+        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), fixed2Decimals(amount, decimal))
         .send({
           from: address,
           gasPrice: defaultGasPrice * 1e9,

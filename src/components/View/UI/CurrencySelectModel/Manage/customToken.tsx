@@ -3,10 +3,11 @@ import cantFind from 'assets/cantFind.svg'
 import { useActions } from 'hooks/useActions'
 
 interface Props {
-  token: any
+  token: any,
+  handleCurrChange: (selectedCurrency: any) => void
 }
 
-const CustomToken: FC<Props> = ({ token }) => {
+const CustomToken: FC<Props> = ({ token, handleCurrChange }) => {
   const { logoURI, symbol, address, chainId } = token
   const { setCustomToken } = useActions()
   const handleRemoveToken = () => {
@@ -25,12 +26,29 @@ const CustomToken: FC<Props> = ({ token }) => {
       return 'Ethereum'
     }
   }
+
+  const handleClick = () => {
+   const tokenSchema = {
+    address: address,
+    chainId: chainId,
+    symbol: symbol,
+    decimals: '',
+    balance: '',
+    logoURI: logoURI,
+    name: symbol,
+    underlyingBalance:''
+   }
+    handleCurrChange(tokenSchema)
+  }
+
   function addDefaultSrc(ev) {
     ev.target.src = cantFind
   }
+
+
   return (
     <>
-      <div className="token-list">
+      <div onClick={handleClick} className="token-list">
         <div className="details">
           <img src={logoURI !== null ? logoURI : cantFind} alt="" onError={addDefaultSrc} />
           <span style={{ paddingLeft: '10px' }}>{symbol}</span>

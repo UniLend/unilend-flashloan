@@ -44,7 +44,7 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
     //       JSON.stringify(data)
     //     )
 
-    const api = 'ckey_86f9398035604a998979408cd03'
+    const api = 'cqt_rQH8hFf4qm6RB346WYprtJbY8Hrc' //'ckey_86f9398035604a998979408cd03'
     var qs = `?key=${api}`
     var selectedNetwork = getDefaultNetwork(selectedNetworkId)
     dispatch({
@@ -55,9 +55,10 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
         loading: true,
       },
     })
+
     if (address.length)
       if (selectedNetworkId === 1) {
-        console.log('selectedNetwork', selectedNetwork, networkId, selectedNetworkId)
+       
         const data = {
           jsonrpc: '2.0',
           method: 'alchemy_getTokenMetadata',
@@ -96,8 +97,9 @@ export const searchToken = (address: string, networkId: any, selectedNetworkId: 
             })
           })
       } else {
+       
         axios
-          .get(`https://api.covalenthq.com/v1/${selectedNetwork}/tokens/${address}/nft_metadata/111/${qs}`)
+          .get(`https://api.covalenthq.com/v1/${networkId}/tokens/${address}/nft_metadata/111/${qs}`)
           .then((res: any) => {
             if (res?.data?.data === null)
               dispatch({
@@ -355,7 +357,7 @@ const getTokenGroup = () => {
 export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let _allToken: any = []
-    if (getTokenGroup()) {
+    if (false) {
       let tg: any = localStorage.getItem('tokenGroup')
       let parsed = JSON.parse(tg)
       dispatch({

@@ -237,7 +237,7 @@ const CurrencySelectModel: FC<Props> = ({ handleClose, currFieldName, handleCurr
           </Modal.Title>
           {!openManage && SearchBar}
         </Modal.Header>
-        <Modal.Body className={openManage && 'manage'}>{openManage ? <Manage /> : MainBodyContent}</Modal.Body>
+        <Modal.Body className={openManage && 'manage'}>{openManage ? <Manage handleCurrChange={handleCurrChange}/> : MainBodyContent}</Modal.Body>
         {!openManage && <Modal.Footer>{ManageButton}</Modal.Footer>}
       </Modal>
     </>

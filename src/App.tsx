@@ -37,6 +37,7 @@ import { InjectedConnector } from "@wagmi/core/connectors/injected";
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import WalletLink from 'walletlink'
+import { tokensURLs } from 'components/constants'
 
 // moon river, bse
 // import { useActions } from "hooks/useActions";
@@ -123,8 +124,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    handleTokenPersist(tokenByUrl, selectedNetworkId)
-  }, [tokenByUrl, selectedNetworkId])
+    const tokenURLbyNetwork = tokensURLs[selectedNetworkId]
+    handleTokenPersist(tokenURLbyNetwork, selectedNetworkId)
+  }, [selectedNetworkId])
 
   useEffect(() => {
     if (connectedWallet) {

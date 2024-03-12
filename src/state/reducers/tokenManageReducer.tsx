@@ -41,6 +41,7 @@ const initialState = {
       isEnabled: true,
     },
     { url: 'https://tokens.coingecko.com/uniswap/all.json', isEnabled: false },
+    { url: 'https://tokens.coingecko.com/polygon-pos/all.json', isEnabled: true }
   ],
   tokenGroupList: [
     // {

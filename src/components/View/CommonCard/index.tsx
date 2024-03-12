@@ -914,14 +914,14 @@ const CommonCard: FC<Props> = (props) => {
         <CurrencySelectModel
           currFieldName={activeCurrency.symbol}
           handleCurrChange={async (selectedToken: any) => {
-            await handleModal(false)
-            await balanceReset()
+             handleModal(false)
+             balanceReset()
             setPoolPercentage(0)
-            await setActiveCurrency(selectedToken)
+             setActiveCurrency(selectedToken)
             if (accounts.length && currentProvider) {
-              await getPool(selectedToken.address, currentProvider, accounts[0], flashLoanContract)
+               getPool(selectedToken.address, currentProvider, accounts[0], flashLoanContract)
             }
-            await handleReciepent(selectedToken.address)
+            handleReciepent(selectedToken.address)
           }}
           handleClose={() => handleModal(false)}
           activeTab={activeTab}

@@ -55,7 +55,7 @@
   },
   "scripts": {
     "start": "serve -s build",
-    "devstart": "react-scripts --openssl-legacy-provider start",
+    "devstart": "react-scripts start",
     "build": "CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

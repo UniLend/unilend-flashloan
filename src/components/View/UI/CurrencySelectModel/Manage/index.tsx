@@ -8,9 +8,11 @@ import TokenListGroup from './tokenListGroup'
 import './index.scss'
 import SearchTokenCard from './SearchTokenCard'
 import CustomToken from './customToken'
-interface Props {}
+interface Props {
+  handleCurrChange: (selectedCurrency: any) => void
+}
 
-const Manage: FC<Props> = (props) => {
+const Manage: FC<Props> = ({handleCurrChange}) => {
   // const [searchText, setSearchText] = useState<string>("");
   const [searchedTokenText, setSearchedTokenText] = useState<string>('')
   const [isExist, toggleIsExist] = useState<boolean>(false)
@@ -20,7 +22,7 @@ const Manage: FC<Props> = (props) => {
   const { theme } = useTypedSelector((state) => state.settings)
   const { payload: tokenList } = useTypedSelector((state) => state.tokenManage.tokenList)
   const { customTokens } = useTypedSelector((state) => state.tokenManage)
-  const { payload: searchedToken, message: errorMessage } = useTypedSelector((state) => state.tokenManage.searchedToken)
+  const { payload: searchedToken, message: errorMessage, isRequesting } = useTypedSelector((state) => state.tokenManage.searchedToken)
 
   const { searchToken, resetCustomToken, setCustomToken } = useActions()
 
@@ -127,6 +129,7 @@ const Manage: FC<Props> = (props) => {
               onChange={(e) => setSearchedTokenText(e.target.value)}
             />
             {searchedTokenText && errorMessage && <span className="error">{errorMessage}</span>}
+            {isRequesting && <span>Loading...</span>}
           </div>
           {searchedToken && (
             <SearchTokenCard
@@ -143,7 +146,7 @@ const Manage: FC<Props> = (props) => {
                 Clear all
               </Button>
             </div>
-            {customTokens && customTokens.map((token) => <CustomToken key={token.symbol} token={token} />)}
+            {customTokens && customTokens.map((token) => <CustomToken key={token.symbol} token={token} handleCurrChange={handleCurrChange}/>)}
           </div>
         </>
       )}

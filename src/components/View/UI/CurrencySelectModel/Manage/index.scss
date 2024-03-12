@@ -170,6 +170,11 @@
     align-items: center;
     -webkit-box-pack: justify;
     justify-content: space-between;
+    cursor: pointer !important;
+    &:hover{
+      opacity: 0.5;
+      cursor: pointer;
+    }
   }
   .details {
     box-sizing: border-box;

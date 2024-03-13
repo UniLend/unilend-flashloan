@@ -51,9 +51,9 @@ export const IERC20 = (currentProvider: any, reciepentAddress: string) => {
 
 export const EtherIERC20 = async (currentProvider: any, reciepentAddress: string) => {
   if (currentProvider === bscWeb3) {
-    return await getEtherContract(BEP20ABI, reciepentAddress)
+    return await getEtherContract(BEP20ABI, reciepentAddress, null)
   } else {
-    return await getEtherContract(IERC20ABI.abi, reciepentAddress)
+    return await getEtherContract(IERC20ABI.abi, reciepentAddress, null)
   }
 }
 

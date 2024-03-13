@@ -6,6 +6,13 @@ import { FC, useEffect, useState } from 'react'
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from '../UI/ConnectWalletModal'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { fetchSigner } from 'wagmi/dist/actions'
+import { checkTxnStatus, fixed2Decimals, getEtherContract } from 'state/action-creators'
+import { erc20ABI } from 'wagmi'
+import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
+import { web3Service } from 'ethereum/web3Service'
+import { useDispatch } from 'react-redux'
+import { ActionType } from 'state/action-types'
 
 interface Props {
   isEth: boolean
@@ -66,6 +73,8 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
 
   const { activeTab, activeCurrency } = useTypedSelector((state) => state.settings)
 
+  const dispatch = useDispatch()
+
   const {
     depositApprove,
     donateApprove,
@@ -83,6 +92,46 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
       getPoolTokenBalance(currentProvider, address[0], assertAddress, receipentAddress, decimal, selectedNetworkId)
     }
   }
+
+  const handleApproval = async (
+    currentProvider: any,
+    address: any,
+    receipentAddress: string,
+    selectedNetworkId: any,
+    amount: any,
+    decimal: any,
+  ) => {
+    dispatch({
+      type: ActionType.DEPOSIT_APPROVE_ACTION,
+    })
+    let signer = await fetchSigner()
+    let interval = null
+
+    if (!signer) {
+      setTimeout(async () => {
+        signer = await fetchSigner()
+      }, 100)
+    }
+
+    const erc20 = await getEtherContract(receipentAddress, erc20ABI, signer)
+    const Amount = web3Service.getValue(null, null, amount, decimal)
+
+    localStorage.setItem('isApproving', 'true')
+    dispatch({
+      type: ActionType.DEPOSIT_APPROVAL_STATUS,
+      payload: false,
+    })
+    const { hash } = await erc20.approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), Amount)
+
+    if (hash) {
+      setTimeout(() => {
+        dispatch({
+          type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+        })
+      }, 5000)
+    }
+  }
+
   useEffect(() => {
     handleTokenBalance()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,7 +234,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === 'Deposit') {
-              depositApprove(currentProvider, address[0], receipentAddress, selectedNetworkId, amount, decimal )
+              handleApproval(currentProvider, address[0], receipentAddress, selectedNetworkId, amount, decimal)
             } else if (actionName === 'Reward') {
               donateApprove(currentProvider, address[0], donateContractAddress, receipentAddress)
             }

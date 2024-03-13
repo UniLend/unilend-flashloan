@@ -8,6 +8,7 @@ import { ActionType } from 'state/action-types'
 import { DepositAction } from 'state/actions/depositA'
 import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
+import { erc20ABI } from 'wagmi'
 
 export const getContractInstanceDeposite = async () => {
   try {
@@ -25,16 +26,16 @@ export const getContractInstanceDeposite = async () => {
   }
 }
 
-
-export const getEtherContract = async (address: any, abi: any) => {
+export const getEtherContract = async (address: any, abi: any, signer1: any) => {
   try {
+    
     const signer = await fetchSigner()
     const provider = getProvider()
-    const { chain } = getNetwork()
+
     const instance = getContract({
       address: address,
       abi: abi,
-      signerOrProvider: signer || provider,
+      signerOrProvider: signer1|| signer || provider,
     })
     return instance
   } catch (error) {
@@ -42,20 +43,22 @@ export const getEtherContract = async (address: any, abi: any) => {
   }
 }
 
-const checkTxnStatus = async (hash: any) => {
+export const checkTxnStatus = async (hash: any) => {
+  
+  
   try {
-    const receipt = waitForTransaction({
+    const receipt = await waitForTransaction({
       hash,
     })
-
-    if ((await receipt).status === 1) {
+   
+    if ((receipt).status === 1) {
       return true
     } else {
       setTimeout(async () => {
         checkTxnStatus(hash)
       }, 1000)
     }
-  } catch (error) {
+  } catch (error) {  
     setTimeout(async () => {
       checkTxnStatus(hash)
     }, 1000)
@@ -109,10 +112,10 @@ export const checkAllowance = (
   }
 }
 export function fixed2Decimals(amount: any, decimals = 18) {
-  const amt = amount?._hex ? amount?._hex : amount;
-  const dec = decimals;
+  const amt = amount?._hex ? amount?._hex : amount
+  const dec = decimals
 
-  return (Number(amt) * 10 ** Number(dec)).toString();
+  return (Number(amt) * 10 ** Number(dec)).toString()
 }
 // On Approve Action
 export const depositApprove = (
@@ -121,40 +124,52 @@ export const depositApprove = (
   receipentAddress: string,
   selectedNetworkId: any,
   amount: any,
-  decimal: any
+  decimal: any,
 ) => {
   return async (dispatch: Dispatch<DepositAction>) => {
     dispatch({
       type: ActionType.DEPOSIT_APPROVE_ACTION,
-    }) 
+    })
     try {
-      let _IERC20 = await IERC20(currentProvider, receipentAddress)
+      // const ERC20 = await EtherIERC20(currentProvider, receipentAddress);
+      const signer = await fetchSigner()
+      const erc20 = await getEtherContract(receipentAddress, erc20ABI, signer)
+      //  let _IERC20 = await IERC20(currentProvider, receipentAddress)
+   
+
       localStorage.setItem('isApproving', 'true')
       dispatch({
         type: ActionType.DEPOSIT_APPROVAL_STATUS,
         payload: false,
       })
-      _IERC20.methods
-        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), fixed2Decimals(amount, decimal))
-        .send({
-          from: address,
-          gasPrice: defaultGasPrice * 1e9,
-        })
-        .on('receipt', (res: any) => {
-          localStorage.setItem('isApproving', 'false')
+      const { hash } = await erc20.approve(
+        UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId),
+        fixed2Decimals(amount, decimal),
+      )
+
+      if (hash) {
+        const status = await checkTxnStatus(hash)
+        if (status) {
           dispatch({
             type: ActionType.DEPOSIT_APPROVE_SUCCESS,
           })
-        })
-        .on('error', (err: any, res: any) => {
-          errorHandler.report(err)
+        }
+      }
+      // .on('receipt', (res: any) => {
+      //   localStorage.setItem('isApproving', 'false')
+      //   dispatch({
+      //     type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+      //   })
+      // })
+      // .on('error', (err: any, res: any) => {
+      //   errorHandler.report(err)
 
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_FAILED,
-            payload: false,
-            message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
-          })
-        })
+      //   dispatch({
+      //     type: ActionType.DEPOSIT_APPROVE_FAILED,
+      //     payload: false,
+      //     message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
+      //   })
+      // })
     } catch (e) {
       errorHandler.report(e)
       dispatch({

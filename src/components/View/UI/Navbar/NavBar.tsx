@@ -70,11 +70,11 @@ const NavBar: React.FC<Props> = (props) => {
     if (window.ethereum) {
       window?.ethereum?.on &&
         window?.ethereum?.on('chainChanged', async () => {
-          window.location.reload()
+           window.location.reload()
         })
       window?.ethereum?.on &&
         window.ethereum.on('accountsChanged', async () => {
-          window.location.reload()
+          // window.location.reload()
         })
     }
   }, [])

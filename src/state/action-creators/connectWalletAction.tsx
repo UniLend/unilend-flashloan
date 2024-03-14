@@ -78,11 +78,12 @@ export const networkSwitchHandling = (currentProvider?: any, id?: any) => {
   }
 }
 
-const metamaskEventHandler = (dispatch: any, provider: any) => {
+export const metamaskEventHandler = (dispatch: any, provider: any) => {
   provider.on('chainChanged', (chainId: any) => {
     window.location.reload()
   })
   provider.on('accountsChanged', function (accounts: string) {
+    console.log("accountsChanged", "2", accounts);
     if (accounts) {
       dispatch({
         type: ActionType.CONNECT_WALLET_SUCCESS,

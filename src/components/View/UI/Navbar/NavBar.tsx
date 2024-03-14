@@ -23,7 +23,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAccount, useBalance, useNetwork, useProvider, useSigner } from 'wagmi'
 import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
-import { setSelectedNetworkId } from 'state/action-creators'
+import { metamaskEventHandler, setSelectedNetworkId } from 'state/action-creators'
 import { useContract } from 'wagmi'
 import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
@@ -41,6 +41,7 @@ const NavBar: React.FC<Props> = (props) => {
   const { selectedNetworkId, activeNetWork, networkId, walletConnected, accounts, loading, accountBalance } =
     useTypedSelector((state) => state.connectWallet)
   const networkInfo = NETWORKS.filter((item) => item.networkID === (networkId || 1))[0]
+
   //   // const { walletConnected, accounts, loading, accountBalance } =
   //   //   useWalletConnect();
 
@@ -67,16 +68,22 @@ const NavBar: React.FC<Props> = (props) => {
   // console.log(provider)
 
   useEffect(() => {
+
     if (window.ethereum) {
       window?.ethereum?.on &&
         window?.ethereum?.on('chainChanged', async () => {
            window.location.reload()
         })
       window?.ethereum?.on &&
-        window.ethereum.on('accountsChanged', async () => {
+        window.ethereum.on('accountsChanged', async (account: any) => {
           // window.location.reload()
+          // console.log("accountsChanged", account[0], address, account[0] == address, provider);
+          if(account[0] != address){
+            window.location.reload()
+          }
         })
     }
+   
   }, [])
 
   useEffect(() => {

@@ -369,7 +369,7 @@ const CommonCard: FC<Props> = (props) => {
       (activeTab === 'airdrop' && airdropErrorMessage === 'Transaction Failed')
     ) {
       var now = 100
-      interval = setInterval(() => {
+      interval = setTimeout(() => {
         now--
         setProgressValue(now)
         if (now === 0) {
@@ -398,7 +398,7 @@ const CommonCard: FC<Props> = (props) => {
       (activeTab === 'airdrop' && airdropSuccess)
     ) {
       var now = 100
-      interval = setInterval(() => {
+      interval = setTimeout(() => {
         now--
         setProgressValue(now)
         if (now === 0) {
@@ -515,7 +515,7 @@ const CommonCard: FC<Props> = (props) => {
 
   useEffect(() => {
     let interval: any
-    interval = setInterval(() => {
+    interval = setTimeout(() => {
       if (activeCurrency.symbol !== 'Select Token') {
         getPoolLiquidity(
           currentProvider,

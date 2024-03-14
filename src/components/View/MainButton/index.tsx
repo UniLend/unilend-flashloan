@@ -115,6 +115,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
 
     const erc20 = await getEtherContract(receipentAddress, erc20ABI, signer)
     const Amount = web3Service.getValue(null, null, amount, decimal)
+console.log("getsigner", signer, erc20);
 
     localStorage.setItem('isApproving', 'true')
     dispatch({

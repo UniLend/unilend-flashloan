@@ -80,8 +80,10 @@ export const getTransactionHashUrl = (activeNetWork, hash) => {
   let bscBaseURL = `bscscan.com/tx/${hash}`
   let maticURL = `maticvigil.com/tx/${hash}`
   let moonRiverURL = `moonscan.io/tx/${hash}`
+ 
+  
   switch (activeNetWork) {
-    case 'Mainnet':
+    case 'Ethereum':
       return `https://${baseURL}`
     case 'Binance Testnet':
       return `https://testnet.${bscBaseURL}`
@@ -103,18 +105,19 @@ export const getTransactionHashUrl = (activeNetWork, hash) => {
 export const getAddressUrl = (activeNetWork, hash) => {
   let baseURL = `etherscan.io/address/${hash}`
   let bscBaseURL = `bscscan.com/address/${hash}`
-  let maticURL = `maticvigil.com/address/${hash}`
+  let maticURL = `polygonscan.com/address/${hash}`
   let moonRiverURL = `moonscan.io/address/${hash}`
 
+
   switch (activeNetWork) {
-    case 'Mainnet':
+    case 'Ethereum':
       return `https://${baseURL}`
     case 'Binance Testnet':
       return `https://testnet.${bscBaseURL}`
-    case 'Binance Mainnet':
+    case 'BNB Smart Chain':
       return `https://${bscBaseURL}`
-    case 'Matic Mainnet':
-      return `https://explorer-mainnet.${maticURL}`
+    case 'Polygon':
+      return `https://${maticURL}`
     case 'Mumbai Testnet':
       return `https://explorer-mumbai.${maticURL}`
     case 'Moonriver':

@@ -4,7 +4,7 @@ import "./TransactionLoader.scss";
 import { useTypedSelector } from "hooks/useTypedSelector";
 import Loader from "react-loader-spinner";
 import Alert from "assets/error.svg";
-import { getTransactionHashUrl } from "components/Helpers";
+import { getAddressUrl, getTransactionHashUrl } from "components/Helpers";
 // import ArrowUp from "assets/arrowup.png";
 interface Props {
   handleClose: () => void;
@@ -85,7 +85,7 @@ const TransactionPopup: FC<Props> = ({
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={getTransactionHashUrl(
+                        href={getAddressUrl(
                           activeNetWork,
                           getActiveHash()
                         )}

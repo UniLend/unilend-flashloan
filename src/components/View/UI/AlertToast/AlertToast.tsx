@@ -4,7 +4,7 @@ import "./index.scss";
 import TickIcon from "assets/tick.svg";
 import ErrorIcon from "assets/error.svg";
 import { useTypedSelector } from "hooks/useTypedSelector";
-import { getTransactionHashUrl } from "components/Helpers";
+import { getAddressUrl, getTransactionHashUrl } from "components/Helpers";
 interface Props {
   handleClose: () => void;
   message: string;
@@ -80,7 +80,7 @@ const AlertToast: FC<Props> = ({
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getTransactionHashUrl(activeNetWork, getActiveHash())}
+                  href={getAddressUrl(activeNetWork, getActiveHash())}
                 >
                   <div className="etherscan-link">View on Explorer</div>
                 </a>
@@ -107,7 +107,7 @@ const AlertToast: FC<Props> = ({
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={getTransactionHashUrl(activeNetWork, getActiveHash())}
+                  href={getAddressUrl(activeNetWork, getActiveHash())}
                 >
                   <div className="etherscan-link">View on Explorer</div>
                 </a>

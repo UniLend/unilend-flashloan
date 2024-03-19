@@ -733,7 +733,11 @@ const CommonCard: FC<Props> = (props) => {
           <Loader />
         ) : poolLiquidity ? (
           <>
-            <span>{poolLiquidity.toLocaleString()}</span>
+            <span>{poolLiquidity.toLocaleString('en-US', {
+  style: 'decimal',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</span>
             <img src={activeCurrency.logoURI} alt="logo" width="13" onError={addDefaultSrc} />
             <span>{activeCurrency.symbol}</span>
           </>
@@ -837,11 +841,11 @@ const CommonCard: FC<Props> = (props) => {
   }
   return (
     <>
-      <div className="new-message">
+      {/* <div className="new-message">
         <a href="https://unilend.finance" rel="noreferrer" target="_blank">
           {message}
         </a>
-      </div>
+      </div> */}
       <div className="network-warning">{networkMessage()}</div>
 
       <ContentCard title={`${getCardTitle()}`}>

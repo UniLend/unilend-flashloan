@@ -203,6 +203,15 @@ const NavBar: React.FC<Props> = (props) => {
                   Airdrop
                 </Link>
               </li>
+              <li className="nav-item">
+                <a
+                  className='nav-link unilendv2'
+                  href='https://v2.unilend.finance/'
+                  target='_blank'
+                >
+                  UnilendV2 Dapp
+                </a>
+              </li>
             </ul>
           </div>
           {/* <div className="collapse navbar-collapse"> */}

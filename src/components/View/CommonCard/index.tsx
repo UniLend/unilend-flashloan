@@ -774,7 +774,11 @@ const CommonCard: FC<Props> = (props) => {
           <Loader />
         ) : walletConnected && poolTokenBalance !== '' ? (
           <>
-            <span>{poolTokenBalance.toLocaleString()}</span>
+            <span>{poolTokenBalance.toLocaleString('en-US', {
+  style: 'decimal',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</span>
             <img src={activeCurrency.logoURI} alt="logo" onError={addDefaultSrc} width="13" />
             <span>{activeCurrency.symbol}</span>
           </>
@@ -793,7 +797,11 @@ const CommonCard: FC<Props> = (props) => {
           <Loader />
         ) : walletConnected && rewardPoolBalance !== '' ? (
           <>
-            <span>{rewardPoolBalance.toLocaleString()}</span>
+            <span>{rewardPoolBalance.toLocaleString('en-US', {
+  style: 'decimal',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</span>
             <img src={activeCurrency.logoURI} onError={addDefaultSrc} alt="logo" width="13" />
             <span>{activeCurrency.symbol}</span>
           </>

@@ -15,7 +15,7 @@ import useWalletConnect from 'hooks/useWalletConnect'
 import { NETWORKS } from 'components/constants'
 import { shortenAddress } from 'components/Helpers'
 import { WalletInfoProps } from '../../../Helpers/Types'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+// import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 interface Props extends RouteComponentProps<any> {
   setWalletModalInfo: Dispatch<SetStateAction<boolean>>
@@ -87,7 +87,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
           />
         )}
       </div> */}
-      <ConnectButton.Custom>
+      {/* <ConnectButton.Custom>
         {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
           const ready = mounted
           const connected = ready && account && chain
@@ -152,7 +152,7 @@ const FooterNavBar: React.FC<Props> = (props) => {
             </div>
           )
         }}
-      </ConnectButton.Custom>
+      </ConnectButton.Custom> */}
       <div className="app-settings-group">
         <ThemeButton onClick={handleUpdate} theme={theme} dflex={true} className="btn-theme-icon-footer" />
         {/* <Button

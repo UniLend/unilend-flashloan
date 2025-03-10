@@ -4,7 +4,7 @@ import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { PoolAction } from 'state/actions/PoolA'
 import { getContractInstance } from './redeemAction'
-import {  waitForTransaction } from 'wagmi/actions'
+// import {  waitForTransaction } from 'wagmi/actions'
 export const createPool = (currentProvider: any, _reserve: string, address: string) => {
   return async (dispatch: Dispatch<PoolAction>) => {
     dispatch({
@@ -13,27 +13,27 @@ export const createPool = (currentProvider: any, _reserve: string, address: stri
     })
     console.log('createPool', _reserve, address)
     try {
-      const instance = await getContractInstance()
-      const txs = await instance.createPool(_reserve)
-      if (txs.hash) {
-        const status = await checkTxnStatus(txs.hash)
-        if (status) {
-          dispatch({
-            type: ActionType.IS_POOL_CREATED,
-            payload: true,
-          })
-          dispatch({
-            type: ActionType.IS_POOL_CREATION_LOADING,
-            payload: false,
-          })
-        }
-        window.location.reload()
-      }
+      // const instance = await getContractInstance()
+      // const txs = await instance.createPool(_reserve)
+      // if (txs.hash) {
+      //   // const status = await checkTxnStatus(txs.hash)
+      //   // if (status) {
+      //   //   dispatch({
+      //   //     type: ActionType.IS_POOL_CREATED,
+      //   //     payload: true,
+      //   //   })
+      //   //   dispatch({
+      //   //     type: ActionType.IS_POOL_CREATION_LOADING,
+      //   //     payload: false,
+      //   //   })
+      //   // }
+      //   // window.location.reload()
+      // }
     } catch (error) {
-           dispatch({
-          type: ActionType.IS_POOL_CREATION_LOADING,
-          payload: false,
-        })
+      dispatch({
+        type: ActionType.IS_POOL_CREATION_LOADING,
+        payload: false,
+      })
     }
     // FlashloanLBCore(currentProvider)
     //   .methods.createPool(_reserve)
@@ -64,17 +64,16 @@ export const createPool = (currentProvider: any, _reserve: string, address: stri
 
 const checkTxnStatus = async (hash: any) => {
   try {
-    const receipt = waitForTransaction({
-      hash,
-    })
-
-    if ((await receipt).status === 1) {
-      return true
-    } else {
-      setTimeout(async () => {
-        checkTxnStatus(hash)
-      }, 1000)
-    }
+    // const receipt = waitForTransaction({
+    //   hash,
+    // })
+    // if ((await receipt).status === 1) {
+    //   return true
+    // } else {
+    //   setTimeout(async () => {
+    //     checkTxnStatus(hash)
+    //   }, 1000)
+    // }
   } catch (error) {
     setTimeout(async () => {
       checkTxnStatus(hash)

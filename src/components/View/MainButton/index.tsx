@@ -5,10 +5,10 @@ import useWalletConnect from 'hooks/useWalletConnect'
 import { FC, useEffect, useState } from 'react'
 // import { depositApprove } from "state/action-creators";
 import ConnectWalletModal from '../UI/ConnectWalletModal'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { fetchSigner } from 'wagmi/dist/actions'
+// import { ConnectButton } from '@rainbow-me/rainbowkit'
+
 import { checkTxnStatus, fixed2Decimals, getEtherContract } from 'state/action-creators'
-import { erc20ABI } from 'wagmi'
+
 import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import { web3Service } from 'ethereum/web3Service'
 import { useDispatch } from 'react-redux'
@@ -101,36 +101,32 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
     amount: any,
     decimal: any,
   ) => {
-    dispatch({
-      type: ActionType.DEPOSIT_APPROVE_ACTION,
-    })
-    let signer = await fetchSigner()
-    let interval = null
-
-    if (!signer) {
-      setTimeout(async () => {
-        signer = await fetchSigner()
-      }, 100)
-    }
-
-    const erc20 = await getEtherContract(receipentAddress, erc20ABI, signer)
-    const Amount = web3Service.getValue(null, null, amount, decimal)
-console.log("getsigner", signer, erc20);
-
-    localStorage.setItem('isApproving', 'true')
-    dispatch({
-      type: ActionType.DEPOSIT_APPROVAL_STATUS,
-      payload: false,
-    })
-    const { hash } = await erc20.approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), Amount)
-
-    if (hash) {
-      setTimeout(() => {
-        dispatch({
-          type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-        })
-      }, 5000)
-    }
+    // dispatch({
+    //   type: ActionType.DEPOSIT_APPROVE_ACTION,
+    // })
+    // let signer = await fetchSigner()
+    // let interval = null
+    // if (!signer) {
+    //   setTimeout(async () => {
+    //     signer = await fetchSigner()
+    //   }, 100)
+    // }
+    // const erc20 = await getEtherContract(receipentAddress, erc20ABI, signer)
+    // const Amount = web3Service.getValue(null, null, amount, decimal)
+    // console.log('getsigner', signer, erc20)
+    // localStorage.setItem('isApproving', 'true')
+    // dispatch({
+    //   type: ActionType.DEPOSIT_APPROVAL_STATUS,
+    //   payload: false,
+    // })
+    // const { hash } = await erc20.approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), Amount)
+    // if (hash) {
+    //   setTimeout(() => {
+    //     dispatch({
+    //       type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+    //     })
+    //   }, 5000)
+    // }
   }
 
   useEffect(() => {
@@ -281,49 +277,50 @@ console.log("getsigner", signer, erc20);
         // <button disabled={+decimalLength > 18} className="btn btn-lg btn-custom-primary" onClick={walletConnect}>
         //   Connect Wallet
         // </button>
-        <ConnectButton.Custom>
-          {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
-            const ready = mounted
-            const connected = ready && account && chain
+        // <ConnectButton.Custom>
+        //   {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+        //     const ready = mounted
+        //     const connected = ready && account && chain
 
-            return (
-              <div
-                {...(!ready && {
-                  'aria-hidden': true,
-                  style: {
-                    opacity: 0,
-                    pointerEvents: 'none',
-                    userSelect: 'none',
-                  },
-                })}
-              >
-                {(() => {
-                  if (!connected) {
-                    return (
-                      <button
-                        disabled={+decimalLength > 18}
-                        className="btn btn-lg btn-custom-primary"
-                        onClick={openConnectModal}
-                      >
-                        Connect Wallet
-                      </button>
-                    )
-                  }
+        //     return (
+        //       <div
+        //         {...(!ready && {
+        //           'aria-hidden': true,
+        //           style: {
+        //             opacity: 0,
+        //             pointerEvents: 'none',
+        //             userSelect: 'none',
+        //           },
+        //         })}
+        //       >
+        //         {(() => {
+        //           if (!connected) {
+        //             return (
+        //               <button
+        //                 disabled={+decimalLength > 18}
+        //                 className="btn btn-lg btn-custom-primary"
+        //                 onClick={openConnectModal}
+        //               >
+        //                 Connect Wallet
+        //               </button>
+        //             )
+        //           }
 
-                  if (chain.unsupported) {
-                    return (
-                      <button onClick={openChainModal} type="button">
-                        Wrong network
-                      </button>
-                    )
-                  }
+        //           if (chain.unsupported) {
+        //             return (
+        //               <button onClick={openChainModal} type="button">
+        //                 Wrong network
+        //               </button>
+        //             )
+        //           }
 
-                  return
-                })()}
-              </div>
-            )
-          }}
-        </ConnectButton.Custom>
+        //           return
+        //         })()}
+        //       </div>
+        //     )
+        //   }}
+        // </ConnectButton.Custom>
+        <></>
       )
     }
   }

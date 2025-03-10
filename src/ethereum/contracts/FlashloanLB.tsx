@@ -9,7 +9,7 @@ import SMERC20ABI from '../build/SmartMaticABI.json'
 import UFlashLoanPool from '../build/UFlashLoanPool.json'
 import BalanceABI from '../build/balance-abi.json'
 import { bscWeb3 } from 'ethereum/bscWeb3'
-import { useContract } from 'wagmi'
+// import { useContract } from 'wagmi'
 import { getContractInstance } from 'state/action-creators/redeemAction'
 import { getEtherContract } from 'state/action-creators'
 
@@ -18,11 +18,11 @@ export const FlashloanLBCore = (currentProvider: any, networkId?: any) => {
 }
 
 export const FlashLoanCore = (networkId = 80001) => {
-  const contract = useContract({
-    address: UnilendFlashLoanCoreContract('', networkId),
-    abi: FlashloanABI.abi,
-  })
-  return contract
+  // const contract = useContract({
+  //   address: UnilendFlashLoanCoreContract('', networkId),
+  //   abi: FlashloanABI.abi,
+  // })
+  // return contract
 }
 
 export const UnilendFDonation = (currentProvider: any, donateContract: string) => {

@@ -3,7 +3,7 @@ import { useTypedSelector } from 'hooks/useTypedSelector'
 import { FC } from 'react'
 import { Card, Container, Modal } from 'react-bootstrap'
 import './index.scss'
-import { useDisconnect } from 'wagmi'
+// import { useDisconnect } from 'wagmi'
 interface Props {
   handleClose: () => void
   handleDisconnect: () => void
@@ -12,7 +12,7 @@ interface Props {
 const WalletStateModal: FC<Props> = ({ handleClose, address, handleDisconnect }) => {
   const { theme } = useTypedSelector((state) => state.settings)
   const { activeNetWork } = useTypedSelector((state) => state.connectWallet)
-  const { disconnect } = useDisconnect()
+  // const { disconnect } = useDisconnect()
 
   return (
     <>
@@ -36,7 +36,7 @@ const WalletStateModal: FC<Props> = ({ handleClose, address, handleDisconnect })
                   <button
                     className="float-right disconnectBtn"
                     // onClick={handleDisconnect}
-                    onClick={() => disconnect()}
+                    // onClick={() => disconnect()}
                   >
                     Disconnect
                   </button>

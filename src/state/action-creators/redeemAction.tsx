@@ -6,7 +6,7 @@ import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { RedeemAction } from 'state/actions/redeemA'
-import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
+// import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
 
 export const setRedeemSuccess = () => {
@@ -17,15 +17,15 @@ export const setRedeemSuccess = () => {
 
 export const getContractInstance = async () => {
   try {
-    const signer = await fetchSigner()
-    const provider = getProvider()
-    const { chain } = getNetwork()
-    const instance = getContract({
-      address: UnilendFlashLoanCoreContract('', chain?.id),
-      abi: FlashloanABI.abi,
-      signerOrProvider: signer || provider,
-    })
-    return instance
+    // const signer = await fetchSigner()
+    // const provider = getProvider()
+    // const { chain } = getNetwork()
+    // const instance = getContract({
+    //   address: UnilendFlashLoanCoreContract('', chain?.id),
+    //   abi: FlashloanABI.abi,
+    //   signerOrProvider: signer || provider,
+    // })
+    // return instance
   } catch (error) {
     throw error
   }
@@ -49,18 +49,17 @@ export const handleRedeem = (
       let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
       const instance = await getContractInstance()
       if (isRedeemMax) {
-        const txs = await instance.redeem(receipentAddress, uFullAmount)
-
-        if (txs.hash) {
-          dispatch({
-            type: ActionType.REDEEM_TRANSACTION_HASH,
-            payload: txs.hash,
-          })
-          const status = await checkTxnStatus(txs.hash)
-          if (status) {
-            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
-          }
-        }
+        // const txs = await instance.redeem(receipentAddress, uFullAmount)
+        // if (txs.hash) {
+        //   dispatch({
+        //     type: ActionType.REDEEM_TRANSACTION_HASH,
+        //     payload: txs.hash,
+        //   })
+        //   const status = await checkTxnStatus(txs.hash)
+        //   if (status) {
+        //     dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
+        //   }
+        // }
         // FlashloanLBCore(currentProvider)
         //   .methods.redeem(receipentAddress, uFullAmount)
         //   .send({
@@ -84,18 +83,17 @@ export const handleRedeem = (
         //     })
         //   })
       } else {
-        const txs = await instance.redeemUnderlying(receipentAddress, fullAmount)
-
-        if (txs.hash) {
-          dispatch({
-            type: ActionType.REDEEM_TRANSACTION_HASH,
-            payload: txs.hash,
-          })
-          const status = await checkTxnStatus(txs.hash)
-          if (status) {
-            dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
-          }
-        }
+        // const txs = await instance.redeemUnderlying(receipentAddress, fullAmount)
+        // if (txs.hash) {
+        //   dispatch({
+        //     type: ActionType.REDEEM_TRANSACTION_HASH,
+        //     payload: txs.hash,
+        //   })
+        //   const status = await checkTxnStatus(txs.hash)
+        //   if (status) {
+        //     dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })
+        //   }
+        // }
         // FlashloanLBCore(currentProvider)
         //   .methods.redeemUnderlying(receipentAddress, fullAmount)
         //   .send({
@@ -113,7 +111,6 @@ export const handleRedeem = (
         //   })
         //   .on('error', (err: any, res: any) => {
         //     errorHandler.report(err)
-
         //     dispatch({
         //       type: ActionType.REDEEM_FAILED,
         //       message: res === undefined ? 'Transaction Rejected' : 'Transaction Failed',
@@ -131,17 +128,16 @@ export const handleRedeem = (
 
 const checkTxnStatus = async (hash: any) => {
   try {
-    const receipt = waitForTransaction({
-      hash,
-    })
-
-    if ((await receipt).status === 1) {
-      return true
-    } else {
-      setTimeout(async () => {
-        checkTxnStatus(hash)
-      }, 1000)
-    }
+    // const receipt = waitForTransaction({
+    //   hash,
+    // })
+    // if ((await receipt).status === 1) {
+    //   return true
+    // } else {
+    //   setTimeout(async () => {
+    //     checkTxnStatus(hash)
+    //   }, 1000)
+    // }
   } catch (error) {
     setTimeout(async () => {
       checkTxnStatus(hash)

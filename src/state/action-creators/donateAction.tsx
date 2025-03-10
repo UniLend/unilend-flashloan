@@ -5,7 +5,7 @@ import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
 import { ActionType } from 'state/action-types'
 import { DonateAction } from 'state/actions/donateA'
-import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
+// import { fetchBlockNumber, waitForTransaction, fetchSigner, getContract, getNetwork, getProvider } from 'wagmi/actions'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
 import DonationABI from 'ethereum/build/UnilendFDonation.json'
 
@@ -142,17 +142,17 @@ export const setDonateSuccess = () => {
 // get contract instance
 export const getContractInstanceDonate = async (contractAddress: any, abi: any, signerData: any) => {
   try {
-    let signer = signerData
-    if (signer === null) {
-      signer = await fetchSigner()
-    }
-    const provider = getProvider()
-    const instance = getContract({
-      address: contractAddress, //
-      abi,
-      signerOrProvider: signer || provider,
-    })
-    return instance
+    // let signer = signerData
+    // if (signer === null) {
+    //   signer = await fetchSigner()
+    // }
+    // const provider = getProvider()
+    // const instance = getContract({
+    //   address: contractAddress, //
+    //   abi,
+    //   signerOrProvider: signer || provider,
+    // })
+    // return instance
   } catch (error) {
     throw error
   }
@@ -161,17 +161,16 @@ export const getContractInstanceDonate = async (contractAddress: any, abi: any, 
 // check transaction status
 const checkTxnStatus = async (hash: any) => {
   try {
-    const receipt = waitForTransaction({
-      hash,
-    })
-
-    if ((await receipt).status === 1) {
-      return true
-    } else {
-      setTimeout(async () => {
-        checkTxnStatus(hash)
-      }, 1000)
-    }
+    // const receipt = waitForTransaction({
+    //   hash,
+    // })
+    // if ((await receipt).status === 1) {
+    //   return true
+    // } else {
+    //   setTimeout(async () => {
+    //     checkTxnStatus(hash)
+    //   }, 1000)
+    // }
   } catch (error) {
     setTimeout(async () => {
       checkTxnStatus(hash)
@@ -192,29 +191,27 @@ export const handleDonate = (
       type: ActionType.DONATE_ACTION,
     })
     try {
-      let fullAmount = web3Service.getValue(isEth, currentProvider, donateAmount, decimal)
-
-      const { chain } = getNetwork()
-      const signer = await fetchSigner()
-      const instance = await getContractInstanceDonate(
-        UnilendFlashLoanCoreContract('', chain?.id),
-        FlashloanABI.abi,
-        signer,
-      )
-      const donationAddress = await instance.donationAddress()
-      const donationInstance = await getContractInstanceDonate(donationAddress, DonationABI.abi, signer)
-      const txs = await donationInstance.donate(receipentAddress, fullAmount)
-
-      if (txs.hash) {
-        const status = await checkTxnStatus(txs.hash)
-        if (status) {
-          dispatch({ type: ActionType.DONATE_SUCCESS, payload: true })
-          dispatch({
-            type: ActionType.DONATE_TRANSACTION_HASH,
-            payload: txs.hash,
-          })
-        }
-      }
+      // let fullAmount = web3Service.getValue(isEth, currentProvider, donateAmount, decimal)
+      // const { chain } = getNetwork()
+      // const signer = await fetchSigner()
+      // const instance = await getContractInstanceDonate(
+      //   UnilendFlashLoanCoreContract('', chain?.id),
+      //   FlashloanABI.abi,
+      //   signer,
+      // )
+      // const donationAddress = await instance.donationAddress()
+      // const donationInstance = await getContractInstanceDonate(donationAddress, DonationABI.abi, signer)
+      // const txs = await donationInstance.donate(receipentAddress, fullAmount)
+      // if (txs.hash) {
+      //   const status = await checkTxnStatus(txs.hash)
+      //   if (status) {
+      //     dispatch({ type: ActionType.DONATE_SUCCESS, payload: true })
+      //     dispatch({
+      //       type: ActionType.DONATE_TRANSACTION_HASH,
+      //       payload: txs.hash,
+      //     })
+      //   }
+      // }
       /*
       // FlashloanLBCore(currentProvider)
       //   .methods.donationAddress()

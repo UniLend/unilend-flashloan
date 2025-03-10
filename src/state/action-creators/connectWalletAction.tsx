@@ -5,7 +5,7 @@ import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
 import CWweb3 from 'ethereum/connectWalletWeb3'
 import { CoinbaseProvider, CoinbaseWeb3 } from 'ethereum/coinbaseWeb3'
-import { fm, formaticWeb3 } from 'ethereum/formatic'
+// import { fm, formaticWeb3 } from 'ethereum/formatic'
 // import { portis, portisWeb3 } from "ethereum/portis";
 import web3 from 'ethereum/web3'
 // import { bscWeb3 } from "ethereum/bscWeb3";
@@ -83,7 +83,7 @@ export const metamaskEventHandler = (dispatch: any, provider: any) => {
     window.location.reload()
   })
   provider.on('accountsChanged', function (accounts: string) {
-    console.log("accountsChanged", "2", accounts);
+    console.log('accountsChanged', '2', accounts)
     if (accounts) {
       dispatch({
         type: ActionType.CONNECT_WALLET_SUCCESS,
@@ -1163,8 +1163,8 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             provider = EthProvider
             break
           case 'Fortmatic':
-            currentProvider = formaticWeb3
-            provider = fm
+            // currentProvider = formaticWeb3
+            // provider = fm
             break
           case 'ledger':
             currentProvider = ledgerWeb3

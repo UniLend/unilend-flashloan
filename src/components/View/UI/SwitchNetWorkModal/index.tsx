@@ -6,7 +6,7 @@ import SelectedIcon from 'assets/circle_done.svg'
 import { NETWORKS } from 'components/constants'
 import { capitalize } from 'components/Helpers'
 import { useHistory } from 'react-router-dom'
-import { useSwitchNetwork } from 'wagmi'
+// import { useSwitchNetwork } from 'wagmi'
 interface Props {
   onHide: () => void
 }
@@ -17,7 +17,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
   const { theme, activeTab } = useTypedSelector((state) => state.settings)
   const { selectedNetworkId, networkId } = useTypedSelector((state) => state.connectWallet)
   const { setSelectedNetworkId } = useActions()
-  const { switchNetwork } = useSwitchNetwork()
+  // const { switchNetwork } = useSwitchNetwork()
 
   return (
     <>
@@ -43,7 +43,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                       onClick={() => {
                         history.push(`/${activeTab}`)
                         // setSelectedNetworkId(item.id);
-                        switchNetwork?.(item.networkID)
+                        // switchNetwork?.(item.networkID)
                         onHide()
                       }}
                     >

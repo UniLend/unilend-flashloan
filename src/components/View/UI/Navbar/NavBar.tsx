@@ -19,15 +19,15 @@ import {
   AddressTab,
   WrongNetwork,
 } from './Common'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { useAccount, useBalance, useNetwork, useProvider, useSigner } from 'wagmi'
+// import { ConnectButton } from '@rainbow-me/rainbowkit'
+// import { useAccount, useBalance, useNetwork, useProvider, useSigner } from 'wagmi'
 import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
 import { metamaskEventHandler, setSelectedNetworkId } from 'state/action-creators'
-import { useContract } from 'wagmi'
+// import { useContract } from 'wagmi'
 import { UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import FlashloanABI from 'ethereum/build/FlashLoanABI.json'
-import { useSwitchNetwork } from 'wagmi'
+// import { useSwitchNetwork } from 'wagmi'
 interface Props extends RouteComponentProps<any> {
   setWalletModalInfo: Dispatch<SetStateAction<boolean>>
   setWalletStatusInfo: Dispatch<SetStateAction<WalletInfoProps>>
@@ -52,97 +52,95 @@ const NavBar: React.FC<Props> = (props) => {
   // const [walletConnectedLocal, setWalletConnected] = useState(false)
   const [checkWalletConnect, setCheckWalletConnect] = useState(false)
 
-  const { address, isConnected } = useAccount()
-  const provider = useProvider()
-  const { data: signer, isError, isLoading } = useSigner()
-  const { data } = useBalance({ address })
-  const { chain } = useNetwork()
+  // const { address, isConnected } = useAccount()
+  // const provider = useProvider()
+  // const { data: signer, isError, isLoading } = useSigner()
+  // const { data } = useBalance({ address })
+  // const { chain } = useNetwork()
 
-  const contract = useContract({
-    address: UnilendFlashLoanCoreContract('', chain?.id),
-    abi: FlashloanABI.abi,
-    signerOrProvider: signer || provider,
-  })
+  // const contract = useContract({
+  //   address: UnilendFlashLoanCoreContract('', chain?.id),
+  //   abi: FlashloanABI.abi,
+  //   signerOrProvider: signer || provider,
+  // })
 
   // const provider = useProvider()
   // console.log(provider)
 
   useEffect(() => {
-
     if (window.ethereum) {
       window?.ethereum?.on &&
         window?.ethereum?.on('chainChanged', async () => {
-           window.location.reload()
+          window.location.reload()
         })
       window?.ethereum?.on &&
         window.ethereum.on('accountsChanged', async (account: any) => {
           // window.location.reload()
           // console.log("accountsChanged", account[0], address, account[0] == address, provider);
-          if(account[0] != address){
-            window.location.reload()
-          }
+          // if (account[0] != address) {
+          //   window.location.reload()
+          // }
         })
     }
-   
   }, [])
 
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      if (isConnected) {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_SUCCESS,
-          payload: [address],
-        })
-        dispatch({
-          type: ActionType.ACCOUNT_BALANCE_SUCCESS,
-          payload: data?.formatted,
-          fullAccountBalance: data?.formatted,
-        })
-        dispatch({
-          type: ActionType.ACTIVE_NETWORK,
-          payload: chain?.name,
-          networkId: chain?.id,
-        })
-        dispatch({
-          type: ActionType.FLASHLOAN_CONTRACT,
-          payload: contract,
-        })
-        setSelectedNetworkId(chain?.id as number)
-      } else {
-        dispatch({
-          type: ActionType.CONNECT_WALLET_ERROR,
-          payload: 'failed to connect',
-        })
-        dispatch({
-          type: ActionType.ACCOUNT_BALANCE_SUCCESS,
-          payload: '',
-          fullAccountBalance: '',
-        })
-        dispatch({
-          type: ActionType.ACTIVE_NETWORK,
-          payload: '',
-          networkId: '',
-        })
-        dispatch({
-          type: ActionType.WALLET_DISCONNECT,
-        })
-      }
-    }
+  // useEffect(() => {
+  //   let isMounted = true
+  //   if (isMounted) {
+  //     if (isConnected) {
+  //       dispatch({
+  //         type: ActionType.CONNECT_WALLET_SUCCESS,
+  //         payload: [address],
+  //       })
+  //       dispatch({
+  //         type: ActionType.ACCOUNT_BALANCE_SUCCESS,
+  //         payload: data?.formatted,
+  //         fullAccountBalance: data?.formatted,
+  //       })
+  //       dispatch({
+  //         type: ActionType.ACTIVE_NETWORK,
+  //         payload: chain?.name,
+  //         networkId: chain?.id,
+  //       })
+  //       dispatch({
+  //         type: ActionType.FLASHLOAN_CONTRACT,
+  //         payload: contract,
+  //       })
+  //       setSelectedNetworkId(chain?.id as number)
+  //     } else {
+  //       dispatch({
+  //         type: ActionType.CONNECT_WALLET_ERROR,
+  //         payload: 'failed to connect',
+  //       })
+  //       dispatch({
+  //         type: ActionType.ACCOUNT_BALANCE_SUCCESS,
+  //         payload: '',
+  //         fullAccountBalance: '',
+  //       })
+  //       dispatch({
+  //         type: ActionType.ACTIVE_NETWORK,
+  //         payload: '',
+  //         networkId: '',
+  //       })
+  //       dispatch({
+  //         type: ActionType.WALLET_DISCONNECT,
+  //       })
+  //     }
+  //   }
 
-    return () => {
-      isMounted = false
-    }
-  }, [isConnected, signer, contract, isLoading, checkWalletConnect])
+  //   return () => {
+  //     isMounted = false
+  //   }
+  // }, [isConnected, signer, contract, isLoading, checkWalletConnect])
 
-  useEffect(() => {
-    if (isConnected) {
-      setWalletStatusInfo({
-        show: false,
-        address: '',
-      })
-    }
-  }, [isConnected])
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     setWalletStatusInfo({
+  //       show: false,
+  //       address: '',
+  //     })
+  //   }
+  // }, [isConnected])
 
   useEffect(() => {
     setCurrentPage(props.location.pathname)
@@ -204,11 +202,7 @@ const NavBar: React.FC<Props> = (props) => {
                 </Link>
               </li>
               <li className="nav-item">
-                <a
-                  className='nav-link unilendv2'
-                  href='https://v2.unilend.finance/'
-                  target='_blank'
-                >
+                <a className="nav-link unilendv2" href="https://v2.unilend.finance/" target="_blank">
                   UnilendV2 Dapp
                 </a>
               </li>
@@ -264,7 +258,7 @@ const NavBar: React.FC<Props> = (props) => {
 
             {/* <ConnectButton /> */}
 
-            <ConnectButton.Custom>
+            {/* <ConnectButton.Custom>
               {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
                 const ready = mounted
                 const connected = ready && account && chain
@@ -323,7 +317,7 @@ const NavBar: React.FC<Props> = (props) => {
                   </div>
                 )
               }}
-            </ConnectButton.Custom>
+            </ConnectButton.Custom> */}
             <ThemeButton onClick={handleUpdate} theme={theme} dflex={true} className="ml-3 btn-theme-icon-header" />
           </div>
         </div>

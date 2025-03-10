@@ -1,39 +1,33 @@
-import React, { ReactNode, useState } from "react";
-import NavBar from "../View/UI/Navbar/NavBar";
-import FooterNavBar from '../View/UI/Navbar/FooterNavBar';
-import { WalletInfoProps } from '../Helpers/Types';
-import useWalletConnect from "hooks/useWalletConnect";
-import ConnectWalletModal from "../View/UI/ConnectWalletModal";
-import WalletStateModal from "../View/UI/WalletStatusModal";
-import { Wallet } from "components/Helpers/Types";
-import { useTypedSelector } from "hooks/useTypedSelector";
-import SwitchNetWorkModal from "../View/UI/SwitchNetWorkModal";
-import { useActions } from "hooks/useActions";
+import React, { ReactNode, useState } from 'react'
+import NavBar from '../View/UI/Navbar/NavBar'
+import FooterNavBar from '../View/UI/Navbar/FooterNavBar'
+import { WalletInfoProps } from '../Helpers/Types'
+import useWalletConnect from 'hooks/useWalletConnect'
+import ConnectWalletModal from '../View/UI/ConnectWalletModal'
+import WalletStateModal from '../View/UI/WalletStatusModal'
+import { Wallet } from 'components/Helpers/Types'
+import { useTypedSelector } from 'hooks/useTypedSelector'
+import SwitchNetWorkModal from '../View/UI/SwitchNetWorkModal'
+import { useActions } from 'hooks/useActions'
 interface Props {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Layout: React.FC<Props> = (props) => {
-  const [walletModalInfo, setWalletModalInfo] = useState<boolean>(false);
-  const [switchNetWorkModal, setSwitchNetworkModal] = useState<boolean>(false);
+  const [walletModalInfo, setWalletModalInfo] = useState<boolean>(false)
+  const [switchNetWorkModal, setSwitchNetworkModal] = useState<boolean>(false)
   const [walletStatusInfo, setWalletStatusInfo] = useState<WalletInfoProps>({
     show: false,
-    address: "",
-  });
+    address: '',
+  })
 
-  const {
-    walletConnected,
-    handleWalletConnect,
-  } = useWalletConnect();
-  const { walletDisconnect } = useActions();
-  const { walletProvider } = useTypedSelector(
-    (state) => state.connectWallet
-  );
-
+  const { walletConnected, handleWalletConnect } = useWalletConnect()
+  const { walletDisconnect } = useActions()
+  const { walletProvider } = useTypedSelector((state) => state.connectWallet)
 
   return (
     <>
-      <NavBar
+      {/* <NavBar
         setWalletModalInfo={setWalletModalInfo}
         setWalletStatusInfo={setWalletStatusInfo}
         setSwitchNetworkModal={setSwitchNetworkModal}
@@ -42,9 +36,9 @@ const Layout: React.FC<Props> = (props) => {
         setWalletModalInfo={setWalletModalInfo}
         setWalletStatusInfo={setWalletStatusInfo}
         setSwitchNetworkModal={setSwitchNetworkModal}
-      />
+      /> */}
       {props.children}
-      {walletModalInfo && !walletConnected && (
+      {/* {walletModalInfo && !walletConnected && (
         <ConnectWalletModal
           handleClose={() => setWalletModalInfo(false)}
           handleWalletConnect={(wallet: Wallet) => {
@@ -70,8 +64,8 @@ const Layout: React.FC<Props> = (props) => {
       )}
       {switchNetWorkModal && (
         <SwitchNetWorkModal onHide={() => setSwitchNetworkModal(false)} />
-      )}
+      )} */}
     </>
-  );
-};
-export default Layout;
+  )
+}
+export default Layout

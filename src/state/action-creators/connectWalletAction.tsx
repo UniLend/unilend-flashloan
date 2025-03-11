@@ -314,14 +314,14 @@ async function handleWalletConnect(
                         params: [
                           {
                             chainId: `0x${chainId.toString(16)}`,
-                            chainName: 'Matic Mainnet',
+                            chainName: 'Polygon Mainnet',
                             nativeCurrency: {
-                              name: 'Matic',
-                              symbol: 'matic',
+                              name: 'POL',
+                              symbol: 'POL',
                               decimals: 18,
                             },
-                            rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
-                            blockExplorerUrls: ['https://explorer.matic.network/'],
+                            rpcUrls: ['https://polygon-rpc.com'],
+                            blockExplorerUrls: ['https://polygonscan.com'],
                           },
                         ],
                       })

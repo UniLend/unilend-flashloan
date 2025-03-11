@@ -52,7 +52,7 @@
   "scripts": {
     "start": "serve -s build",
     "devstart": "react-scripts --openssl-legacy-provider start",
-    "build": "CI=false react-scripts build",
+    "build": "CI=false react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

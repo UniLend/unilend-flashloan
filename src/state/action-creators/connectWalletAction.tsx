@@ -5,7 +5,7 @@ import { ActionType } from 'state/action-types'
 import { Action } from 'state/actions/connectWalletA'
 import CWweb3 from 'ethereum/connectWalletWeb3'
 import { CoinbaseProvider, CoinbaseWeb3 } from 'ethereum/coinbaseWeb3'
-import { fm, formaticWeb3 } from 'ethereum/formatic'
+// import { fm, formaticWeb3 } from 'ethereum/formatic'
 // import { portis, portisWeb3 } from "ethereum/portis";
 import web3 from 'ethereum/web3'
 // import { bscWeb3 } from "ethereum/bscWeb3";
@@ -108,7 +108,7 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, prov
         currentProvider.eth
           .getAccounts()
           .then((res: any) => {
-            console.log("getAccounts", res); 
+            console.log('getAccounts', res)
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],
@@ -174,12 +174,12 @@ async function handleWalletConnect(
                   await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${chainId.toString(16)}` }],
-                  });
+                  })
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true;
+                  return true
                 } catch (error: any) {
-                  if(error.code == 4902){
+                  if (error.code == 4902) {
                     try {
                       await provider.request({
                         method: 'wallet_addEthereumChain',
@@ -203,22 +203,21 @@ async function handleWalletConnect(
                         ],
                       })
                       accounts = await web3Service.getAccounts(currentProviders)
-    
+
                       // if (accounts) {
                       handleMetamask(accounts, dispatch, currentProviders, provider)
                       // }
-    
+
                       return true
                     } catch (error) {
                       errorHandler.report(error)
-    
+
                       console.error(error)
-    
+
                       return false
                     }
                   }
                 }
- 
               } else {
                 console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -241,13 +240,13 @@ async function handleWalletConnect(
                   await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${chainId.toString(16)}` }],
-                  });
-  
+                  })
+
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true;
+                  return true
                 } catch (error: any) {
-                  if(error.code == 4902){
+                  if (error.code == 4902) {
                     try {
                       await provider.request({
                         method: 'wallet_addEthereumChain',
@@ -266,22 +265,21 @@ async function handleWalletConnect(
                         ],
                       })
                       accounts = await web3Service.getAccounts(currentProviders)
-    
+
                       // if (accounts) {
                       handleMetamask(accounts, dispatch, currentProviders, provider)
                       // }
-    
+
                       return true
                     } catch (error) {
                       errorHandler.report(error)
-    
+
                       console.error(error)
-    
+
                       return false
                     }
                   }
                 }
- 
               } else {
                 console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
                 dispatch({
@@ -301,15 +299,15 @@ async function handleWalletConnect(
                 const chainId = 137
                 try {
                   await provider.request({
-                  method: 'wallet_switchEthereumChain',
-                  params: [{ chainId: `0x${chainId.toString(16)}` }],
-                });
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainId.toString(16)}` }],
+                  })
 
-                accounts = await web3Service.getAccounts(currentProviders)
-                handleMetamask(accounts, dispatch, currentProviders, provider)
-                return true;
+                  accounts = await web3Service.getAccounts(currentProviders)
+                  handleMetamask(accounts, dispatch, currentProviders, provider)
+                  return true
                 } catch (error: any) {
-                  if(error.code == 4902){
+                  if (error.code == 4902) {
                     try {
                       await provider.request({
                         method: 'wallet_addEthereumChain',
@@ -337,8 +335,6 @@ async function handleWalletConnect(
                     }
                   }
                 }
-
-         
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)
@@ -367,17 +363,17 @@ async function handleWalletConnect(
                 const provider = (window as any).ethereum
                 const chainId = 1287
                 // const chainId = 1285
-                 try {
+                try {
                   await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${chainId.toString(16)}` }],
-                  });
-  
+                  })
+
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true;
-                 } catch (error: any) {
-                  if(error.code == 4902){
+                  return true
+                } catch (error: any) {
+                  if (error.code == 4902) {
                     try {
                       await provider.request({
                         method: 'wallet_addEthereumChain',
@@ -405,8 +401,7 @@ async function handleWalletConnect(
                       return false
                     }
                   }
-                 }
-     
+                }
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)
@@ -436,13 +431,13 @@ async function handleWalletConnect(
                   await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${chainId.toString(16)}` }],
-                  });
-  
+                  })
+
                   accounts = await web3Service.getAccounts(currentProviders)
                   handleMetamask(accounts, dispatch, currentProviders, provider)
-                  return true;
-                 } catch (error: any) {
-                  if(error.code == 4902){
+                  return true
+                } catch (error: any) {
+                  if (error.code == 4902) {
                     try {
                       await provider.request({
                         method: 'wallet_addEthereumChain',
@@ -469,8 +464,8 @@ async function handleWalletConnect(
                       console.error(e)
                       return false
                     }
-                  }}
-
+                  }
+                }
               } else {
                 if ((window as any).ethereum) {
                   accounts = await web3Service.getAccounts(currentProviders)
@@ -624,38 +619,38 @@ async function handleWalletConnect(
           })
         }
         break
-      case 'Fortmatic':
-        try {
-          let web3: any = formaticWeb3
-          // console.log(
-          web3.currentProvider
-            .enable()
-            .then((res: any) => {
-              let address: string[]
-              address = res
-              dispatch({
-                type: ActionType.CONNECT_WALLET_SUCCESS,
-                payload: [...address],
-              })
-              metamaskEventHandler(dispatch, provider.getProvider())
-              getAccountBalance(address[0], currentProviders)
-            })
-            .catch((err: any) => {
-              dispatch({
-                type: ActionType.CONNECT_WALLET_ERROR,
-                payload: err.message,
-              })
-            })
-          // );
-        } catch (err: any) {
-          errorHandler.report(err)
+      // case 'Fortmatic':
+      //   try {
+      //     let web3: any = formaticWeb3
+      //     // console.log(
+      //     web3.currentProvider
+      //       .enable()
+      //       .then((res: any) => {
+      //         let address: string[]
+      //         address = res
+      //         dispatch({
+      //           type: ActionType.CONNECT_WALLET_SUCCESS,
+      //           payload: [...address],
+      //         })
+      //         metamaskEventHandler(dispatch, provider.getProvider())
+      //         getAccountBalance(address[0], currentProviders)
+      //       })
+      //       .catch((err: any) => {
+      //         dispatch({
+      //           type: ActionType.CONNECT_WALLET_ERROR,
+      //           payload: err.message,
+      //         })
+      //       })
+      //     // );
+      //   } catch (err: any) {
+      //     errorHandler.report(err)
 
-          dispatch({
-            type: ActionType.CONNECT_WALLET_ERROR,
-            payload: err.message,
-          })
-        }
-        break
+      //     dispatch({
+      //       type: ActionType.CONNECT_WALLET_ERROR,
+      //       payload: err.message,
+      //     })
+      //   }
+      //   break
       case 'Portis':
         try {
           // if (wallet.name === "Portis" && !isMobile) {
@@ -1190,10 +1185,10 @@ export const connectWalletAction = (networkType: any, wallet?: Wallet) => {
             currentProvider = CoinbaseWeb3
             provider = EthProvider
             break
-          case 'Fortmatic':
-            currentProvider = formaticWeb3
-            provider = fm
-            break
+          // case 'Fortmatic':
+          //   currentProvider = formaticWeb3
+          //   provider = fm
+          //   break
           case 'ledger':
             currentProvider = ledgerWeb3
             provider = IFrameProvider

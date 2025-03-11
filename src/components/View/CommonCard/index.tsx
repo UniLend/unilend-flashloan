@@ -752,12 +752,12 @@ const CommonCard: FC<Props> = (props) => {
   }
   return (
     <>
-      <div className="new-message">
+      {/* <div className="new-message">
         <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
           {message}
         </a>
-      </div>
-      <div className="network-warning">{networkMessage()}</div>
+      </div> */}
+      {/* <div className="network-warning">{networkMessage()}</div> */}
 
       <ContentCard title={`${getCardTitle()}`}>
         <div className="swap-root">

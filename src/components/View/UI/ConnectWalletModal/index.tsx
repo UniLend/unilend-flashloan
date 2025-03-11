@@ -54,36 +54,36 @@ const getWalletList = (networkId: number): Wallet[] => {
       icon: Metamask,
       link: (window as any).ethereum ? '' : 'https://metamask.io/',
     },
-    {
-      id: 101,
-      name: 'coin98',
-      icon: Coin98,
-      link: (window as any).coin98
-        ? ''
-        : 'https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg?hl=en',
-    },
-    {
-      id: 102,
-      name: 'ONTO',
-      icon: OntoLogo,
-      link: (window as any).onto
-        ? ''
-        : isMobile
-        ? iOS()
-          ? 'https://apps.apple.com/us/app/onto-an-ontology-dapp/id1436009823'
-          : 'https://play.google.com/store/apps/details?id=com.github.ontio.onto'
-        : 'https://onto.app/en/download/',
-    },
-    ...(networkId === 1 ? list : []),
-    ...(networkId === 2
-      ? [
-          // {
-          //   id: 6,
-          //   name: "binanceWallet",
-          //   icon: BinanceIcon,
-          // },
-        ]
-      : []),
+    // {
+    //   id: 101,
+    //   name: 'coin98',
+    //   icon: Coin98,
+    //   link: (window as any).coin98
+    //     ? ''
+    //     : 'https://chrome.google.com/webstore/detail/coin98-wallet/aeachknmefphepccionboohckonoeemg?hl=en',
+    // },
+    // {
+    //   id: 102,
+    //   name: 'ONTO',
+    //   icon: OntoLogo,
+    //   link: (window as any).onto
+    //     ? ''
+    //     : isMobile
+    //     ? iOS()
+    //       ? 'https://apps.apple.com/us/app/onto-an-ontology-dapp/id1436009823'
+    //       : 'https://play.google.com/store/apps/details?id=com.github.ontio.onto'
+    //     : 'https://onto.app/en/download/',
+    // },
+    // ...(networkId === 1 ? list : []),
+    // ...(networkId === 2
+    //   ? [
+    //       // {
+    //       //   id: 6,
+    //       //   name: "binanceWallet",
+    //       //   icon: BinanceIcon,
+    //       // },
+    //     ]
+    //   : []),
   ]
 }
 
@@ -93,8 +93,7 @@ const ConnectWalletModal: FC<Props> = (props) => {
   const { theme } = useTypedSelector((state) => state.settings)
   const { selectedNetworkId } = useTypedSelector((state) => state.connectWallet)
 
-console.log("selectedNetworkId", selectedNetworkId);
-
+  console.log('selectedNetworkId', selectedNetworkId)
 
   return (
     <>
@@ -118,7 +117,7 @@ console.log("selectedNetworkId", selectedNetworkId);
                       <Button
                         className="btn-wallet-list"
                         onClick={() => {
-                         handleWalletConnect(wallet)
+                          handleWalletConnect(wallet)
                         }}
                         style={{
                           color: '#007bff',

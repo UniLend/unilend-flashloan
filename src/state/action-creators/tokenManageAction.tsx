@@ -349,7 +349,7 @@ const getTokenGroup = () => {
 export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let _allToken: any = []
-    if (getTokenGroup()) {
+    if (false && getTokenGroup()) {
       let tg: any = localStorage.getItem('tokenGroup')
       let parsed = JSON.parse(tg)
       dispatch({

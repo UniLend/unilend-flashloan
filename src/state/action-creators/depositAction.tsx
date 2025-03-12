@@ -78,7 +78,7 @@ export const depositApprove = (
           .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
           .send({
             from: address,
-            // gasPrice: defaultGasPrice * 1e9,
+            gasPrice: defaultGasPrice * 1e9,
           })
           .on('receipt', (res: any) => {
             localStorage.setItem('isApproving', 'false')

@@ -45,7 +45,7 @@ export const checkAllowance = (
           }
         })
     } catch (e) {
-      errorHandler.report(e)
+      // errorHandler.report(e)
       dispatch({
         type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
       })
@@ -60,44 +60,52 @@ export const depositApprove = (
   receipentAddress: string,
   selectedNetworkId: any,
 ) => {
-  return async (dispatch: Dispatch<DepositAction>) => {
-    dispatch({
-      type: ActionType.DEPOSIT_APPROVE_ACTION,
-    })
-    try {
-      let _IERC20 = await IERC20(currentProvider, receipentAddress)
-      localStorage.setItem('isApproving', 'true')
+  try {
+    return async (dispatch: Dispatch<DepositAction>) => {
       dispatch({
-        type: ActionType.DEPOSIT_APPROVAL_STATUS,
-        payload: false,
+        type: ActionType.DEPOSIT_APPROVE_ACTION,
       })
-      _IERC20.methods
-        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
-        .send({
-          from: address,
-          gasPrice: defaultGasPrice * 1e9,
-        })
-        .on('receipt', (res: any) => {
-          localStorage.setItem('isApproving', 'false')
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-          })
-        })
-        .on('error', (err: any, res: any) => {
-          errorHandler.report(err)
+      console.log('token approval', selectedNetworkId)
 
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_FAILED,
-            payload: false,
-            message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
-          })
+      try {
+        let _IERC20 = await IERC20(currentProvider, receipentAddress)
+        localStorage.setItem('isApproving', 'true')
+        dispatch({
+          type: ActionType.DEPOSIT_APPROVAL_STATUS,
+          payload: false,
         })
-    } catch (e) {
-      errorHandler.report(e)
-      dispatch({
-        type: ActionType.DEPOSIT_APPROVE_FAILED,
-      })
+        _IERC20.methods
+          .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
+          .send({
+            from: address,
+            // gasPrice: defaultGasPrice * 1e9,
+          })
+          .on('receipt', (res: any) => {
+            localStorage.setItem('isApproving', 'false')
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+            })
+          })
+          .on('error', (err: any, res: any) => {
+            // errorHandler.report(err)
+            console.log('Rejected', err, res)
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_FAILED,
+              payload: false,
+              message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
+            })
+          })
+      } catch (e) {
+        console.log('Rejected1', e)
+
+        // errorHandler.report(e)
+        dispatch({
+          type: ActionType.DEPOSIT_APPROVE_FAILED,
+        })
+      }
     }
+  } catch (error) {
+    console.log('Rejected2', error)
   }
 }
 export const setDepositSuccess = () => {
@@ -145,7 +153,7 @@ export const handleDeposit = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             console.log(err)
             dispatch({
@@ -175,7 +183,7 @@ export const handleDeposit = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             console.log(err)
             dispatch({
@@ -186,7 +194,7 @@ export const handleDeposit = (
           })
       }
     } catch (e) {
-      errorHandler.report(e)
+      // errorHandler.report(e)
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

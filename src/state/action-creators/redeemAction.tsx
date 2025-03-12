@@ -46,7 +46,7 @@ export const handleRedeem = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             dispatch({
               type: ActionType.REDEEM_FAILED,
@@ -70,7 +70,7 @@ export const handleRedeem = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             dispatch({
               type: ActionType.REDEEM_FAILED,

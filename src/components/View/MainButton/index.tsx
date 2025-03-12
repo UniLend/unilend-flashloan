@@ -185,7 +185,11 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === 'Deposit') {
-              depositApprove(currentProvider, address[0], receipentAddress, selectedNetworkId)
+              try {
+                depositApprove(currentProvider, address[0], receipentAddress, selectedNetworkId)
+              } catch (error) {
+                console.log('rejected4', error)
+              }
             } else if (actionName === 'Reward') {
               donateApprove(currentProvider, address[0], donateContractAddress, receipentAddress)
             }

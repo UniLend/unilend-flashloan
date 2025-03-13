@@ -562,7 +562,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'ETH',
+          activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           selectedNetworkId,
         )
@@ -574,7 +574,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'ETH',
+          activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           redeemMax,
           fullPoolUTokenBalance,
@@ -587,7 +587,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'MATIC',
+          activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
         )
         handleTransModal(true)
@@ -599,7 +599,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'MATIC',
+          activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           selectedNetworkId,
         )
@@ -750,6 +750,7 @@ const CommonCard: FC<Props> = (props) => {
         return 'Lend'
     }
   }
+
   return (
     <>
       {/* <div className="new-message">
@@ -793,7 +794,7 @@ const CommonCard: FC<Props> = (props) => {
             ''
           )}
           <MainButton
-            isEth={activeCurrency.symbol === 'ETH'}
+            isEth={activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL'}
             decimal={activeCurrency.decimals}
             amount={amount}
             actionName={`${activeTab === 'lend' ? capitalize('deposit') : capitalize(activeTab ?? 'lend')}`}

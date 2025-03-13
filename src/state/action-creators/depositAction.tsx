@@ -1,6 +1,7 @@
 // import BigNumber from "bignumber.js";
 import { approveTokenMaximumValue, defaultGasPrice, UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import { FlashloanLBCore, IERC20 } from 'ethereum/contracts/FlashloanLB'
+import web3 from 'ethereum/web3'
 import { web3Service } from 'ethereum/web3Service'
 import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
@@ -25,6 +26,8 @@ export const checkAllowance = (
       _IERC20.methods
         .allowance(address, UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
         .call((error: any, result: any) => {
+          console.log('allowance', allowance)
+
           if (!error && result) {
             allowance = result
             if (allowance === '0') {
@@ -65,7 +68,9 @@ export const depositApprove = (
       dispatch({
         type: ActionType.DEPOSIT_APPROVE_ACTION,
       })
-      console.log('token approval', selectedNetworkId)
+
+      const gasPrice = await currentProvider.eth.getGasPrice() // Fetch network gas price
+      const adjustedGasPrice = Math.max(parseInt(gasPrice), defaultGasPrice * 1e9) // Use higher value
 
       try {
         let _IERC20 = await IERC20(currentProvider, receipentAddress)
@@ -78,7 +83,8 @@ export const depositApprove = (
           .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
           .send({
             from: address,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             localStorage.setItem('isApproving', 'false')
@@ -131,14 +137,18 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     })
     try {
+      const gasPrice = await currentProvider.eth.getGasPrice() // Fetch network gas price
+      const adjustedGasPrice = Math.max(parseInt(gasPrice), defaultGasPrice * 1e9) // Use higher value
       let fullAmount = web3Service.getValue(isEth, currentProvider, depositAmount, decimal)
+
       if (isEth) {
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.deposit(recieptAddress, fullAmount)
           .send({
             from: address,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
             value: fullAmount,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             dispatch({
@@ -168,7 +178,8 @@ export const handleDeposit = (
           .send({
             from: address,
             value: 0,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             dispatch({

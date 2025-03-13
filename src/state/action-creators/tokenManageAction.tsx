@@ -166,7 +166,6 @@ export const fetchTokenList = (
     let timestamp = setTimestamp()
     let totalTokenList: any = []
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST })
-    console.log('fetchTokenList', tokenList, networkId)
 
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled)
@@ -180,6 +179,9 @@ export const fetchTokenList = (
                   let tokens = [...res.data.tokens, ...customTokens]
                   if (res.data && tokens.length) {
                     const tokenList: any = tokens.filter((item: any) => {
+                      if (item.symbol == 'POL') {
+                        return false
+                      }
                       if (accounts.length) {
                         // eslint-disable-next-line eqeqeq
                         return item.chainId == networkId
@@ -358,8 +360,6 @@ export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
       })
     } else {
       token.forEach((item) => {
-        console.log('handleTokenPersist', item)
-
         axios.get(item.url).then((res) => {
           _allToken.push({
             id: uuidv4(),

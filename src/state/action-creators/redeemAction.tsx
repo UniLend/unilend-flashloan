@@ -27,6 +27,8 @@ export const handleRedeem = (
     dispatch({ type: ActionType.REDEEM_ACTION, payload: 'success' })
 
     try {
+      const gasPrice = await currentProvider.eth.getGasPrice() // Fetch network gas price
+      const adjustedGasPrice = Math.max(parseInt(gasPrice), defaultGasPrice * 1e9)
       let fullAmount = web3Service.getValue(isEth, currentProvider, redeemAmount, decimal)
       let uFullAmount = web3Service.getValue(isEth, currentProvider, fullPoolUTokenBalance, decimal)
       if (isRedeemMax) {
@@ -34,7 +36,8 @@ export const handleRedeem = (
           .methods.redeem(receipentAddress, uFullAmount)
           .send({
             from: accounts,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             dispatch({ type: ActionType.REDEEM_SUCCESS, payload: 'success' })

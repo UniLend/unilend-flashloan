@@ -35,7 +35,7 @@ const NavBar: React.FC<Props> = (props) => {
   //   useWalletConnect();
 
   useEffect(() => {
-    console.log('UserAcount', states)
+    // console.log('UserAcount', states)
     setCurrentPage(props.location.pathname)
   }, [props.location.pathname, states])
 

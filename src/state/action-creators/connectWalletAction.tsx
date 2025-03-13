@@ -108,7 +108,7 @@ const handleMetamask = (accounts: any, dispatch: any, currentProvider: any, prov
         currentProvider.eth
           .getAccounts()
           .then((res: any) => {
-            console.log('getAccounts', res)
+            // console.log('getAccounts', res)
             dispatch({
               type: ActionType.CONNECT_WALLET_SUCCESS,
               payload: [...res],

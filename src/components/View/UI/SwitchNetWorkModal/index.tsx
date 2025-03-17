@@ -14,7 +14,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
   const { onHide } = props;
   const history = useHistory();
   const { theme, activeTab } = useTypedSelector((state) => state.settings);
-  const { selectedNetworkId } = useTypedSelector(
+  const { selectedNetworkId, networkId } = useTypedSelector(
     (state) => state.connectWallet
   );
   const { setSelectedNetworkId } = useActions();
@@ -61,7 +61,7 @@ const SwitchNetWorkModal: FC<Props> = (props) => {
                         }}
                       >
                         <img src={logo} alt={item.label} />
-                        {selectedNetworkId === item.id && (
+                        {networkId === item.networkID && (
                           <div className="selected-div">
                             <img
                               className="selected"

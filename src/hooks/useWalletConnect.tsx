@@ -42,6 +42,7 @@ export default function useWalletConnect() {
     getUserTokenBalance,
     getPoolLiquidity,
   } = useActions();
+  
   const handleWalletConnect = useCallback(
     (wallet?: Wallet) => {
       console.log("CONNECTING WALLET");

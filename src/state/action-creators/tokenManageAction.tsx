@@ -166,6 +166,7 @@ export const fetchTokenList = (
     let timestamp = setTimestamp()
     let totalTokenList: any = []
     dispatch({ type: ActionType.GET_TOKEN_LIST_REQUEST })
+
     if (tokenList) {
       let _enableChecked = tokenList.some((item: any) => item.isEnabled)
       _enableChecked
@@ -178,6 +179,9 @@ export const fetchTokenList = (
                   let tokens = [...res.data.tokens, ...customTokens]
                   if (res.data && tokens.length) {
                     const tokenList: any = tokens.filter((item: any) => {
+                      if (item.symbol == 'POL') {
+                        return false
+                      }
                       if (accounts.length) {
                         // eslint-disable-next-line eqeqeq
                         return item.chainId == networkId
@@ -347,7 +351,7 @@ const getTokenGroup = () => {
 export const handleTokenPersist = (token: any, selectedNetworkId: any) => {
   return async (dispatch: Dispatch<TokenAction>) => {
     let _allToken: any = []
-    if (getTokenGroup()) {
+    if (false && getTokenGroup()) {
       let tg: any = localStorage.getItem('tokenGroup')
       let parsed = JSON.parse(tg)
       dispatch({

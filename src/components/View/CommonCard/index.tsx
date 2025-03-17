@@ -562,7 +562,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'ETH',
+          activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           selectedNetworkId,
         )
@@ -574,7 +574,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'ETH',
+          activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           redeemMax,
           fullPoolUTokenBalance,
@@ -587,7 +587,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'MATIC',
+          activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
         )
         handleTransModal(true)
@@ -599,7 +599,7 @@ const CommonCard: FC<Props> = (props) => {
           amount,
           accounts[0],
           activeCurrency.address,
-          activeCurrency.symbol === 'MATIC',
+          activeCurrency.symbol === 'POL',
           activeCurrency.decimals,
           selectedNetworkId,
         )
@@ -725,6 +725,7 @@ const CommonCard: FC<Props> = (props) => {
   )
 
   const networkMessage = () => {
+    return ''
     if (accounts.length) {
       if (selectedNetworkId === 1 && activeNetWork !== 'Mainnet' && activeNetWork !== 'Ropsten') {
         return `Please switch your Network to Ethereum from your wallet.`
@@ -749,14 +750,15 @@ const CommonCard: FC<Props> = (props) => {
         return 'Lend'
     }
   }
+
   return (
     <>
-      <div className="new-message">
+      {/* <div className="new-message">
         <a href="https://unilend.finance/v2.html" rel="noreferrer" target="_blank">
           {message}
         </a>
-      </div>
-      <div className="network-warning">{networkMessage()}</div>
+      </div> */}
+      {/* <div className="network-warning">{networkMessage()}</div> */}
 
       <ContentCard title={`${getCardTitle()}`}>
         <div className="swap-root">
@@ -792,7 +794,7 @@ const CommonCard: FC<Props> = (props) => {
             ''
           )}
           <MainButton
-            isEth={activeCurrency.symbol === 'ETH'}
+            isEth={activeCurrency.symbol === 'ETH' || activeCurrency.symbol === 'POL'}
             decimal={activeCurrency.decimals}
             amount={amount}
             actionName={`${activeTab === 'lend' ? capitalize('deposit') : capitalize(activeTab ?? 'lend')}`}

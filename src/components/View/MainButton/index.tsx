@@ -83,7 +83,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
     }
   }
   useEffect(() => {
-    console.log('CURR PROVIDER', currentProvider)
+    // console.log('CURR PROVIDER', currentProvider)
     handleTokenBalance()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [depositLoading, donateLoading, redeemLoading, airdropLoading, currentProvider, address])
@@ -99,7 +99,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
       walletConnected &&
       (activeCurrency.symbol === 'Select Token' || isPoolCreated) &&
       (activeCurrency.symbol === 'Select Token' ||
-        activeCurrency.symbol === 'ETH' ||
+        isEth ||
         depositAllowanceLoading ||
         donateAllowanceLoading ||
         (actionName === 'Deposit' && isDepositApproved === true) ||
@@ -170,7 +170,7 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
       ((activeCurrency.symbol !== 'Select Token' &&
         actionName === 'Deposit' &&
         (isDepositApproved === false || isDepositApproved === undefined)) ||
-        activeCurrency.symbol === 'ETH' ||
+        isEth ||
         (actionName === 'Reward' && (donateIsApproved === false || donateIsApproved === undefined))) &&
       (actionName === 'Deposit' || actionName === 'Reward')
     ) {
@@ -185,7 +185,11 @@ const MainButton: FC<Props> = ({ isEth, amount, actionName, handleAmount, decima
           className="btn btn-lg btn-custom-primary"
           onClick={() => {
             if (actionName === 'Deposit') {
-              depositApprove(currentProvider, address[0], receipentAddress, selectedNetworkId)
+              try {
+                depositApprove(currentProvider, address[0], receipentAddress, selectedNetworkId)
+              } catch (error) {
+                console.log('rejected4', error)
+              }
             } else if (actionName === 'Reward') {
               donateApprove(currentProvider, address[0], donateContractAddress, receipentAddress)
             }

@@ -1,6 +1,7 @@
 // import BigNumber from "bignumber.js";
 import { approveTokenMaximumValue, defaultGasPrice, UnilendFlashLoanCoreContract } from 'ethereum/contracts'
 import { FlashloanLBCore, IERC20 } from 'ethereum/contracts/FlashloanLB'
+import web3 from 'ethereum/web3'
 import { web3Service } from 'ethereum/web3Service'
 import { errorHandler } from 'index'
 import { Dispatch } from 'redux'
@@ -25,6 +26,8 @@ export const checkAllowance = (
       _IERC20.methods
         .allowance(address, UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId))
         .call((error: any, result: any) => {
+          console.log('allowance', allowance)
+
           if (!error && result) {
             allowance = result
             if (allowance === '0') {
@@ -45,7 +48,7 @@ export const checkAllowance = (
           }
         })
     } catch (e) {
-      errorHandler.report(e)
+      // errorHandler.report(e)
       dispatch({
         type: ActionType.DEPOSIT_ALLOWANCE_FAILED,
       })
@@ -60,44 +63,55 @@ export const depositApprove = (
   receipentAddress: string,
   selectedNetworkId: any,
 ) => {
-  return async (dispatch: Dispatch<DepositAction>) => {
-    dispatch({
-      type: ActionType.DEPOSIT_APPROVE_ACTION,
-    })
-    try {
-      let _IERC20 = await IERC20(currentProvider, receipentAddress)
-      localStorage.setItem('isApproving', 'true')
+  try {
+    return async (dispatch: Dispatch<DepositAction>) => {
       dispatch({
-        type: ActionType.DEPOSIT_APPROVAL_STATUS,
-        payload: false,
+        type: ActionType.DEPOSIT_APPROVE_ACTION,
       })
-      _IERC20.methods
-        .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
-        .send({
-          from: address,
-          gasPrice: defaultGasPrice * 1e9,
-        })
-        .on('receipt', (res: any) => {
-          localStorage.setItem('isApproving', 'false')
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_SUCCESS,
-          })
-        })
-        .on('error', (err: any, res: any) => {
-          errorHandler.report(err)
 
-          dispatch({
-            type: ActionType.DEPOSIT_APPROVE_FAILED,
-            payload: false,
-            message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
-          })
+      const gasPrice = await currentProvider.eth.getGasPrice() // Fetch network gas price
+      const adjustedGasPrice = Math.max(parseInt(gasPrice), defaultGasPrice * 1e9) // Use higher value
+
+      try {
+        let _IERC20 = await IERC20(currentProvider, receipentAddress)
+        localStorage.setItem('isApproving', 'true')
+        dispatch({
+          type: ActionType.DEPOSIT_APPROVAL_STATUS,
+          payload: false,
         })
-    } catch (e) {
-      errorHandler.report(e)
-      dispatch({
-        type: ActionType.DEPOSIT_APPROVE_FAILED,
-      })
+        _IERC20.methods
+          .approve(UnilendFlashLoanCoreContract(currentProvider, selectedNetworkId), approveTokenMaximumValue)
+          .send({
+            from: address,
+            gasPrice: adjustedGasPrice,
+            gas: 1000000,
+          })
+          .on('receipt', (res: any) => {
+            localStorage.setItem('isApproving', 'false')
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_SUCCESS,
+            })
+          })
+          .on('error', (err: any, res: any) => {
+            // errorHandler.report(err)
+            console.log('Rejected', err, res)
+            dispatch({
+              type: ActionType.DEPOSIT_APPROVE_FAILED,
+              payload: false,
+              message: res === undefined ? 'Approval Rejected' : 'Approval Failed',
+            })
+          })
+      } catch (e) {
+        console.log('Rejected1', e)
+
+        // errorHandler.report(e)
+        dispatch({
+          type: ActionType.DEPOSIT_APPROVE_FAILED,
+        })
+      }
     }
+  } catch (error) {
+    console.log('Rejected2', error)
   }
 }
 export const setDepositSuccess = () => {
@@ -123,14 +137,18 @@ export const handleDeposit = (
       type: ActionType.DEPOSIT_ACTION,
     })
     try {
+      const gasPrice = await currentProvider.eth.getGasPrice() // Fetch network gas price
+      const adjustedGasPrice = Math.max(parseInt(gasPrice), defaultGasPrice * 1e9) // Use higher value
       let fullAmount = web3Service.getValue(isEth, currentProvider, depositAmount, decimal)
+
       if (isEth) {
         FlashloanLBCore(currentProvider, currentNetwork)
           .methods.deposit(recieptAddress, fullAmount)
           .send({
             from: address,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
             value: fullAmount,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             dispatch({
@@ -145,7 +163,7 @@ export const handleDeposit = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             console.log(err)
             dispatch({
@@ -160,7 +178,8 @@ export const handleDeposit = (
           .send({
             from: address,
             value: 0,
-            gasPrice: defaultGasPrice * 1e9,
+            gasPrice: adjustedGasPrice,
+            gas: 1000000,
           })
           .on('receipt', (res: any) => {
             dispatch({
@@ -175,7 +194,7 @@ export const handleDeposit = (
             })
           })
           .on('error', (err: any, res: any) => {
-            errorHandler.report(err)
+            // errorHandler.report(err)
 
             console.log(err)
             dispatch({
@@ -186,7 +205,7 @@ export const handleDeposit = (
           })
       }
     } catch (e) {
-      errorHandler.report(e)
+      // errorHandler.report(e)
       dispatch({
         type: ActionType.DEPOSIT_FAILED,
         payload: false,

@@ -57,10 +57,10 @@ function App() {
       setLoading(false)
     }, 2000)
     console.log('starting')
-    errorHandler.start({
-      key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
-      projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
-    })
+    // errorHandler.start({
+    //   key: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_API,
+    //   projectId: process.env.REACT_APP_GOOLE_CLOUD_LOGGING_PROJECTID,
+    // })
   }, [])
 
   useEffect(() => {
